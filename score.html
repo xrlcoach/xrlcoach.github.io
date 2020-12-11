@@ -1,0 +1,75 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Home
+{% endblock %}
+
+{% block main %}
+    <p><h4>Round {{ current_round }}</h4></p>
+    <p><h4>{{ user['team_name'] }}</h4></p>
+    <img src="static/{{ user['team_logo'] }}" alt="{{ user['team_short'] }}" height="100">
+    <div class="container p-5">
+        <div class="table-responsive">            
+            <table class="table table-dark table-striped">
+                <thead>
+                    <tr>
+                        <th style="color: green;">Player</th>
+                        <th style="color: green;">NRL Team</th>
+                        <th style="color: green;">Position</th>
+                        <th></th><th></th>
+                        <th style="color: green;">Score</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for x in range(length) %}
+                    <tr>
+                        <td style="white-space: nowrap;">
+                            {{ squad[x]['lineup_player_name'] }}
+                        </td>
+                        <td>
+                            {{ squad[x]['lineup_nrl_team'] }}
+                        </td>
+                        <td>
+                            {{ squad[x]['lineup_position'] }}
+                        </td>
+                        <td>
+                            {% if squad[x]['captain'] %}C{% endif %}
+                            {% if squad[x]['vice_captain'] %}VC{% endif %}
+                        </td>
+                        <td>
+                            {% if squad[x]['kicker'] %}K{% endif %}
+                            {% if squad[x]['backup_kicker'] %}RK{% endif %}
+                        </td>
+                        <td>
+                            {{ squad[x]['lineup_score'] }}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    <tr><td>Bench</td></tr>
+                    {% for x in range(blength) %}
+                    <tr {% if bench[x]['interchange'] == 5 %} class="dnp" {% endif %}>
+                        <td style="white-space: nowrap;">
+                            {{ bench[x]['lineup_player_name'] }}
+                        </td>
+                        <td>
+                            {{ bench[x]['lineup_nrl_team'] }}
+                        </td>
+                        <td>
+                            {{ bench[x]['lineup_position'] }}
+                        </td>
+                        <td></td>
+                        <td></td>
+                        <td>{{ bench[x]['lineup_score'] }}</td>
+                    </tr>
+                    {% endfor %}
+                    <tr>
+                        <td></td><td></td><td></td><td></td>
+                        <td>Total</td>
+                        <td>{{ score }}</td>
+                    </tr>
+                </tbody>
+            </table>            
+        </div>          
+    </div>
+
+{% endblock %}

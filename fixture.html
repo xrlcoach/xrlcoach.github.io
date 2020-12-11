@@ -1,0 +1,142 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Fixture
+{% endblock %}
+
+{% block main %}
+<div class="container">
+    <p><h4>Round {{ round_number}}: {{ home_team }} v {{ away_team }}</h4></p>
+        <div class="row">
+            <div class="col table-responsive align-self-start">
+		    <img src="static/{{ home_user['team_logo'] }}" alt="{{ home_user['team_short'] }}" height="80" style="padding-right:5px;padding-bottom:5px;">    
+                <h3 style="display:inline-block;">{{ home_team }} Score</h3>
+                
+                <table class="table table-dark table-striped">
+                    <thead>
+                        <tr>
+                            <th style="color: green;">Player</th>
+                            <th style="color: green;">NRL Team</th>
+                            <th style="color: green;">Position</th>
+                            <th></th><th></th>
+                            <th style="color: green;">Score</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for x in range(home_length) %}
+                        <tr>
+                            <td style="white-space: nowrap;">
+                                {{ home_squad[x]['lineup_player_name'] }}
+                            </td>
+                            <td>
+                                {{ home_squad[x]['lineup_nrl_team'] }}
+                            </td>
+                            <td>
+                                {{ home_squad[x]['lineup_position'] }}
+                            </td>
+                            <td>
+                                {% if home_squad[x]['captain'] %}C{% endif %}
+                                {% if home_squad[x]['vice_captain'] %}VC{% endif %}
+                            </td>
+                            <td>
+                                {% if home_squad[x]['kicker'] %}K{% endif %}
+                                {% if home_squad[x]['backup_kicker'] %}RK{% endif %}
+                            </td>
+                            <td>
+                                {{ home_squad[x]['lineup_score'] }}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        <tr><td>Bench</td></tr>
+                        {% for x in range(hb_length) %}
+                        <tr>
+                            <td style="white-space: nowrap;">
+                                {{ home_bench[x]['lineup_player_name'] }}
+                            </td>
+                            <td>
+                                {{ home_bench[x]['lineup_nrl_team'] }}
+                            </td>
+                            <td>
+                                {{ home_bench[x]['lineup_position'] }}
+                            </td>
+                            <td></td>
+                            <td></td>
+                            <td>{{ home_bench[x]['lineup_score'] }}</td>
+                        </tr>
+                        {% endfor %}
+                        <tr>
+                            <td></td><td></td><td></td><td></td>
+                            <td>Total</td>
+                            <td>{{ home_score }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+            </div>
+            <div class="col table-responsive align-self-start">
+	    <h3 style="display:inline-block;">{{ away_team }} Score</h3><img src="static/{{ away_user['team_logo'] }}" alt="{{ away_user['team_short'] }}" height="80" style="padding-left:5px;padding-bottom:5px;">
+		    
+		<table class="table table-dark table-striped">
+                    <thead>
+                        <tr>
+                            <th style="color: green;">Player</th>
+                            <th style="color: green;">NRL Team</th>
+                            <th style="color: green;">Position</th>
+                            <th></th><th></th>
+                            <th style="color: green;">Score</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for x in range(away_length) %}
+                    <tr>
+                        <td style="white-space: nowrap;">
+                            {{ away_squad[x]['lineup_player_name'] }}
+                        </td>
+                        <td>
+                            {{ away_squad[x]['lineup_nrl_team'] }}
+                        </td>
+                        <td>
+                            {{ away_squad[x]['lineup_position'] }}
+                        </td>
+                        <td>
+                            {% if away_squad[x]['captain'] %}C{% endif %}
+                            {% if away_squad[x]['vice_captain'] %}VC{% endif %}
+                        </td>
+                        <td>
+                            {% if away_squad[x]['kicker'] %}K{% endif %}
+                            {% if away_squad[x]['backup_kicker'] %}RK{% endif %}
+                        </td>
+                        <td>
+                            {{ away_squad[x]['lineup_score'] }}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    <tr><td>Bench</td></tr>
+                        {% for x in range(ab_length) %}
+                        <tr>
+                            <td style="white-space: nowrap;">
+                                {{ away_bench[x]['lineup_player_name'] }}
+                            </td>
+                            <td>
+                                {{ away_bench[x]['lineup_nrl_team'] }}
+                            </td>
+                            <td>
+                                {{ away_bench[x]['lineup_position'] }}
+                            </td>
+                            <td></td>
+                            <td></td>
+                            <td>{{ away_bench[x]['lineup_score'] }}</td>
+                        </tr>
+                        {% endfor %}
+                    <tr>
+                        <td></td><td></td><td></td><td></td>
+                        <td>Total</td>
+                        <td>{{ away_score }}</td>
+                    </tr>
+                    </tbody>            
+                </table>
+                
+            </div>
+        </div>
+</div>
+{% endblock %}

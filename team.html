@@ -1,0 +1,55 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Squad
+{% endblock %}
+
+{% block main %}
+    <div class="container p-5">
+	    <p><h4>{{ user['team_name'] }}</h4></p>
+    <img src="static/{{ user['team_logo'] }}" alt="{{ user['team_short'] }}" height="100">
+    <p><h4>Squad</h4></p>
+    {% if n < 18 %}
+    <form action="/pickteam" method="GET">
+        <button type="submit" class="btn btn-success m-2">Pick more players</button>
+    </form>
+    {% endif %}
+    <div class="table-responsive">
+    <table class="table table-dark table-striped">
+        <thead>
+            <tr>
+                <th style="color: green;">Player</th>
+                <th style="color: green;">NRL Team</th>
+                <th style="color: green;">Position</th>
+                <th style="color: green;">Position 2</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for x in range(n) %}
+        <tr>
+            <td style="white-space: nowrap;">
+                {{ squad[x]['player_name'] }}
+            </td>
+            <td>
+                {{ squad[x]['nrl_team'] }}
+            </td>
+            <td>
+                {{ squad[x]['position'] }}
+            </td>
+            <td>
+                {{ squad[x]['position2'] }}
+            </td>
+            <td>
+                <form action="/dropplayer" method="post">
+                    <input type="hidden" name="drop" value="{{ squad[x]['player_name'] }}_{{ squad[x]['nrl_team'] }}">
+                    <button type="submit" class="btn btn-danger">Drop</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+
+    </table>
+    </div>
+    </div>
+{% endblock %}

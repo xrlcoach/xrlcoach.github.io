@@ -1,0 +1,14 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Home
+{% endblock %}
+
+{% block main %}
+<div class="container p-5"></div>
+<p><h4>Homepage for {{ user['team_name'] }}</h4></p>
+<img src="static/{{ user['team_logo'] }}" alt="{{ user['team_short'] }}" height="100">
+{% if fixture_exists %}<p>Your next match is against {{ opponent }}.</p>
+<p><a href="/lineup" class="btn btn-primary">Pick your lineup</a></p>{% endif %}
+{% if not fixture_exists %}<p>Looks like you don't have a match this week</p>{% endif %}
+{% endblock %}

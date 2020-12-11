@@ -1,0 +1,92 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Team Selection
+{% endblock %}
+
+{% block main %}
+<div class="container p-5">
+    <p><h4>Select Players</h4></p>
+    <p>{{ message }}</p>
+    <p>You currently have {{ player_count }} players in your squad. You need {{ 18 - player_count }} more in total.</p>
+    <ul>
+        {% if forward_count < 5 %}
+        <li>You need at least {{ 5 - forward_count }} more forwards</li>
+        {% endif %}
+        {% if back_count < 5 %}
+        <li>You need at least {{ 5 - back_count }} more backs</li>
+        {% endif %}
+        {% if playmaker_count < 3 %}
+        <li>You need at least {{ 3 - playmaker_count }} more playmakers</li>
+        {% endif %}
+    </ul>
+    <form action="/pickteam" method="post">
+        <div class="form-group">
+            <select class="form-control" name="club" aria-placeholder="Choose a club">
+                <option>Broncos</option>
+                <option>Bulldogs</option>
+                <option>Cowboys</option>
+                <option>Dragons</option>
+                <option>Eels</option>
+                <option>Knights</option>
+                <option>Panthers</option>
+                <option>Rabbitohs</option>
+                <option>Raiders</option>
+                <option>Roosters</option>
+                <option>Sea Eagles</option>
+                <option>Sharks</option>
+                <option>Storm</option>
+                <option>Titans</option>
+                <option>Warriors</option>
+                <option>Wests Tigers</option>
+            </select>
+            <button type="submit" class="btn btn-primary">View players</button>
+        </div>
+    </form>
+    <div class="table-responsive">
+    <table class="table table-dark table-striped">
+        <thead>
+            <tr>
+                <th>Player</th>
+                <th>Position</th>
+                <th>Position 2</th>
+                <th>XRL Team</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for x in range(n) %}
+        <tr>
+            <td style="white-space: nowrap;">
+                {{ players[x]['player_name'] }}
+            </td>
+            <td>
+                {{ players[x]['position'] }}
+            </td>
+            <td>
+                {{ players[x]['position2'] }}
+            </td>
+            <td>
+                {{ players[x]['xrl_team'] }}
+            </td>
+            <td id="pick">
+                {% if not players[x]['xrl_team'] %}
+                <form action="/pickplayer" method="post">
+                    <input type="hidden" name="pickplayer" value="{{ players[x]['player_name'] }},{{ club }},{{ players[x]['position'] }},{{ players[x]['position2'] }}">
+                    <button type="submit" class="btn btn-success">Pick</button>
+                </form>
+                {% endif %}
+                {% if players[x]['xrl_team'] == user_team %}
+                <form action="/dropplayer" method="post">
+                    <input type="hidden" name="drop" value="{{ players[x]['player_name'] }},{{ club }}">
+                    <button type="submit" class="btn btn-danger">Drop</button>
+                </form>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+
+    </table>
+    </div>
+</div>
+{% endblock %}

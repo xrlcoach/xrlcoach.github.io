@@ -1,0 +1,57 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    XRL Draw
+{% endblock %}
+
+{% block main %}
+<div class="container p-5">
+    <p><h4>XRL Draw</h4></p>
+    {% if not draw %}
+    <p><h5>No draw yet. Fixtures will be generated once all teams have joined.</h5></p>
+    {% endif %}
+    {% if draw %}
+    <p><h4>Round</h4>
+        <form action="/draw" method="post">
+            <div class="form-group">
+                <select class="form-control" name="round_number">
+                    <option>{{ current_round }}</option>
+                    {% for x in range(21) %}
+                    <option>{{ x + 1 }}</option>
+                    {% endfor %}
+                </select>
+                <button type="submit" class="btn btn-primary">View</button>
+            </div>
+        </form>
+    </p>
+    <div class="table-responsive">
+    <table class="table table-dark table-striped">
+        <thead style="color: green;">
+            <tr>
+                <th>Home Team</th>
+                <th>Away Team</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for x in range(n) %}
+        <tr>
+            <td>
+                {{ fixtures[x]['home_team'] }}
+            </td>
+            <td>
+                {{ fixtures[x]['away_team'] }}
+            </td>
+            <td>
+                <form action="/fixture" method="POST">
+                    <input type="hidden" name="view" value="{{ current_round }}_{{ fixtures[x]['home_team'] }}_{{ fixtures[x]['away_team'] }}">
+                    <button class="btn btn-primary" type="submit">View</button>
+                </form>
+            </td>            
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

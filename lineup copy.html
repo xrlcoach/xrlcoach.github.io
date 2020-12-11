@@ -1,0 +1,98 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Lineup
+{% endblock %}
+
+{% block main %}
+    <div class="container p-5">
+    <p><h4>{{ user['team_name'] }}: Select Lineup</h4></p>
+    {% if error %}
+    <p><h3>{{ error }}</h3></p>
+    {% endif %}
+    <table class="table table-dark table-striped">
+        <thead>
+            <tr>
+                <th style="color: green;">Player</th>
+                <th style="color: green;">NRL Team</th>
+                <th style="color: green;">Position</th>
+                <th style="color: green;">Position 2</th>
+                <th style="color: green;">Select As</th>
+                <th style="color: green;">Pick As</th>
+                <th style="color: green;">Pick As</th>
+            </tr>
+        </thead>
+        <tbody>
+        <form action="/lineup" method="post">
+            {% for x in range(n) %}
+        <tr>
+            <td style="white-space: nowrap;">
+                {{ squad[x]['player_name'] }}
+            </td>
+            <td>
+                {{ squad[x]['nrl_team'] }}
+            </td>
+            <td>
+                {{ squad[x]['position'] }}
+            </td>
+            <td>
+                {{ squad[x]['position2'] }}
+            </td>
+            <td>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="{{ squad[x]['position'] }}" value="{{ squad[x]['player_name'] }}_{{ squad[x]['nrl_team'] }}">
+                    <label class="form-check-label" for="select">
+                        {{ squad[x]['position'] }}
+                    </label>
+                </div>
+                {% if squad[x]['position2'] %}
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="{{ squad[x]['position2'] }}" value="{{ squad[x]['player_name'] }}_{{ squad[x]['nrl_team'] }}">
+                    <label class="form-check-label" for="select">
+                        {{ squad[x]['position2'] }}
+                    </label>
+                </div>
+                {% endif %}
+            </td>
+            <td>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="captain" value="{{ squad[x]['player_name'] }}_{{ squad[x]['nrl_team'] }}">
+                    <label class="form-check-label" for="select">
+                      Captain
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="vice_captain" value="{{ squad[x]['player_name'] }}_{{ squad[x]['nrl_team'] }}">
+                    <label class="form-check-label" for="select">
+                      Vice-captain
+                    </label>
+                </div>
+            </td>
+            <td>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="kicker" value="{{ squad[x]['player_name'] }}_{{ squad[x]['nrl_team'] }}">
+                    <label class="form-check-label" for="select">
+                      Kicker
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="reserve_kicker" value="{{ squad[x]['player_name'] }}_{{ squad[x]['nrl_team'] }}">
+                    <label class="form-check-label" for="select">
+                      Backup Kicker
+                    </label>
+                </div>
+            </td>
+        </tr>
+        {% endfor %}
+        <tr>
+            <td></td><td></td><td></td><td></td>
+            <td>
+                <button type="submit" class="btn btn-success">Submit Lineup</button>
+            </td>
+        </tr>
+        </form>
+        </tbody>
+
+    </table>
+    </div>
+{% endblock %}

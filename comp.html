@@ -1,0 +1,55 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Competition
+{% endblock %}
+
+{% block main %}
+<div class="container p-5">
+    <p><h4>League Table</h4></p>
+    <div class="table-responsive">
+    <table class="table table-dark table-striped">
+        <thead style="color: green;">
+            <tr>
+                <th>XRL Team</th>
+                <th>Win</th>
+                <th>Loss</th>
+                <th>Draw</th>
+                <th>For</th>
+                <th>Against</th>
+                <th>Points</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for x in range(n) %}
+        <tr>
+            <td>
+		<img style="padding-right: 5px" src="static/{{ ladder[x]['team_logo'] }}" alt="{{ ladder[x]['team_short'] }}" height="40">
+    {{ ladder[x]['team_name'] }} 
+	    </td>
+            <td>
+                {{ ladder[x]['wins'] }}
+            </td>
+            <td>
+                {{ ladder[x]['losses'] }}
+            </td>
+            <td>
+                {{ ladder[x]['draws'] }}
+            </td>
+            <td>
+                {{ ladder[x]['for'] }}
+            </td>
+            <td>
+                {{ ladder[x]['against'] }}
+            </td>
+            <td>
+                {{ ladder[x]['points'] }}
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+
+    </table>
+    </div>
+</div>
+{% endblock %}

@@ -22,14 +22,14 @@ function login(event) {
             }
             var setCookie = response.headers.get('Set-Cookie');
             var cookie = document.cookie;
-            var body = response.json()
+            //var body = response.json()
             return body;
         } else {
             document.getElementById('feedback').innerText = 'Network response not ok';
         }        
     })
     .then((data) => {
-        document.cookie = `id=${data}; Secure`;
+        //document.cookie = `id=${data}; Secure`;
         window.location.href = './index.html';
     })
     .catch((error) => {

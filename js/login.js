@@ -19,6 +19,7 @@ function login(event) {
             var headers = response.headers;
             var setCookie = response.headers.get('Set-Cookie');
             var cookie = document.cookie;
+            var body = response.json()
             window.location.href = './index.html';
         } else {
             document.getElementById('feedback').innerText = 'Network response not ok';

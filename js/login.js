@@ -1,21 +1,21 @@
-function login() {
-    var username = document.getElementById('username');
-    var password = document.getElementById('password');
+function login(event) {
+    event.preventDefault();
+    var username = document.getElementById('username').value;
+    var password = document.getElementById('password').value;
 
     fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/xrl-users/login', {
     method: 'POST',
     headers: {
         'Content-Type': 'application/json',        
     },
-    body: {
-        'username': username,
-        'password': password,        
-    }
+    body: JSON.stringify({
+        "username": username,
+        "password": password,        
+    })
     })
     .then((response) => {
         if (response.ok) {
-            document.cookie = `id=${response.id_token}`;
-            window.location.replace('index.html');
+            window.location.href = 'file:///C:/Users/james/OneDrive/Coding/xrlcoach-site/index.html#';
         } else {
             document.getElementById('feedback').innerText = 'Network response not ok';
         }        

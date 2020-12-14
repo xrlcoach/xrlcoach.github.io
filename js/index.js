@@ -3,10 +3,11 @@ var idToken = String(jwt).split('=')[1].split('&')[0];
 document.getElementById('fragId').innerText = idToken; */
 
 var idToken = document.cookie.split('=')[1];
-if (!idToken) {
-    window.location.replace('logintest.html');
-}
-document.getElementById('fragId').innerText = idToken;
+// if (!idToken) {
+//     window.location.replace('logintest.html');
+// }
+document.getElementById('userData').innerText = idToken;
+document.getElementById('fragId').innerText = document.cookie;
 
 
 fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/xrl-users', {

@@ -5,7 +5,7 @@ fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/xrl-use
     method: 'GET',
     headers: {
         'Content-Type': 'application/json',
-        'Authorization': JSON.parse(window.atob(idToken))
+        'Authorization': window.atob(idToken)
     }
 })
 .then((response) => {

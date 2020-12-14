@@ -15,7 +15,7 @@ function login(event) {
     })
     .then((response) => {
         if (response.ok) {
-            window.location.href = 'file:///C:/Users/james/OneDrive/Coding/xrlcoach-site/index.html#';
+            window.location.href = './index.html';
         } else {
             document.getElementById('feedback').innerText = 'Network response not ok';
         }        

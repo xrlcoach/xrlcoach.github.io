@@ -2,7 +2,7 @@
 var idToken = String(jwt).split('=')[1].split('&')[0];
 document.getElementById('fragId').innerText = idToken; */
 
-var idToken = document.cookie.split('=')[1];
+var idToken = getCookie('id');
 // if (!idToken) {
 //     window.location.replace('logintest.html');
 // }
@@ -58,5 +58,18 @@ fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/xrl-use
     document.getElementById('userData').innerText += error;
 })
 
-
+function getCookie(cname) {
+    var name = cname + "=";
+    var ca = document.cookie.split(';');
+    for(var i = 0; i < ca.length; i++) {
+      var c = ca[i];
+      while (c.charAt(0) == ' ') {
+        c = c.substring(1);
+      }
+      if (c.indexOf(name) == 0) {
+        return c.substring(name.length, c.length);
+      }
+    }
+    return "";
+  }
 

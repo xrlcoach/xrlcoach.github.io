@@ -1,11 +1,12 @@
 var jwt = String(window.location).split('#')[1];
-var idToken = String(jwt).split('=')[1].split('&')[0].split('.')[1];
+var idToken = String(jwt).split('=')[1].split('&')[0];
+document.getElementById('fragId').innerText = idToken;
 
 fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/xrl-users', {
     method: 'GET',
     headers: {
         'Content-Type': 'application/json',
-        'Authorization': window.atob(idToken)
+        'Authorization': idToken
     }
 })
 .then((response) => {

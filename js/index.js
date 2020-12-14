@@ -18,7 +18,7 @@ fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/xrl-use
     }
 })
 .then((response) => {
-    if (response.ok) {
+    if (response.ok) {        
         return response.json();
     } else {
         document.getElementById('userData').innerText = 'Network response not ok';

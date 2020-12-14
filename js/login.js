@@ -6,9 +6,9 @@ function login(event) {
     fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/xrl-users/login', {
     method: 'POST',
     headers: {
-        'Content-Type': 'application/json',
-        'credentials': 'include'        
+        'Content-Type': 'application/json',                
     },
+    credentials: 'include',
     body: JSON.stringify({
         "username": username,
         "password": password,        

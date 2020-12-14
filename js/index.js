@@ -1,7 +1,11 @@
+var jwt = String(window.location).split('#')[1];
+var idToken = String(jwt).split('=')[1].split('&')[0].split('.')[1];
+
 fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/xrl-users', {
     method: 'GET',
     headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Authorization': JSON.parse(window.atob(idToken))
     }
 })
 .then((response) => {
@@ -44,4 +48,6 @@ fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/xrl-use
 .catch((error) => {
     document.getElementById('userData').innerText += error;
 })
+
+
 

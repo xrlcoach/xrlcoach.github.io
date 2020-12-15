@@ -22,16 +22,17 @@ function login(event) {
             }
             var setCookie = response.headers.get('Set-Cookie');
             var cookie = document.cookie;
+            window.location.href = './index.html';
             //var body = response.json()
-            return body;
+            //return body;
         } else {
             document.getElementById('feedback').innerText = 'Network response not ok';
         }        
     })
-    .then((data) => {
-        //document.cookie = `id=${data}; Secure`;
-        window.location.href = './index.html';
-    })
+    // .then((data) => {
+    //     //document.cookie = `id=${data}; Secure`;
+    //     //window.location.href = './index.html';
+    // })
     .catch((error) => {
         document.getElementById('feedback').innerText += error;
     })

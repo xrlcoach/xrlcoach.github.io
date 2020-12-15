@@ -54,7 +54,7 @@ function selectTeam(event) {
     })
     .then((data) => {
         tableBody = document.getElementById('squadTableBody');
-        tableBody.innerHtml = "";    
+        tableBody.innerHTML = "";    
         for (var i = 0; i < data.length; i++) {
             var player = data[i];
             var tr = document.createElement('tr');
@@ -68,7 +68,7 @@ function selectTeam(event) {
             pos2.textContent = player.position2;
             tr.appendChild(pos2);
             var team = document.createElement('td');
-            team.textContent = player.nrl_team;
+            team.textContent = player.nrl_club;
             tr.appendChild(team);
             tableBody.appendChild(tr);
         }

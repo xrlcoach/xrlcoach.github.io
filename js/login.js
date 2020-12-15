@@ -17,22 +17,21 @@ function login(event) {
     })
     .then((response) => {
         if (response.ok) {
-            for (let i of response.headers.entries()) {
-                console.log(i);
-            }
-            var setCookie = response.headers.get('Set-Cookie');
-            var cookie = document.cookie;
-            window.location.href = './index.html';
-            //var body = response.json()
-            //return body;
+            // for (let i of response.headers.entries()) {
+            //     console.log(i);
+            // }
+            // var setCookie = response.headers.get('Set-Cookie');
+            // var cookie = document.cookie;
+            var body = response.json()
+            return body;
         } else {
             document.getElementById('feedback').innerText = 'Network response not ok';
         }        
     })
-    // .then((data) => {
-    //     //document.cookie = `id=${data}; Secure`;
-    //     //window.location.href = './index.html';
-    // })
+    .then((data) => {
+        document.cookie = `id=${data}; Secure`;
+        window.location.href = './index.html';
+    })
     .catch((error) => {
         document.getElementById('feedback').innerText += error;
     })

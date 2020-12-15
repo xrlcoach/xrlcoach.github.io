@@ -3,7 +3,7 @@ import boto3
 import decimal
 import hashlib
 import base64
-from boto3.dynamodb.conditions import Key
+from boto3.dynamodb.conditions import Key, Attr
 
 dynamodb = boto3.resource('dynamodb', 'ap-southeast-2')
 table = dynamodb.Table('players2020')
@@ -28,8 +28,8 @@ def lambda_handler(event, context):
         print('Params detected, finding team param')
         team = event["queryStringParameters"]["team"]
         print(f'Team param is {team}, querying table')
-        resp = table.query(
-            KeyConditionExpression=Key('nrl_club').eq(team)
+        resp = table.scan(
+            FilterExpression=Attr('nrl_club').eq(team)
         )
         print('Table queried, returning json')
         return {

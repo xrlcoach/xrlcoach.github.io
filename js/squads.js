@@ -74,6 +74,6 @@ function selectTeam(event) {
         }
     })
     .catch((error) => {
-        document.getElementById('userData').innerText += error;
+        document.getElementById('feedback').innerText += error;
     })
 }

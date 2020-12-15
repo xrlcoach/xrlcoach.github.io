@@ -3,6 +3,7 @@ import boto3
 import decimal
 import hashlib
 import base64
+from boto3.dynamodb.conditions import Key
 
 dynamodb = boto3.resource('dynamodb', 'ap-southeast-2')
 table = dynamodb.Table('players2020')

@@ -2,17 +2,11 @@ import boto3
 import hmac
 import hashlib
 import base64
+import json
 
-USER_POOL_ID = 'TYPE_USER_POOL_ID_HERE'
-CLIENT_ID = 'TYPE_APP_CLIENT_ID_HERE'
-CLIENT_SECRET = 'TYPE_APP_CLIENT_SECRET_HERE'
+USER_POOL_ID = 'ap-southeast-2_X405VGEIl'
+CLIENT_ID = '53irugvhakp6kd5cmd2o75kn'
 client = None
-
-def get_secret_hash(username):
-    msg = username + CLIENT_ID
-    digest = hmac.new(str(CLIENT_SECRET).encode('utf-8'), msg=str(msg).encode('utf-8'), digestmod=hashlib.sha256).digest()
-    dec = base64.b64encode(digest).decode()
-    return dec
 
 def initiate_auth(username, password):
     try:
@@ -22,7 +16,6 @@ def initiate_auth(username, password):
             AuthFlow='ADMIN_NO_SRP_AUTH',
             AuthParameters={
                 'USERNAME': username,
-                'SECRET_HASH': get_secret_hash(username),
                 'PASSWORD': password
             },
             ClientMetadata={
@@ -36,7 +29,7 @@ def initiate_auth(username, password):
     except Exception as e:
         print(e)
         return None, "Unknown error"
-    return resp, None
+    return resp
     
     
 def refresh_auth(username, refresh_token):
@@ -47,7 +40,7 @@ def refresh_auth(username, refresh_token):
             AuthFlow='REFRESH_TOKEN_AUTH',
             AuthParameters={
                 'REFRESH_TOKEN': refresh_token,
-                'SECRET_HASH': get_secret_hash(username)
+                #'SECRET_HASH': get_secret_hash(username)
             },
             ClientMetadata={            })
     except client.exceptions.NotAuthorizedException as e:
@@ -62,27 +55,29 @@ def refresh_auth(username, refresh_token):
 def lambda_handler(event, context):
     global client
     if client == None:
-        client = boto3.client('cognito-idp')    
-        
-    username = event['username']
-    if 'password' in event:
-        resp, msg = initiate_auth(username, event['password'])
-        
-    if 'refresh_token' in event:
-        resp, msg = refresh_auth(username, event['refresh_token'])    
+        client = boto3.client('cognito-idp')
+
+    data = json.loads(event['body'])
+    print(data)
+
+    username = data['username']    
     
-    if msg != None:
-        return {
-            'status': 'fail', 
-            'msg': msg
-        }
+    resp = initiate_auth(username, data['password'])
+    print(resp['AuthenticationResult']['IdToken'])
+    
+    cookie = f"id={resp['AuthenticationResult']['IdToken']}; Secure; Path=/"    
     
     response = {
-        'status': 'success',
-        'id_token': resp['AuthenticationResult']['IdToken']
-    }
-    
-    if 'password' in event:
-        response['refresh_token'] = resp['AuthenticationResult']['RefreshToken']
-        
+            'statusCode': 200,
+            'headers': {
+            'Access-Control-Allow-Headers': 'Content-Type',
+            'Access-Control-Allow-Origin': 'https://xrlcoach.github.io',
+            'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
+            'Access-Control-Allow-Credentials': 'true',
+            'Access-Control-Expose-Headers': 'Set-Cookie',
+            'Set-Cookie': cookie,
+            },
+            'body': json.dumps(f"{resp['AuthenticationResult']['IdToken']}")
+        }    
+            
     return response

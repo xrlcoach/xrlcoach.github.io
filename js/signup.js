@@ -22,7 +22,7 @@ function signUp(event) {
     })
     .then((response) => {
         if (response.ok) {
-            window.location.replace('logintest.html');
+            window.location.replace('login.html');
         } else {
             document.getElementById('feedback').innerText = 'Network response not ok';
         }        

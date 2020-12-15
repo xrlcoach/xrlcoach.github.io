@@ -1,37 +1,93 @@
-{% extends "layout.html" %}
+<!DOCTYPE html>
 
-{% block title %}
-    NRL Squads
-{% endblock %}
+<html lang="en">
 
-{% block main %}
-<div class="container">
-    <p><h4>Select Players</h4></p>
-    <form action="/squads" method="post">
-        <div class="form-group">
-            <select class="form-control" name="club">
-                <option disabled selected>Choose NRL club</option>
-                <option>Broncos</option>
-                <option>Bulldogs</option>
-                <option>Cowboys</option>
-                <option>Dragons</option>
-                <option>Eels</option>
-                <option>Knights</option>
-                <option>Panthers</option>
-                <option>Rabbitohs</option>
-                <option>Raiders</option>
-                <option>Roosters</option>
-                <option>Sea Eagles</option>
-                <option>Sharks</option>
-                <option>Storm</option>
-                <option>Titans</option>
-                <option>Warriors</option>
-                <option>Wests Tigers</option>
-            </select>
-            <button type="submit" class="btn btn-primary">View players</button>
+<head>
+
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- documentation at http://getbootstrap.com/docs/4.1/, alternative themes at https://bootswatch.com/ -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- https://favicon.io/emoji-favicons/money-mouth-face/ -->
+    <link href="/static/xrl-logo.png" rel="icon">
+
+    <link href="/static/styles.css" rel="stylesheet">
+
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+
+    <title>XRL Home</title>
+
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-md navbar-dark" style="background-color: rgb(44, 48, 52);">
+        <a class="navbar-brand" href="/"><img src="static/xrl-logo.png" alt="XRL Badge" height="40"><span
+                class="green">X</span><span class="yellow">R</span><span class="green">L</span></a>
+        <button aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler"
+            data-target="#navbar" data-toggle="collapse" type="button">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbar">
+            <ul class="navbar-nav mr-auto mt-2">
+                <li class="nav-item"><a class="nav-link" href="team.html">My Team</a></li>
+                <li class="nav-item"><a class="nav-link" href="lineup.html">Lineup</a></li>
+                <li class="nav-item"><a class="nav-link" href="draw.html">Draw</a></li>
+                <li class="nav-item"><a class="nav-link" href="comp.html">Ladder</a></li>
+                <li class="nav-item"><a class="nav-link" href="squads.html">Squads</a></li>
+                <li class="nav-item"><a class="nav-link" href="stats.html">Stats</a></li>
+            </ul>
+            <ul class="navbar-nav ml-auto mt-2">
+                <li class="nav-item"><a class="nav-link" href="/logout">Log Out</a></li>
+            </ul>
+            <ul class="navbar-nav ml-auto mt-2">
+                <li class="nav-item"><a class="nav-link" href="/register">Register</a></li>
+                <li class="nav-item"><a class="nav-link" href="/login">Log In</a></li>
+            </ul>
         </div>
-    </form>
-    <form action="/squads" method="post">
+    </nav>
+
+    <header>
+        <div class="alert alert-primary border text-center" role="alert">
+        </div>
+    </header>
+
+    <main>
+        <div id="feedback"></div>
+        <div class="container">
+            <p>
+            <h4>Select Players</h4>
+            </p>
+            <form onsubmit="selectTeam(event)">
+                <div class="form-group">
+                    <select class="form-control" id="clubSelect">
+                        <option disabled selected>Choose NRL club</option>
+                        <option>Broncos</option>
+                        <option>Bulldogs</option>
+                        <option>Cowboys</option>
+                        <option>Dragons</option>
+                        <option>Eels</option>
+                        <option>Knights</option>
+                        <option>Panthers</option>
+                        <option>Rabbitohs</option>
+                        <option>Raiders</option>
+                        <option>Roosters</option>
+                        <option>Sea Eagles</option>
+                        <option>Sharks</option>
+                        <option>Storm</option>
+                        <option>Titans</option>
+                        <option>Warriors</option>
+                        <option>Wests Tigers</option>
+                    </select>
+                    <button type="submit" class="btn btn-primary">View players</button>
+                </div>
+            </form>
+            <!-- <form action="/squads" method="post">
         <div class="form-group">
             <select class="form-control" name="team">
                 <option disabled selected>Choose XRL Team</option>
@@ -41,50 +97,35 @@
             </select>
             <button type="submit" class="btn btn-primary">View players</button>
         </div>
-    </form>
-    {% if page_format == "nrl" %}
-    <h4>{{ club }} Squad</h4>
-    {% endif %}
-    {% if page_format == "xrl" %}
-    <img src="static/{{ user['team_logo'] }}" alt="{{ user['team_short'] }}" height="80" style="padding: 10px;"><h4>{{ user['team_name'] }} Squad</h4>
-    {% endif %}
-    <div class="table-responsive">
-    <table class="table table-dark table-striped">
-        <thead>
-            <tr>
-                <th>Player</th>
-                <th>Position</th>
-                <th>Position 2</th>
-		<th>{% if page_format == "nrl" %}XRL Team{% endif %}{% if page_format == "xrl" %}NRL Team{% endif %}</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for x in range(n) %}
-        <tr>
-            <td style="white-space: nowrap;">
-                {{ players[x]['player_name'] }}
-            </td>
-            <td>
-                {{ players[x]['position'] }}
-            </td>
-            <td>
-                {{ players[x]['position2'] }}
-            </td>
-	    {% if page_format == "nrl" %}
-            <td>
-                {{ players[x]['xrl_team'] }}
-            </td>
-	    {% endif %}
-	    {% if page_format == "xrl" %}
-            <td>
-                {{ players[x]['nrl_team'] }}
-            </td>
-	    {% endif %}
-        </tr>
-        {% endfor %}
-        </tbody>
+    </form> -->
+            <h4 id="squad_name"></h4>
 
-    </table>
-    </div>
-</div>
-{% endblock %}
+            <!-- <img src="static/{{ user['team_logo'] }}" alt="{{ user['team_short'] }}" height="80" style="padding: 10px;"><h4>{{ user['team_name'] }} Squad</h4> -->
+
+            <div class="table-responsive">
+                <table class="table table-dark table-striped">
+                    <thead>
+                        <tr>
+                            <th>Player</th>
+                            <th>Position</th>
+                            <th>Position 2</th>
+                            <th>NRL Team</th>
+                        </tr>
+                    </thead>
+                    <tbody id="squadTableBody">
+
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <footer class="small text-center text-muted">
+        Data provided by <a href="https://www.nrl.com">NRL.com</a>. View <a
+            href="https://www.nrl.com/terms-of-use">NRL’s Terms of Use</a>.
+    </footer>
+    <script type="text/JavaScript" src="js/squads.js"></script>
+</body>
+
+</html>

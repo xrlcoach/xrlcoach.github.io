@@ -32,7 +32,7 @@ fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/players
     }
 })
 .catch((error) => {
-    document.getElementById('userData').innerText += error;
+    document.getElementById('feedback').innerText += error;
 })
 
 

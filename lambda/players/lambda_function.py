@@ -10,8 +10,11 @@ table = dynamodb.Table('players2020')
 def lambda_handler(event, context):
     method = event["httpMethod"]
     if method == 'GET':
+        print('Method is get, checking for params')
         if not event["queryStringParameters"]:
+            print('No params found, scanning table')
             resp = table.scan()
+            print('Table scanned, returning json response')
             return {
                 'statusCode': 200,
                 'headers': {
@@ -21,11 +24,13 @@ def lambda_handler(event, context):
                 },
                 'body': json.dumps(replace_decimals(resp['Items']))
             }
+        print('Params detected, finding team param')
         team = event["queryStringParameters"]["team"]
-        print(team)
+        print(f'Team param is {team}, querying table')
         resp = table.query(
             KeyConditionExpression=Key('nrl_team').eq(team)
         )
+        print('Table queried, returning json')
         return {
                 'statusCode': 200,
                 'headers': {

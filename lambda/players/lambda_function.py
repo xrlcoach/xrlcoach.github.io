@@ -28,7 +28,7 @@ def lambda_handler(event, context):
         team = event["queryStringParameters"]["team"]
         print(f'Team param is {team}, querying table')
         resp = table.query(
-            KeyConditionExpression=Key('nrl_team').eq(team)
+            KeyConditionExpression=Key('nrl_club').eq(team)
         )
         print('Table queried, returning json')
         return {

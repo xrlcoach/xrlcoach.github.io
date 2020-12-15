@@ -26,7 +26,7 @@ fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/players
         pos2.textContent = player.position2;
         tr.appendChild(pos2);
         var team = document.createElement('td');
-        team.textContent = player.nrl_team;
+        team.textContent = player.nrl_club;
         tr.appendChild(team);
         tableBody.appendChild(tr);
     }

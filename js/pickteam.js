@@ -36,6 +36,9 @@ function DisplayPlayerCounts(xrlTeam) {
     GetPlayersFromXrlTeam(xrlTeam)
         .then((data) => {
             var totalPlayers = data.length;
+            if (totalPlayers == 18) {
+                window.location.href = 'index.html';
+            }
             var backs = data.filter(p => p.position == 'Back' || p.position2 == 'Back').length
             var forwards = data.filter(p => p.position == 'Forward' || p.position2 == 'Forward').length
             var playmakers = data.filter(p => p.position == 'Playmaker' || p.position2 == 'Playmaker').length

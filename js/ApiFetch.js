@@ -2,27 +2,28 @@ export function GetIdToken() {
     return getCookie('id');
 }
 
-export function GetActiveUserInfo(idToken) {
-    fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/xrl-users', {
+export async function GetActiveUserInfo(idToken) {
+    const response = await fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/xrl-users', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
             'Authorization': idToken
         }
-    })
-        .then((response) => {
-            if (response.ok) {
-                return response.json();
-            } else {
-                document.getElementById('feedback').innerText = 'Network response not ok';
-            }
-        })
-        .then((data) => {
-            return data;
-        })
-        .catch((error) => {
-            document.getElementById('feedback').innerText = error;
-        });
+    });
+    return response.json();
+        // .then((response) => {
+        //     if (response.ok) {
+        //         return response.json();
+        //     } else {
+        //         document.getElementById('feedback').innerText = 'Network response not ok';
+        //     }
+        // })
+        // .then((data) => {
+        //     return data;
+        // })
+        // .catch((error) => {
+        //     document.getElementById('feedback').innerText = error;
+        // });
 }
 
 export function GetAllPlayers() {
@@ -63,23 +64,24 @@ export function GetPlayersFromNrlClub(club) {
     });
 }
 
-export function GetPlayersFromXrlTeam(team) {
-    fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/players?xrlTeam=' + team, {
+export async function GetPlayersFromXrlTeam(team) {
+    const response = await fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/players?xrlTeam=' + team, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'        
         }
-    })
-    .then((response) => {
-        if (response.ok) {        
-            return response.json();
-        } else {
-            document.getElementById('feedback').innerText = 'Network response not ok';
-        }        
-    })
-    .catch((error) => {
-        document.getElementById('feedback').innerText = error;
     });
+    return response.json();
+    // .then((response) => {
+    //     if (response.ok) {        
+    //         return response.json();
+    //     } else {
+    //         document.getElementById('feedback').innerText = 'Network response not ok';
+    //     }        
+    // })
+    // .catch((error) => {
+    //     document.getElementById('feedback').innerText = error;
+    // });
 }
 
 export function UpdatePlayerXrlTeam(xrlTeam, playerInfo) {

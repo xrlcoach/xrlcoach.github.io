@@ -10,58 +10,27 @@ export async function GetActiveUserInfo(idToken) {
             'Authorization': idToken
         }
     });
-    return response.json();
-        // .then((response) => {
-        //     if (response.ok) {
-        //         return response.json();
-        //     } else {
-        //         document.getElementById('feedback').innerText = 'Network response not ok';
-        //     }
-        // })
-        // .then((data) => {
-        //     return data;
-        // })
-        // .catch((error) => {
-        //     document.getElementById('feedback').innerText = error;
-        // });
+    return response.json();        
 }
 
-export function GetAllPlayers() {
-    fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/players', {
+export async function GetAllPlayers() {
+    const response = await fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/players', {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'
         }
-    })
-        .then((response) => {
-            if (response.ok) {
-                return response.json();
-            } else {
-                document.getElementById('feedback').innerText = 'Network response not ok';
-            }
-        })
-        .then((data) => {
-            return data;
-        })
-        .catch((error) => {
-            document.getElementById('feedback').innerText = error;
-        });
+    });
+    return response.json();
 }
 
 export function GetPlayersFromNrlClub(club) {
-    fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/players?nrlClub=' + club, {
+    const response = await fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/players?nrlClub=' + club, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'        
         }
-    })
-    .then((response) => {
-        if (response.ok) {        
-            return response.json();
-        } else {
-            document.getElementById('feedback').innerText = 'Network response not ok';
-        }        
     });
+    return response.json();
 }
 
 export async function GetPlayersFromXrlTeam(team) {
@@ -71,42 +40,26 @@ export async function GetPlayersFromXrlTeam(team) {
             'Content-Type': 'application/json'        
         }
     });
-    return response.json();
-    // .then((response) => {
-    //     if (response.ok) {        
-    //         return response.json();
-    //     } else {
-    //         document.getElementById('feedback').innerText = 'Network response not ok';
-    //     }        
-    // })
-    // .catch((error) => {
-    //     document.getElementById('feedback').innerText = error;
-    // });
+    return response.json();    
 }
 
-export function UpdatePlayerXrlTeam(xrlTeam, playerInfo) {
+export async function UpdatePlayerXrlTeam(xrlTeam, playerInfo) {
     var newTeam = xrlTeam == null ? 'None' : xrlTeam;
     var playerName = playerInfo.split(';')[0]
     var playerClub = playerInfo.split(';')[1]
-    fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/players', {
+    const response = await fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/players', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'        
         },
-        body: {
+        body: JSON.stringify({
             'operation': 'pick_drop',
             'player_name': playerName,
             'nrl_club': playerClub,
             'xrl_team': newTeam
-        }
+        })
     })
-    .then((response) => {
-        if (response.ok) {        
-            return response.json();
-        } else {
-            document.getElementById('feedback').innerText = 'Network response not ok';
-        }        
-    });
+    return response.json();
 }
 
 function getCookie(cname) {

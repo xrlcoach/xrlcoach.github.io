@@ -6,21 +6,18 @@ if (!idToken) {
     window.location.replace('login.html');
 }
 
-let user;
-
 GetActiveUserInfo(idToken)
-    .then((data) => user = data)
-    .catch((error) => document.getElementById('feedback').innerHTML = error);
-
-DisplayPlayerCounts(user.team_short);
-
-GetAllPlayers()
-    .then((data) => {
-        PopulatePickPlayerTable(data, user.team_short, 'pickPlayerTable');
+    .then((user) => {
+        DisplayPlayerCounts(user.team_short)
+            .then(
+                GetAllPlayers()
+                    .then((data) => {
+                        PopulatePickPlayerTable(data, user.team_short, 'pickPlayerTable');
+                    })
+            )
     })
-    .catch((error) => {
-        document.getElementById('feedback').innerText = error;
-    })
+    .catch((error) => document.getElementById('feedback').innerHTML = error);  
+
 
 function selectNrlClub(event) {
     event.preventDefault();

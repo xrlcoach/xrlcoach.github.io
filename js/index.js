@@ -6,11 +6,8 @@ if (!idToken) {
     window.location.replace('login.html');
 }
 
-let user;
-
 GetActiveUserInfo(idToken)
-    .then((data) => {
-        user = data;
+    .then((user) => {        
         document.getElementById('userData').innerText = JSON.stringify(user);
         GetPlayersFromXrlTeam(user.team_short)
             .then((playerSquad) => {
@@ -20,6 +17,9 @@ GetActiveUserInfo(idToken)
                 }
                 PopulatePickPlayerTable(playerSquad, user.team_short, 'playerSquadTable');
             });
+    })
+    .catch((error) => {
+        document.getElementById('feedback').innerText += error;
     });
 
 

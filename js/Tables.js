@@ -1,5 +1,5 @@
 export function PopulatePlayerTable(playerData, tableId) {
-    tableBody = document.getElementById(tableId);
+    var tableBody = document.getElementById(tableId);
     for (var i = 0; i < data.length; i++) {
         var player = data[i];
         var tr = document.createElement('tr');
@@ -20,7 +20,7 @@ export function PopulatePlayerTable(playerData, tableId) {
 }
 
 export function PopulatePickPlayerTable(playerData, xrlTeam, tableId) {
-    tableBody = document.getElementById(tableId);
+    var tableBody = document.getElementById(tableId);
     for (var i = 0; i < playerData.length; i++) {
         var player = playerData[i];
         var tr = document.createElement('tr');

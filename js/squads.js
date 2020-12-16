@@ -1,28 +1,28 @@
 import { GetAllPlayers, GetPlayersFromNrlClub } from "./ApiFetch.js";
 
 GetAllPlayers()
-.then((data) => {
-    PopulatePlayerTable(data)
-})
-.catch((error) => {
-    document.getElementById('feedback').innerText += error;
-})
+    .then((data) => {
+        PopulatePlayerTable(data)
+    })
+    .catch((error) => {
+        document.getElementById('feedback').innerText += error;
+    });
 
 
 function selectNrlClub(event) {
     event.preventDefault();
     club = document.getElementById('nrlClubSelect').value;
     GetPlayersFromNrlClub(club)
-    .then((data) => {
-        PopulatePlayerTable(data);
-    })
-    .catch((error) => {
-        document.getElementById('feedback').innerText += error;
-    })
+        .then((data) => {
+            PopulatePlayerTable(data);
+        })
+        .catch((error) => {
+            document.getElementById('feedback').innerText += error;
+        })
 }
 
 export function PopulatePlayerTable(playerData) {
-    tableBody = document.getElementById('squadTableBody');    
+    tableBody = document.getElementById('squadTableBody');
     for (var i = 0; i < data.length; i++) {
         var player = data[i];
         var tr = document.createElement('tr');

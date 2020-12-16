@@ -1,4 +1,5 @@
 import { GetIdToken, GetPlayersFromXrlTeam, GetActiveUserInfo } from './ApiFetch.js';
+import { PopulatePickPlayerTable } from './pickteam.js';
 import { PopulatePlayerTable } from './squads.js';
 var idToken = GetIdToken();
 if (!idToken) {
@@ -14,7 +15,7 @@ GetActiveUserInfo(idToken)
     })
     .catch((error) => {
         document.getElementById('feedback').innerText = error;
-    })
+    });
 
 GetPlayersFromXrlTeam(user.team_short)
     .then((data) => {
@@ -22,5 +23,8 @@ GetPlayersFromXrlTeam(user.team_short)
             document.getElementById('playerCountMessage').innerText = `Your squad only has ${data.length} players. You should pick more!`;
             document.getElementById('pickPlayersLink').hidden = false;
         }
-        PopulatePlayerTable(data);
+        PopulatePickPlayerTable(data, user.team_short);
     })
+    .catch((error) => {
+        document.getElementById('feedback').innerText = error;
+    });

@@ -1,4 +1,10 @@
+import { GetIdToken, GetUserInfo } from "./ApiFetch.js";
 
+let userData;
+
+GetUserInfo(GetIdToken())
+.then((data) => userData = data)
+.catch((error) => document.getElementById('feedback').innerHTML = error);
 
 fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/players', {
     method: 'GET',

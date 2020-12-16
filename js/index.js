@@ -1,4 +1,4 @@
-import { GetIdToken, GetUserInfo } from './ApiFetch';
+import { GetIdToken, GetUserInfo } from './ApiFetch.js';
 var idToken = GetIdToken();
 if (!idToken) {
     window.location.replace('login.html');

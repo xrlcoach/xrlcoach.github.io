@@ -1,5 +1,7 @@
 import { GetAllPlayers, GetIdToken, GetPlayersFromNrlClub, GetPlayersFromXrlTeam, GetActiveUserInfo, UpdatePlayerXrlTeam } from "./ApiFetch.js";
 
+let user;
+
 function DisplayPlayerCounts(xrlTeam) {
     GetPlayersFromXrlTeam(xrlTeam)
         .then((data) => {
@@ -112,7 +114,8 @@ window.onload = () => {
         window.location.replace('login.html');
     }
     GetActiveUserInfo(idToken)
-        .then((user) => {
+        .then((data) => {
+            user = data;
             DisplayPlayerCounts(user.team_short);
             GetAllPlayers()
                 .then((data) => {

@@ -51,16 +51,16 @@ export function PopulatePickPlayerTable(playerData, xrlTeam, tableId) {
                 form.onsubmit = (event) => {
                     event.preventDefault();
                     UpdatePlayerXrlTeam(null, input.value)
-                    DisplayPlayerCounts(xrlTeam)
-                }
+                        .then(() => DisplayPlayerCounts(xrlTeam))
+                };
             } else {
                 button.className = 'btn btn-success';
                 button.innerText = 'Pick';
                 form.onsubmit = (event) => {
                     event.preventDefault();
                     UpdatePlayerXrlTeam(null, input.value)
-                    DisplayPlayerCounts(xrlTeam)
-                }
+                        .then(() => DisplayPlayerCounts(xrlTeam))                    
+                };
             }            
             tr.appendChild(pickOrDrop);
         } else {

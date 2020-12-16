@@ -9,12 +9,12 @@ if (!idToken) {
 GetActiveUserInfo(idToken)
     .then((user) => {
         DisplayPlayerCounts(user.team_short)
-            .then(
+            .then(() => {
                 GetAllPlayers()
                     .then((data) => {
                         PopulatePickPlayerTable(data, user.team_short, 'pickPlayerTable');
-                    })
-            )
+                    });
+                });
     })
     .catch((error) => document.getElementById('feedback').innerHTML = error);  
 

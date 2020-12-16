@@ -1,24 +1,5 @@
 import { GetAllPlayers, GetIdToken, GetPlayersFromNrlClub, GetPlayersFromXrlTeam, GetActiveUserInfo, UpdatePlayerXrlTeam } from "./ApiFetch.js";
 
-const idToken = GetIdToken();
-if (!idToken) {
-    window.location.replace('login.html');
-}
-
-window.onload = () => {
-    GetActiveUserInfo(idToken)
-    .then((user) => {
-        DisplayPlayerCounts(user.team_short)
-            .then(() => {
-                GetAllPlayers()
-                    .then((data) => {
-                        PopulatePickPlayerTable(data, user.team_short, 'pickPlayerTable');
-                    });
-            });
-    })
-    .catch((error) => document.getElementById('feedback').innerHTML += 'OnLoad: '+error);
-}
-
 function DisplayPlayerCounts(xrlTeam) {
     GetPlayersFromXrlTeam(xrlTeam)
         .then((data) => {
@@ -45,7 +26,7 @@ function DisplayPlayerCounts(xrlTeam) {
             }
         })
         .catch((error) => {
-            document.getElementById('feedback').innerText += 'DPC Function: '+error;
+            document.getElementById('feedback').innerText += 'DPC Function: ' + error;
         })
 }
 
@@ -115,4 +96,22 @@ function selectNrlClub(event) {
         .catch((error) => {
             document.getElementById('feedback').innerText = error;
         })
+}
+
+window.onload = () => {
+    const idToken = GetIdToken();
+    if (!idToken) {
+        window.location.replace('login.html');
+    }
+    GetActiveUserInfo(idToken)
+        .then((user) => {
+            DisplayPlayerCounts(user.team_short)
+                .then(() => {
+                    GetAllPlayers()
+                        .then((data) => {
+                            PopulatePickPlayerTable(data, user.team_short, 'pickPlayerTable');
+                        });
+                });
+        })
+        .catch((error) => document.getElementById('feedback').innerHTML += 'OnLoad: ' + error);
 }

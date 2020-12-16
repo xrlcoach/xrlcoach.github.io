@@ -23,7 +23,7 @@ export async function GetAllPlayers() {
     return response.json();
 }
 
-export function GetPlayersFromNrlClub(club) {
+export async function GetPlayersFromNrlClub(club) {
     const response = await fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/players?nrlClub=' + club, {
         method: 'GET',
         headers: {

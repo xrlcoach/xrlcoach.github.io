@@ -98,6 +98,8 @@ function selectNrlClub(event) {
         })
 }
 
+window.selectNrlClub = selectNrlClub;
+
 window.onload = () => {
     const idToken = GetIdToken();
     if (!idToken) {

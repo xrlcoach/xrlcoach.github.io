@@ -22,3 +22,5 @@ function selectNrlClub(event) {
             document.getElementById('feedback').innerText += error;
         })
 }
+
+window.selectNrlClub = selectNrlClub;

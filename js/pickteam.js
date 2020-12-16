@@ -47,7 +47,7 @@ function PopulatePickPlayerTable(playerData, xrlTeam, tableId) {
         var team = document.createElement('td');
         team.textContent = player.nrl_club;
         tr.appendChild(team);
-        if (player.xrl_team == user.team_short || player.xrl_team == undefined || player.xrl_team == 'None') {
+        if (player.xrl_team == xrlTeam || player.xrl_team == undefined || player.xrl_team == 'None') {
             var pickOrDrop = document.createElement('td');
             var form = document.createElement('form');
             var input = document.createElement('input');
@@ -61,16 +61,16 @@ function PopulatePickPlayerTable(playerData, xrlTeam, tableId) {
                 button.innerText = 'Drop';
                 form.onsubmit = (event) => {
                     event.preventDefault();
-                    UpdatePlayerXrlTeam(null, input.value)
-                        .then(() => DisplayPlayerCounts(xrlTeam))
+                    UpdatePlayerXrlTeam(null, input.value);
+                    DisplayPlayerCounts(xrlTeam);
                 };
             } else {
                 button.className = 'btn btn-success';
                 button.innerText = 'Pick';
                 form.onsubmit = (event) => {
                     event.preventDefault();
-                    UpdatePlayerXrlTeam(null, input.value)
-                        .then(() => DisplayPlayerCounts(xrlTeam))
+                    UpdatePlayerXrlTeam(null, input.value);
+                    DisplayPlayerCounts(xrlTeam);
                 };
             }
             form.appendChild(button);

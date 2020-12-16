@@ -17,6 +17,9 @@ export function GetActiveUserInfo(idToken) {
                 document.getElementById('feedback').innerText = 'Network response not ok';
             }
         })
+        .then((data) => {
+            return data;
+        })
         .catch((error) => {
             document.getElementById('feedback').innerText = error;
         });
@@ -35,6 +38,12 @@ export function GetAllPlayers() {
             } else {
                 document.getElementById('feedback').innerText = 'Network response not ok';
             }
+        })
+        .then((data) => {
+            return data;
+        })
+        .catch((error) => {
+            document.getElementById('feedback').innerText = error;
         });
 }
 

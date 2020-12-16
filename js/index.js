@@ -1,4 +1,4 @@
-import { GetIdToken, GetPlayersFromXrlTeam, GetUserInfo } from './ApiFetch.js';
+import { GetIdToken, GetPlayersFromXrlTeam, GetActiveUserInfo } from './ApiFetch.js';
 import { PopulatePlayerTable } from './squads.js';
 var idToken = GetIdToken();
 if (!idToken) {

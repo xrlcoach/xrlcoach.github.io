@@ -1,4 +1,4 @@
-import { GetAllPlayers, GetIdToken, GetPlayersFromNrlClub, GetPlayersFromXrlTeam, GetUserInfo } from "./ApiFetch.js";
+import { GetAllPlayers, GetIdToken, GetPlayersFromNrlClub, GetPlayersFromXrlTeam, GetActiveUserInfo } from "./ApiFetch.js";
 
 const idToken = GetIdToken();
 if (!idToken) {

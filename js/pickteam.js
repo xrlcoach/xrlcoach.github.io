@@ -56,7 +56,7 @@ function PopulatePickPlayerTable(playerData, xrlTeam, tableId) {
             form.appendChild(input)
             var button = document.createElement('button');
             button.setAttribute('type', 'submit');
-            if (player.xrl_team == user.team_short) {
+            if (player.xrl_team == xrlTeam) {
                 button.className = 'btn btn-danger';
                 button.innerText = 'Drop';
                 form.onsubmit = (event) => {

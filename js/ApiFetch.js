@@ -58,7 +58,7 @@ export async function UpdatePlayerXrlTeam(xrlTeam, playerInfo) {
             'nrl_club': playerClub,
             'xrl_team': newTeam
         })
-    })
+    });
     return response.json();
 }
 

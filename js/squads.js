@@ -12,7 +12,7 @@ GetAllPlayers()
 
 function selectNrlClub(event) {
     event.preventDefault();
-    club = document.getElementById('nrlClubSelect').value;
+    var club = document.getElementById('nrlClubSelect').value;
     document.getElementById('squadName').innerText = club;
     GetPlayersFromNrlClub(club)
         .then((data) => {

@@ -64,7 +64,7 @@ def lambda_handler(event, context):
     if method == 'POST':
         responseItem = None
         print('Method is POST, checking operation')
-        body = event['body']
+        body = json.loads(event['body'])
         if body['operation'] == "pick_drop":
             print('Operation is pick/drop player, updating table...')
             try:

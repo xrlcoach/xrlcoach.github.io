@@ -20,6 +20,6 @@ GetPlayersFromXrlTeam(user.team_short)
             document.getElementById('playerCountMessage').innerText = `Your squad only has ${playerSquad.length} players. You should pick more!`;
             document.getElementById('pickPlayersLink').hidden = false;
         }
-        PopulatePickPlayerTable(playerSquad, user.team_short);
+        PopulatePickPlayerTable(playerSquad, user.team_short, 'playerSquadTable');
     });
 

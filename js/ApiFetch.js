@@ -16,6 +16,9 @@ export function GetActiveUserInfo(idToken) {
             } else {
                 document.getElementById('feedback').innerText = 'Network response not ok';
             }
+        })
+        .catch((error) => {
+            document.getElementById('feedback').innerText = error;
         });
 }
 
@@ -64,6 +67,9 @@ export function GetPlayersFromXrlTeam(team) {
         } else {
             document.getElementById('feedback').innerText = 'Network response not ok';
         }        
+    })
+    .catch((error) => {
+        document.getElementById('feedback').innerText = error;
     });
 }
 

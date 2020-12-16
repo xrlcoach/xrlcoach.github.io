@@ -6,25 +6,14 @@ if (!idToken) {
     window.location.replace('login.html');
 }
 
-let user;
+const user = GetActiveUserInfo(idToken);
+document.getElementById('userData').innerText = JSON.stringify(user);
 
-GetActiveUserInfo(idToken)    
-    .then((data) => {   
-        user = data;     
-        document.getElementById('userData').innerText = JSON.stringify(data);
-    })
-    .catch((error) => {
-        document.getElementById('feedback').innerText = error;
-    });
+const playerSquad = GetPlayersFromXrlTeam(user.team_short);
+if (data.length < 18) {
+    document.getElementById('playerCountMessage').innerText = `Your squad only has ${data.length} players. You should pick more!`;
+    document.getElementById('pickPlayersLink').hidden = false;
+}
+PopulatePickPlayerTable(playerSquad, user.team_short);
 
-GetPlayersFromXrlTeam(user.team_short)
-    .then((data) => {
-        if (data.length < 18) {
-            document.getElementById('playerCountMessage').innerText = `Your squad only has ${data.length} players. You should pick more!`;
-            document.getElementById('pickPlayersLink').hidden = false;
-        }
-        PopulatePickPlayerTable(data, user.team_short);
-    })
-    .catch((error) => {
-        document.getElementById('feedback').innerText = error;
-    });
+

@@ -105,12 +105,10 @@ window.onload = () => {
     }
     GetActiveUserInfo(idToken)
         .then((user) => {
-            DisplayPlayerCounts(user.team_short)
-                .then(() => {
-                    GetAllPlayers()
-                        .then((data) => {
-                            PopulatePickPlayerTable(data, user.team_short, 'pickPlayerTable');
-                        });
+            DisplayPlayerCounts(user.team_short);
+            GetAllPlayers()
+                .then((data) => {
+                    PopulatePickPlayerTable(data, user.team_short, 'pickPlayerTable');
                 });
         })
         .catch((error) => document.getElementById('feedback').innerHTML += 'OnLoad: ' + error);

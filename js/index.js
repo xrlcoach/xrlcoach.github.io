@@ -1,6 +1,6 @@
 import { GetIdToken, GetPlayersFromXrlTeam, GetActiveUserInfo } from './ApiFetch.js';
-import { PopulatePickPlayerTable } from './pickteam.js';
-import { PopulatePlayerTable } from './squads.js';
+import { PopulatePickPlayerTable } from './Tables.js';
+
 var idToken = GetIdToken();
 if (!idToken) {
     window.location.replace('login.html');

@@ -1,3 +1,5 @@
+import { GetUserInfo } from './ApiFetch';
+
 var idToken = getCookie('id');
 if (!idToken) {
     window.location.replace('login.html');
@@ -5,13 +7,7 @@ if (!idToken) {
 
 
 
-fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/xrl-users', {
-    method: 'POST',
-    headers: {
-        'Content-Type': 'application/json',
-        'Authorization': idToken
-    }
-})
+GetUserInfo(idToken)
 .then((response) => {
     if (response.ok) {        
         return response.json();

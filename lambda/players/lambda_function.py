@@ -25,8 +25,8 @@ def lambda_handler(event, context):
                 },
                 'body': json.dumps(replace_decimals(resp['Items']))
             }
-        print('Params detected, finding team param')
-        team = event["queryStringParameters"]["team"]
+        print('Params detected, finding nrlClub param')
+        team = event["queryStringParameters"]["nrlClub"]
         print(f'Team param is {team}, querying table')
         resp = table.scan(
             FilterExpression=Attr('nrl_club').eq(team)

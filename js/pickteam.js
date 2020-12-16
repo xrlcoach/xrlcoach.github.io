@@ -1,3 +1,5 @@
+
+
 fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/players', {
     method: 'GET',
     headers: {

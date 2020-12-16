@@ -5,7 +5,8 @@ if (!idToken) {
     window.location.replace('login.html');
 }
 
-GetActiveUserInfo(idToken)
+window.onload = () => {
+    GetActiveUserInfo(idToken)
     .then((user) => {
         DisplayPlayerCounts(user.team_short)
             .then(() => {
@@ -15,7 +16,8 @@ GetActiveUserInfo(idToken)
                     });
             });
     })
-    .catch((error) => document.getElementById('feedback').innerHTML = error);
+    .catch((error) => document.getElementById('feedback').innerHTML += 'OnLoad: '+error);
+}
 
 function DisplayPlayerCounts(xrlTeam) {
     GetPlayersFromXrlTeam(xrlTeam)
@@ -43,7 +45,7 @@ function DisplayPlayerCounts(xrlTeam) {
             }
         })
         .catch((error) => {
-            document.getElementById('feedback').innerText = error;
+            document.getElementById('feedback').innerText += 'DPC Function: '+error;
         })
 }
 

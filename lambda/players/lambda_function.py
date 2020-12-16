@@ -25,12 +25,32 @@ def lambda_handler(event, context):
                 },
                 'body': json.dumps(replace_decimals(resp['Items']))
             }
-        print('Params detected, finding nrlClub param')
-        team = event["queryStringParameters"]["nrlClub"]
-        print(f'Team param is {team}, querying table')
-        resp = table.scan(
-            FilterExpression=Attr('nrl_club').eq(team)
-        )
+        print('Params detected')        
+        params = event["queryStringParameters"]
+        print(params)
+        if 'nrlClub' in params.keys():
+            nrlClub = params['nrlClub']
+            print(f'NrlClub param is {nrlClub}, querying table')
+            resp = table.scan(
+                FilterExpression=Attr('nrl_club').eq(nrlClub)
+            )
+        elif 'xrlTeam' in params.keys():
+            xrlTeam = params['xrlTeam']
+            print(f'XrlTeam param is {xrlTeam}, querying table')
+            resp = table.scan(
+                FilterExpression=Attr('xrl_team').eq(xrlTeam)
+            )
+        else:
+            print("Couldn't recognise parameter")
+            return {
+                'statusCode': 200,
+                'headers': {
+                'Access-Control-Allow-Headers': 'Content-Type',
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
+                },
+                'body': json.dumps({"message": "GET request parameter not recognised"})
+            }
         print('Table queried, returning json')
         return {
                 'statusCode': 200,
@@ -41,30 +61,37 @@ def lambda_handler(event, context):
                 },
                 'body': json.dumps(replace_decimals(resp['Items']))
             }
-    """ if method == 'POST':
-        id_token = event['headers']['Authorization']
-        print(id_token)        
-        payload = id_token.split('.')[1]
-        print(payload)
-        decoded = base64.b64decode(payload + '=======')
-        print(decoded)
-        user = json.loads(decoded)['cognito:username']
-        print(user)
-        
-        try:
-            response = table.get_item(Key={'username': user})
-            print(response['Item'])        
-            return {
+    if method == 'POST':
+        responseItem = None
+        print('Method is POST, checking operation')
+        body = event['body']
+        if body['operation'] == "pick_drop":
+            print('Operation is pick/drop player, updating table...')
+            try:
+                response = table.update_item(
+                    Key={
+                        'player_name': body['player_name'],
+                        'nrl_club': body['nrl_club']
+                    },
+                    UpdateExpression="set xrl_team=:x",
+                    ExpressionAttributeValues={
+                        ':x': body['xrl_team']
+                    },
+                    ReturnValues="UPDATED_NEW"
+                )
+                responseItem = response['Item'] 
+                print(f"{body['player_name']}'s XRL team changed to {body['xrl_team']}")
+            except Exception as e:
+                print(e)       
+        return {
                 'statusCode': 200,
                 'headers': {
                 'Access-Control-Allow-Headers': 'Content-Type',
                 'Access-Control-Allow-Origin': '*',
                 'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
                 },
-                'body': json.dumps(replace_decimals(response['Item']))
-            }
-        except Exception as e:
-            print(e)       """
+                'body': json.dumps(replace_decimals(responseItem))
+            }      
 
 def replace_decimals(obj):
     if isinstance(obj, list):

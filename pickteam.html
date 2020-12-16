@@ -92,41 +92,11 @@
                             <th>Player</th>
                             <th>Position</th>
                             <th>Position 2</th>
+                            <th>NRL Club</th>
                             <th>XRL Team</th>
                         </tr>
                     </thead>
-                    <tbody id="playerTableBody">
-                        <!-- {% for x in range(n) %}
-                        <tr>
-                            <td style="white-space: nowrap;">
-                                {{ players[x]['player_name'] }}
-                            </td>
-                            <td>
-                                {{ players[x]['position'] }}
-                            </td>
-                            <td>
-                                {{ players[x]['position2'] }}
-                            </td>
-                            <td>
-                                {{ players[x]['xrl_team'] }}
-                            </td>
-                            <td id="pick">
-                                {% if not players[x]['xrl_team'] %}
-                                <form action="/pickplayer" method="post">
-                                    <input type="hidden" name="pickplayer"
-                                        value="{{ players[x]['player_name'] }},{{ club }},{{ players[x]['position'] }},{{ players[x]['position2'] }}">
-                                    <button type="submit" class="btn btn-success">Pick</button>
-                                </form>
-                                {% endif %}
-                                {% if players[x]['xrl_team'] == user_team %}
-                                <form action="/dropplayer" method="post">
-                                    <input type="hidden" name="drop" value="{{ players[x]['player_name'] }},{{ club }}">
-                                    <button type="submit" class="btn btn-danger">Drop</button>
-                                </form>
-                                {% endif %}
-                            </td>
-                        </tr>
-                        {% endfor %} -->
+                    <tbody id="playerTableBody">                        
                     </tbody>
 
                 </table>
@@ -138,7 +108,7 @@
         Data provided by <a href="https://www.nrl.com">NRL.com</a>. View <a
             href="https://www.nrl.com/terms-of-use">NRL’s Terms of Use</a>.
     </footer>
-    <script type="text/JavaScript" src="js/pickteam.js"></script>
+    <script type="module" src="js/pickteam.js"></script>
 </body>
 
 </html>

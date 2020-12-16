@@ -1,52 +1,26 @@
-import { GetIdToken, GetUserInfo } from './ApiFetch.js';
+import { GetIdToken, GetPlayersFromXrlTeam, GetUserInfo } from './ApiFetch.js';
+import { PopulatePlayerTable } from './squads.js';
 var idToken = GetIdToken();
 if (!idToken) {
     window.location.replace('login.html');
 }
 
+let user;
 
-
-GetUserInfo(idToken)
-    .then((response) => {
-        if (response.ok) {
-            return response.json();
-        } else {
-            document.getElementById('feedback').innerText = 'Network response not ok';
-        }
-
-    })
-    .then((data) => {
-        // var table = document.createElement('table');
-        // var thead = document.createElement('tr');
-        // var username = document.createElement('th');
-        // username.textContent = 'Username';
-        // thead.appendChild(username);
-        // var teamName = document.createElement('th');
-        // teamName.textContent = 'Team Name';
-        // thead.appendChild(teamName);
-        // var homeground = document.createElement('th');
-        // homeground.textContent = 'Home Ground';
-        // thead.appendChild(homeground);
-        // table.appendChild(thead);
-        // for (var i = 0; i < data.length; i++) {
-        //     var user = data[i];
-        //     var tr = document.createElement('tr');
-        //     username = document.createElement('td');
-        //     username.textContent = user.username;
-        //     tr.appendChild(username);
-        //     teamName = document.createElement('td');
-        //     teamName.textContent = user.team_name;
-        //     tr.appendChild(teamName);
-        //     homeground = document.createElement('td');
-        //     homeground.textContent = user.homeground;
-        //     tr.appendChild(homeground);
-        //     table.appendChild(tr);
-        // }
-        // document.getElementById('userData').appendChild(table);
+GetActiveUserInfo(idToken)    
+    .then((data) => {   
+        user = data;     
         document.getElementById('userData').innerText = JSON.stringify(data);
     })
     .catch((error) => {
-        document.getElementById('userData').innerText += error;
+        document.getElementById('feedback').innerText = error;
     })
 
-
+GetPlayersFromXrlTeam(user.team_short)
+    .then((data) => {
+        if (data.length < 18) {
+            document.getElementById('playerCountMessage').innerText = `Your squad only has ${data.length} players. You should pick more!`;
+            document.getElementById('pickPlayersLink').hidden = false;
+        }
+        PopulatePlayerTable(data);
+    })

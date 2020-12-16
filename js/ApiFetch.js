@@ -2,13 +2,68 @@ export function GetIdToken() {
     return getCookie('id')
 }
 
-export function GetUserInfo(idToken) {
-    return fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/xrl-users', {
+export function GetActiveUserInfo(idToken) {
+    fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/xrl-users', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
             'Authorization': idToken
         }
+    })
+        .then((response) => {
+            if (response.ok) {
+                return response.json();
+            } else {
+                document.getElementById('feedback').innerText = 'Network response not ok';
+            }
+        })
+}
+
+export function GetAllPlayers() {
+    fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/players', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+        .then((response) => {
+            if (response.ok) {
+                return response.json();
+            } else {
+                document.getElementById('feedback').innerText = 'Network response not ok';
+            }
+        })
+}
+
+export function GetPlayersFromNrlClub(club) {
+    fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/players?nrlClub=' + club, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'        
+        }
+    })
+    .then((response) => {
+        if (response.ok) {        
+            return response.json();
+        } else {
+            document.getElementById('feedback').innerText = 'Network response not ok';
+        }        
+    })
+}
+
+export function GetPlayersFromXrlTeam(team) {
+    fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/players?xrlTeam=' + team, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'        
+        }
+    })
+    .then((response) => {
+        if (response.ok) {        
+            return response.json();
+        } else {
+            document.getElementById('feedback').innerText = 'Network response not ok';
+        }        
     })
 }
 

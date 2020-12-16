@@ -1,5 +1,5 @@
 export function GetIdToken() {
-    return getCookie('id')
+    return getCookie('id');
 }
 
 export function GetActiveUserInfo(idToken) {
@@ -16,7 +16,7 @@ export function GetActiveUserInfo(idToken) {
             } else {
                 document.getElementById('feedback').innerText = 'Network response not ok';
             }
-        })
+        });
 }
 
 export function GetAllPlayers() {
@@ -32,7 +32,7 @@ export function GetAllPlayers() {
             } else {
                 document.getElementById('feedback').innerText = 'Network response not ok';
             }
-        })
+        });
 }
 
 export function GetPlayersFromNrlClub(club) {
@@ -48,7 +48,7 @@ export function GetPlayersFromNrlClub(club) {
         } else {
             document.getElementById('feedback').innerText = 'Network response not ok';
         }        
-    })
+    });
 }
 
 export function GetPlayersFromXrlTeam(team) {
@@ -64,7 +64,32 @@ export function GetPlayersFromXrlTeam(team) {
         } else {
             document.getElementById('feedback').innerText = 'Network response not ok';
         }        
+    });
+}
+
+export function UpdatePlayerXrlTeam(xrlTeam, playerInfo) {
+    var newTeam = xrlTeam == null ? 'None' : xrlTeam;
+    var playerName = playerInfo.split(';')[0]
+    var playerClub = playerInfo.split(';')[1]
+    fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/players', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'        
+        },
+        body: {
+            'operation': 'pick_drop',
+            'player_name': playerName,
+            'nrl_club': playerClub,
+            'xrl_team': newTeam
+        }
     })
+    .then((response) => {
+        if (response.ok) {        
+            return response.json();
+        } else {
+            document.getElementById('feedback').innerText = 'Network response not ok';
+        }        
+    });
 }
 
 function getCookie(cname) {

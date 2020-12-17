@@ -55,7 +55,7 @@ function PopulatePickPlayerTable(playerData, xrlTeam, tableId) {
             var form = document.createElement('form');
             var input = document.createElement('input');
             input.setAttribute('type', 'hidden')
-            input.setAttribute('value', `${player.player_name};${player.nrl_club}]`)
+            input.setAttribute('value', `${player.player_name};${player.nrl_club}`)
             form.appendChild(input)
             var button = document.createElement('button');
             button.setAttribute('type', 'submit');

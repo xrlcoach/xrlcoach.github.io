@@ -61,7 +61,8 @@ export async function UpdatePlayerXrlTeam(xrlTeam, playerInfo) {
         })
     });
     if (response.ok) {
-        return response.json();
+        const data = await response.json();
+        return data;
     } else {
         document.getElementById('feedback').innerText += 'Network response not ok';
     }

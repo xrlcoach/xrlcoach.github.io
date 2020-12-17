@@ -52,12 +52,12 @@ export async function UpdatePlayerXrlTeam(xrlTeam, playerInfo) {
         headers: {
             'Content-Type': 'application/json'        
         },
-        body: JSON.stringify({
+        body: {
             "operation": "pick_drop",
             "player_name": playerName,
             "nrl_club": playerClub,
             "xrl_team": newTeam
-        })
+        }
     });
     if (response.ok) {
         return response.json();

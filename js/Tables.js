@@ -1,7 +1,7 @@
 export function PopulatePlayerTable(playerData, tableId) {
     var tableBody = document.getElementById(tableId);
-    for (var i = 0; i < data.length; i++) {
-        var player = data[i];
+    for (var i = 0; i < playerData.length; i++) {
+        var player = playerData[i];
         var tr = document.createElement('tr');
         var name = document.createElement('td');
         name.textContent = player.player_name;

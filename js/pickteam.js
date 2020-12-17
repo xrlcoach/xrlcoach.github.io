@@ -64,16 +64,16 @@ function PopulatePickPlayerTable(playerData, xrlTeam, tableId) {
                 button.innerText = 'Drop';
                 form.onsubmit = function(event) {
                     event.preventDefault();
-                    PickDropPlayer(null, this)
-                    .then(() => location.reload());                   
+                    PickDropPlayer(null, this);
+                    location.reload();                   
                 };
             } else {
                 button.className = 'btn btn-success';
                 button.innerText = 'Pick';
                 form.onsubmit = function (event) {
                     event.preventDefault();
-                    PickDropPlayer(xrlTeam, this)
-                    .then(() => location.reload());                                       
+                    PickDropPlayer(xrlTeam, this);
+                    location.reload();                                       
                 };
             }
             form.appendChild(button);

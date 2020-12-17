@@ -13,13 +13,16 @@ window.onload = () => {
             select.appendChild(option);
         }
     })
-    GetPlayersFromNrlClub(club)
-    .then((players) => {
-        PopulatePlayerTable(players, 'squadTable')
-    })
     .catch((error) => {
         document.getElementById('feedback').innerText += error;
     });
+    // GetPlayersFromNrlClub(club)
+    // .then((players) => {
+    //     PopulatePlayerTable(players, 'squadTable')
+    // })
+    // .catch((error) => {
+    //     document.getElementById('feedback').innerText += error;
+    // });
 }
 
 function selectNrlClub(event) {

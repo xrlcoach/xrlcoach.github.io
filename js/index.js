@@ -11,7 +11,7 @@ window.onload = async function () {
         document.getElementById('userData').innerText = JSON.stringify(user);
         const squad = await GetPlayersFromXrlTeam(user.team_short);
         if (squad.length < 18) {
-            document.getElementById('playerCountMessage').innerText = `Your squad only has ${playerSquad.length} players. You should pick more!`;
+            document.getElementById('playerCountMessage').innerText = `Your squad only has ${squad.length} players. You should pick more!`;
             document.getElementById('pickPlayersLink').hidden = false;
         }
         PopulatePickPlayerTable(squad, user.team_short, 'playerSquadTable');

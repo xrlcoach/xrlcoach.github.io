@@ -34,6 +34,7 @@ function DisplayPlayerCounts(xrlTeam) {
 
 function PopulatePickPlayerTable(playerData, xrlTeam, tableId) {
     var tableBody = document.getElementById(tableId);
+    tableBody.innerHTML = '';
     for (var i = 0; i < playerData.length; i++) {
         var player = playerData[i];
         var tr = document.createElement('tr');
@@ -74,7 +75,7 @@ function PopulatePickPlayerTable(playerData, xrlTeam, tableId) {
                 button.innerText = 'Pick';
                 form.onsubmit = (event) => {
                     event.preventDefault();
-                    UpdatePlayerXrlTeam(null, input.value)
+                    UpdatePlayerXrlTeam(xrlTeam, input.value)
                         .catch((error) => {
                             document.getElementById('feedback').innerText += error;
                         });

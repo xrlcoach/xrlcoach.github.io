@@ -80,7 +80,7 @@ function PopulatePickPlayerTable(playerData, xrlTeam, tableId) {
                 button.innerText = 'Drop';
                 form.onsubmit = async function (event) {
                     event.preventDefault();
-                    document.getElementById('feedback') += resp.message;
+                    document.getElementById('feedback').innerText += resp.message;
                     const resp = PickDropPlayer(null, this);
                     location.reload();
                 };

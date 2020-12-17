@@ -50,14 +50,15 @@ export async function UpdatePlayerXrlTeam(xrlTeam, playerInfo) {
     const response = await fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/players', {
         method: 'POST',
         headers: {
+            'Accept': 'application/json',
             'Content-Type': 'application/json'        
         },
-        body: {
+        body: JSON.stringify({
             "operation": "pick_drop",
             "player_name": playerName,
             "nrl_club": playerClub,
             "xrl_team": newTeam
-        }
+        })
     });
     if (response.ok) {
         return response.json();

@@ -65,7 +65,7 @@ function PopulatePickPlayerTable(playerData, xrlTeam, tableId) {
                 form.onsubmit = function(event) {
                     event.preventDefault();
                     PickDropPlayer(null, this);
-                    location.reload();                   
+                    //location.reload();                   
                 };
             } else {
                 button.className = 'btn btn-success';
@@ -73,7 +73,7 @@ function PopulatePickPlayerTable(playerData, xrlTeam, tableId) {
                 form.onsubmit = function (event) {
                     event.preventDefault();
                     PickDropPlayer(xrlTeam, this);
-                    location.reload();                                       
+                    //location.reload();                                       
                 };
             }
             form.appendChild(button);

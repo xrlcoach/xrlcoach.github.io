@@ -112,7 +112,7 @@ async function selectNrlClub(event) {
     document.getElementById('squadName').innerText = club;
     try {
         const players = await GetPlayersFromNrlClub(club);
-        PopulatePickPlayerTable(data, user.team_short, 'pickPlayerTable');
+        PopulatePickPlayerTable(players, user.team_short, 'pickPlayerTable');
     } catch (error) {
         document.getElementById('feedback').innerText = error;
     }

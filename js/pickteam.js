@@ -14,15 +14,15 @@ function DisplayPlayerCounts(xrlTeam) {
             var playmakers = data.filter(p => p.position == 'Playmaker' || p.position2 == 'Playmaker').length
             document.getElementById('playerCountMessage').innerText =
                 `You currently have ${totalPlayers} in your squad. You need ${18 - totalPlayers} more in total.`
-            if (backs.length < 5) {
+            if (backs < 5) {
                 document.getElementById('playerCountBreakdown').innerHTML +=
                     `<li>You need at least ${5 - backs.length} more backs.`
             }
-            if (forwards.length < 5) {
+            if (forwards < 5) {
                 document.getElementById('playerCountBreakdown').innerHTML +=
                     `<li>You need at least ${5 - forwards.length} more forwards.`
             }
-            if (playmakers.length < 3) {
+            if (playmakers < 3) {
                 document.getElementById('playerCountBreakdown').innerHTML +=
                     `<li>You need at least ${3 - playmakers.length} more playmakers.`
             }
@@ -65,7 +65,7 @@ function PopulatePickPlayerTable(playerData, xrlTeam, tableId) {
                 form.onsubmit = function(event) {
                     event.preventDefault();
                     PickDropPlayer(null, this);
-                    //location.reload();                   
+                    location.reload();                   
                 };
             } else {
                 button.className = 'btn btn-success';
@@ -73,7 +73,7 @@ function PopulatePickPlayerTable(playerData, xrlTeam, tableId) {
                 form.onsubmit = function (event) {
                     event.preventDefault();
                     PickDropPlayer(xrlTeam, this);
-                    //location.reload();                                       
+                    location.reload();                                       
                 };
             }
             form.appendChild(button);

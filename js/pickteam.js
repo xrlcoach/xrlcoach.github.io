@@ -9,20 +9,20 @@ function DisplayPlayerCounts(xrlTeam) {
             if (totalPlayers == 18) {
                 window.location.href = 'index.html';
             }
-            var backs = data.filter(p => p.position == 'Back' || p.position2 == 'Back').length
-            var forwards = data.filter(p => p.position == 'Forward' || p.position2 == 'Forward').length
-            var playmakers = data.filter(p => p.position == 'Playmaker' || p.position2 == 'Playmaker').length
+            var backs = data.filter(p => p.position == 'Back' || p.position2 == 'Back')
+            var forwards = data.filter(p => p.position == 'Forward' || p.position2 == 'Forward')
+            var playmakers = data.filter(p => p.position == 'Playmaker' || p.position2 == 'Playmaker')
             document.getElementById('playerCountMessage').innerText =
                 `You currently have ${totalPlayers} in your squad. You need ${18 - totalPlayers} more in total.`
-            if (backs < 5) {
+            if (backs.length < 5) {
                 document.getElementById('playerCountBreakdown').innerHTML +=
                     `<li>You need at least ${5 - backs.length} more backs.`
             }
-            if (forwards < 5) {
+            if (forwards.length < 5) {
                 document.getElementById('playerCountBreakdown').innerHTML +=
                     `<li>You need at least ${5 - forwards.length} more forwards.`
             }
-            if (playmakers < 3) {
+            if (playmakers.length < 3) {
                 document.getElementById('playerCountBreakdown').innerHTML +=
                     `<li>You need at least ${3 - playmakers.length} more playmakers.`
             }
@@ -69,7 +69,7 @@ function PopulatePickPlayerTable(playerData, xrlTeam, tableId) {
                 };
             } else {
                 button.className = 'btn btn-success';
-                button.innerText = 'Pick' + player.player_name;
+                button.innerText = 'Pick';
                 form.onsubmit = function (event) {
                     event.preventDefault();
                     PickDropPlayer(xrlTeam, this);
@@ -100,6 +100,7 @@ function selectNrlClub(event) {
             document.getElementById('feedback').innerText = error;
         })
 }
+window.selectNrlClub = selectNrlClub;
 
 function PickDropPlayer(xrlTeam, form) {
     UpdatePlayerXrlTeam(xrlTeam, form.elements[0].value)
@@ -108,7 +109,6 @@ function PickDropPlayer(xrlTeam, form) {
                         });
 }
 
-window.selectNrlClub = selectNrlClub;
 
 window.onload = () => {
     const idToken = GetIdToken();

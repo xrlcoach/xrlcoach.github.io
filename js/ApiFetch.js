@@ -2,6 +2,17 @@ export function GetIdToken() {
     return getCookie('id');
 }
 
+export async function GetAllUsers() {
+    const response = await fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/xrl-users', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    });
+    const data = await response.json();
+    return data;
+}
+
 export async function GetActiveUserInfo(idToken) {
     const response = await fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/xrl-users', {
         method: 'POST',
@@ -10,7 +21,8 @@ export async function GetActiveUserInfo(idToken) {
             'Authorization': idToken
         }
     });
-    return response.json();        
+    const data = await response.json();
+    return data;        
 }
 
 export async function GetAllPlayers() {
@@ -20,7 +32,8 @@ export async function GetAllPlayers() {
             'Content-Type': 'application/json'
         }
     });
-    return response.json();
+    const data = await response.json();
+    return data;
 }
 
 export async function GetPlayersFromNrlClub(club) {
@@ -30,7 +43,8 @@ export async function GetPlayersFromNrlClub(club) {
             'Content-Type': 'application/json'        
         }
     });
-    return response.json();
+    const data = await response.json();
+    return data;
 }
 
 export async function GetPlayersFromXrlTeam(team) {
@@ -40,7 +54,8 @@ export async function GetPlayersFromXrlTeam(team) {
             'Content-Type': 'application/json'        
         }
     });
-    return response.json();    
+    const data = await response.json();
+    return data;   
 }
 
 export async function UpdatePlayerXrlTeam(xrlTeam, playerInfo) {

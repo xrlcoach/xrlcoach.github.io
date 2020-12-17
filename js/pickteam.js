@@ -64,16 +64,16 @@ function PopulatePickPlayerTable(playerData, xrlTeam, tableId) {
                 button.innerText = 'Drop';
                 form.onsubmit = function(event) {
                     event.preventDefault();
-                    PickDropPlayer(null, this);
-                    location.reload();                   
+                    PickDropPlayer(null, this)
+                    .then(location.reload());                   
                 };
             } else {
                 button.className = 'btn btn-success';
                 button.innerText = 'Pick';
                 form.onsubmit = function (event) {
                     event.preventDefault();
-                    PickDropPlayer(xrlTeam, this);
-                    location.reload();                                       
+                    PickDropPlayer(xrlTeam, this)
+                    .then(location.reload());                                       
                 };
             }
             form.appendChild(button);
@@ -104,9 +104,12 @@ window.selectNrlClub = selectNrlClub;
 
 function PickDropPlayer(xrlTeam, form) {
     UpdatePlayerXrlTeam(xrlTeam, form.elements[0].value)
-                        .catch((error) => {
-                            alert(error);
-                        });
+        .then((data) => {
+            document.getElementById('feedback').innerText += data.message;
+        })
+        .catch((error) => {
+            alert(error);
+        });
 }
 
 

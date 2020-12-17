@@ -7,7 +7,11 @@ window.onload = () => {
     GetAllUsers()
     .then((users) => {
         var select = document.getElementById('xrlTeamSelect');
-        
+        for (var i = 0; i < users.length; i++) {
+            var option = document.createElement('option');
+            option.value = users[i].team_short;
+            select.appendChild(option);
+        }
     })
     GetPlayersFromNrlClub(club)
     .then((players) => {

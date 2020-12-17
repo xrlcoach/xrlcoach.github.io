@@ -81,7 +81,7 @@ function PopulatePickPlayerTable(playerData, xrlTeam, tableId) {
                 form.onsubmit = async function (event) {
                     event.preventDefault();
                     document.getElementById('feedback').innerText += resp.message;
-                    const resp = PickDropPlayer(null, this);
+                    const resp = await PickDropPlayer(null, this);
                     location.reload();
                 };
             } else {
@@ -89,7 +89,7 @@ function PopulatePickPlayerTable(playerData, xrlTeam, tableId) {
                 button.innerText = 'Pick';
                 form.onsubmit = async function (event) {
                     event.preventDefault();
-                    const resp = PickDropPlayer(xrlTeam, this);
+                    const resp = await PickDropPlayer(xrlTeam, this);
                     document.getElementById('feedback').innerText += resp.message;
                     location.reload();
                 };
@@ -121,7 +121,7 @@ window.selectNrlClub = selectNrlClub;
 
 async function PickDropPlayer(xrlTeam, form) {
     try {
-        const resp = UpdatePlayerXrlTeam(xrlTeam, form.elements[0].value);
+        const resp = await UpdatePlayerXrlTeam(xrlTeam, form.elements[0].value);
         return resp.message;
     } catch (error) {
         document.getElementById('feedback').innerText += error;

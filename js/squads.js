@@ -5,17 +5,18 @@ window.onload = () => {
     var club = document.getElementById('nrlClubSelect').value;
     document.getElementById('squadName').innerText = club;
     GetAllUsers()
-    .then((users) => {
-        var select = document.getElementById('xrlTeamSelect');
-        for (var i = 0; i < users.length; i++) {
-            var option = document.createElement('option');
-            option.value = users[i].team_short;
-            select.appendChild(option);
-        }
-    })
-    .catch((error) => {
-        document.getElementById('feedback').innerText += error;
-    });
+        .then((users) => {
+            var select = document.getElementById('xrlTeamSelect');
+            for (var i = 0; i < users.length; i++) {
+                var option = document.createElement('option');
+                option.value = users[i].team_short;
+                option.innerText = users[i].team_short;
+                select.appendChild(option);
+            }
+        })
+        .catch((error) => {
+            document.getElementById('feedback').innerText += error;
+        });
     // GetPlayersFromNrlClub(club)
     // .then((players) => {
     //     PopulatePlayerTable(players, 'squadTable')
@@ -25,17 +26,16 @@ window.onload = () => {
     // });
 }
 
-function selectNrlClub(event) {
+async function selectNrlClub(event) {
     event.preventDefault();
     var club = document.getElementById('nrlClubSelect').value;
     document.getElementById('squadName').innerText = club;
-    GetPlayersFromNrlClub(club)
-        .then((data) => {
-            PopulatePlayerTable(data, 'squadTable');
-        })
-        .catch((error) => {
-            document.getElementById('feedback').innerText += error;
-        })
+    try {
+        const players = await GetPlayersFromNrlClub(club);
+        PopulatePlayerTable(players, 'squadTable');
+    } catch (error) {
+        document.getElementById('feedback').innerText += error;
+    }
 }
 window.selectNrlClub = selectNrlClub;
 

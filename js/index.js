@@ -51,7 +51,7 @@ function PopulatePickPlayerTable(playerData, xrlTeam, tableId) {
         form.onsubmit = async function (event) {
             event.preventDefault();
             try {
-                const resp = await UpdatePlayerXrlTeam(null, input.value);
+                const resp = await UpdatePlayerXrlTeam(null, this.elements[0].value);
                 location.reload();
             } catch (error) {
                 document.getElementById('feedback').innerText += error;

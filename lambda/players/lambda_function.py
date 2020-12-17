@@ -62,7 +62,6 @@ def lambda_handler(event, context):
                 'body': json.dumps(replace_decimals(resp['Items']))
             }
     if method == 'POST':
-        responseItem = None
         print('Method is POST, checking operation')
         body = json.loads(event['body'])
         if body['operation'] == "pick_drop":
@@ -89,7 +88,7 @@ def lambda_handler(event, context):
                     'Access-Control-Allow-Origin': '*',
                     'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
                     },
-                    'body': json.dumps(str(e))
+                    'body': json.dumps({"error": str(e)})
                 }       
         return {
                 'statusCode': 200,

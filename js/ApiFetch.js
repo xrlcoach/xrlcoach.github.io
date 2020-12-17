@@ -53,10 +53,10 @@ export async function UpdatePlayerXrlTeam(xrlTeam, playerInfo) {
             'Content-Type': 'application/json'        
         },
         body: JSON.stringify({
-            'operation': 'pick_drop',
-            'player_name': playerName,
-            'nrl_club': playerClub,
-            'xrl_team': newTeam
+            "operation": "pick_drop",
+            "player_name": playerName,
+            "nrl_club": playerClub,
+            "xrl_team": newTeam
         })
     });
     if (response.ok) {

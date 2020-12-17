@@ -5,21 +5,20 @@ if (!idToken) {
     window.location.replace('login.html');
 }
 
-GetActiveUserInfo(idToken)
-    .then((user) => {
+window.onload = async function () {
+    try {
+        const user = await GetActiveUserInfo(idToken);
         document.getElementById('userData').innerText = JSON.stringify(user);
-        GetPlayersFromXrlTeam(user.team_short)
-            .then((playerSquad) => {
-                if (playerSquad.length < 18) {
-                    document.getElementById('playerCountMessage').innerText = `Your squad only has ${playerSquad.length} players. You should pick more!`;
-                    document.getElementById('pickPlayersLink').hidden = false;
-                }
-                PopulatePickPlayerTable(playerSquad, user.team_short, 'playerSquadTable');
-            });
-    })
-    .catch((error) => {
+        const squad = await GetPlayersFromXrlTeam(user.team_short);
+        if (squad.length < 18) {
+            document.getElementById('playerCountMessage').innerText = `Your squad only has ${playerSquad.length} players. You should pick more!`;
+            document.getElementById('pickPlayersLink').hidden = false;
+        }
+        PopulatePickPlayerTable(squad, user.team_short, 'playerSquadTable');
+    } catch (error) {
         document.getElementById('feedback').innerText += error;
-    });
+    }
+}
 
 function PopulatePickPlayerTable(playerData, xrlTeam, tableId) {
     var tableBody = document.getElementById(tableId);
@@ -49,10 +48,14 @@ function PopulatePickPlayerTable(playerData, xrlTeam, tableId) {
         button.className = 'btn btn-danger';
         button.innerText = 'Drop';
         form.appendChild(button);
-        form.onsubmit = (event) => {
+        form.onsubmit = async function (event) {
             event.preventDefault();
-            UpdatePlayerXrlTeam(null, input.value)
-                .then(() => DisplayPlayerCounts(xrlTeam))
+            try {
+                const resp = await UpdatePlayerXrlTeam(null, input.value);
+                location.reload();
+            } catch (error) {
+                document.getElementById('feedback').innerText += error;
+            }
         };
         drop.appendChild(form);
         tr.appendChild(drop);

@@ -2,34 +2,50 @@ import { GetAllPlayers, GetIdToken, GetPlayersFromNrlClub, GetPlayersFromXrlTeam
 
 let user;
 
-function DisplayPlayerCounts(xrlTeam) {
-    GetPlayersFromXrlTeam(xrlTeam)
-        .then((data) => {
-            var totalPlayers = data.length;
-            if (totalPlayers == 18) {
-                window.location.href = 'index.html';
-            }
-            var backs = data.filter(p => p.position == 'Back' || p.position2 == 'Back')
-            var forwards = data.filter(p => p.position == 'Forward' || p.position2 == 'Forward')
-            var playmakers = data.filter(p => p.position == 'Playmaker' || p.position2 == 'Playmaker')
-            document.getElementById('playerCountMessage').innerText =
-                `You currently have ${totalPlayers} in your squad. You need ${18 - totalPlayers} more in total.`
-            if (backs.length < 5) {
-                document.getElementById('playerCountBreakdown').innerHTML +=
-                    `<li>You need at least ${5 - backs.length} more backs.`
-            }
-            if (forwards.length < 5) {
-                document.getElementById('playerCountBreakdown').innerHTML +=
-                    `<li>You need at least ${5 - forwards.length} more forwards.`
-            }
-            if (playmakers.length < 3) {
-                document.getElementById('playerCountBreakdown').innerHTML +=
-                    `<li>You need at least ${3 - playmakers.length} more playmakers.`
-            }
-        })
-        .catch((error) => {
-            document.getElementById('feedback').innerText += 'DPC Function: ' + error;
-        })
+window.onload = async function () {
+    const idToken = GetIdToken();
+    if (!idToken) {
+        window.location.replace('login.html');
+    }
+    try {
+        user = await GetActiveUserInfo(idToken);
+        await DisplayPlayerCounts(user.team_short);
+        var club = document.getElementById('nrlClubSelect').value;
+        document.getElementById('squadName').innerText = club;
+        const players = await GetPlayersFromNrlClub(club);
+        PopulatePickPlayerTable(players, user.team_short, 'pickPlayerTable');
+    } catch (error) {
+        document.getElementById('feedback').innerHTML += 'OnLoad: ' + error;
+    }
+}
+
+async function DisplayPlayerCounts(xrlTeam) {
+    try {
+        const squad = await GetPlayersFromXrlTeam(xrlTeam);
+        var totalPlayers = squad.length;
+        if (totalPlayers == 18) {
+            window.location.href = 'index.html';
+        }
+        var backs = squad.filter(p => p.position == 'Back' || p.position2 == 'Back')
+        var forwards = squad.filter(p => p.position == 'Forward' || p.position2 == 'Forward')
+        var playmakers = squad.filter(p => p.position == 'Playmaker' || p.position2 == 'Playmaker')
+        document.getElementById('playerCountMessage').innerText =
+            `You currently have ${totalPlayers} in your squad. You need ${18 - totalPlayers} more in total.`
+        if (backs.length < 5) {
+            document.getElementById('playerCountBreakdown').innerHTML +=
+                `<li>You need at least ${5 - backs.length} more backs.`
+        }
+        if (forwards.length < 5) {
+            document.getElementById('playerCountBreakdown').innerHTML +=
+                `<li>You need at least ${5 - forwards.length} more forwards.`
+        }
+        if (playmakers.length < 3) {
+            document.getElementById('playerCountBreakdown').innerHTML +=
+                `<li>You need at least ${3 - playmakers.length} more playmakers.`
+        }
+    } catch (error) {
+        document.getElementById('feedback').innerText += 'DPC Function: ' + error;
+    }
 }
 
 function PopulatePickPlayerTable(playerData, xrlTeam, tableId) {
@@ -62,11 +78,11 @@ function PopulatePickPlayerTable(playerData, xrlTeam, tableId) {
             if (player.xrl_team == xrlTeam) {
                 button.className = 'btn btn-danger';
                 button.innerText = 'Drop';
-                form.onsubmit = async function(event) {
+                form.onsubmit = async function (event) {
                     event.preventDefault();
                     document.getElementById('feedback') += resp.message;
                     const resp = PickDropPlayer(null, this);
-                    location.reload();                   
+                    location.reload();
                 };
             } else {
                 button.className = 'btn btn-success';
@@ -75,7 +91,7 @@ function PopulatePickPlayerTable(playerData, xrlTeam, tableId) {
                     event.preventDefault();
                     const resp = PickDropPlayer(xrlTeam, this);
                     document.getElementById('feedback') += resp.message;
-                    location.reload();                                       
+                    location.reload();
                 };
             }
             form.appendChild(button);
@@ -90,46 +106,27 @@ function PopulatePickPlayerTable(playerData, xrlTeam, tableId) {
     }
 }
 
-function selectNrlClub(event) {
+async function selectNrlClub(event) {
     event.preventDefault();
     var club = document.getElementById('nrlClubSelect').value;
     document.getElementById('squadName').innerText = club;
-    GetPlayersFromNrlClub(club)
-        .then((data) => {
-            PopulatePickPlayerTable(data, user.team_short, 'pickPlayerTable');
-        })
-        .catch((error) => {
-            document.getElementById('feedback').innerText = error;
-        })
+    try {
+        const players = await GetPlayersFromNrlClub(club);
+        PopulatePickPlayerTable(data, user.team_short, 'pickPlayerTable');
+    } catch (error) {
+        document.getElementById('feedback').innerText = error;
+    }
 }
 window.selectNrlClub = selectNrlClub;
 
-function PickDropPlayer(xrlTeam, form) {
-    UpdatePlayerXrlTeam(xrlTeam, form.elements[0].value)
-        .then((data) => {
-            return data.message;
-        })
-        .catch((error) => {
-            alert(error);
-        });
-}
-
-
-window.onload = () => {
-    const idToken = GetIdToken();
-    if (!idToken) {
-        window.location.replace('login.html');
+async function PickDropPlayer(xrlTeam, form) {
+    try {
+        const resp = UpdatePlayerXrlTeam(xrlTeam, form.elements[0].value);
+        return resp.message;
+    } catch (error) {
+        document.getElementById('feedback').innerText += error;
     }
-    GetActiveUserInfo(idToken)
-        .then((data) => {
-            user = data;
-            DisplayPlayerCounts(user.team_short);
-            var club = document.getElementById('nrlClubSelect').value;
-            document.getElementById('squadName').innerText = club;
-            GetPlayersFromNrlClub(club)
-                .then((data) => {
-                    PopulatePickPlayerTable(data, user.team_short, 'pickPlayerTable');
-                });
-        })
-        .catch((error) => document.getElementById('feedback').innerHTML += 'OnLoad: ' + error);
 }
+
+
+

@@ -82,7 +82,16 @@ def lambda_handler(event, context):
                 responseItem = response['Item'] 
                 print(f"{body['player_name']}'s XRL team changed to {body['xrl_team']}")
             except Exception as e:
-                print(e)       
+                print(e)
+                return {
+                    'statusCode': 504,
+                    'headers': {
+                    'Access-Control-Allow-Headers': 'Content-Type',
+                    'Access-Control-Allow-Origin': '*',
+                    'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
+                    },
+                    'body': json.dumps(e)
+                }       
         return {
                 'statusCode': 200,
                 'headers': {

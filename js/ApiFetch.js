@@ -62,7 +62,7 @@ export async function UpdatePlayerXrlTeam(xrlTeam, playerInfo) {
     if (response.ok) {
         return response.json();
     } else {
-        document.getElementById('feedback') += 'Network response not ok';
+        document.getElementById('feedback').innerText += 'Network response not ok';
     }
 
 }

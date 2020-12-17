@@ -62,19 +62,18 @@ function PopulatePickPlayerTable(playerData, xrlTeam, tableId) {
             if (player.xrl_team == xrlTeam) {
                 button.className = 'btn btn-danger';
                 button.innerText = 'Drop';
-                form.onsubmit = (event) => {
+                form.onsubmit = function(event) {
                     event.preventDefault();
-                    UpdatePlayerXrlTeam(null, this.elements[0].value)
-                        .catch((error) => {
-                            document.getElementById('feedback').innerText += error;
-                        });                    
+                    PickDropPlayer(null, this);
+                    location.reload();                   
                 };
             } else {
                 button.className = 'btn btn-success';
                 button.innerText = 'Pick' + player.player_name;
                 form.onsubmit = function (event) {
                     event.preventDefault();
-                    PickDropPlayer(xrlTeam, this);                    
+                    PickDropPlayer(xrlTeam, this);
+                    location.reload();                                       
                 };
             }
             form.appendChild(button);
@@ -120,7 +119,9 @@ window.onload = () => {
         .then((data) => {
             user = data;
             DisplayPlayerCounts(user.team_short);
-            GetAllPlayers()
+            var club = document.getElementById('nrlClubSelect').value;
+            document.getElementById('squadName').innerText = club;
+            GetPlayersFromNrlClub(club)
                 .then((data) => {
                     PopulatePickPlayerTable(data, user.team_short, 'pickPlayerTable');
                 });

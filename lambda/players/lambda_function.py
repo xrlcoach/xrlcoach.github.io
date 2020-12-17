@@ -79,12 +79,11 @@ def lambda_handler(event, context):
                     },
                     ReturnValues="UPDATED_NEW"
                 )
-                responseItem = response['Item'] 
                 print(f"{body['player_name']}'s XRL team changed to {body['xrl_team']}")
             except Exception as e:
                 print(e)
                 return {
-                    'statusCode': 504,
+                    'statusCode': 500,
                     'headers': {
                     'Access-Control-Allow-Headers': 'Content-Type',
                     'Access-Control-Allow-Origin': '*',
@@ -99,7 +98,7 @@ def lambda_handler(event, context):
                 'Access-Control-Allow-Origin': '*',
                 'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
                 },
-                'body': json.dumps(replace_decimals(responseItem))
+                'body': json.dumps({"message": "Player team updated successfully"})
             }      
 
 def replace_decimals(obj):

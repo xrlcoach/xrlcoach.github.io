@@ -72,7 +72,7 @@ function PopulatePickPlayerTable(playerData, xrlTeam, tableId) {
                 };
             } else {
                 button.className = 'btn btn-success';
-                button.innerText = 'Pick';
+                button.innerText = 'Pick' + player.player_name;
                 form.onsubmit = (event) => {
                     event.preventDefault();
                     UpdatePlayerXrlTeam(xrlTeam, input.value)

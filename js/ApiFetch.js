@@ -59,7 +59,12 @@ export async function UpdatePlayerXrlTeam(xrlTeam, playerInfo) {
             'xrl_team': newTeam
         })
     });
-    return response.json();
+    if (response.ok) {
+        return response.json();
+    } else {
+        document.getElementById('feedback') += 'Network response not ok';
+    }
+
 }
 
 function getCookie(cname) {

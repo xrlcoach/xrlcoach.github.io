@@ -67,16 +67,14 @@ function PopulatePickPlayerTable(playerData, xrlTeam, tableId) {
                     UpdatePlayerXrlTeam(null, this.elements[0].value)
                         .catch((error) => {
                             document.getElementById('feedback').innerText += error;
-                        });
-                    location.reload();
+                        });                    
                 };
             } else {
                 button.className = 'btn btn-success';
                 button.innerText = 'Pick' + player.player_name;
                 form.onsubmit = function (event) {
                     event.preventDefault();
-                    PickDropPlayer(xrlTeam, this);
-                    location.reload();
+                    PickDropPlayer(xrlTeam, this);                    
                 };
             }
             form.appendChild(button);
@@ -107,7 +105,7 @@ function selectNrlClub(event) {
 function PickDropPlayer(xrlTeam, form) {
     UpdatePlayerXrlTeam(xrlTeam, form.elements[0].value)
                         .catch((error) => {
-                            document.getElementById('feedback').innerText += error;
+                            alert(error);
                         });
 }
 

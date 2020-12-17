@@ -62,9 +62,9 @@ function PopulatePickPlayerTable(playerData, xrlTeam, tableId) {
             if (player.xrl_team == xrlTeam) {
                 button.className = 'btn btn-danger';
                 button.innerText = 'Drop';
-                form.onsubmit = (form, event) => {
+                form.onsubmit = (event) => {
                     event.preventDefault();
-                    UpdatePlayerXrlTeam(null, form.elements[0].value)
+                    UpdatePlayerXrlTeam(null, this.elements[0].value)
                         .catch((error) => {
                             document.getElementById('feedback').innerText += error;
                         });
@@ -73,9 +73,9 @@ function PopulatePickPlayerTable(playerData, xrlTeam, tableId) {
             } else {
                 button.className = 'btn btn-success';
                 button.innerText = 'Pick' + player.player_name;
-                form.onsubmit = (form, event) => {
+                form.onsubmit = (event) => {
                     event.preventDefault();
-                    UpdatePlayerXrlTeam(xrlTeam, form.elements[0].value)
+                    UpdatePlayerXrlTeam(xrlTeam, this.elements[0].value)
                         .catch((error) => {
                             document.getElementById('feedback').innerText += error;
                         });

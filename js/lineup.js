@@ -11,20 +11,28 @@ let lineup;
 
 window.onload = async () => {
     user = await GetActiveUserInfo(idToken);
+    console.log(user);
     squad = await GetPlayersFromXrlTeam(user.team_short);
+    console.log(squad[0]);
     lineup = await GetLineup(idToken);
+    console.log(lineup.length);
     PopulateLineup();
 }
 
 async function PopulateLineup() {
     const lineup = await GetLineup(idToken);
-    const backs = squad.filter(p => p.position == 'Back' || p.position2 == 'Back')
-    const forwards = squad.filter(p => p.position == 'Forward' || p.position2 == 'Forward')
-    const playmakers = squad.filter(p => p.position == 'Playmaker' || p.position2 == 'Playmaker')
+    const backs = squad.filter(p => p.position == 'Back' || p.position2 == 'Back');
+    console.log('Backs: ' + backs);
+    const forwards = squad.filter(p => p.position == 'Forward' || p.position2 == 'Forward');
+    console.log('Forwards: ' + forwards);
+    const playmakers = squad.filter(p => p.position == 'Playmaker' || p.position2 == 'Playmaker');
+    console.log('Playmakers: ' + playmakers);
     if (lineup.length > 0) {
+        console.log('Pre-filling existing lineup');
+        console.log(lineup[0]);
         for (let i = 0; i < positions_backs.length; i++) {
             let option = document.createElement('option');
-            let player = lineup.filter(p => p.position_specific == positions_backs[i])
+            let player = lineup.filter(p => p.position_specific == positions_backs[i]);
             option.innerText = player['name+club'];
             option.value = player['name+club'];
             document.getElementById(positions_backs[i]).appendChild(option);
@@ -38,7 +46,7 @@ async function PopulateLineup() {
         }
         for (let i = 0; i < positions_forwards.length; i++) {
             let option = document.createElement('option');
-            let player = lineup.filter(p => p.position_specific == positions_forwards[i])
+            let player = lineup.filter(p => p.position_specific == positions_forwards[i]);
             option.innerText = player['name+club'];
             option.value = player['name+club'];
             document.getElementById(positions_forwards[i]).appendChild(option);

@@ -105,6 +105,7 @@ async function submitLineup(event) {
     let lineup = [];
     const players = document.getElementsByName('player');
     for (let i = 0; i < players.length; i++) {
+        if (players[i].value === '') continue;
         lineup.push({
             "name+club": players[i].value,
             "position": players[i].id

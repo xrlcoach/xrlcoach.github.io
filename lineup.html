@@ -1,29 +1,76 @@
-{% extends "layout.html" %}
+<!DOCTYPE html>
 
-{% block title %}
-    Lineup
-{% endblock %}
+<html lang="en">
 
-{% block main %}
+<head>
+
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- documentation at http://getbootstrap.com/docs/4.1/, alternative themes at https://bootswatch.com/ -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- https://favicon.io/emoji-favicons/money-mouth-face/ -->
+    <link href="/static/xrl-logo.png" rel="icon">
+
+    <link href="/static/styles.css" rel="stylesheet">
+
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+    <script src="js/Session.js"></script>
+
+    <title>XRL Home</title>
+
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-md navbar-dark" style="background-color: rgb(44, 48, 52);">
+        <a class="navbar-brand" href="/"><img src="static/xrl-logo.png" alt="XRL Badge" height="40"><span
+                class="green">X</span><span class="yellow">R</span><span class="green">L</span></a>
+        <button aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler"
+            data-target="#navbar" data-toggle="collapse" type="button">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbar">
+            <ul class="navbar-nav mr-auto mt-2">
+                <li class="nav-item"><a class="nav-link" href="team.html">My Team</a></li>
+                <li class="nav-item"><a class="nav-link" href="lineup.html">Lineup</a></li>
+                <li class="nav-item"><a class="nav-link" href="draw.html">Draw</a></li>
+                <li class="nav-item"><a class="nav-link" href="comp.html">Ladder</a></li>
+                <li class="nav-item"><a class="nav-link" href="squads.html">Squads</a></li>
+                <li class="nav-item"><a class="nav-link" href="stats.html">Stats</a></li>
+            </ul>
+            <ul class="navbar-nav ml-auto mt-2">
+                <li class="nav-item"><a class="nav-link" href="#" onclick="logout()">Log Out</a></li>
+            </ul>
+            <!-- <ul class="navbar-nav ml-auto mt-2">
+                <li class="nav-item"><a class="nav-link" href="/register">Register</a></li>
+                <li class="nav-item"><a class="nav-link" href="/login">Log In</a></li>
+            </ul> -->
+        </div>
+    </nav>
+
+    <header>
+        <div class="alert alert-primary border text-center" role="alert" id="feedback">
+        </div>
+    </header>
+
+    <main>
     <div class="container p-5">
-    <p><h4>{{ user['team_name'] }}: Select Lineup for Round {{ next_round}}</h4></p>
-    {% if error %}
-    <p><h3>{{ error }}</h3></p>
-    {% endif %}
-    {% if powerplay == false and user['powerplays'] < 2 %}
-    <form action="/lineup" method="POST">
+    <p><h4 id="lineupHeading">{{ user['team_name'] }}: Select Lineup for Round {{ next_round}}</h4></p>
+    <form onsubmit="togglePowerplay(event)">
         <div class="form-group">
-            <button type="submit" name ="powerplay" class="btn btn-success">Use Powerplay</button>
+            <button type="submit" id="powerplayButton" class="btn btn-success">Use Powerplay</button>
         </div>
     </form>
-    {% endif %}
-    {% if powerplay == true %}
-    <form action="/lineup" method="POST">
+    <!-- <form action="/lineup" method="POST">
         <div class="form-group">
         <button type="submit" name ="powerplay_off" class="btn btn-danger">Turn Off Powerplay</button>
     </div>
-    </form>
-    {% endif %}
+    </form> -->
     <div class="table-responsive">
     <table class="table table-dark table-striped">
         <thead>
@@ -32,21 +79,13 @@
                 <th style="color: green;">Player</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody id="lineupTable">
         <form action="/lineup" method="post">
         <tr>
             <td style="white-space: nowrap;">Fullback</td>
             <td>
                 <div class="form-group">
-                    <select class="form-control" name="back">
-                        {% if fullback %}
-                        <option>{{ fullback['lineup_player_name'] }}, {{ fullback['lineup_nrl_team'] }}</option>
-                        {% endif %}
-                        <option>None</option>
-                        {% for x in range(backs_length) %}
-                        <option>{{ backs[x]['player_name'] }}, {{ backs[x]['nrl_team'] }}</option>
-                        {% endfor %}
-                    </select>
+                    <select class="form-control" name="player" id="fullback"></select>
                 </div>
             </td>
         </tr>
@@ -54,15 +93,7 @@
             <td style="white-space: nowrap;">Winger</td>
             <td>
                 <div class="form-group">
-                    <select class="form-control" name="back">
-                        {% if winger1 %}
-                        <option>{{ winger1['lineup_player_name'] }}, {{ winger1['lineup_nrl_team'] }}</option>
-                        {% endif %}
-                        <option>None</option>
-                        {% for x in range(backs_length) %}
-                        <option>{{ backs[x]['player_name'] }}, {{ backs[x]['nrl_team'] }}</option>
-                        {% endfor %}
-                    </select>
+                    <select class="form-control" name="player" id="winger1"></select>
                 </div>
             </td>
             <td>
@@ -71,15 +102,7 @@
             <td style="white-space: nowrap;">Centre</td>
             <td>
                 <div class="form-group">
-                    <select class="form-control" name="back">
-                        {% if centre1 %}
-                        <option>{{ centre1['lineup_player_name'] }}, {{ centre1['lineup_nrl_team'] }}</option>
-                        {% endif %}
-                        <option>None</option>
-                        {% for x in range(backs_length) %}
-                        <option>{{ backs[x]['player_name'] }}, {{ backs[x]['nrl_team'] }}</option>
-                        {% endfor %}
-                    </select>
+                    <select class="form-control" name="player" id="centre1"></select>
                 </div>
             </td>
             <td>
@@ -88,15 +111,7 @@
             <td style="white-space: nowrap;">Centre</td>
             <td>
                 <div class="form-group">
-                    <select class="form-control" name="back">
-                        {% if centre2 %}
-                        <option>{{ centre2['lineup_player_name'] }}, {{ centre2['lineup_nrl_team'] }}</option>
-                        {% endif %}
-                        <option>None</option>
-                        {% for x in range(backs_length) %}
-                        <option>{{ backs[x]['player_name'] }}, {{ backs[x]['nrl_team'] }}</option>
-                        {% endfor %}
-                    </select>
+                    <select class="form-control" name="player" id="centre2"></select>
                 </div>
             </td>
             <td>
@@ -105,15 +120,7 @@
             <td style="white-space: nowrap;">Winger</td>
             <td>
                 <div class="form-group">
-                    <select class="form-control" name="back">
-                        {% if winger2 %}
-                        <option>{{ winger2['lineup_player_name'] }}, {{ winger2['lineup_nrl_team'] }}</option>
-                        {% endif %}
-                        <option>None</option>
-                        {% for x in range(backs_length) %}
-                        <option>{{ backs[x]['player_name'] }}, {{ backs[x]['nrl_team'] }}</option>
-                        {% endfor %}
-                    </select>
+                    <select class="form-control" name="player" id="winger2"></select>
                 </div>
             </td>
             <td>
@@ -122,15 +129,7 @@
             <td style="white-space: nowrap;">Five-Eighth</td>
             <td>
                 <div class="form-group">
-                    <select class="form-control" name="playmaker">
-                        {% if five_eighth %}
-                        <option>{{ five_eighth['lineup_player_name'] }}, {{ five_eighth['lineup_nrl_team'] }}</option>
-                        {% endif %}
-                        <option>None</option>
-                        {% for x in range(playmakers_length) %}
-                        <option>{{ playmakers[x]['player_name'] }}, {{ playmakers[x]['nrl_team'] }}</option>
-                        {% endfor %}
-                    </select>
+                    <select class="form-control" name="player" id="five_eighth"></select>
                 </div>
             </td>
             <td>
@@ -139,15 +138,7 @@
             <td style="white-space: nowrap;">Halfback</td>
             <td>
                 <div class="form-group">
-                    <select class="form-control" name="playmaker">
-                        {% if halfback %}
-                        <option>{{ halfback['lineup_player_name'] }}, {{ halfback['lineup_nrl_team'] }}</option>
-                        {% endif %}
-                        <option>None</option>
-                        {% for x in range(playmakers_length) %}
-                        <option>{{ playmakers[x]['player_name'] }}, {{ playmakers[x]['nrl_team'] }}</option>
-                        {% endfor %}
-                    </select>
+                    <select class="form-control" name="player" id="halfback"></select>
                 </div>
             </td>
             <td>
@@ -156,15 +147,7 @@
             <td style="white-space: nowrap;">Prop</td>
             <td>
                 <div class="form-group">
-                    <select class="form-control" name="forward">
-                        {% if prop1 %}
-                        <option>{{ prop1['lineup_player_name'] }}, {{ prop1['lineup_nrl_team'] }}</option>
-                        {% endif %}
-                        <option>None</option>
-                        {% for x in range(forwards_length) %}
-                        <option>{{ forwards[x]['player_name'] }}, {{ forwards[x]['nrl_team'] }}</option>
-                        {% endfor %}
-                    </select>
+                    <select class="form-control" name="player" id="prop1"></select>
                 </div>
             </td>
             <td>
@@ -173,15 +156,7 @@
             <td style="white-space: nowrap;">Hooker</td>
             <td>
                 <div class="form-group">
-                    <select class="form-control" name="playmaker">
-                        {% if hooker %}
-                        <option>{{ hooker['lineup_player_name'] }}, {{ hooker['lineup_nrl_team'] }}</option>
-                        {% endif %}
-                        <option>None</option>
-                        {% for x in range(playmakers_length) %}
-                        <option>{{ playmakers[x]['player_name'] }}, {{ playmakers[x]['nrl_team'] }}</option>
-                        {% endfor %}
-                    </select>
+                    <select class="form-control" name="player" id="hooker"></select>
                 </div>
             </td>
             <td>
@@ -190,15 +165,7 @@
             <td style="white-space: nowrap;">Prop</td>
             <td>
                 <div class="form-group">
-                    <select class="form-control" name="forward">
-                        {% if prop2 %}
-                        <option>{{ prop2['lineup_player_name'] }}, {{ prop2['lineup_nrl_team'] }}</option>
-                        {% endif %}
-                        <option>None</option>
-                        {% for x in range(forwards_length) %}
-                        <option>{{ forwards[x]['player_name'] }}, {{ forwards[x]['nrl_team'] }}</option>
-                        {% endfor %}
-                    </select>
+                    <select class="form-control" name="player" id="prop2"></select>
                 </div>
             </td>
             <td>
@@ -207,15 +174,7 @@
             <td style="white-space: nowrap;">2nd Row</td>
             <td>
                 <div class="form-group">
-                    <select class="form-control" name="forward">
-                        {% if row1 %}
-                        <option>{{ row1['lineup_player_name'] }}, {{ row1['lineup_nrl_team'] }}</option>
-                        {% endif %}
-                        <option>None</option>
-                        {% for x in range(forwards_length) %}
-                        <option>{{ forwards[x]['player_name'] }}, {{ forwards[x]['nrl_team'] }}</option>
-                        {% endfor %}
-                    </select>
+                    <select class="form-control" name="player" id="row1"></select>
                 </div>
             </td>
             <td>
@@ -224,15 +183,7 @@
             <td style="white-space: nowrap;">2nd Row</td>
             <td>
                 <div class="form-group">
-                    <select class="form-control" name="forward">
-                        {% if row2 %}
-                        <option>{{ row2['lineup_player_name'] }}, {{ row2['lineup_nrl_team'] }}</option>
-                        {% endif %}
-                        <option>None</option>
-                        {% for x in range(forwards_length) %}
-                        <option>{{ forwards[x]['player_name'] }}, {{ forwards[x]['nrl_team'] }}</option>
-                        {% endfor %}
-                    </select>
+                    <select class="form-control" name="player" id="row2"></select>
                 </div>
             </td>
             <td>
@@ -241,15 +192,7 @@
             <td style="white-space: nowrap;">Lock</td>
             <td>
                 <div class="form-group">
-                    <select class="form-control" name="forward">
-                        {% if lock %}
-                        <option>{{ lock['lineup_player_name'] }}, {{ lock['lineup_nrl_team'] }}</option>
-                        {% endif %}
-                        <option>None</option>
-                        {% for x in range(forwards_length) %}
-                        <option>{{ forwards[x]['player_name'] }}, {{ forwards[x]['nrl_team'] }}</option>
-                        {% endfor %}
-                    </select>
+                    <select class="form-control" name="player" id="lock"></select>
                 </div>
             </td>
             <td>
@@ -258,15 +201,7 @@
             <td style="white-space: nowrap;">Interchange 1</td>
             <td>
                 <div class="form-group">
-                    <select class="form-control" name="interchange">
-                        {% if interchange1 %}
-                        <option>{{ interchange1['lineup_player_name'] }}, {{ interchange1['lineup_nrl_team'] }}</option>
-                        {% endif %}
-                        <option>None</option>
-                        {% for x in range(squad_length) %}
-                        <option>{{ squad[x]['player_name'] }}, {{ squad[x]['nrl_team'] }}</option>
-                        {% endfor %}
-                    </select>
+                    <select class="form-control" name="player" id="int1"></select>
                 </div>
             </td>
             <td>
@@ -275,15 +210,7 @@
             <td style="white-space: nowrap;">Interchange 2</td>
             <td>
                 <div class="form-group">
-                    <select class="form-control" name="interchange">
-                        {% if interchange2 %}
-                        <option>{{ interchange2['lineup_player_name'] }}, {{ interchange2['lineup_nrl_team'] }}</option>
-                        {% endif %}
-                        <option>None</option>
-                        {% for x in range(squad_length) %}
-                        <option>{{ squad[x]['player_name'] }}, {{ squad[x]['nrl_team'] }}</option>
-                        {% endfor %}
-                    </select>
+                    <select class="form-control" name="player" id="int2"></select>
                 </div>
             </td>
             <td>
@@ -292,15 +219,7 @@
             <td style="white-space: nowrap;">Interchange 3</td>
             <td>
                 <div class="form-group">
-                    <select class="form-control" name="interchange">
-                        {% if interchange3 %}
-                        <option>{{ interchange3['lineup_player_name'] }}, {{ interchange3['lineup_nrl_team'] }}</option>
-                        {% endif %}
-                        <option>None</option>
-                        {% for x in range(squad_length) %}
-                        <option>{{ squad[x]['player_name'] }}, {{ squad[x]['nrl_team'] }}</option>
-                        {% endfor %}
-                    </select>
+                    <select class="form-control" name="player" id="int3"></select>
                 </div>
             </td>
             <td>
@@ -309,15 +228,7 @@
             <td style="white-space: nowrap;">Interchange 4</td>
             <td>
                 <div class="form-group">
-                    <select class="form-control" name="interchange">
-                        {% if interchange4 %}
-                        <option>{{ interchange4['lineup_player_name'] }}, {{ interchange4['lineup_nrl_team'] }}</option>
-                        {% endif %}
-                        <option>None</option>
-                        {% for x in range(squad_length) %}
-                        <option>{{ squad[x]['player_name'] }}, {{ squad[x]['nrl_team'] }}</option>
-                        {% endfor %}
-                    </select>
+                    <select class="form-control" name="player" id="int4"></select>
                 </div>
             </td>
             <td>
@@ -326,69 +237,34 @@
             <td>
                 Captain:
                 <div class="form-group">
-                    <select class="form-control" name="captain">
-                        {% if captain %}
-                        <option>{{ captain['lineup_player_name'] }}, {{ captain['lineup_nrl_team'] }}</option>
-                        {% endif %}
-                        {% for x in range(squad_length) %}
-                        <option>{{ squad[x]['player_name'] }}, {{ squad[x]['nrl_team'] }}</option>
-                        {% endfor %}
-                    </select>
+                    <select class="form-control" name="captain" id="captain"></select>
                 </div>
-                {% if powerplay == true %}
+                <div id="secondCaptainSelect" hidden>
                 Captain 2:
                 <div class="form-group">
-                    <select class="form-control" name="captain">
-                        {% if captain2 %}
-                        <option>{{ captain2['lineup_player_name'] }}, {{ captain2['lineup_nrl_team'] }}</option>
-                        {% endif %}
-                        {% for x in range(squad_length) %}
-                        <option>{{ squad[x]['player_name'] }}, {{ squad[x]['nrl_team'] }}</option>
-                        {% endfor %}
-                    </select>
+                    <select class="form-control" name="captain" id="captain2"></select>
                 </div>
-                {% endif %}
+                </div>
                 Vice-Captain:
                 <div class="form-group">
-                    <select class="form-control" name="vice">
-                        {% if lineup_exists %}
-                        <option>{{ existing_vice[0]['lineup_player_name'] }}, {{ existing_vice[0]['lineup_nrl_team'] }}</option>
-                        {% endif %}
-                        {% for x in range(squad_length) %}
-                        <option>{{ squad[x]['player_name'] }}, {{ squad[x]['nrl_team'] }}</option>
-                        {% endfor %}
-                    </select>
+                    <select class="form-control" name="vice" id="vice"></select>
                 </div>
             </td>
             <td>
                 Kicker:
                 <div class="form-group">
-                    <select class="form-control" name="kicker">
-                        {% if lineup_exists %}
-                        <option>{{ existing_kicker[0]['lineup_player_name'] }}, {{ existing_kicker[0]['lineup_nrl_team'] }}</option>
-                        {% endif %}
-                        {% for x in range(squad_length) %}
-                        <option>{{ squad[x]['player_name'] }}, {{ squad[x]['nrl_team'] }}</option>
-                        {% endfor %}
-                    </select>
+                    <select class="form-control" name="kicker" id="kicker"></select>
                 </div>
                 Backup Kicker:
                 <div class="form-group">
-                    <select class="form-control" name="backup">
-                        {% if lineup_exists %}
-                        <option>{{ existing_backup[0]['lineup_player_name'] }}, {{ existing_backup[0]['lineup_nrl_team'] }}</option>
-                        {% endif %}
-                        {% for x in range(squad_length) %}
-                        <option>{{ squad[x]['player_name'] }}, {{ squad[x]['nrl_team'] }}</option>
-                        {% endfor %}
-                    </select>
+                    <select class="form-control" name="backup" id="backupKicker"></select>
                 </div>
             </td>
         </tr>
         <tr>
             <td></td>
             <td>
-                <button type="submit" name = "submit_lineup" class="btn btn-success">Submit Lineup</button>
+                <button type="submit" name="submit_lineup" class="btn btn-success">Submit Lineup</button>
             </td>
         </tr>
         </form>
@@ -397,4 +273,13 @@
     </table>
     </div>
     </div>
-{% endblock %}
+</main>
+
+<footer class="small text-center text-muted">
+    Data provided by <a href="https://www.nrl.com">NRL.com</a>. View <a
+        href="https://www.nrl.com/terms-of-use">NRL’s Terms of Use</a>.
+</footer>
+<script type="module" src="js/index.js"></script>
+</body>
+
+</html>

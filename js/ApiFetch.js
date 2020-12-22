@@ -81,7 +81,31 @@ export async function UpdatePlayerXrlTeam(xrlTeam, playerInfo) {
     } else {
         document.getElementById('feedback').innerText += 'Network response not ok';
     }
+}
 
+export async function GetLineup(idToken) {
+    const response = await fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/lineup', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': idToken         
+        }
+    });
+    const data = await response.json();
+    return data;
+}
+
+export async function SetLineup(idToken, players) {
+    const response = await fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/lineup', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': idToken         
+        },
+        body: JSON.stringify(players)
+    });
+    const data = await response.json();
+    return data;
 }
 
 function getCookie(cname) {

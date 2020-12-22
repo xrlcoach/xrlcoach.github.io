@@ -113,3 +113,5 @@ async function submitLineup(event) {
     await SetLineup(idToken, lineup);
     window.location.href = 'index.html';
 }
+
+window.submitLineup = submitLineup;

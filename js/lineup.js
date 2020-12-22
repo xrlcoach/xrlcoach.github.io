@@ -36,11 +36,11 @@ async function PopulateLineup() {
             option.innerText = player['name+club'];
             option.value = player['name+club'];
             document.getElementById(positions_backs[i]).appendChild(option);
-            let otherBacks = backs.filter(p => p['name+club'] != player['name+club']);
+            let otherBacks = backs.filter(p => !player['name+club'].startsWith(p['player_name']));
             for (let j = 0; j < otherBacks.length; j++) {
                 option = document.createElement('option');
-                option.innerText = otherBacks[i]['name+club'];
-                option.value = otherBacks[i]['name+club'];
+                option.innerText = otherBacks[i]['player_name'];
+                option.value = otherBacks[i]['player_name'] + ';' + otherBacks[i]['nrl_club'];
                 document.getElementById(positions_backs[i]).appendChild(option);
             }
         }
@@ -50,11 +50,11 @@ async function PopulateLineup() {
             option.innerText = player['name+club'];
             option.value = player['name+club'];
             document.getElementById(positions_forwards[i]).appendChild(option);
-            let otherForwards = forwards.filter(p => p['name+club'] != player['name+club']);
+            let otherForwards = forwards.filter(p => !player['name+club'].startsWith(p['player_name']));
             for (let j = 0; j < otherForwards.length; j++) {
                 option = document.createElement('option');
-                option.innerText = otherForwards[i]['name+club'];
-                option.value = otherForwards[i]['name+club'];
+                option.innerText = otherForwards[i]['player_name'];
+                option.value = otherForwards[i]['player_name'] + ';' + otherForwards[i]['nrl_club'];
                 document.getElementById(positions_forwards[i]).appendChild(option);
             }
         }
@@ -64,11 +64,11 @@ async function PopulateLineup() {
             option.innerText = player['name+club'];
             option.value = player['name+club'];
             document.getElementById(positions_playmakers[i]).appendChild(option);
-            let otherPlaymakers = playmakers.filter(p => p['name+club'] != player['name+club']);
+            let otherPlaymakers = playmakers.filter(p => !player['name+club'].startsWith(p['player_name']));
             for (let j = 0; j < otherPlaymakers.length; j++) {
                 option = document.createElement('option');
-                option.innerText = otherPlaymakers[i]['name+club'];
-                option.value = otherPlaymakers[i]['name+club'];
+                option.innerText = otherPlaymakers[i]['player_name'];
+                option.value = otherPlaymakers[i]['player_name'] + ';' + otherPlaymakers[i]['nrl_club'];
                 document.getElementById(positions_playmakers[i]).appendChild(option);
             }
         }
@@ -76,24 +76,24 @@ async function PopulateLineup() {
         for (let i = 0; i < positions_backs.length; i++) {
             for (let j = 0; j < backs.length; j++) {
                 let option = document.createElement('option');
-                option.innerText = backs[i]['name+club'];
-                option.value = backs[i]['name+club'];
+                option.innerText = backs[i]['player_name'];
+                option.value = backs[i]['player_name'] + ';' + backs[i]['nrl_club'];
                 document.getElementById(positions_backs[i]).appendChild(option);
             }
         }
         for (let i = 0; i < positions_forwards.length; i++) {
             for (let j = 0; j < forwards.length; j++) {
                 let option = document.createElement('option');
-                option.innerText = forwards[i]['name+club'];
-                option.value = forwards[i]['name+club'];
+                option.innerText = forwards[i]['player_name'];
+                option.value = forwards[i]['player_name'] + ';' + forwards[i]['nrl_club'];
                 document.getElementById(positions_forwards[i]).appendChild(option);
             }
         }
         for (let i = 0; i < positions_playmakers.length; i++) {
             for (let j = 0; j < playmakers.length; j++) {
                 let option = document.createElement('option');
-                option.innerText = playmakers[i]['name+club'];
-                option.value = playmakers[i]['name+club'];
+                option.innerText = playmakers[i]['player_name'];
+                option.value = playmakers[i]['player_name'] + ';' + playmakers[i]['nrl_club'];
                 document.getElementById(positions_playmakers[i]).appendChild(option);
             }
         }

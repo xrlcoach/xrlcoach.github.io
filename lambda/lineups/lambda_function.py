@@ -63,23 +63,22 @@ def lambda_handler(event, context):
             "row1": "forward",
             "row2": "forward"
             }
-        print("Writing lineup to table")
-        with lineup_table.batch_writer() as batch:
-            for player in lineup:
-                batch.delete_item(
-                    Key={
-                        'name+club': player['name+club'],
-                        'xrlTeam+round': team_short + str(round_number)
-                    }
-                )
-                batch.put_item(
-                    Item={
-                        'name+club': player['name+club'],
-                        'xrlTeam+round': team_short + str(round_number),
-                        'position_specific': player['position'],
-                        'position_general': positions[player['position']]
-                    }
-                )
+        print("Writing lineup to table")        
+        for player in lineup:
+            lineup_table.delete_item(
+                Key={
+                    'name+club': player['name+club'],
+                    'xrlTeam+round': team_short + str(round_number)
+                }
+            )
+            lineup_table.put_item(
+                Item={
+                    'name+club': player['name+club'],
+                    'xrlTeam+round': team_short + str(round_number),
+                    'position_specific': player['position'],
+                    'position_general': positions[player['position']]
+                }
+            )
         print("DB write complete")
         return {
                 'statusCode': 200,

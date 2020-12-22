@@ -33,6 +33,7 @@ async function PopulateLineup() {
         for (let i = 0; i < positions_backs.length; i++) {
             let option = document.createElement('option');
             let player = lineup.filter(p => p.position_specific == positions_backs[i]);
+            console.log(player);
             option.innerText = player['name+club'];
             option.value = player['name+club'];
             document.getElementById(positions_backs[i]).appendChild(option);

@@ -75,7 +75,7 @@ async function PopulateLineup() {
         }
         for (let i = 0; i < positions_forwards.length; i++) {
             for (let j = 0; j < forwards.length; j++) {
-                option = document.createElement('option');
+                let option = document.createElement('option');
                 option.innerText = forwards[i]['name+club'];
                 option.value = forwards[i]['name+club'];
                 document.getElementById(positions_forwards[i]).appendChild(option);
@@ -83,7 +83,7 @@ async function PopulateLineup() {
         }
         for (let i = 0; i < positions_playmakers.length; i++) {
             for (let j = 0; j < playmakers.length; j++) {
-                option = document.createElement('option');
+                let option = document.createElement('option');
                 option.innerText = playmakers[i]['name+club'];
                 option.value = playmakers[i]['name+club'];
                 document.getElementById(positions_playmakers[i]).appendChild(option);

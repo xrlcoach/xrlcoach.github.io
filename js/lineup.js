@@ -22,11 +22,11 @@ window.onload = async () => {
 async function PopulateLineup() {
     const lineup = await GetLineup(idToken);
     const backs = squad.filter(p => p.position == 'Back' || p.position2 == 'Back');
-    console.log('Backs: ' + backs);
+    console.log('Backs: ' + backs[0]);
     const forwards = squad.filter(p => p.position == 'Forward' || p.position2 == 'Forward');
-    console.log('Forwards: ' + forwards);
+    console.log('Forwards: ' + forwards[0]);
     const playmakers = squad.filter(p => p.position == 'Playmaker' || p.position2 == 'Playmaker');
-    console.log('Playmakers: ' + playmakers);
+    console.log('Playmakers: ' + playmakers[0]);
     if (lineup.length > 0) {
         console.log('Pre-filling existing lineup');
         console.log(lineup[0]);
@@ -60,7 +60,7 @@ async function PopulateLineup() {
         }
         for (let i = 0; i < positions_playmakers.length; i++) {
             let option = document.createElement('option');
-            let player = lineup.filter(p => p.position_specific == positions_playmakers[i])
+            let player = lineup.filter(p => p.position_specific == positions_playmakers[i]);
             option.innerText = player['name+club'];
             option.value = player['name+club'];
             document.getElementById(positions_playmakers[i]).appendChild(option);

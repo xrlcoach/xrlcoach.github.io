@@ -108,6 +108,17 @@ export async function SetLineup(idToken, players) {
     return data;
 }
 
+export async function GetAllFixtures() {
+    const response = await fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/fixtures', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'        
+        }
+    });
+    const data = await response.json();
+    return data;
+}
+
 function getCookie(cname) {
     var name = cname + "=";
     var ca = document.cookie.split(';');

@@ -52,7 +52,6 @@ def lambda_handler(event, context):
         with table.batch_writer() as batch:
             batch.put_item(Item={
                 "username": username,
-                "password": hash,
                 "team_name": team_name,
                 "team_short": team_short,
                 "homeground": homeground,

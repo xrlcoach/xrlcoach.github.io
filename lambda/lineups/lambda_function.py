@@ -28,10 +28,10 @@ def lambda_handler(event, context):
     )
     round_number = resp['Items'][0]['round_number']
     print(f"Round Number: {round_number}")
-    if method == 'GET':
-        existing_lineup = lineup_table.scan(
+    existing_lineup = lineup_table.scan(
             FilterExpression=Attr('xrlTeam+round').eq(team_short+str(round_number))
             )
+    if method == 'GET':
         if len(existing_lineup['Items']) > 0:
             print("Existing lineup found. Returning player list.")
         else:
@@ -64,19 +64,24 @@ def lambda_handler(event, context):
             "row2": "forward"
             }
         print("Writing lineup to table")        
-        for player in lineup:
+        for player in existing_lineup['Items']:
             lineup_table.delete_item(
                 Key={
                     'name+club': player['name+club'],
                     'xrlTeam+round': team_short + str(round_number)
                 }
             )
+        for player in lineup:
             lineup_table.put_item(
                 Item={
                     'name+club': player['name+club'],
                     'xrlTeam+round': team_short + str(round_number),
                     'position_specific': player['position'],
-                    'position_general': positions[player['position']]
+                    'position_general': positions[player['position']],
+                    'captain': player['captain'],
+                    'vice': player['vice'],
+                    'kicker': player['kicker'],
+                    'backup_kicker': player['backupKicker']
                 }
             )
         print("DB write complete")

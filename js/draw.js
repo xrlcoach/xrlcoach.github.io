@@ -5,11 +5,13 @@ let roundToDisplay;
 
 window.onload = async function() {
     draw = await GetAllFixtures();
+    console.log(draw);
     if (draw.length == 0) {
         document.getElementById('feedback').innerText = 'No draw yet. Fixtures will be generated once all teams have joined.';
         return;
     }
     let activeRounds = draw.filter(r => r.active == true);
+    console.log(activeRounds);
     roundToDisplay = activeRounds.find(r => r.round_number == Math.max(activeRounds.map(r => r.round_number)));
     console.log('Current round: ' + roundToDisplay);
     for (let i = 0; i < draw.length; i++) {

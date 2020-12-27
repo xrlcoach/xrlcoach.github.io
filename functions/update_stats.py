@@ -1,6 +1,7 @@
 import time
 import datetime
 import boto3
+from boto3.dynamodb.conditions import Key, Attr
 import os
 import stat
 from decimal import Decimal
@@ -19,6 +20,9 @@ from selenium.common.exceptions import NoSuchElementException
 dynamodbClient = boto3.client('dynamodb', 'ap-southeast-2')
 dynamodbResource = boto3.resource('dynamodb', 'ap-southeast-2')
 table = dynamodbResource.Table('stats2020')
+squads_table = dynamodbResource.Table('players2020')
+users_table = dynamodbResource.Table('users2020')
+lineups_table = dynamodbResource.Table('lineups2020')
 
 stat_columns_final = []
 
@@ -223,7 +227,7 @@ def get_stats():
 
             for i in range(len(home_players)):
                 player = []
-                player.append(home_players[i] + home_team)
+                player.append(home_players[i] + ';' +  home_team)
                 stat_map = {}
                 ps = home_stats[i].split()
                 if len(ps) > len(stat_columns_final):
@@ -258,7 +262,7 @@ def get_stats():
 
             for i in range(len(away_players)):
                 player = []
-                player.append(away_players[i] + away_team)
+                player.append(away_players[i] + ';' + away_team)
                 stat_map = {}
                 ps = away_stats[i].split()
                 if len(ps) > len(stat_columns_final):
@@ -296,16 +300,47 @@ def get_stats():
         # must close the driver after task finished
         driver.close()
 
-    round_table = '_'.join(round_number.split('-'))
-    round_table = round_table.lower()  
+    print("Stat scraping complete. Calculating player scores...")
     
+    for player in player_stats_final:
+        player_split = player.split(';')
+        squad_entry = squads_table.get_item(
+            Key={
+                'player_name': player_split[0],
+                'nrl_club': player_split[1]
+            }
+        )['Item']
+        player_scores = {}
+        player_scores[squad_entry['position']] = {
+            'tries': player[1]['Tries'],
+            'sin_bins': player[1]['Sin Bins'],
+            'send_offs': player[1]['Send Offs'],
+            'involvement_try': involvement_try(player[1], squad_entry['position']),
+            'playmaker_try': playmaker_try(player[1], squad_entry['position']),
+            'mia': missing(player[1], squad_entry['position']),
+            'concede': player[1]['Missed Tackles'] > 4 or player[1]['Errors'] > 2
+        }
+        if squad_entry['position2'] != '':
+            player_scores[squad_entry['position2']] = {
+            'tries': player[1]['Tries'],
+            'sin_bins': player[1]['Sin Bins'],
+            'send_offs': player[1]['Send Offs'],
+            'involvement_try': involvement_try(player[1], squad_entry['position2']),
+            'playmaker_try': playmaker_try(player[1], squad_entry['position2']),
+            'mia': missing(player[1], squad_entry['position2']),
+            'concede': player[1]['Missed Tackles'] > 4 or player[1]['Errors'] > 2
+            }
+        player_scores['kicker'] = {
+            'goals': player[1]['Conversions'] + player[1]['Penalty Goals'],
+            'field_goals': player[1]['Field Goals']
+        }
+        player.append(player_scores)
+
 
     print("Loading to dynamodb, table: stats2020")
     print("round_number: " + number)
     print("First Player+Club: " + player_stats_final[0][0])
     print("First stat map: " + str(player_stats_final[0][1]))
-
-
     
     with table.batch_writer() as batch:
         for player in player_stats_final:
@@ -316,11 +351,47 @@ def get_stats():
             batch.put_item(Item={
                 "name+club": player[0],
                 "round_number": number,
-                "stats": player[1]
-            })
-            
+                "stats": player[1],
+                "scoring_stats": player[2]
+            })            
 
-    print("Stats update complete")
+    print("Stats update complete, scoring lineups")
+    users = users_table.scan()['Items']
+    xrl_teams = [user['team_short'] for user in users]
+    for team in xrl_teams:
+        resp = lineups_table.scan(
+            FilterExpression=Attr('xrlTeam+round').eq(team + number)
+        )
+        lineup = resp['Items']
+        for player in lineup:
+            player_lineup_score = 0
+            for player_stats in player_stats_final:
+                if player['name+club'] == player_stats[0]:
+                    player_scoring_stats = player_stats[2][player['position_general']]
+                    player_lineup_score += player_scoring_stats['tries'] * 4
+                    player_lineup_score -= player_scoring_stats['sin_bins'] * 2
+                    player_lineup_score -= player_scoring_stats['send_offs'] * 4
+                    if player_scoring_stats['involvement_try']: player_lineup_score += 4
+                    if player_scoring_stats['playmaker_try']: player_lineup_score += 4
+                    if player_scoring_stats['mia']: player_lineup_score -= 4
+                    if player_scoring_stats['concede']: player_lineup_score -= 4
+                    if player['kicker']:
+                        player_lineup_score += player_scoring_stats['goals'] * 2
+                        player_lineup_score += player_scoring_stats['field_goals']
+                    if player['captain'] or player['captain2']:
+                        player_lineup_score *= 2
+            lineups_table.update_item(
+                Key={
+                    'name+club': player['name+club'],
+                    'xrlTeam+round': team + number
+                },
+                UpdateExpression="set score=:s",
+                ExpressionAttributeValues={
+                    ':s': player_lineup_score
+                }
+            )
+    print('Lineup scoring complete')       
+            
 
 if __name__ == '__main__':
     get_stats()

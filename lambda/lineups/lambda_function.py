@@ -49,19 +49,19 @@ def lambda_handler(event, context):
         lineup = json.loads(event['body'])
         print("Lineup: " + str(lineup))
         positions = {
-            "fullback": "back",
-            "winger1": "back",
-            "centre1": "back",
-            "centre2": "back",
-            "winger2": "back",
-            "five_eighth": "playmaker",
-            "halfback": "playmaker",
-            "hooker": "playmaker",
-            "prop1": "forward",
-            "lock": "forward",
-            "prop2": "forward",
-            "row1": "forward",
-            "row2": "forward"
+            "fullback": "Back",
+            "winger1": "Back",
+            "centre1": "Back",
+            "centre2": "Back",
+            "winger2": "Back",
+            "five_eighth": "Playmaker",
+            "halfback": "Playmaker",
+            "hooker": "Playmaker",
+            "prop1": "Forward",
+            "lock": "Forward",
+            "prop2": "Forward",
+            "row1": "Forward",
+            "row2": "Forward"
             }
         print("Writing lineup to table")        
         for player in existing_lineup['Items']:

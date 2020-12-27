@@ -24,9 +24,9 @@ def lambda_handler(event, context):
     team_short = user['team_short']
     print(f"XRL Team: {team_short}")
     resp = round_table.scan(
-        FilterExpression=Attr('open').eq(True)
+        FilterExpression=Attr('active').eq(False)
     )
-    round_number = resp['Items'][0]['round_number']
+    round_number = min(r['round_number'] for r in resp['Items'])
     print(f"Round Number: {round_number}")
     existing_lineup = lineup_table.scan(
             FilterExpression=Attr('xrlTeam+round').eq(team_short+str(round_number))

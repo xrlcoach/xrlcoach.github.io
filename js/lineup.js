@@ -6,9 +6,7 @@ const positions_playmakers = ['five_eighth', 'halfback', 'hooker'];
 const positions_forwards = ['prop1', 'prop2', 'lock', 'row1', 'row2'];
 const interchange = ['int1', 'int2', 'int3', 'int4'];
 const roles = ['captain', 'captain2', 'vice', 'kicker', 'backupKicker'];
-let user;
-let squad;
-let lineup;
+let user, squad, lineup, backs, forwards, playmakers;
 
 window.onload = async () => {
     user = await GetActiveUserInfo(idToken);
@@ -17,11 +15,11 @@ window.onload = async () => {
     console.log(squad[0]);
     lineup = await GetLineup(idToken);
     console.log(lineup.length);
-    const backs = squad.filter(p => p.position == 'Back' || p.position2 == 'Back');
+    backs = squad.filter(p => p.position == 'Back' || p.position2 == 'Back');
     console.log('Backs: ' + backs[0]);
-    const forwards = squad.filter(p => p.position == 'Forward' || p.position2 == 'Forward');
+    forwards = squad.filter(p => p.position == 'Forward' || p.position2 == 'Forward');
     console.log('Forwards: ' + forwards[0]);
-    const playmakers = squad.filter(p => p.position == 'Playmaker' || p.position2 == 'Playmaker');
+    playmakers = squad.filter(p => p.position == 'Playmaker' || p.position2 == 'Playmaker');
     console.log('Playmakers: ' + playmakers[0]);
     PopulateLineup();
 }

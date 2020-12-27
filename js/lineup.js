@@ -99,9 +99,23 @@ async function PopulateLineup() {
 
 function createOption(player, position) {
     let option = document.createElement('option');
-    option.innerText = player['player_name'] || player['name+club'].split(';')[0];
-    option.value = player['player_name'] ? player['player_name'] + ';' + player['nrl_club'] : player['name+club'];
+    option.innerText = player['player_name'];
+    option.value = player['player_id'];
     document.getElementById(position).appendChild(option);
+}
+
+async function fillPositionOptions(select) {
+    let player = squad.find(p => p.player_id == select.value);
+    let option = document.createElement('option');
+    option.innerText = player['position'];
+    option.value = player['position'];
+    document.getElementById(select.id + 'Position').appendChild(option);
+    if (player['position2']) {
+        let option = document.createElement('option');
+        option.innerText = player['position2'];
+        option.value = player['position2'];
+        document.getElementById(select.id + 'Position').appendChild(option);
+    }
 }
 
 async function submitLineup(event) {
@@ -111,9 +125,18 @@ async function submitLineup(event) {
     const playerRoles = document.getElementsByName('role');
     for (let i = 0; i < players.length; i++) {
         if (players[i].value === '') continue;
+        let playerInfo = squad.find(p => p.player_id == players[i].value);
+        let positionGeneral;
+        if (positions_backs.includes(players[i].id)) positionGeneral = 'Back'; 
+        if (positions_forwards.includes(players[i].id)) positionGeneral = 'Forward'; 
+        if (positions_playmakers.includes(players[i].id)) positionGeneral = 'Playmaker'; 
+        if (interchange.includes(players[i].id)) positionGeneral = document.getElementById(players[i].id + 'Position').value; 
         let entry = {
-            "name+club": players[i].value,
-            "position": players[i].id
+            "player_id": playerInfo.player_id,
+            "player_name": playerInfo.player_name,
+            "nrl_club": playerInfo.nrl_club,
+            "position": players[i].id,
+            "position_general": positionGeneral
         };
         for (let j = 0; j < playerRoles.length; j++) {
             if (playerRoles[j].value == players[i].value) {

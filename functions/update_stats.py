@@ -23,6 +23,14 @@ table = dynamodbResource.Table('stats2020')
 squads_table = dynamodbResource.Table('players2020')
 users_table = dynamodbResource.Table('users2020')
 lineups_table = dynamodbResource.Table('lineups2020')
+rounds_table = dynamodbResource.Table('rounds2020')
+
+forwards = ['Prop', '2nd Row', 'Lock', 'Interchange']
+playmakers = ['Five-Eighth', 'Halfback', 'Hooker']
+backs = ['Winger', 'Centre', 'Fullback']
+
+resp = squads_table.scan()
+squads = resp["Items"]
 
 stat_columns_final = []
 
@@ -45,7 +53,7 @@ def driver_setup():
     options.binary_location = "C:/Program Files (x86)/Google/Chrome/Application/chrome.exe"
 
     return webdriver.Chrome(
-        executable_path='./chromedriver.exe', options=options
+        executable_path='../../chromedriver.exe', options=options
     )
     
 options = Options()
@@ -60,7 +68,7 @@ def involvement_try(player, position):
     #=IF(AND(D2="Back",AB2>34),1,IF(AND(D2="Playmaker",AB2>44),1,IF(AND(D2="Forward",AB2>49),1,0)))
     relevant_stats = ["Tries", "Field Goals", "All Runs", "Line Breaks", "Line Break Assists", "Try Assists", "Tackle Breaks",
         "Offloads", "Tackles Made", "Kicks", "40/20", "20/40"]
-    stats = sum([stat for stat in player if stat in relevant_stats])
+    stats = sum([player[stat] for stat in player.keys() if stat in relevant_stats])
     if position == 'Back' and stats > 34:
         return True
     elif position == 'Playmaker' and stats > 44:
@@ -73,7 +81,7 @@ def playmaker_try(player, position):
     #=IF(S2>7,1,IF(D2="Back",IF(L2>16,1,0),IF(T2>39,1,IF(D2="Playmaker",IF(W2>249,1,0),IF(D2="Forward",IF(M2>139,1,0),0)))))
     relevant_stats = ["Line Breaks", "Line Break Assists", "Try Assists", "Tackle Breaks",
         "Offloads", "40/20", "20/40"]
-    creative = sum([stat for stat in player if stat in relevant_stats])
+    creative = sum([player[stat] for stat in player.keys() if stat in relevant_stats])
     if creative > 7:
         return True
     if position == 'Back':
@@ -85,7 +93,7 @@ def playmaker_try(player, position):
         if player["Kicking Metres"] > 249:
             return True
     if position == 'Forward':
-        if player["Tackles Mades"] > 39:
+        if player["Tackles Made"] > 39:
             return True
         if player["All Run Metres"] > 139:
             return True
@@ -95,7 +103,7 @@ def missing(player, position):
     #=IF(AND(F2>49,G2<2),IF(AND(D2="Back",AB2<15),1,IF(AND(D2="Playmaker",AB2<20),1,IF(AND(D2="Forward",AB2<25),1,0))),0)
     relevant_stats = ["Tries", "Field Goals", "All Runs", "Line Breaks", "Line Break Assists", "Try Assists", "Tackle Breaks",
         "Offloads", "Tackles Made", "Kicks", "40/20", "20/40"]
-    stats = sum([stat for stat in player if stat in relevant_stats])
+    stats = sum([player[stat] for stat in player.keys() if stat in relevant_stats])
     if player["Mins Played"] > 49 and player["Tries"] < 2:
         if position == 'Back' and stats < 15:
             return True
@@ -300,8 +308,8 @@ def get_stats():
                 player.append(stat_map)
                 player_stats_final.append(player)
 
-            if match_count == 1:
-                break
+            # if match_count == 1:
+            #     break
 
         # must close the driver after task finished
         driver.close()
@@ -309,13 +317,43 @@ def get_stats():
     print("Stat scraping complete. Calculating player scores...")
     
     for player in player_stats_final:
-        player_split = player.split(';')
-        squad_entry = squads_table.get_item(
-            Key={
-                'player_name': player_split[0],
-                'nrl_club': player_split[1]
-            }
-        )['Item']
+        player_split = player[0].split(';')
+        #print(player_split)
+        squad_entry = [p for p in squads if p['player_name'] == player_split[0].lower() and p['nrl_club'] == player_split[1]]
+        #print(resp)
+        if len(squad_entry) == 0:
+            squad_entry = [p for p in squads if p['player_name'] == player_split[0].lower()]
+            if len(squad_entry) == 0:
+                print(f"Couldn't find {player_split[0]} in database. Adding now. Remember to check position later.")
+                if player[1]['Position'] in forwards: new_player_position = 'Forward'
+                if player[1]['Position'] in playmakers: new_player_position = 'Playmaker'
+                if player[1]['Position'] in backs: new_player_position = 'Back'
+                new_player_id = max([int(p['player_id']) for p in squads]) + 1
+                squads_table.put_item(
+                    Item={
+                        'player_id': new_player_id,
+                        'player_name': player_split[0],
+                        'nrl_club': player_split[1],
+                        'position': new_player_position,
+                        'search_name': player_split[0].lower()
+                    }
+                )
+                squad_entry = {}
+                squad_entry['position'] = new_player_position
+                squad_entry['position2'] = ''
+            else:
+                squad_entry = squad_entry[0]
+                print(f"{player_split[0]} has moved to the {player_split[1]}. Updating his team in the database.")
+                squads_table.update_item(
+                    Key={
+                        'player_id': squad_entry['player_id']
+                    },
+                    UpdateExpression="set nrl_club=:c",
+                    ExpressionAttributeValues={
+                        ':c': player_split[1]
+                    }
+                )
+        else: squad_entry = squad_entry[0]
         player_scores = {}
         player_scores[squad_entry['position']] = {
             'tries': player[1]['Tries'],
@@ -326,7 +364,7 @@ def get_stats():
             'mia': missing(player[1], squad_entry['position']),
             'concede': player[1]['Missed Tackles'] > 4 or player[1]['Errors'] > 2
         }
-        if squad_entry['position2'] != '':
+        if squad_entry['position2'] and squad_entry['position2'] != '':
             player_scores[squad_entry['position2']] = {
             'tries': player[1]['Tries'],
             'sin_bins': player[1]['Sin Bins'],
@@ -348,31 +386,33 @@ def get_stats():
     print("First Player+Club: " + player_stats_final[0][0])
     print("First stat map: " + str(player_stats_final[0][1]))
     
-    with table.batch_writer() as batch:
-        for player in player_stats_final:
-            batch.delete_item(Key={
-                "name+club": player[0],
-                "round_number": number,
-            })
-            batch.put_item(Item={
-                "name+club": player[0],
-                "round_number": number,
-                "stats": player[1],
-                "scoring_stats": player[2]
-            })            
+    for player in player_stats_final:
+        table.delete_item(Key={
+            "name+club": player[0],
+            "round_number": number,
+        })
+        table.put_item(Item={
+            "name+club": player[0],
+            "round_number": number,
+            "stats": player[1],
+            "scoring_stats": player[2]
+        })            
 
     print("Stats update complete, scoring lineups")
     users = users_table.scan()['Items']
     xrl_teams = [user['team_short'] for user in users]
+    resp = lineups_table.scan(
+        FilterExpression=Attr('round_number').eq(number)
+    )
+    round_lineups = resp["Items"]
     for team in xrl_teams:
-        resp = lineups_table.scan(
-            FilterExpression=Attr('xrlTeam+round').eq(team + number)
-        )
-        lineup = resp['Items']
+        lineup = [p for p in round_lineups if p['xrl_team'] == team
         for player in lineup:
             player_lineup_score = 0
+            player_played = False
             for player_stats in player_stats_final:
-                if player['name+club'] == player_stats[0]:
+                if player['name+club'].lower() == player_stats[0].lower():
+                    player_played = player_stats[1]['Mins Played'] > 0
                     player_scoring_stats = player_stats[2][player['position_general']]
                     player_lineup_score += player_scoring_stats['tries'] * 4
                     player_lineup_score -= player_scoring_stats['sin_bins'] * 2
@@ -382,17 +422,19 @@ def get_stats():
                     if player_scoring_stats['mia']: player_lineup_score -= 4
                     if player_scoring_stats['concede']: player_lineup_score -= 4
                     if player['kicker']:
-                        player_lineup_score += player_scoring_stats['goals'] * 2
-                        player_lineup_score += player_scoring_stats['field_goals']
-                    if player['captain'] or player['captain2']:
+                        player_kicking_stats = player_stats[2]['kicker']
+                        player_lineup_score += player_kicking_stats['goals'] * 2
+                        player_lineup_score += player_kicking_stats['field_goals']
+                    if player['captain']:
                         player_lineup_score *= 2
             lineups_table.update_item(
                 Key={
                     'name+club': player['name+club'],
                     'xrlTeam+round': team + number
                 },
-                UpdateExpression="set score=:s",
+                UpdateExpression="set played=:p, score=:s",
                 ExpressionAttributeValues={
+                    ':p': player_played,
                     ':s': player_lineup_score
                 }
             )

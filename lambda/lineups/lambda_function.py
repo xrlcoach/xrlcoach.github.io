@@ -26,12 +26,12 @@ def lambda_handler(event, context):
         team_short = user['team_short']
         print(f"XRL Team: {team_short}")
         resp = round_table.scan(
-            FilterExpression=Attr('active').eq(False)
+            FilterExpression=Attr('in_progress').eq(False)
         )
-        round_number = min(r['round_number'] for r in resp['Items'])
+        round_number = min([r['round_number'] for r in resp['Items']])
         print(f"Round Number: {round_number}")
         existing_lineup = lineup_table.scan(
-                FilterExpression=Attr('xrlTeam+round').eq(team_short+str(round_number))
+                FilterExpression=Attr('xrl_team').eq(team_short) & Attr('round_number').eq(str(round_number))
                 )
     if method == 'GET':
         if id_token:
@@ -51,58 +51,61 @@ def lambda_handler(event, context):
         else:
             params = event["queryStringParameters"]
             print(params)
-            if 'specific' in params.keys():
-                team_and_round = params['specific']
-                print(f'Specific lineup requested is {team_and_round}, querying table')
-                resp = lineup_table.scan(
-                    FilterExpression=Attr('xrlTeam+round').eq(team_and_round)
-                )
-                return {
-                        'statusCode': 200,
-                        'headers': {
-                        'Access-Control-Allow-Headers': 'Content-Type',
-                        'Access-Control-Allow-Origin': '*',
-                        'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
-                        },
-                        'body': json.dumps(replace_decimals(resp['Items']))
-                }
+            team = params['team']
+            round_number = params['round']
+            print(f'Specific lineup requested is {team}, Round {round_number}. Querying table..')
+            resp = lineup_table.scan(
+                FilterExpression=Attr('xrl_team').eq(team) & Attr('round_number').eq(round_number)
+            )
+            return {
+                    'statusCode': 200,
+                    'headers': {
+                    'Access-Control-Allow-Headers': 'Content-Type',
+                    'Access-Control-Allow-Origin': '*',
+                    'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
+                    },
+                    'body': json.dumps(replace_decimals(resp['Items']))
+            }
     if method == 'POST':
         lineup = json.loads(event['body'])
         print("Lineup: " + str(lineup))
-        positions = {
-            "fullback": "Back",
-            "winger1": "Back",
-            "centre1": "Back",
-            "centre2": "Back",
-            "winger2": "Back",
-            "five_eighth": "Playmaker",
-            "halfback": "Playmaker",
-            "hooker": "Playmaker",
-            "prop1": "Forward",
-            "lock": "Forward",
-            "prop2": "Forward",
-            "row1": "Forward",
-            "row2": "Forward",
-            "int1": "Forward",
-            "int2": "Forward",
-            "int3": "Forward",
-            "int4": "Forward",
-            }
+        # positions = {
+        #     "fullback": "Back",
+        #     "winger1": "Back",
+        #     "centre1": "Back",
+        #     "centre2": "Back",
+        #     "winger2": "Back",
+        #     "five_eighth": "Playmaker",
+        #     "halfback": "Playmaker",
+        #     "hooker": "Playmaker",
+        #     "prop1": "Forward",
+        #     "lock": "Forward",
+        #     "prop2": "Forward",
+        #     "row1": "Forward",
+        #     "row2": "Forward",
+        #     "int1": "Forward",
+        #     "int2": "Forward",
+        #     "int3": "Forward",
+        #     "int4": "Forward",
+        #     }
         print("Writing lineup to table")        
         for player in existing_lineup['Items']:
             lineup_table.delete_item(
                 Key={
-                    'name+club': player['name+club'],
-                    'xrlTeam+round': team_short + str(round_number)
+                    'name+nrl+xrl+round': player['player_name'] + ';' + player['nrl_club'] + ';' + team_short + ';' + str(round_number)
                 }
             )
         for player in lineup:
             lineup_table.put_item(
                 Item={
-                    'name+club': player['name+club'],
-                    'xrlTeam+round': team_short + str(round_number),
+                    'name+nrl+xrl+round': player['player_name'] + ';' + player['nrl_club'] + ';' + team_short + ';' + str(round_number),
+                    'player_id': player['player_id'],
+                    'player_name': player['player_name'],
+                    'nrl_club': player['nrl_club'],
+                    'xrl_team': team_short,
+                    'round_number': str(round_number),
                     'position_specific': player['position'],
-                    'position_general': positions[player['position']],
+                    'position_general': player['positiion_general'],
                     'captain': player['captain'],
                     'vice': player['vice'],
                     'kicker': player['kicker'],

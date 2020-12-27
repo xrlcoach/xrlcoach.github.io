@@ -60,8 +60,8 @@ export async function GetPlayersFromXrlTeam(team) {
 
 export async function UpdatePlayerXrlTeam(xrlTeam, playerInfo) {
     var newTeam = xrlTeam == null ? 'None' : xrlTeam;
-    var playerName = playerInfo.split(';')[0]
-    var playerClub = playerInfo.split(';')[1]
+    // var playerName = playerInfo.split(';')[0]
+    // var playerClub = playerInfo.split(';')[1]
     const response = await fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/players', {
         method: 'POST',
         headers: {
@@ -70,8 +70,7 @@ export async function UpdatePlayerXrlTeam(xrlTeam, playerInfo) {
         },
         body: JSON.stringify({
             "operation": "pick_drop",
-            "player_name": playerName,
-            "nrl_club": playerClub,
+            "player_id": playerInfo,
             "xrl_team": newTeam
         })
     });
@@ -96,7 +95,7 @@ export async function GetLineup(idToken) {
 }
 
 export async function GetLineupByTeamAndRound(roundNumber, xrlTeam) {
-    const response = await fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/lineup?specific=' + team + roundNumber, {
+    const response = await fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/lineup?team=' + xrlTeam + '&round=' + roundNumber, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',

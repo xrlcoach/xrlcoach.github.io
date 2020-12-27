@@ -67,16 +67,14 @@ def lambda_handler(event, context):
         if body['operation'] == "pick_drop":
             print('Operation is pick/drop player, updating table...')
             try:
-                response = table.update_item(
+                table.update_item(
                     Key={
-                        'player_name': body['player_name'],
-                        'nrl_club': body['nrl_club']
+                        'player_id': body['player_id'],
                     },
                     UpdateExpression="set xrl_team=:x",
                     ExpressionAttributeValues={
                         ':x': body['xrl_team']
-                    },
-                    ReturnValues="UPDATED_NEW"
+                    }
                 )
                 print(f"{body['player_name']}'s XRL team changed to {body['xrl_team']}")
             except Exception as e:

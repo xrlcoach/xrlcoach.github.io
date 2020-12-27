@@ -95,6 +95,17 @@ export async function GetLineup(idToken) {
     return data;
 }
 
+export async function GetLineupByTeamAndRound(roundNumber, xrlTeam) {
+    const response = await fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/lineup?specific=' + team + roundNumber, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    });
+    const data = await response.json();
+    return data;
+}
+
 export async function SetLineup(idToken, players) {
     const response = await fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/lineup', {
         method: 'POST',

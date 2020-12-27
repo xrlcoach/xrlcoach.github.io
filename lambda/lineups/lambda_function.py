@@ -2,6 +2,7 @@ import json
 import boto3
 import base64
 from boto3.dynamodb.conditions import Key, Attr
+import decimal
 
 
 dynamodbClient = boto3.client('dynamodb', 'ap-southeast-2')
@@ -15,36 +16,56 @@ def lambda_handler(event, context):
     method = event["httpMethod"]
     print(f"Method is {method}")
     id_token = event['headers']['Authorization']
-    payload = id_token.split('.')[1]
-    decoded = base64.b64decode(payload + '=======')
-    username = json.loads(decoded)['cognito:username']
-    print(f"User: {username}")
-    resp = user_table.get_item(Key={'username': username})
-    user = resp['Item']
-    team_short = user['team_short']
-    print(f"XRL Team: {team_short}")
-    resp = round_table.scan(
-        FilterExpression=Attr('active').eq(False)
-    )
-    round_number = min(r['round_number'] for r in resp['Items'])
-    print(f"Round Number: {round_number}")
-    existing_lineup = lineup_table.scan(
-            FilterExpression=Attr('xrlTeam+round').eq(team_short+str(round_number))
-            )
+    if id_token:
+        payload = id_token.split('.')[1]
+        decoded = base64.b64decode(payload + '=======')
+        username = json.loads(decoded)['cognito:username']
+        print(f"User: {username}")
+        resp = user_table.get_item(Key={'username': username})
+        user = resp['Item']
+        team_short = user['team_short']
+        print(f"XRL Team: {team_short}")
+        resp = round_table.scan(
+            FilterExpression=Attr('active').eq(False)
+        )
+        round_number = min(r['round_number'] for r in resp['Items'])
+        print(f"Round Number: {round_number}")
+        existing_lineup = lineup_table.scan(
+                FilterExpression=Attr('xrlTeam+round').eq(team_short+str(round_number))
+                )
     if method == 'GET':
-        if len(existing_lineup['Items']) > 0:
-            print("Existing lineup found. Returning player list.")
+        if id_token:
+            if len(existing_lineup['Items']) > 0:
+                print("Existing lineup found. Returning player list.")
+            else:
+                print("No lineup found")
+            return {
+                        'statusCode': 200,
+                        'headers': {
+                        'Access-Control-Allow-Headers': 'Content-Type',
+                        'Access-Control-Allow-Origin': '*',
+                        'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
+                        },
+                        'body': json.dumps(replace_decimals(existing_lineup['Items']))
+            }
         else:
-            print("No lineup found")
-        return {
-                    'statusCode': 200,
-                    'headers': {
-                    'Access-Control-Allow-Headers': 'Content-Type',
-                    'Access-Control-Allow-Origin': '*',
-                    'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
-                    },
-                    'body': json.dumps((existing_lineup['Items']))
-        }
+            params = event["queryStringParameters"]
+            print(params)
+            if 'specific' in params.keys():
+                team_and_round = params['specific']
+                print(f'Specific lineup requested is {team_and_round}, querying table')
+                resp = lineup_table.scan(
+                    FilterExpression=Attr('xrlTeam+round').eq(team_and_round)
+                )
+                return {
+                        'statusCode': 200,
+                        'headers': {
+                        'Access-Control-Allow-Headers': 'Content-Type',
+                        'Access-Control-Allow-Origin': '*',
+                        'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
+                        },
+                        'body': json.dumps(replace_decimals(resp['Items']))
+                }
     if method == 'POST':
         lineup = json.loads(event['body'])
         print("Lineup: " + str(lineup))
@@ -61,7 +82,11 @@ def lambda_handler(event, context):
             "lock": "Forward",
             "prop2": "Forward",
             "row1": "Forward",
-            "row2": "Forward"
+            "row2": "Forward",
+            "int1": "Forward",
+            "int2": "Forward",
+            "int3": "Forward",
+            "int4": "Forward",
             }
         print("Writing lineup to table")        
         for player in existing_lineup['Items']:
@@ -94,3 +119,20 @@ def lambda_handler(event, context):
                 },
                 'body': json.dumps({"message": "Lineup saved successfully"})
             }
+
+def replace_decimals(obj):
+    if isinstance(obj, list):
+        for i in range(len(obj)):
+            obj[i] = replace_decimals(obj[i])
+        return obj
+    elif isinstance(obj, dict):
+        for k in obj.keys():
+            obj[k] = replace_decimals(obj[k])
+        return obj
+    elif isinstance(obj, decimal.Decimal):
+        if obj % 1 == 0:
+            return int(obj)
+        else:
+            return float(obj)
+    else:
+        return obj

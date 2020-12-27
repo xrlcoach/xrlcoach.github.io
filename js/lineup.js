@@ -100,10 +100,10 @@ async function submitLineup(event) {
             "position": players[i].id
         };
         for (let j = 0; j < playerRoles.length; j++) {
-            if (roles[j].value == players[i].value) {
-                entry[roles[j].id] = true;
+            if (playerRoles[j].value == players[i].value) {
+                entry[playerRoles[j].id] = true;
             } else {
-                entry[roles[j].id] = false;
+                entry[playerRoles[j].id] = false;
             }
         }
         lineup.push(entry);

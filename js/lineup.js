@@ -83,8 +83,8 @@ async function PopulateLineup() {
 
 function createOption(player, position) {
     let option = document.createElement('option');
-    option.innerText = player['player_name'];
-    option.value = player['player_name'] + ';' + player['nrl_club'];
+    option.innerText = player['player_name'] || player['name+club'].split(';')[0];
+    option.value = player['player_name'] + ';' + player['nrl_club'] || player['name+club'];
     document.getElementById(position).appendChild(option);
 }
 

@@ -61,7 +61,7 @@ async function PopulateLineup() {
             }
         }
         for (let i = 0; i < roles.length; i++) {
-            let player = lineup.find(p => p.roles[i]);
+            let player = lineup.find(p => p[roles[i]]);
             createOption(player, roles[i]);
             let otherPlayers = squad.filter(p => !player['name+club'].startsWith(p['player_name']));
             for (let j = 0; j < otherPlayers.length; j++) {

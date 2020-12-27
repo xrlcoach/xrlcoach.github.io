@@ -1,4 +1,4 @@
-import { GetAllUsers } from "./ApiFetch";
+import { GetAllUsers } from "./ApiFetch.js";
 
 let users;
 

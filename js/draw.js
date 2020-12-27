@@ -1,4 +1,4 @@
-import { GetAllFixtures } from "./ApiFetch";
+import { GetAllFixtures } from "./ApiFetch.js";
 
 let draw;
 let roundToDisplay;

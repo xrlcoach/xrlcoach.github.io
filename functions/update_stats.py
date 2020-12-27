@@ -58,7 +58,9 @@ options = Options()
 
 def involvement_try(player, position):
     #=IF(AND(D2="Back",AB2>34),1,IF(AND(D2="Playmaker",AB2>44),1,IF(AND(D2="Forward",AB2>49),1,0)))
-    stats = sum(player[1:12])
+    relevant_stats = ["Tries", "Field Goals", "All Runs", "Line Breaks", "Line Break Assists", "Try Assists", "Tackle Breaks",
+        "Offloads", "Tackles Made", "Kicks", "40/20", "20/40"]
+    stats = sum([stat for stat in player if stat in relevant_stats])
     if position == 'Back' and stats > 34:
         return True
     elif position == 'Playmaker' and stats > 44:
@@ -69,28 +71,32 @@ def involvement_try(player, position):
 
 def playmaker_try(player, position):
     #=IF(S2>7,1,IF(D2="Back",IF(L2>16,1,0),IF(T2>39,1,IF(D2="Playmaker",IF(W2>249,1,0),IF(D2="Forward",IF(M2>139,1,0),0)))))
-    creative = sum(player[4:9], player[11])
+    relevant_stats = ["Line Breaks", "Line Break Assists", "Try Assists", "Tackle Breaks",
+        "Offloads", "40/20", "20/40"]
+    creative = sum([stat for stat in player if stat in relevant_stats])
     if creative > 7:
         return True
     if position == 'Back':
-        if player[14] > 16:
+        if player["All Runs"] > 16:
             return True
     if position == 'Playmaker':
-        if player[9] > 39:
+        if player["Tackles Made"] > 39:
             return True
-        if player[15] > 249:
+        if player["Kicking Metres"] > 249:
             return True
     if position == 'Forward':
-        if player[9] > 39:
+        if player["Tackles Mades"] > 39:
             return True
-        if player[16] > 139:
+        if player["All Run Metres"] > 139:
             return True
     return False
 
 def missing(player, position):
     #=IF(AND(F2>49,G2<2),IF(AND(D2="Back",AB2<15),1,IF(AND(D2="Playmaker",AB2<20),1,IF(AND(D2="Forward",AB2<25),1,0))),0)
-    stats = sum(player[1:12])
-    if player[17] > 49 and player[1] < 2:
+    relevant_stats = ["Tries", "Field Goals", "All Runs", "Line Breaks", "Line Break Assists", "Try Assists", "Tackle Breaks",
+        "Offloads", "Tackles Made", "Kicks", "40/20", "20/40"]
+    stats = sum([stat for stat in player if stat in relevant_stats])
+    if player["Mins Played"] > 49 and player["Tries"] < 2:
         if position == 'Back' and stats < 15:
             return True
         if position == 'Playmaker' and stats < 20:

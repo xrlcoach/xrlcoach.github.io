@@ -10,9 +10,9 @@ window.onload = async function() {
         document.getElementById('feedback').innerText = 'No draw yet. Fixtures will be generated once all teams have joined.';
         return;
     }
-    let activeRounds = draw.filter(r => r.active == true);
-    console.log(activeRounds);
-    roundToDisplay = activeRounds.find(r => r.round_number == Math.max(activeRounds.map(r => r.round_number)));
+    let incompleteRounds = draw.filter(r => r.completed == false);
+    console.log(incompleteRounds);
+    roundToDisplay = incompleteRounds.find(r => r.round_number == Math.min(incompleteRounds.map(r => r.round_number)));
     console.log('Current round: ' + roundToDisplay);
     for (let i = 0; i < draw.length; i++) {
         let option = document.createElement('option');

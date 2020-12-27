@@ -1,142 +1,222 @@
-{% extends "layout.html" %}
+<!DOCTYPE html>
 
-{% block title %}
-    Fixture
-{% endblock %}
+<html lang="en">
 
-{% block main %}
-<div class="container">
-    <p><h4>Round {{ round_number}}: {{ home_team }} v {{ away_team }}</h4></p>
-        <div class="row">
-            <div class="col table-responsive align-self-start">
-		    <img src="static/{{ home_user['team_logo'] }}" alt="{{ home_user['team_short'] }}" height="80" style="padding-right:5px;padding-bottom:5px;">    
-                <h3 style="display:inline-block;">{{ home_team }} Score</h3>
-                
-                <table class="table table-dark table-striped">
-                    <thead>
-                        <tr>
-                            <th style="color: green;">Player</th>
-                            <th style="color: green;">NRL Team</th>
-                            <th style="color: green;">Position</th>
-                            <th></th><th></th>
-                            <th style="color: green;">Score</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    {% for x in range(home_length) %}
-                        <tr>
-                            <td style="white-space: nowrap;">
-                                {{ home_squad[x]['lineup_player_name'] }}
-                            </td>
-                            <td>
-                                {{ home_squad[x]['lineup_nrl_team'] }}
-                            </td>
-                            <td>
-                                {{ home_squad[x]['lineup_position'] }}
-                            </td>
-                            <td>
-                                {% if home_squad[x]['captain'] %}C{% endif %}
-                                {% if home_squad[x]['vice_captain'] %}VC{% endif %}
-                            </td>
-                            <td>
-                                {% if home_squad[x]['kicker'] %}K{% endif %}
-                                {% if home_squad[x]['backup_kicker'] %}RK{% endif %}
-                            </td>
-                            <td>
-                                {{ home_squad[x]['lineup_score'] }}
-                            </td>
-                        </tr>
-                        {% endfor %}
-                        <tr><td>Bench</td></tr>
-                        {% for x in range(hb_length) %}
-                        <tr>
-                            <td style="white-space: nowrap;">
-                                {{ home_bench[x]['lineup_player_name'] }}
-                            </td>
-                            <td>
-                                {{ home_bench[x]['lineup_nrl_team'] }}
-                            </td>
-                            <td>
-                                {{ home_bench[x]['lineup_position'] }}
-                            </td>
-                            <td></td>
-                            <td></td>
-                            <td>{{ home_bench[x]['lineup_score'] }}</td>
-                        </tr>
-                        {% endfor %}
-                        <tr>
-                            <td></td><td></td><td></td><td></td>
-                            <td>Total</td>
-                            <td>{{ home_score }}</td>
-                        </tr>
-                    </tbody>
-                </table>
-                
-            </div>
-            <div class="col table-responsive align-self-start">
-	    <h3 style="display:inline-block;">{{ away_team }} Score</h3><img src="static/{{ away_user['team_logo'] }}" alt="{{ away_user['team_short'] }}" height="80" style="padding-left:5px;padding-bottom:5px;">
-		    
-		<table class="table table-dark table-striped">
-                    <thead>
-                        <tr>
-                            <th style="color: green;">Player</th>
-                            <th style="color: green;">NRL Team</th>
-                            <th style="color: green;">Position</th>
-                            <th></th><th></th>
-                            <th style="color: green;">Score</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    {% for x in range(away_length) %}
-                    <tr>
-                        <td style="white-space: nowrap;">
-                            {{ away_squad[x]['lineup_player_name'] }}
-                        </td>
-                        <td>
-                            {{ away_squad[x]['lineup_nrl_team'] }}
-                        </td>
-                        <td>
-                            {{ away_squad[x]['lineup_position'] }}
-                        </td>
-                        <td>
-                            {% if away_squad[x]['captain'] %}C{% endif %}
-                            {% if away_squad[x]['vice_captain'] %}VC{% endif %}
-                        </td>
-                        <td>
-                            {% if away_squad[x]['kicker'] %}K{% endif %}
-                            {% if away_squad[x]['backup_kicker'] %}RK{% endif %}
-                        </td>
-                        <td>
-                            {{ away_squad[x]['lineup_score'] }}
-                        </td>
-                    </tr>
-                    {% endfor %}
-                    <tr><td>Bench</td></tr>
-                        {% for x in range(ab_length) %}
-                        <tr>
-                            <td style="white-space: nowrap;">
-                                {{ away_bench[x]['lineup_player_name'] }}
-                            </td>
-                            <td>
-                                {{ away_bench[x]['lineup_nrl_team'] }}
-                            </td>
-                            <td>
-                                {{ away_bench[x]['lineup_position'] }}
-                            </td>
-                            <td></td>
-                            <td></td>
-                            <td>{{ away_bench[x]['lineup_score'] }}</td>
-                        </tr>
-                        {% endfor %}
-                    <tr>
-                        <td></td><td></td><td></td><td></td>
-                        <td>Total</td>
-                        <td>{{ away_score }}</td>
-                    </tr>
-                    </tbody>            
-                </table>
-                
+<head>
+
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- documentation at http://getbootstrap.com/docs/4.1/, alternative themes at https://bootswatch.com/ -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- https://favicon.io/emoji-favicons/money-mouth-face/ -->
+    <link href="/static/xrl-logo.png" rel="icon">
+
+    <link href="/static/styles.css" rel="stylesheet">
+
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+    <script src="js/Session.js"></script>
+
+    <title>XRL Home</title>
+
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-md navbar-dark" style="background-color: rgb(44, 48, 52);">
+        <a class="navbar-brand" href="/"><img src="static/xrl-logo.png" alt="XRL Badge" height="40"><span
+                class="green">X</span><span class="yellow">R</span><span class="green">L</span></a>
+        <button aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler"
+            data-target="#navbar" data-toggle="collapse" type="button">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbar">
+            <ul class="navbar-nav mr-auto mt-2">
+                <li class="nav-item"><a class="nav-link" href="team.html">My Team</a></li>
+                <li class="nav-item"><a class="nav-link" href="lineup.html">Lineup</a></li>
+                <li class="nav-item"><a class="nav-link" href="draw.html">Draw</a></li>
+                <li class="nav-item"><a class="nav-link" href="comp.html">Ladder</a></li>
+                <li class="nav-item"><a class="nav-link" href="squads.html">Squads</a></li>
+                <li class="nav-item"><a class="nav-link" href="stats.html">Stats</a></li>
+            </ul>
+            <ul class="navbar-nav ml-auto mt-2">
+                <li class="nav-item"><a class="nav-link" href="#" onclick="logout()">Log Out</a></li>
+            </ul>
+            <!-- <ul class="navbar-nav ml-auto mt-2">
+                <li class="nav-item"><a class="nav-link" href="/register">Register</a></li>
+                <li class="nav-item"><a class="nav-link" href="/login">Log In</a></li>
+            </ul> -->
+        </div>
+    </nav>
+
+    <header>
+        <div class="alert alert-primary border text-center" role="alert" id="feedback">
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <p>
+            <h4 id="fixtureHeading">Round {{ round_number}}: {{ home_team }} v {{ away_team }}</h4>
+            </p>
+            <div id="fixtureContainer" class="row">
+                <div class="col table-responsive align-self-start">
+                    <img src="static/{{ home_user['team_logo'] }}" alt="{{ home_user['team_short'] }}" height="80"
+                        style="padding-right:5px;padding-bottom:5px;">
+                    <h3 style="display:inline-block;">{{ home_team }} Score</h3>
+
+                    <table class="table table-dark table-striped">
+                        <thead>
+                            <tr>
+                                <th style="color: green;">Player</th>
+                                <th style="color: green;">NRL Team</th>
+                                <th style="color: green;">Position</th>
+                                <th></th>
+                                <th></th>
+                                <th style="color: green;">Score</th>
+                            </tr>
+                        </thead>
+                        <tbody id="homeTableBody">
+                            {% for x in range(home_length) %}
+                            <tr>
+                                <td style="white-space: nowrap;">
+                                    {{ home_squad[x]['lineup_player_name'] }}
+                                </td>
+                                <td>
+                                    {{ home_squad[x]['lineup_nrl_team'] }}
+                                </td>
+                                <td>
+                                    {{ home_squad[x]['lineup_position'] }}
+                                </td>
+                                <td>
+                                    {% if home_squad[x]['captain'] %}C{% endif %}
+                                    {% if home_squad[x]['vice_captain'] %}VC{% endif %}
+                                </td>
+                                <td>
+                                    {% if home_squad[x]['kicker'] %}K{% endif %}
+                                    {% if home_squad[x]['backup_kicker'] %}RK{% endif %}
+                                </td>
+                                <td>
+                                    {{ home_squad[x]['lineup_score'] }}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                            <tr>
+                                <td>Bench</td>
+                            </tr>
+                            {% for x in range(hb_length) %}
+                            <tr>
+                                <td style="white-space: nowrap;">
+                                    {{ home_bench[x]['lineup_player_name'] }}
+                                </td>
+                                <td>
+                                    {{ home_bench[x]['lineup_nrl_team'] }}
+                                </td>
+                                <td>
+                                    {{ home_bench[x]['lineup_position'] }}
+                                </td>
+                                <td></td>
+                                <td></td>
+                                <td>{{ home_bench[x]['lineup_score'] }}</td>
+                            </tr>
+                            {% endfor %}
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td>Total</td>
+                                <td>{{ home_score }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+                <div class="col table-responsive align-self-start">
+                    <h3 style="display:inline-block;">{{ away_team }} Score</h3><img
+                        src="static/{{ away_user['team_logo'] }}" alt="{{ away_user['team_short'] }}" height="80"
+                        style="padding-left:5px;padding-bottom:5px;">
+
+                    <table class="table table-dark table-striped">
+                        <thead>
+                            <tr>
+                                <th style="color: green;">Player</th>
+                                <th style="color: green;">NRL Team</th>
+                                <th style="color: green;">Position</th>
+                                <th></th>
+                                <th></th>
+                                <th style="color: green;">Score</th>
+                            </tr>
+                        </thead>
+                        <tbody id="awayTableBody">
+                            {% for x in range(away_length) %}
+                            <tr>
+                                <td style="white-space: nowrap;">
+                                    {{ away_squad[x]['lineup_player_name'] }}
+                                </td>
+                                <td>
+                                    {{ away_squad[x]['lineup_nrl_team'] }}
+                                </td>
+                                <td>
+                                    {{ away_squad[x]['lineup_position'] }}
+                                </td>
+                                <td>
+                                    {% if away_squad[x]['captain'] %}C{% endif %}
+                                    {% if away_squad[x]['vice_captain'] %}VC{% endif %}
+                                </td>
+                                <td>
+                                    {% if away_squad[x]['kicker'] %}K{% endif %}
+                                    {% if away_squad[x]['backup_kicker'] %}RK{% endif %}
+                                </td>
+                                <td>
+                                    {{ away_squad[x]['lineup_score'] }}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                            <tr>
+                                <td>Bench</td>
+                            </tr>
+                            {% for x in range(ab_length) %}
+                            <tr>
+                                <td style="white-space: nowrap;">
+                                    {{ away_bench[x]['lineup_player_name'] }}
+                                </td>
+                                <td>
+                                    {{ away_bench[x]['lineup_nrl_team'] }}
+                                </td>
+                                <td>
+                                    {{ away_bench[x]['lineup_position'] }}
+                                </td>
+                                <td></td>
+                                <td></td>
+                                <td>{{ away_bench[x]['lineup_score'] }}</td>
+                            </tr>
+                            {% endfor %}
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td>Total</td>
+                                <td>{{ away_score }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                </div>
             </div>
         </div>
-</div>
-{% endblock %}
+    </main>
+
+    <footer class="small text-center text-muted">
+        Data provided by <a href="https://www.nrl.com">NRL.com</a>. View <a
+            href="https://www.nrl.com/terms-of-use">NRL’s Terms of Use</a>.
+    </footer>
+    <script type="module" src="js/fixture.js"></script>
+</body>
+
+</html>

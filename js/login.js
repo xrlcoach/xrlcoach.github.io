@@ -7,7 +7,7 @@ async function login(event) {
     let idToken = await Login(username, password);
     var expiry = new Date();
     expiry.setHours(expiry.getHours() + 1);
-    document.cookie = `id=${idToken}; expiry=${expiryTime.toUTCString()}; Secure`;
+    document.cookie = `id=${idToken}; expiry=${expiry.toUTCString()}; Secure`;
     let roundInfo = await GetCurrentRoundInfo();
     document.cookie = `round=${roundInfo.round_number}; expires=${expiry.toUTCString()}; Secure`;
     window.location.href = './index.html';

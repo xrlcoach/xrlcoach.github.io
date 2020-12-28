@@ -159,8 +159,11 @@ export async function GetRoundInfo(roundNumber) {
 
 export async function GetCurrentRoundInfo() {
     const rounds = await GetAllFixtures();
-    let currentRoundNumber = Math.min(rounds.filter(r => r.completed == false).map(r => r.round_number))
-    return rounds.find(r => r.round_number == currentRoundNumber);
+    let incompleteRounds = rounds.filter(r => r.completed == false);
+    let roundNumbers = incompleteRounds.map(r => r.round_number);
+    let currentRoundNumber = Math.min(roundNumbers);
+    let currentRound = rounds.find(r => r.round_number == currentRoundNumber);
+    return currentRound;
 }
 
 export async function GetRoundInfoFromCookie() {

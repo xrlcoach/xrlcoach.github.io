@@ -21,11 +21,13 @@ window.onload = async () => {
         button.className = 'btn btn-success';
         button.innerText = 'Use Powerplay';
         button.onclick = togglePowerplay(button);
+        document.getElementById('powerplayButton').appendChild(button);
     } else if (powerplay) {
         let button = document.createElement('button');
         button.className = 'btn btn-danger';
         button.innerText = 'Turn Off Powerplay';
         button.onclick = togglePowerplay(button);
+        document.getElementById('powerplayButton').appendChild(button);
     }
     backs = squad.filter(p => p.position == 'Back' || p.position2 == 'Back');
     console.log('Backs: ' + backs[0]);

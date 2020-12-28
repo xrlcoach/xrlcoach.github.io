@@ -6,7 +6,8 @@ let roundToDisplay;
 let users;
 
 window.onload = async function() {
-    draw = await GetAllFixtures();
+    let fixtures = await GetAllFixtures();
+    draw = fixtures.sort((a, b) => a.round_number - b.round_number);
     users = await GetAllUsers();
     console.log(draw);
     if (draw.length == 0) {
@@ -36,7 +37,7 @@ async function PopulateFixtureTable(round) {
     else status = 'Inactive';
     document.getElementById('roundStatus').innerText = 'Status: ' + status;
 
-    let table = document.getElementById('fixtureTableBody');
+    let table = document.getElementById('fixturesTableBody');
     table.innerHTML = '';
     let fixtures = round.fixtures;
     for (let i = 0; i < fixtures.length; i++) {

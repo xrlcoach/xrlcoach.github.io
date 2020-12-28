@@ -15,8 +15,9 @@ round_table = dynamodbResource.Table('rounds2020')
 def lambda_handler(event, context):
     method = event["httpMethod"]
     print(f"Method is {method}")
-    id_token = event['headers']['Authorization']
-    if id_token:
+    id_token = ''
+    if 'Authorization' in event['headers'].keys():
+        id_token = event['headers']['Authorization']
         payload = id_token.split('.')[1]
         decoded = base64.b64decode(payload + '=======')
         username = json.loads(decoded)['cognito:username']
@@ -34,7 +35,7 @@ def lambda_handler(event, context):
                 FilterExpression=Attr('xrl_team').eq(team_short) & Attr('round_number').eq(str(round_number))
                 )
     if method == 'GET':
-        if id_token:
+        if id_token != '':
             if len(existing_lineup['Items']) > 0:
                 print("Existing lineup found. Returning player list.")
             else:

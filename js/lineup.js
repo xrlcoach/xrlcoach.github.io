@@ -15,7 +15,11 @@ window.onload = async () => {
     console.log(squad[0]);
     lineup = await GetLineup(idToken);
     console.log(lineup.length);
-    powerplay = lineup.filter(p => p['captain']).length == 2;
+    let captains = lineup.filter(p => p.captain);
+    let numCaptains = captains.length;
+    console.log(numCaptains);
+    powerplay = numCaptains == 2;
+    console.log(powerplay);
     if (!powerplay && user.powerplays > 0) {
         let button = document.createElement('button');
         button.className = 'btn btn-success';

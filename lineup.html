@@ -61,15 +61,7 @@
     <main>
     <div class="container p-5">
     <p><h4 id="lineupHeading">{{ user['team_name'] }}: Select Lineup for Round {{ next_round}}</h4></p>
-    <form onsubmit="togglePowerplay(event)">
-        <div class="form-group">
-            <button type="submit" id="powerplayButton" class="btn btn-success">Use Powerplay</button>
-        </div>
-    </form>
-    <!-- <form action="/lineup" method="POST">
-        <div class="form-group">
-        <button type="submit" name ="powerplay_off" class="btn btn-danger">Turn Off Powerplay</button>
-    </div>
+    <div id="powerplayButton"></div>
     </form> -->
     <div class="table-responsive">
     <table class="table table-dark table-striped">

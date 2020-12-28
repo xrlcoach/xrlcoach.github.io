@@ -6,7 +6,7 @@ const positions_playmakers = ['five_eighth', 'halfback', 'hooker'];
 const positions_forwards = ['prop1', 'prop2', 'lock', 'row1', 'row2'];
 const interchange = ['int1', 'int2', 'int3', 'int4'];
 const roles = ['captain', 'captain2', 'vice', 'kicker', 'backupKicker'];
-let user, squad, lineup, backs, forwards, playmakers;
+let user, squad, lineup, backs, forwards, playmakers, powerplay;
 
 window.onload = async () => {
     user = await GetActiveUserInfo(idToken);
@@ -15,6 +15,18 @@ window.onload = async () => {
     console.log(squad[0]);
     lineup = await GetLineup(idToken);
     console.log(lineup.length);
+    powerplay = lineup.filter(p => p['captain']).length == 2;
+    if (!powerplay && user.powerplays > 0) {
+        let button = document.createElement('button');
+        button.className = 'btn btn-success';
+        button.innerText = 'Use Powerplay';
+        button.onclick = togglePowerplay(this);
+    } else if (powerplay) {
+        let button = document.createElement('button');
+        button.className = 'btn btn-danger';
+        button.innerText = 'Turn Off Powerplay';
+        button.onclick = togglePowerplay(this);
+    }
     backs = squad.filter(p => p.position == 'Back' || p.position2 == 'Back');
     console.log('Backs: ' + backs[0]);
     forwards = squad.filter(p => p.position == 'Forward' || p.position2 == 'Forward');
@@ -22,6 +34,22 @@ window.onload = async () => {
     playmakers = squad.filter(p => p.position == 'Playmaker' || p.position2 == 'Playmaker');
     console.log('Playmakers: ' + playmakers[0]);
     PopulateLineup();
+}
+
+function togglePowerplay(button) {
+    if (powerplay) {
+        document.getElementById('captain2').innerHTML = '';
+        document.getElementById('secondCaptainSelect').hidden = true;
+        button.className = 'btn btn-success';
+        button.innerText = 'Use Powerplay';
+    } else {
+        for (var i = 0; i < squad.length; i++) {
+            createOption(squad[i], 'captain2');
+        }
+        document.getElementById('secondCaptainSelect').hidden = false;
+        button.className = 'btn btn-danger';
+        button.innerText = 'Turn Off Powerplay';
+    }
 }
 
 async function PopulateLineup() {    
@@ -61,6 +89,7 @@ async function PopulateLineup() {
             }
         }
         for (let i = 0; i < roles.length; i++) {
+            if (roles[i] == 'captain2' && !powerplay) continue;
             let player = lineup.find(p => p[roles[i]]);
             createOption(player, roles[i]);
             let otherPlayers = squad.filter(p => !player['name+club'].startsWith(p['player_name']));
@@ -90,6 +119,7 @@ async function PopulateLineup() {
             }
         }
         for (var i = 0; i < roles.length; i++) {
+            if (roles[i] == 'captain2' && !powerplay) continue;
             for (var j = 0; j < squad.length; j++) {
                 createOption(squad[j], roles[i]);
             }
@@ -117,6 +147,8 @@ async function fillPositionOptions(select) {
         document.getElementById(select.id + 'Position').appendChild(option);
     }
 }
+
+window.fillPositionOptions = fillPositionOptions;
 
 async function submitLineup(event) {
     event.preventDefault();

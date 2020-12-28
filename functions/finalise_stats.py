@@ -35,6 +35,13 @@ for match in fixtures:
         captain_count = len([player for player in lineup if player['captain']])
         powerplay = captain_count > 1
         print(f"Captain count is {captain_count}, powerplay is {powerplay}")
+        user = [u for u in users if u['team_short'] == match[0]][0]
+        users_table.update_item(
+            Key={
+                'username': user['username']
+            },
+            UpdateExpression="set powerplays=powerplays-1"
+        )
         starters = [player for player in lineup if not player['position_specific'].startswith('int')]
         print(f"Starters: {starters}")
         bench = [player for player in lineup if player['position_specific'].startswith('int')]

@@ -17,7 +17,7 @@ window.onload = async function() {
     console.log(incompleteRounds);
     let roundNumbers = incompleteRounds.map(r => r.round_number)
     console.log(roundNumbers)
-    let roundToDisplay = incompleteRounds.find(r => r.round_number == Math.min(roundNumbers));
+    let roundToDisplay = incompleteRounds.find(r => r.round_number == Math.min(...roundNumbers));
     console.log('Current round: ' + roundToDisplay);
     for (let i = 0; i < draw.length; i++) {
         let option = document.createElement('option');

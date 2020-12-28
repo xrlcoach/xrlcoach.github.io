@@ -1,5 +1,7 @@
 import { GetCurrentRoundInfo, Login } from "./ApiFetch";
 
+import { Login, GetCurrentRoundInfo } from './ApiFetch.js';
+
 function login(event) {
     event.preventDefault();
     var username = document.getElementById('username').value;
@@ -12,3 +14,5 @@ function login(event) {
     document.cookie = `round=${roundInfo.round_number}; expiry=${expiryTime.toUTCString()}; Secure`;
     window.location.href = './index.html';
 }
+
+window.login = login;

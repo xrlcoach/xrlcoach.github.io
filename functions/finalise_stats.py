@@ -20,14 +20,18 @@ round_number = current_round['round_number']
 print(f"Finalising Round {round_number}")
 fixtures = current_round['fixtures']
 
+resp = lineups_table.scan(
+    FilterExpression=Attr('round_number').eq(round_number)
+)
+lineups = resp["Items"]
+resp = users_table.scan()
+users = resp["Items"]
+
 for match in fixtures:
     print(f"Finalising {match['home']} v {match['away']}")
     for team in match:
         print(f"Finalising {team} lineup")
-        resp = lineups_table.scan(
-            FilterExpression=Attr('xrlTeam+round').eq(team + round_number)
-        )
-        lineup = resp['Items']
+        lineup = [player for player in lineups if player['xrl_team'] == team]
         captain_count = len([player for player in lineup if player['captain']])
         powerplay = captain_count > 1
         print(f"Captain count is {captain_count}, powerplay is {powerplay}")
@@ -36,76 +40,109 @@ for match in fixtures:
         bench = [player for player in lineup if player['position_specific'].startswith('int')]
         print(f"Bench: {bench}")
         substitutions = 0
+        vice_plays = False
+        backup_kicks = False
         for player in starters:
-            
-
-
-
-
-""" db.execute("SELECT home_team, away_team FROM xrl_draw WHERE round_number = ?", (current_round,))
-matches = db.fetchall()
-for match in matches:
-    print(f"Finalising {match[0]} v {match[1]}")
-    for team in match:
-        db.execute("SELECT COUNT(*) FROM "+team+str(current_round)+"_lineup WHERE captain=1")
-        captain_count = db.fetchone()[0]
-        if captain_count > 1:
-            db.execute("UPDATE xrl_users SET powerplay = powerplay + 1 WHERE team_short = ?", (team,))
-        print(f"{team} substitions:")
-        db.execute("SELECT lineup_player_name, lineup_nrl_team, lineup_position FROM "+team+str(current_round)+"_lineup WHERE interchange IS NULL")
-        lineup = db.fetchall()
-        subs = 0
-        db.execute("SELECT COUNT(*) FROM "+team+str(current_round)+"_lineup WHERE interchange IS NOT NULL")
-        bench_count = db.fetchone()[0]
-        for player in lineup:
-            db.execute("SELECT player_name FROM "+round_table+" WHERE player_name=? AND nrl_team=?", (player[0], player[1]))
-            appearance = db.fetchone()
-            if appearance == None:
+            if not player['played_nrl']:
+                if player['captain']:
+                    vice_plays = True
+                if player['kicker']:
+                    backup_kicks = True
                 valid_sub = False
-                if subs == bench_count:
-                    print(f"{player[0]} didn't play. No more subs available.")
-                    db.execute("UPDATE "+team+str(current_round)+"_lineup SET interchange=5 WHERE lineup_player_name=? AND lineup_nrl_team=?", (player[0], player[1]))
+                if substitutions == len(bench):
+                    print(f"{player['player_name']} didn't play. No more subs available.")
                     continue
-                db.execute("SELECT lineup_player_name, interchange, lineup_position, lineup_position2 FROM "+team+str(current_round)+"_lineup WHERE interchange IS NOT NULL AND interchange < 5")
-                for i in range(bench_count - subs):
-                    interchange = db.fetchone()
-                    if interchange[2] == player[2] or interchange[3] == player[2]:
-                        print(f"{player[0]} didn't play. Subbing in {interchange}")
-                        db.execute("UPDATE "+team+str(current_round)+"_lineup SET interchange=5 WHERE lineup_player_name=? AND lineup_nrl_team=?",
-                                    (player[0], player[1]))
-                        db.execute("UPDATE "+team+str(current_round)+"_lineup SET interchange=NULL WHERE interchange=?", (interchange[1],))
+                for i in range(substitutions, len(bench)):
+                    substitute = [player for player in bench if player['position_specific'] == 'int' + str(i + 1)][0]
+                    if substitute['position_general'] == player['position_general'] and substitute['played_nrl']:
+                        print(f"{player['player_name']} didn't play. Subbing in {substitute['player_name']}")
+                        lineups_table.update_item(
+                            Key={
+                                'name+nrl+xrl+round': substitute['name+nrl+xrl+round']
+                            },
+                            UpdateExpression="set played_xrl=:p",
+                            ExpressionAttributeValues={
+                                ':p': True
+                            }
+                        )
                         valid_sub = True
                         subs += 1
                         break
                 if not valid_sub:
-                    print(f"{player[0]} didn't play. No sub available in that position.")
-                    db.execute("UPDATE "+team+str(current_round)+"_lineup SET interchange=5 WHERE lineup_player_name=? AND lineup_nrl_team=?", (player[0], player[1]))
+                    print(f"{player['player_name']} didn't play. No sub available in that position.")
+            else:
+                if player['backup_kicker'] and backup_kicks:
+                    resp = stats_table.get_item(
+                        Key={
+                            'name+club': player['player_name'] + ';' + player['nrl_club'],
+                            'round_number': round_number
+                        }
+                    )
+                    kicking_stats = resp["Item"]["scoring_stats"]["kicker"]
+                    kicking_score = kicking_stats["goals"] * 2 + kicking_stats["field_goals"]
+                    lineups_table.update_item(
+                        Key={
+                            'name+nrl+xrl+round': player['name+nrl+xrl+round']
+                        },
+                        UpdateExpression="set score=score+:s",
+                        ExpressionAttributeValues={
+                            ':s': kicking_score
+                        }
+                    )
+                if player['vice'] and vice_plays:
+                    lineups_table.update_item(
+                        Key={
+                            'name+nrl+xrl+round': player['name+nrl+xrl+round']
+                        },
+                        UpdateExpression="set score=score*2"                        
+                    )
 
+resp = lineups_table.scan(
+    FilterExpression=Attr('round_number').eq(round_number)
+)
+lineups = resp["Items"]
 
-    conn.commit()
-    db.execute("SELECT SUM(lineup_score) FROM "+match[0]+str(current_round)+"_lineup WHERE interchange IS NULL")
-    home_score = db.fetchone()[0]
-    db.execute("SELECT SUM(lineup_score) FROM "+match[1]+str(current_round)+"_lineup WHERE interchange IS NULL")
-    away_score = db.fetchone()[0]
-    if home_score > away_score:
-        db.execute("UPDATE xrl_users SET wins=wins+1, for=for+?, against=against+?, points=points+2 WHERE team_short=?",
-                    (home_score, away_score, match[0]))
-        db.execute("UPDATE xrl_users SET losses=losses+1, for=for+?, against=against+? WHERE team_short=?",
-                    (away_score, home_score, match[1]))
-    elif away_score > home_score:
-        db.execute("UPDATE xrl_users SET wins=wins+1, for=for+?, against=against+?, points=points+2 WHERE team_short=?",
-                    (away_score, home_score, match[1]))
-        db.execute("UPDATE xrl_users SET losses=losses+1, for=for+?, against=against+? WHERE team_short=?",
-                    (home_score, away_score, match[0]))
+for match in fixtures:
+    home_user = [user for user in users if user['team_short'] == match[0]][0]
+    home_lineup = [player for player in lineups if player['xrl_team'] == match['home']]
+    home_score = sum([p['score'] for p in home_lineup if p['played_xrl']])
+    away_user = [user for user in users if user['team_short'] == match[1]][0]
+    away_lineup = [player for player in lineups if player['xrl_team'] == match['away']]
+    away_score = sum([p['score'] for p in away_lineup if p['played_xrl']])
+
+    home_user['stats']['for'] += home_score
+    home_user['stats']['against'] += away_score
+    away_user['stats']['for'] += away_score
+    away_user['stats']['against'] += home_score
+    if home_score > away_score: 
+        home_user['stats']['points'] += 2
+        home_user['stats']['wins'] = home_user['stats']['wins'] + 1
+        away_user['stats']['losses'] = away_user['stats']['losses'] + 1
+    elif home_score < away_score:
+        away_user['stats']['points'] += 2
+        home_user['stats']['losses'] = home_user['stats']['losses'] + 1
+        away_user['stats']['wins'] = away_user['stats']['wins'] + 1
     else:
-        db.execute("UPDATE xrl_users SET draws=draws+1, for=for+?, against=against+?, points=points+1 WHERE team_short=?",
-                    (home_score, away_score, match[0]))
-        db.execute("UPDATE xrl_users SET draws=draws+1, for=for+?, against=against+?, points=points+1 WHERE team_short=?",
-                    (away_score, home_score, match[1])) """
+        home_user['stats']['points'] += 1
+        away_user['stats']['points'] += 1
+        home_user['stats']['draws'] = home_user['stats']['losses'] + 1
+        away_user['stats']['draws'] = away_user['stats']['wins'] + 1
+    users_table.update_item(
+        Key={
+            'username': home_user['username']
+        },
+        UpdateExpression="set stats=:s",
+        ExpressionAttributeValues={
+            ':s': home_user['stats']
+        }
+    )
+    users_table.update_item(
+        Key={
+            'username': away_user['username']
+        },
+        UpdateExpression="set stats=:s",
+        ExpressionAttributeValues={
+            ':s': away_user['stats']
+        }
+    )
     
-
-db.execute("UPDATE rounds_played SET finalised=1 WHERE round_number=?", (current_round,))
-
-conn.commit()
-print("Update finalised")
-conn.close()

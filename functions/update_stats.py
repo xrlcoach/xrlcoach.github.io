@@ -406,13 +406,15 @@ def get_stats():
     )
     round_lineups = resp["Items"]
     for team in xrl_teams:
-        lineup = [p for p in round_lineups if p['xrl_team'] == team
+        lineup = [p for p in round_lineups if p['xrl_team'] == team]
         for player in lineup:
             player_lineup_score = 0
             player_played = False
+            played_xrl = False
             for player_stats in player_stats_final:
-                if player['name+club'].lower() == player_stats[0].lower():
+                if player['player_name'].lower() + ';' +  player['nrl_club'].lower() == player_stats[0].lower():
                     player_played = player_stats[1]['Mins Played'] > 0
+                    played_xrl = player_played and not player['position_specific'].startswith('int')                       
                     player_scoring_stats = player_stats[2][player['position_general']]
                     player_lineup_score += player_scoring_stats['tries'] * 4
                     player_lineup_score -= player_scoring_stats['sin_bins'] * 2
@@ -429,12 +431,12 @@ def get_stats():
                         player_lineup_score *= 2
             lineups_table.update_item(
                 Key={
-                    'name+club': player['name+club'],
-                    'xrlTeam+round': team + number
+                    'name+nrl+xrl+round': player['name+club'] + ';' + team + ';' + number,
                 },
-                UpdateExpression="set played=:p, score=:s",
+                UpdateExpression="set played_nrl=:p, played_xrl=:x, score=:s",
                 ExpressionAttributeValues={
                     ':p': player_played,
+                    ':x': played_xrl,
                     ':s': player_lineup_score
                 }
             )

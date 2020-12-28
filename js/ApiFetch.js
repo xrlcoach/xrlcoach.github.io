@@ -129,6 +129,17 @@ export async function GetAllFixtures() {
     return data;
 }
 
+export async function GetRoundInfo(roundNumber) {
+    const response = await fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/fixtures?round=' + roundNumber, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'        
+        }
+    });
+    const data = await response.json();
+    return data;
+}
+
 function getCookie(cname) {
     var name = cname + "=";
     var ca = document.cookie.split(';');

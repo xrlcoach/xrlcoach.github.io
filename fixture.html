@@ -61,7 +61,7 @@
     <main>
         <div class="container">
             <p>
-            <h4 id="fixtureHeading">Round {{ round_number}}: {{ home_team }} v {{ away_team }}</h4>
+            <h4 id="fixtureHeading"></h4>
             </p>
             <div id="fixtureContainer" class="row">
                 <div class="col table-responsive align-self-start">
@@ -80,59 +80,7 @@
                                 <th style="color: green;">Score</th>
                             </tr>
                         </thead>
-                        <tbody id="homeTableBody">
-                            {% for x in range(home_length) %}
-                            <tr>
-                                <td style="white-space: nowrap;">
-                                    {{ home_squad[x]['lineup_player_name'] }}
-                                </td>
-                                <td>
-                                    {{ home_squad[x]['lineup_nrl_team'] }}
-                                </td>
-                                <td>
-                                    {{ home_squad[x]['lineup_position'] }}
-                                </td>
-                                <td>
-                                    {% if home_squad[x]['captain'] %}C{% endif %}
-                                    {% if home_squad[x]['vice_captain'] %}VC{% endif %}
-                                </td>
-                                <td>
-                                    {% if home_squad[x]['kicker'] %}K{% endif %}
-                                    {% if home_squad[x]['backup_kicker'] %}RK{% endif %}
-                                </td>
-                                <td>
-                                    {{ home_squad[x]['lineup_score'] }}
-                                </td>
-                            </tr>
-                            {% endfor %}
-                            <tr>
-                                <td>Bench</td>
-                            </tr>
-                            {% for x in range(hb_length) %}
-                            <tr>
-                                <td style="white-space: nowrap;">
-                                    {{ home_bench[x]['lineup_player_name'] }}
-                                </td>
-                                <td>
-                                    {{ home_bench[x]['lineup_nrl_team'] }}
-                                </td>
-                                <td>
-                                    {{ home_bench[x]['lineup_position'] }}
-                                </td>
-                                <td></td>
-                                <td></td>
-                                <td>{{ home_bench[x]['lineup_score'] }}</td>
-                            </tr>
-                            {% endfor %}
-                            <tr>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td>Total</td>
-                                <td>{{ home_score }}</td>
-                            </tr>
-                        </tbody>
+                        <tbody id="homeTableBody"></tbody>
                     </table>
 
                 </div>
@@ -152,59 +100,7 @@
                                 <th style="color: green;">Score</th>
                             </tr>
                         </thead>
-                        <tbody id="awayTableBody">
-                            {% for x in range(away_length) %}
-                            <tr>
-                                <td style="white-space: nowrap;">
-                                    {{ away_squad[x]['lineup_player_name'] }}
-                                </td>
-                                <td>
-                                    {{ away_squad[x]['lineup_nrl_team'] }}
-                                </td>
-                                <td>
-                                    {{ away_squad[x]['lineup_position'] }}
-                                </td>
-                                <td>
-                                    {% if away_squad[x]['captain'] %}C{% endif %}
-                                    {% if away_squad[x]['vice_captain'] %}VC{% endif %}
-                                </td>
-                                <td>
-                                    {% if away_squad[x]['kicker'] %}K{% endif %}
-                                    {% if away_squad[x]['backup_kicker'] %}RK{% endif %}
-                                </td>
-                                <td>
-                                    {{ away_squad[x]['lineup_score'] }}
-                                </td>
-                            </tr>
-                            {% endfor %}
-                            <tr>
-                                <td>Bench</td>
-                            </tr>
-                            {% for x in range(ab_length) %}
-                            <tr>
-                                <td style="white-space: nowrap;">
-                                    {{ away_bench[x]['lineup_player_name'] }}
-                                </td>
-                                <td>
-                                    {{ away_bench[x]['lineup_nrl_team'] }}
-                                </td>
-                                <td>
-                                    {{ away_bench[x]['lineup_position'] }}
-                                </td>
-                                <td></td>
-                                <td></td>
-                                <td>{{ away_bench[x]['lineup_score'] }}</td>
-                            </tr>
-                            {% endfor %}
-                            <tr>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td>Total</td>
-                                <td>{{ away_score }}</td>
-                            </tr>
-                        </tbody>
+                        <tbody id="awayTableBody"></tbody>
                     </table>
 
                 </div>

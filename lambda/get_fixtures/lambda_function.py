@@ -9,7 +9,26 @@ round_table = dynamodbResource.Table('rounds2020')
 def lambda_handler(event, context):
     method = event['httpMethod']
     if method == 'GET':
-        resp = round_table.scan()
+        if not event["queryStringParameters"]:
+            resp = round_table.scan()
+            return {
+                'statusCode': 200,
+                'headers': {
+                'Access-Control-Allow-Headers': 'Content-Type',
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
+                },
+                'body': json.dumps(replace_decimals(resp['Items']))
+            }
+        print('Params detected')        
+        params = event["queryStringParameters"]
+        print(params)
+        round_number = params['round']
+        resp = round_table.get_item(
+            Key={
+                'round_number': round_number
+            }
+        )
         return {
             'statusCode': 200,
             'headers': {

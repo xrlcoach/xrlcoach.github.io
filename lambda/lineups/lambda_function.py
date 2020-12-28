@@ -69,25 +69,25 @@ def lambda_handler(event, context):
     if method == 'POST':
         lineup = json.loads(event['body'])
         print("Lineup: " + str(lineup))
-        # positions = {
-        #     "fullback": "Back",
-        #     "winger1": "Back",
-        #     "centre1": "Back",
-        #     "centre2": "Back",
-        #     "winger2": "Back",
-        #     "five_eighth": "Playmaker",
-        #     "halfback": "Playmaker",
-        #     "hooker": "Playmaker",
-        #     "prop1": "Forward",
-        #     "lock": "Forward",
-        #     "prop2": "Forward",
-        #     "row1": "Forward",
-        #     "row2": "Forward",
-        #     "int1": "Forward",
-        #     "int2": "Forward",
-        #     "int3": "Forward",
-        #     "int4": "Forward",
-        #     }
+        position_numbers = {
+            "fullback": 1,
+            "winger1": 2,
+            "centre1": 3,
+            "centre2": 4,
+            "winger2": 5,
+            "five_eighth": 6,
+            "halfback": 7,
+            "prop1": 8,
+            "hooker": 9,
+            "prop2": 10,
+            "row1": 11,
+            "row2": 12,
+            "lock": 13,
+            "int1": 14,
+            "int2": 15,
+            "int3": 16,
+            "int4": 17,
+            }
         print("Writing lineup to table")        
         for player in existing_lineup['Items']:
             lineup_table.delete_item(
@@ -106,6 +106,7 @@ def lambda_handler(event, context):
                     'round_number': str(round_number),
                     'position_specific': player['position'],
                     'position_general': player['positiion_general'],
+                    'position_number': position_numbers[player['position']],
                     'captain': player['captain'],
                     'vice': player['vice'],
                     'kicker': player['kicker'],

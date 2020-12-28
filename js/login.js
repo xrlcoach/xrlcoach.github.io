@@ -1,6 +1,6 @@
-import { GetCurrentRoundInfo, Login } from "./ApiFetch";
+import { GetCurrentRoundInfo, Login } from "./ApiFetch.js";
 
-function login(event) {
+async function login(event) {
     event.preventDefault();
     var username = document.getElementById('username').value;
     var password = document.getElementById('password').value;    

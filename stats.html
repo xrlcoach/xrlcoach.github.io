@@ -1,180 +1,124 @@
-{% extends "layout.html" %}
+<!DOCTYPE html>
 
-{% block title %}
-    Stats
-{% endblock %}
+<html lang="en">
 
-{% block main %}
-    <p><h4>Select Filters</h4></p>
-    <form action="/stats" method="post">
-        <div class="form-group">
-            <label for="round">Round</label>
-            <select class="form-control" name="round">
-                {% for x in range(r) %}
-                <option>{{ rounds[x] }}</option>
-                {% endfor %}
-                <option>All</option>
-            </select>
-            <label for="nrl_club">NRL Club</label>
-            <select class="form-control" name="nrl_club" aria-placeholder="Choose a club">
-                <option>All</option>
-                <option>Broncos</option>
-                <option>Bulldogs</option>
-                <option>Cowboys</option>
-                <option>Dragons</option>
-                <option>Eels</option>
-                <option>Knights</option>
-                <option>Panthers</option>
-                <option>Rabbitohs</option>
-                <option>Raiders</option>
-                <option>Roosters</option>
-                <option>Sea Eagles</option>
-                <option>Sharks</option>
-                <option>Storm</option>
-                <option>Titans</option>
-                <option>Warriors</option>
-                <option>Wests Tigers</option>
-            </select>
-            <label for="xrl_team">XRL Team</label>
-            <select class="form-control" name="xrl_team" aria-placeholder="Choose a club">
-                <option>{{ team_selected }}</option>
-                {% for x in range(t) %}
-                <option>{{ teams[x] }}</option>
-                {% endfor %}
-                <option>All</option>
-            </select>
-            <button type="submit" class="btn btn-primary">View stats</button>
+<head>
+
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- documentation at http://getbootstrap.com/docs/4.1/, alternative themes at https://bootswatch.com/ -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- https://favicon.io/emoji-favicons/money-mouth-face/ -->
+    <link href="/static/xrl-logo.png" rel="icon">
+
+    <link href="/static/styles.css" rel="stylesheet">
+
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+    <script src="js/Session.js"></script>
+
+    <title>XRL Home</title>
+
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-md navbar-dark" style="background-color: rgb(44, 48, 52);">
+        <a class="navbar-brand" href="/"><img src="static/xrl-logo.png" alt="XRL Badge" height="40"><span
+                class="green">X</span><span class="yellow">R</span><span class="green">L</span></a>
+        <button aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler"
+            data-target="#navbar" data-toggle="collapse" type="button">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbar">
+            <ul class="navbar-nav mr-auto mt-2">
+                <li class="nav-item"><a class="nav-link" href="team.html">My Team</a></li>
+                <li class="nav-item"><a class="nav-link" href="lineup.html">Lineup</a></li>
+                <li class="nav-item"><a class="nav-link" href="draw.html">Draw</a></li>
+                <li class="nav-item"><a class="nav-link" href="comp.html">Ladder</a></li>
+                <li class="nav-item"><a class="nav-link" href="squads.html">Squads</a></li>
+                <li class="nav-item"><a class="nav-link" href="stats.html">Stats</a></li>
+            </ul>
+            <ul class="navbar-nav ml-auto mt-2">
+                <li class="nav-item"><a class="nav-link" href="#" onclick="logout()">Log Out</a></li>
+            </ul>
+            <!-- <ul class="navbar-nav ml-auto mt-2">
+                <li class="nav-item"><a class="nav-link" href="/register">Register</a></li>
+                <li class="nav-item"><a class="nav-link" href="/login">Log In</a></li>
+            </ul> -->
+        </div>
+    </nav>
+
+    <header>
+        <div class="alert alert-primary border text-center" role="alert" id="feedback">
+        </div>
+    </header>
+
+    <main>
+        <p>
+        <h4>Select Filters</h4>
+        </p>
+        <form action="/stats" method="post">
+            <div class="form-group">
+                <label for="round">Round</label>
+                <select class="form-control" id="roundSelect"></select>
+                <label for="nrl_club">NRL Club</label>
+                <select class="form-control" id="nrlClubSelect" aria-placeholder="Choose a club">
+                    <option>All</option>
+                    <option>Broncos</option>
+                    <option>Bulldogs</option>
+                    <option>Cowboys</option>
+                    <option>Dragons</option>
+                    <option>Eels</option>
+                    <option>Knights</option>
+                    <option>Panthers</option>
+                    <option>Rabbitohs</option>
+                    <option>Raiders</option>
+                    <option>Roosters</option>
+                    <option>Sea Eagles</option>
+                    <option>Sharks</option>
+                    <option>Storm</option>
+                    <option>Titans</option>
+                    <option>Warriors</option>
+                    <option>Wests Tigers</option>
+                </select>
+                <label for="xrl_team">XRL Team</label>
+                <select class="form-control" id="xrlTeamSelect" aria-placeholder="Choose a club"></select>
+                <button type="submit" class="btn btn-primary">View stats</button>
         </form>
-    </div>
-    <div class="container table-responsive" style="height: 750px;">
-    <table class="table table-dark table-striped">
-        <thead style="color: green;">
-            <tr>
-                <th>Player</th>
-                <th>Club</th>
-                <th>XRL Team</th>
-                <th>Position</th>
-                <th>Minutes</th>
-                <th>Tries</th>
-                <th>Conversions</th>
-                <th>Penalty Goals</th>
-                <th>Field Goals</th>
-                <th>Runs</th>
-                <th>Run Metres</th>
-                <th>Line Breaks</th>
-                <th>Line Break Assists</th>
-                <th>Try Assists</th>
-                <th>Tackle Breaks</th>
-                <th>Offloads</th>
-                <th>Tackles</th>
-                <th>Missed Tackles</th>
-                <th>Kicks</th>
-                <th>Kick Metres</th>
-                <th>Forty-Twenties</th>
-                <th>Errors</th>
-                <th>Sin Bins</th>
-                <th>Send Offs</th>
-                <th>Playmaker</th>
-                <th>Involvement</th>
-                <th>Concedes</th>
-                <th>MIA</th>
-                <th>XRL Score</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for x in range(s) %}
-        <tr>
-            <td style="white-space: nowrap;">
-                {{ stats[x]['player_name'] }}
-            </td>
-            <td>
-                {{ stats[x]['nrl_team'] }}
-            </td>
-            <td>
-                {{ team_selected }}
-            </td>
-            <td>
-                {{ stats[x]['position'] }}
-            </td>
-            <td>
-                {{ stats[x]['mins_played'] }}
-            </td>
-            <td>
-                {{ stats[x]['tries'] }}
-            </td>
-            <td>
-                {{ stats[x]['conversions'] }}
-            </td>
-            <td>
-                {{ stats[x]['penalty_goals'] }}
-            </td>
-            <td>
-                {{ stats[x]['field_goals'] }}
-            </td>
-            <td>
-                {{ stats[x]['all_runs'] }}
-            </td>
-            <td>
-                {{ stats[x]['run_metres'] }}
-            </td>
-            <td>
-                {{ stats[x]['line_breaks'] }}
-            </td>
-            <td>
-                {{ stats[x]['line_break_assists'] }}
-            </td>
-            <td>
-                {{ stats[x]['try_assists'] }}
-            </td>
-            <td>
-                {{ stats[x]['tackle_breaks'] }}
-            </td>
-            <td>
-                {{ stats[x]['offloads'] }}
-            </td>
-            <td>
-                {{ stats[x]['tackles'] }}
-            </td>
-            <td>
-                {{ stats[x]['missed_tackles'] }}
-            </td>
-            <td>
-                {{ stats[x]['kicks'] }}
-            </td>
-            <td>
-                {{ stats[x]['kick_metres'] }}
-            </td>
-            <td>
-                {{ stats[x]['forty_twenties'] }}
-            </td>
-            <td>
-                {{ stats[x]['errors'] }}
-            </td>
-            <td>
-                {{ stats[x]['sin_bins'] }}
-            </td>
-            <td>
-                {{ stats[x]['send_offs'] }}
-            </td>
-            <td>
-                {{ stats[x]['playmaker'] }}
-            </td>
-            <td>
-                {{ stats[x]['involvement'] }}
-            </td>
-            <td>
-                {{ stats[x]['concede'] }}
-            </td>
-            <td>
-                {{ stats[x]['mia'] }}
-            </td>
-            <td>
-                {{ stats[x]['total_score'] }}
-            </td>
-        </tr>
-        {% endfor %}
-        </tbody>
+        </div>
+        <div class="container table-responsive" style="height: 750px;">
+            <table class="table table-dark table-striped">
+                <thead style="color: green;">
+                    <tr>
+                        <th>Player</th>
+                        <th>Club</th>
+                        <th>XRL Team</th>
+                        <th>Position</th>
+                        <th>Tries</th>
+                        <th>Goals</th>
+                        <th>Field Goals</th>
+                        <th>Playmaker</th>
+                        <th>Involvement</th>
+                        <th>Concedes</th>
+                        <th>MIA</th>
+                        <th>XRL Score</th>
+                    </tr>
+                </thead>
+                <tbody id="statTableBody"></tbody>
+            </table>
+        </div>
+    </main>
 
-    </table>
-    </div>
-{% endblock %}
+    <footer class="small text-center text-muted">
+        Data provided by <a href="https://www.nrl.com">NRL.com</a>. View <a
+            href="https://www.nrl.com/terms-of-use">NRL’s Terms of Use</a>.
+    </footer>
+    <script type="module" src="js/stats.js"></script>
+</body>
+
+</html>

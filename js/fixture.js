@@ -1,4 +1,5 @@
 import { GetLineupByTeamAndRound, GetRoundInfo } from "./ApiFetch.js";
+import { GetLineupScore } from "./Helpers.js";
 
 let roundNumber, completed, homeTeam, awayTeam, homeLineup, awayLineup;
 const positionNames = {
@@ -105,11 +106,7 @@ function populateLineupTable(tableId, lineup) {
     let label = document.createElement('td');
     label.innerText = 'Total:';
     tr.appendChild(label);
-    let total = lineup.reduce(function(totalScore, player) {
-        if (player['playerd_xrl']) {
-            return totalScore + player['score']
-        }
-    });
+    let total = GetLineupScore(lineup);
     let totalDisplay = document.createElement('td');
     totalDisplay.innerText = total;
     tr.appendChild(totalDisplay);

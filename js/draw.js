@@ -1,10 +1,13 @@
-import { GetAllFixtures } from "./ApiFetch.js";
+import { GetAllFixtures, GetAllUsers } from "./ApiFetch.js";
+import { GetLineupScoreByTeamAndRound } from "./Helpers.js";
 
 let draw;
 let roundToDisplay;
+let users;
 
 window.onload = async function() {
     draw = await GetAllFixtures();
+    users = await GetAllUsers();
     console.log(draw);
     if (draw.length == 0) {
         document.getElementById('feedback').innerText = 'No draw yet. Fixtures will be generated once all teams have joined.';
@@ -39,23 +42,35 @@ function PopulateFixtureTable(round) {
     for (let i = 0; i < fixtures.length; i++) {
         let tr = document.createElement('tr');
         let home = document.createElement('td');
-        home.innerText = fixtures[i].home;
-        tr.appendChild(home);
+        let homeUser = users.find(u => u.team_short == fixtures[i].home);
+        home.innerText = homeUser.team_name;
         let away = document.createElement('td');
-        away.innerText = fixtures[i].away;
+        let awayUser = users.find(u => u.team_short == fixtures[i].away);
+        away.innerText = awayUser.team_name;
+        if (round.completed || round.in_progress) {
+            let homeScore = await GetLineupScoreByTeamAndRound(round.round_number, homeUser.team_short);
+            home.innerText += " " + homeScore;
+            let awayScore = await GetLineupScoreByTeamAndRound(round.round_number, awayUser.team_short);
+            away.innerText += " " + awayScore;
+        }
+        tr.appendChild(home);
         tr.appendChild(away);
-        let view = document.createElement('td');
-        let link = document.createElement('a');
-        link.innerText = 'View';
-        link.href = `fixture.html?round=${round.round_number}&fixture=${fixtures[i].home}-v-${fixtures[i].away}`;
-        view.appendChild(link);
-        tr.appendChild(view);
+        if (round.completed || round.in_progress) {
+            let view = document.createElement('td');
+            let link = document.createElement('a');
+            link.innerText = 'View';
+            link.href = `fixture.html?round=${round.round_number}&fixture=${fixtures[i].home}-v-${fixtures[i].away}`;
+            view.appendChild(link);
+            tr.appendChild(view);
+        }
         table.appendChild(tr);
     }
 }
 
 function selectRound(event) {
     event.preventDefault();
-    roundToDisplay = document.getElementById('roundSelect').value;
+    roundToDisplay = draw.find(r => r.round_number == document.getElementById('roundSelect').value);
     PopulateFixtureTable(roundToDisplay);
 }
+
+window.selectRound = selectRound;

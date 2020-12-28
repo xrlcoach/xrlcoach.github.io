@@ -140,6 +140,23 @@ export async function GetRoundInfo(roundNumber) {
     return data;
 }
 
+export async function GetCurrentRoundInfo() {
+    const rounds = await GetAllFixtures();
+    let currentRoundNumber = Math.min(rounds.filter(r => r.completed == false).map(r => r.round_number))
+    return rounds.find(r => r.round_number == currentRoundNumber);
+}
+
+export async function GetAllStats() {
+    const response = await fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/stats', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'        
+        }
+    });
+    const data = await response.json();
+    return data;
+}
+
 function getCookie(cname) {
     var name = cname + "=";
     var ca = document.cookie.split(';');

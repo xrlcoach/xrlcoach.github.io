@@ -241,7 +241,7 @@ def get_stats():
 
             for i in range(len(home_players)):
                 player = []
-                player.append(home_players[i] + ';' +  home_team)
+                player.append({'player_name': home_players[i], 'nrl_club': home_team})
                 stat_map = {}
                 ps = home_stats[i].split()
                 if len(ps) > len(stat_columns_final):
@@ -276,7 +276,7 @@ def get_stats():
 
             for i in range(len(away_players)):
                 player = []
-                player.append(away_players[i] + ';' + away_team)
+                player.append({'player_name': away_players[i], 'nrl_club': away_team})
                 stat_map = {}
                 ps = away_stats[i].split()
                 if len(ps) > len(stat_columns_final):
@@ -317,25 +317,27 @@ def get_stats():
     print("Stat scraping complete. Calculating player scores...")
     
     for player in player_stats_final:
-        player_split = player[0].split(';')
-        #print(player_split)
-        squad_entry = [p for p in squads if p['player_name'] == player_split[0].lower() and p['nrl_club'] == player_split[1]]
-        #print(resp)
+        squad_entry = [p for p in squads if p['player_name'] == player[0]['player_name'].lower() and p['nrl_club'] == player[0]['nrl_club']]
         if len(squad_entry) == 0:
-            squad_entry = [p for p in squads if p['player_name'] == player_split[0].lower()]
-            if len(squad_entry) == 0:
-                print(f"Couldn't find {player_split[0]} in database. Adding now. Remember to check position later.")
+            squad_entry = [p for p in squads if p['player_name'] == player[0]['player_name'].lower()]
+            if len(squad_entry) != 1:
+                if len(squad_entry) == 0:
+                    print(f"Couldn't find {player[0]['player_name']} in database. Adding now. Remember to check position later.")
+                elif len(squad_entry) > 1:
+                    print(f"""A player named {player[0]['player_name']} has moved to the {player[0]['nrl_club']}. There is more than one
+                    {player[0]['player_name']} in the database. Creating a new player entry for now. Remember to update the player's
+                    team manually and update stats again.""")
                 if player[1]['Position'] in forwards: new_player_position = 'Forward'
                 if player[1]['Position'] in playmakers: new_player_position = 'Playmaker'
                 if player[1]['Position'] in backs: new_player_position = 'Back'
-                new_player_id = max([int(p['player_id']) for p in squads]) + 1
+                player_id = max([int(p['player_id']) for p in squads]) + 1
                 squads_table.put_item(
                     Item={
-                        'player_id': new_player_id,
-                        'player_name': player_split[0],
-                        'nrl_club': player_split[1],
+                        'player_id': player_id,
+                        'player_name': player[0]['player_name'],
+                        'nrl_club': player[0]['nrl_club'],
                         'position': new_player_position,
-                        'search_name': player_split[0].lower()
+                        'search_name': player[0]['player_name'].lower()
                     }
                 )
                 squad_entry = {}
@@ -343,17 +345,21 @@ def get_stats():
                 squad_entry['position2'] = ''
             else:
                 squad_entry = squad_entry[0]
-                print(f"{player_split[0]} has moved to the {player_split[1]}. Updating his team in the database.")
+                player_id = squad_entry['player_id']
+                print(f"{player[0]['player_name']} has moved to the {player[0]['nrl_club']}. Updating his team in the database.")
                 squads_table.update_item(
                     Key={
                         'player_id': squad_entry['player_id']
                     },
                     UpdateExpression="set nrl_club=:c",
                     ExpressionAttributeValues={
-                        ':c': player_split[1]
+                        ':c': player[0]['nrl_club']
                     }
                 )
-        else: squad_entry = squad_entry[0]
+        else: 
+            squad_entry = squad_entry[0]
+            player_id = squad_entry['player_id']
+        player[0]['player_id'] = player_id
         player_scores = {}
         player_scores[squad_entry['position']] = {
             'tries': player[1]['Tries'],
@@ -388,12 +394,14 @@ def get_stats():
     
     for player in player_stats_final:
         table.delete_item(Key={
-            "name+club": player[0],
+            "player_id": player[0]['player_id'],
             "round_number": number,
         })
         table.put_item(Item={
-            "name+club": player[0],
+            "player_id": player[0]['player_id'],
             "round_number": number,
+            "player_name": player[0]['player_name'],
+            "nrl_club": player[0]['nrl_club'],
             "stats": player[1],
             "scoring_stats": player[2]
         })            
@@ -431,7 +439,7 @@ def get_stats():
                         player_lineup_score *= 2
             lineups_table.update_item(
                 Key={
-                    'name+nrl+xrl+round': player['name+club'] + ';' + team + ';' + number,
+                    'name+nrl+xrl+round': player['name+nrl+xrl+round']
                 },
                 UpdateExpression="set played_nrl=:p, played_xrl=:x, score=:s",
                 ExpressionAttributeValues={

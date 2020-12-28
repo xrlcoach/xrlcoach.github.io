@@ -26,7 +26,7 @@ def lambda_handler(event, context):
         round_number = params['round']
         resp = round_table.get_item(
             Key={
-                'round_number': round_number
+                'round_number': int(round_number)
             }
         )
         return {
@@ -36,7 +36,7 @@ def lambda_handler(event, context):
             'Access-Control-Allow-Origin': '*',
             'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
             },
-            'body': json.dumps(replace_decimals(resp['Items']))
+            'body': json.dumps(replace_decimals(resp['Item']))
         }
 
 

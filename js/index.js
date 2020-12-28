@@ -1,4 +1,4 @@
-import { GetPlayersFromXrlTeam, GetActiveUserInfo, UpdatePlayerXrlTeam, GetAllUsers, GetRoundInfoFromCookie } from './ApiFetch.js';
+import { GetPlayersFromXrlTeam, GetActiveUserInfo, GetLineupByTeamAndRound, GetAllUsers, GetRoundInfoFromCookie } from './ApiFetch.js';
 import { GetUserFixture, GetOrdinal } from './Helpers.js';
 
 let user, allUsers, squad, currentRound, fixture;
@@ -30,7 +30,7 @@ window.onload = async function () {
 
 function displayUserData() {
     let ladder = allUsers.sort((u1, u2) => u2.stats.points - u1.stats.points);
-    let position = ladder.findIndex(u => u.username == user.usernmae) + 1;
+    let position = ladder.findIndex(u => u.username == user.username) + 1;
     document.getElementById('userData').innerHTML = `<h4>${user.team_name}</h4>`;
     document.getElementById('userData').innerHTML += `<h4>Position: ${GetOrdinal(position)}</h4>`;
     document.getElementById('userData').innerHTML += `<h4>Wins: ${user.stats.wins}, Draws: ${user.stats.draws}, Losses: ${user.stats.losses}</h4>`;

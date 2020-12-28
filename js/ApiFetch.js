@@ -1,3 +1,20 @@
+export async function Login(username, password) {
+    const response = await fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/xrl-users/login', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': '*/*'                
+        },
+        credentials: 'include',
+        body: JSON.stringify({
+            "username": username,
+            "password": password,        
+        })
+    });
+    const data = await response.json();
+    return data;
+}
+
 export function GetIdToken() {
     return getCookie('id');
 }
@@ -144,6 +161,10 @@ export async function GetCurrentRoundInfo() {
     const rounds = await GetAllFixtures();
     let currentRoundNumber = Math.min(rounds.filter(r => r.completed == false).map(r => r.round_number))
     return rounds.find(r => r.round_number == currentRoundNumber);
+}
+
+export async function GetRoundInfoFromCookie() {
+    return GetRoundInfo(getCookie('round'));
 }
 
 export async function GetAllStats() {

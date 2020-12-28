@@ -32,3 +32,21 @@ export function GetPlayerXrlScores(scoringPosition, appearance) {
     }
     return score;
 }
+
+export function GetUserFixture(user, round) {
+    return round.fixtures.find(f => f.home == user.team_short || f.away == user.team_short);
+}
+
+export function GetOrdinal(num) {
+    let str = String(num);
+    let lastNum = str.charAt(str.length - 1);
+    if (lastNum == '1') {
+        return str + 'st';
+    } else if (lastNum == '2') {
+        return str + 'nd';
+    } else if (lastNum == '3') {
+        return str + 'rd';
+    } else {
+        return str + 'th';
+    }
+}

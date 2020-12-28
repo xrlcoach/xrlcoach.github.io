@@ -1,7 +1,7 @@
-import { GetLineupByTeamAndRound, GetRoundInfo } from "./ApiFetch.js";
+import { GetAllUsers, GetLineupByTeamAndRound, GetRoundInfo } from "./ApiFetch.js";
 import { GetLineupScore } from "./Helpers.js";
 
-let roundNumber, completed, homeTeam, awayTeam, homeLineup, awayLineup;
+let roundNumber, completed, homeTeam, awayTeam, homeLineup, awayLineup, users;
 const positionNames = {
     'fullback': 'Fullback',
     'winger1': 'Winger',
@@ -34,6 +34,8 @@ window.onload = async function() {
     let heading = `Round ${roundNumber}: ${homeTeam} v ${awayTeam}`;
     document.getElementById('fixtureHeading').innerText = heading;
     roundInfo = await GetRoundInfo(roundNumber);
+    document.getElementById('homeTableHeader').innerText = homeTeam + " Score";
+    document.getElementById('awayTableHeader').innerText = awayTeam + " Score";
     completed = roundInfo['completed'];
     homeLineup = await GetLineupByTeamAndRound(roundNumber, homeTeam);
     awayLineup = await GetLineupByTeamAndRound(roundNumber, awayTeam);

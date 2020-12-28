@@ -20,6 +20,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
     <script src="js/Session.js"></script>
+    <script src="js/requireLogin.js"></script>
 
     <title>XRL Home</title>
 
@@ -62,7 +63,7 @@
         <p>
         <h4>Select Filters</h4>
         </p>
-        <form action="/stats" method="post">
+        <form onsubmit="filterStats(event)">
             <div class="form-group">
                 <label for="round">Round</label>
                 <select class="form-control" id="roundSelect"></select>
@@ -87,7 +88,7 @@
                     <option>Wests Tigers</option>
                 </select>
                 <label for="xrl_team">XRL Team</label>
-                <select class="form-control" id="xrlTeamSelect" aria-placeholder="Choose a club"></select>
+                <select class="form-control" id="xrlTeamSelect" aria-placeholder="Choose a team"></select>
                 <button type="submit" class="btn btn-primary">View stats</button>
         </form>
         </div>

@@ -4,6 +4,7 @@ let users;
 
 window.onload = async function() {
     users = await GetAllUsers();
+    users = users.sort((u1, u2) => u2.stats.points - u1.stats.points);
     PopulateLeagueTable(users);
 }
 

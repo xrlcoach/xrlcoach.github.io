@@ -43,14 +43,14 @@ async function displayFixture(roundNumber, fixture) {
     document.getElementById('fixtureHeading').innerHTML = `<h4>Round ${roundNumber}</h4>`;
     document.getElementById('fixtureHeading').innerHTML += `<h4>${homeUser.team_name} v ${awayUser.team_name}</h4>`;
     document.getElementById('fixtureHeading').innerHTML += `<h4>@ ${homeUser.homeground}</h4>`;
-    homeLineup = await GetLineupByTeamAndRound(roundNumber, fixture.home);
+    let homeLineup = await GetLineupByTeamAndRound(roundNumber, fixture.home);
     if (homeLineup.length == 0) {
         document.getElementById('homeTableHeader').innerText = "No lineup yet for " + fixture.home;
     } else {
         populateLineupTable('homeTableBody', homeLineup.sort((a, b) => a.position_number - b.position_number));
         document.getElementById('homeTableHeader').innerText = fixture.home + " Score";
     }
-    awayLineup = await GetLineupByTeamAndRound(roundNumber, fixture.away);
+    let awayLineup = await GetLineupByTeamAndRound(roundNumber, fixture.away);
     if (homeLineup.length == 0) {
         document.getElementById('awayTableHeader').innerText = "No lineup yet for " + fixture.away;
     } else {

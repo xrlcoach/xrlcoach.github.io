@@ -28,7 +28,7 @@ window.onload = async function() {
     PopulateFixtureTable(roundToDisplay);
 }
 
-function PopulateFixtureTable(round) {
+async function PopulateFixtureTable(round) {
     let status;
     if (round.completed) status = 'Completed';
     else if (round.in_progress) status = 'In Progress';

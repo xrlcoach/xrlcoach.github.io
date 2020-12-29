@@ -5,7 +5,7 @@ const positions_backs = ['fullback', 'winger1', 'winger2', 'centre1', 'centre2']
 const positions_playmakers = ['five_eighth', 'halfback', 'hooker'];
 const positions_forwards = ['prop1', 'prop2', 'lock', 'row1', 'row2'];
 const interchange = ['int1', 'int2', 'int3', 'int4'];
-const roles = ['captain', 'captain2', 'vice', 'kicker', 'backupKicker'];
+const roles = ['captain', 'captain2', 'vice', 'kicker', 'backup_kicker'];
 let user, squad, lineup, backs, forwards, playmakers, powerplay;
 
 window.onload = async () => {

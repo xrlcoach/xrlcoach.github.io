@@ -53,7 +53,7 @@ for match in fixtures:
         print("Checking if captain(s) and kicker played")
         for player in starters:
             if not player['played_nrl']:
-                if player['captain']:
+                if player['captain'] or player['captain2']:
                     print(f"Captain {player['player_name']} did not play.")
                     vice_plays = True
                 if player['kicker']:

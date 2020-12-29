@@ -109,11 +109,13 @@ def lambda_handler(event, context):
                     'position_general': player['position_general'],
                     'position_number': position_numbers[player['position']],
                     'captain': player['captain'],
+                    'captain2': player['captain2'],
                     'vice': player['vice'],
                     'kicker': player['kicker'],
                     'backup_kicker': player['backup_kicker'],
                     'played_nrl': False,
-                    'played_xrl': False
+                    'played_xrl': False,
+                    'score': 0
                 }
             )
         print("DB write complete")

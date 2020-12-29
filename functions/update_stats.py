@@ -435,7 +435,7 @@ def get_stats():
                         player_kicking_stats = player_stats[2]['kicker']
                         player_lineup_score += player_kicking_stats['goals'] * 2
                         player_lineup_score += player_kicking_stats['field_goals']
-                    if player['captain']:
+                    if player['captain'] or player['captain2']:
                         player_lineup_score *= 2
             lineups_table.update_item(
                 Key={

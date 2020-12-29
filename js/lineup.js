@@ -15,7 +15,7 @@ window.onload = async () => {
     console.log(squad[0]);
     lineup = await GetLineup(idToken);
     console.log(lineup.length);
-    let captains = lineup.filter(p => p.captain);
+    let captains = lineup.filter(p => p.captain || p.captain2);
     let numCaptains = captains.length;
     console.log(numCaptains);
     powerplay = numCaptains == 2;

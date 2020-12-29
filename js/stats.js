@@ -19,15 +19,18 @@ window.onload = async function() {
             return a;
         });
         p.stats = playerStatsWithScores.reduce((totals, appearance) => {
-            for (let stat in appearance.stats) {
-                totals[stat] += appearance.stats[stat];
+            let stats = appearance.stats;
+            for (let stat in stats) {
+                totals[stat] += stats[stat];
             }
             return totals;
         }, {});
         p.scoring_stats = playerStatsWithScores.reduce((totals, appearance) => {
-            for (let position in appearance.scoring_stats) {
-                for (let stat in appearance.scoring_stats[position]) {
-                    if (typeof(appearance.scoring_stats[position][stat]) == "boolean") {
+            let scoringStats = appearance.scoring_stats;
+            for (let position in scoringStats) {
+                let positionStats = scoringStats[position];
+                for (let stat in positionStats) {
+                    if (typeof(positionStats[stat]) == "boolean") {
                         totals[position][stat] += 1;
                     } else {
                         totals[position][stat] += appearance.scoring_stats[position][stat];

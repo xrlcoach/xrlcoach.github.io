@@ -21,32 +21,38 @@ print(f"Finalising Round {round_number}")
 fixtures = current_round['fixtures']
 
 resp = lineups_table.scan(
-    FilterExpression=Attr('round_number').eq(round_number)
+    FilterExpression=Attr('round_number').eq(str(round_number))
 )
 lineups = resp["Items"]
+#print(str(lineups[0]))
 resp = users_table.scan()
 users = resp["Items"]
+#print(str(users[0]))
 
 print("Finalising lineup substitutions and scores...")
 for match in fixtures:
     print(f"Finalising {match['home']} v {match['away']}")
     for team in match:
-        print(f"Finalising {team} lineup")
-        lineup = [player for player in lineups if player['xrl_team'] == team]
-        captain_count = len([player for player in lineup if player['captain']])
+        print(f"Finalising {match[team]} lineup")
+        lineup = [player for player in lineups if player['xrl_team'] == match[team]]
+        captain_count = len([player for player in lineup if player['captain'] or player['captain2']])
         powerplay = captain_count > 1
-        user = [u for u in users if u['team_short'] == match[0]][0]
-        print(f"Captain count is {captain_count}, powerplay is {powerplay}. {team} now have {user['powerplays'] - 1} powerplays left.")
-        users_table.update_item(
-            Key={
-                'username': user['username']
-            },
-            UpdateExpression="set powerplays=powerplays-1"
-        )
+        user = [u for u in users if u['team_short'] == match[team]][0]
+        if powerplay:
+            print(f"Captain count is {captain_count}, powerplay is {powerplay}. {match[team]} now have {user['powerplays'] - 1} powerplays left.")
+            users_table.update_item(
+                Key={
+                    'username': user['username']
+                },
+                UpdateExpression="set powerplays = powerplays - :v",
+                ExpressionAttributeValues={
+                    ':v': 1
+                }
+            )
         starters = [player for player in lineup if not player['position_specific'].startswith('int')]
-        print(f"Starters: {starters}")
+        #print(f"Starters: {starters}")
         bench = [player for player in lineup if player['position_specific'].startswith('int')]
-        print(f"Bench: {bench}")
+        #print(f"Bench: {bench}")
         substitutions = 0
         vice_plays = False
         backup_kicks = False
@@ -79,7 +85,7 @@ for match in fixtures:
                             }
                         )
                         valid_sub = True
-                        subs += 1
+                        substitutions += 1
                         break
                 if not valid_sub:
                     print(f"{player['player_name']} didn't play. No sub available in that position.")
@@ -88,8 +94,8 @@ for match in fixtures:
                     print(f"{player['player_name']} takes over kicking duties. Adjusting score.")
                     resp = stats_table.get_item(
                         Key={
-                            'name+club': player['player_name'] + ';' + player['nrl_club'],
-                            'round_number': round_number
+                            'player_id': player['player_id'],
+                            'round_number': str(round_number)
                         }
                     )
                     kicking_stats = resp["Item"]["scoring_stats"]["kicker"]
@@ -105,24 +111,33 @@ for match in fixtures:
                     )
                 if player['vice'] and vice_plays:
                     print(f"{player['player_name']} takes over captaincy duties. Adjusting score.")
+                    resp = lineups_table.get_item(
+                        Key={
+                            'name+nrl+xrl+round': player['name+nrl+xrl+round']
+                        }
+                    )
+                    current_score = resp['Item']['score']
                     lineups_table.update_item(
                         Key={
                             'name+nrl+xrl+round': player['name+nrl+xrl+round']
                         },
-                        UpdateExpression="set score=score*2"                        
+                        UpdateExpression="set score=:v",
+                        ExpressionAttributeValues={
+                            ':v': current_score * 2
+                        }                        
                     )
 
 print("Substitutions complete. Finalising match results...")
 resp = lineups_table.scan(
-    FilterExpression=Attr('round_number').eq(round_number)
+    FilterExpression=Attr('round_number').eq(str(round_number))
 )
 lineups = resp["Items"]
 
 for match in fixtures:
-    home_user = [user for user in users if user['team_short'] == match[0]][0]
+    home_user = [user for user in users if user['team_short'] == match['home']][0]
     home_lineup = [player for player in lineups if player['xrl_team'] == match['home']]
     home_score = sum([p['score'] for p in home_lineup if p['played_xrl']])
-    away_user = [user for user in users if user['team_short'] == match[1]][0]
+    away_user = [user for user in users if user['team_short'] == match['away']][0]
     away_lineup = [player for player in lineups if player['xrl_team'] == match['away']]
     away_score = sum([p['score'] for p in away_lineup if p['played_xrl']])
 

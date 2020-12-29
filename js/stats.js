@@ -96,7 +96,7 @@ function populateStatsTable(stats) {
         concede.innerText = player.scoring_stats[player.position].concede;
         tr.appendChild(concede);
         let total = document.createElement('td');
-        total.innerText = player.scoring_stats.score;
+        total.innerText = player.score;
         tr.appendChild(total);
         table.appendChild(tr);
     }

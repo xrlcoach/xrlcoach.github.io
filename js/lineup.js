@@ -178,7 +178,11 @@ async function submitLineup(event) {
         };
         for (let j = 0; j < playerRoles.length; j++) {
             if (playerRoles[j].value == players[i].value) {
-                entry[playerRoles[j].id] = true;
+                if (playerRoles[j].id == 'captain2') {
+                    entry['captain'] = true;
+                } else{
+                    entry[playerRoles[j].id] = true;
+                }
             } else {
                 entry[playerRoles[j].id] = false;
             }

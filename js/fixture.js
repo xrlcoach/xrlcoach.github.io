@@ -1,22 +1,7 @@
 import { GetAllUsers, GetLineupByTeamAndRound, GetRoundInfo } from "./ApiFetch.js";
-import { GetLineupScore } from "./Helpers.js";
+import { GetLineupScore, PositionNames } from "./Helpers.js";
 
 let roundNumber, completed, homeTeam, awayTeam, homeLineup, awayLineup, users;
-const positionNames = {
-    'fullback': 'Fullback',
-    'winger1': 'Winger',
-    'winger2': 'Winger',
-    'centre1': 'Centre',
-    'centre2': 'Centre',
-    'five-eighth': 'Five-Eighth',
-    'halfback': 'Halfback',
-    'hooker': 'Hooker',
-    'prop1': 'Prop',
-    'prop2': 'Prop',
-    'row1': '2nd Row',
-    'row2': '2nd Row',
-    'lock': 'Lock',
-}
 
 window.onload = async function() {
     let query = window.location.href.split('?')[1];

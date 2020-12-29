@@ -50,3 +50,19 @@ export function GetOrdinal(num) {
         return str + 'th';
     }
 }
+
+export const PositionNames = {
+    'fullback': 'Fullback',
+    'winger1': 'Winger',
+    'winger2': 'Winger',
+    'centre1': 'Centre',
+    'centre2': 'Centre',
+    'five-eighth': 'Five-Eighth',
+    'halfback': 'Halfback',
+    'hooker': 'Hooker',
+    'prop1': 'Prop',
+    'prop2': 'Prop',
+    'row1': '2nd Row',
+    'row2': '2nd Row',
+    'lock': 'Lock',
+}

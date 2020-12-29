@@ -1,5 +1,5 @@
 import { GetPlayersFromXrlTeam, GetActiveUserInfo, GetLineupByTeamAndRound, GetAllUsers, GetRoundInfoFromCookie } from './ApiFetch.js';
-import { GetUserFixture, GetOrdinal } from './Helpers.js';
+import { GetUserFixture, GetOrdinal, PositionNames } from './Helpers.js';
 
 let user, allUsers, squad, currentRound, fixture;
 let completed = false;
@@ -77,7 +77,7 @@ function populateLineupTable(tableId, lineup) {
         nrlClub.innerText = player['nrl_club'];
         tr.appendChild(nrlClub);
         let position = document.createElement('td');
-        position.innerText = positionNames[player['position_specific']];
+        position.innerText = PositionNames[player['position_specific']];
         tr.appendChild(position);
         let captain = document.createElement('td');
         if (player['captain']) captain.innerText = 'Captain';

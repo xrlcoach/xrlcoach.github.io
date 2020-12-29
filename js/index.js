@@ -2,6 +2,7 @@ import { GetPlayersFromXrlTeam, GetActiveUserInfo, GetLineupByTeamAndRound, GetA
 import { GetUserFixture, GetOrdinal } from './Helpers.js';
 
 let user, allUsers, squad, currentRound, fixture;
+let completed = false;
 
 window.onload = async function () {
     try {
@@ -9,6 +10,7 @@ window.onload = async function () {
         user = await GetActiveUserInfo(idToken);
         allUsers = await GetAllUsers();
         currentRound = await GetRoundInfoFromCookie();
+        completed = currentRound.completed;
         squad = await GetPlayersFromXrlTeam(user.team_short);
         document.getElementById('feedback').hidden = true;
         displayUserData();

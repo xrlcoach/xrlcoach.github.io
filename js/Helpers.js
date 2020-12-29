@@ -19,18 +19,19 @@ export async function GetLineupScoreByTeamAndRound(round, xrlTeam) {
 
 export function GetPlayerXrlScores(scoringPosition, appearance) {
     let score = 0;
-    for (let position in appearance.scoring_stats) {
+    let stats = appearance.scoring_stats;
+    for (let position in stats) {
         if (position == 'kicker') {
-            score += appearance[position].goals * 2;
-            score += appearance[position].field_goals;
+            score += stats[position].goals * 2;
+            score += stats[position].field_goals;
         } else if (position == scoringPosition) {
-            score += appearance[position].tries * 4;
-            score -= appearance[position].sin_bins * 2;
-            score -= appearance[position].send_offs * 4;
-            if (appearance[position].involvement_try) score += 4;
-            if (appearance[position].playmaker_try) score += 4;
-            if (appearance[position].mia) score -= 4;
-            if (appearance[position].concede) score -= 4;
+            score += stats[position].tries * 4;
+            score -= stats[position].sin_bins * 2;
+            score -= stats[position].send_offs * 4;
+            if (stats[position].involvement_try) score += 4;
+            if (stats[position].playmaker_try) score += 4;
+            if (stats[position].mia) score -= 4;
+            if (stats[position].concede) score -= 4;
         }
     }
     return score;

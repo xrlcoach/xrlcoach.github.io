@@ -11,6 +11,9 @@ window.onload = async function() {
     allPlayers = await GetAllPlayers();
     playersTotalStats = allPlayers.map(p => {
         let playerStats = allStats.filter(s => s.player_id == p.player_id);
+        if (playerStats.length == 0) {
+            return;
+        }
         let playerStatsWithScores = playerStats.map(a => {
             a.score = GetPlayerXrlScores(p.position, a);
             return a;

@@ -26,7 +26,7 @@ window.onload = async function() {
         }, {});
         p.scoring_stats = playerStatsWithScores.reduce((totals, appearance) => {
             for (let position in appearance.scoring_stats) {
-                for (let stat in position) {
+                for (let stat in appearance.scoring_stats[position]) {
                     if (typeof(appearance.scoring_stats[position][stat]) == "boolean") {
                         totals[position][stat] += 1;
                     } else {

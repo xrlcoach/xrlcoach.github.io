@@ -101,7 +101,7 @@ def lambda_handler(event, context):
                             ':x': body['xrl_team']
                         }
                     )
-                    print(f"{body['player_name']}'s' XRL team changed to {body['xrl_team']}")
+                    print(f"{player['player_name']}'s' XRL team changed to {body['xrl_team']}")
             except Exception as e:
                 print(e)
                 return {

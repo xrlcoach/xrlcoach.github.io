@@ -35,7 +35,7 @@ window.onload = async function() {
         }, {});
         p.score = playerStatsWithScores.reduce((totals, appearance) => {
             return totals.score + appearance.score;
-        });
+        }, 0);
         return p;
     });
     populateStatsTable(playersTotalStats);

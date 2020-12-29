@@ -63,10 +63,10 @@
             </p>
             <div id="chosenPlayers" hidden>
                 <div class="row">
-                    <div id="picked" class="col" hidden>Picked: </div>
-                    <div id="dropped" class="col" hidden>Dropped: </div>
+                    <div class="col" hidden>Picked: <ul id="pickedList"></ul></div>
+                    <div class="col" hidden>Dropped: <ul id="droppedList"></ul></div>
                 </div>
-                <button onclick="submitChoices()">Submit</button>
+                <button class="btn btn-success" onclick="submitChoices()">Submit</button>
             </div>
             <p id="playerCountMessage"></p>
             <ul id="playerCountBreakdown">

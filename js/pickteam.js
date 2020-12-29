@@ -195,28 +195,24 @@ function displayChoices() {
     if (pickedPlayers.length > 0) {
         document.getElementById('chosenPlayers').hidden = false;
         document.getElementById('picked').hidden = false;
-        document.getElementById('picked').innerHTML = '';
-        let list = document.createElement('ul');
+        document.getElementById('pickedList').innerHTML = '';
         for (let player of pickedPlayers) {
             let li = document.createElement('li');
             li.innerText = player.player_name;
             li.id = player.player_id;
-            list.appendChild(li);
+            document.getElementById('pickedList').appendChild(li);
         }
-        document.getElementById('picked').appendChild(list);
     } else document.getElementById('picked').hidden = true;
     if (droppedPlayers.length > 0) {
         document.getElementById('chosenPlayers').hidden = false;
         document.getElementById('dropped').hidden = false;
-        document.getElementById('dropped').innerHTML = '';
-        let list = document.createElement('ul');
+        document.getElementById('droppedList').innerHTML = '';
         for (let player of droppedPlayers) {
             let li = document.createElement('li');
             li.innerText = player.player_name;
             li.id = player.player_id;
-            list.appendChild(li);
+            document.getElementById('droppedList').appendChild(li);
         }
-        document.getElementById('dropped').appendChild(list);
     } else document.getElementById('dropped').hidden = true;
 }
 

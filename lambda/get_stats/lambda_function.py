@@ -13,15 +13,17 @@ def lambda_handler(event, context):
         if not event["queryStringParameters"]:
             print('No params found, scanning table')
             resp = table.scan()
-            print('Table scanned, returning json response')
+            print('Table scanned, formulatin json response')
+            data = json.dumps(replace_decimals(resp['Items']))
+            print('Data ready, returning...')
             return {
                 'statusCode': 200,
                 'headers': {
-                'Access-Control-Allow-Headers': 'Content-Type',
-                'Access-Control-Allow-Origin': '*',
-                'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
+                    'Access-Control-Allow-Headers': 'Content-Type',
+                    'Access-Control-Allow-Origin': '*',
+                    'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
                 },
-                'body': json.dumps(replace_decimals(resp['Items']))
+                'body': data
             }
         print('Params detected')        
         params = event["queryStringParameters"]

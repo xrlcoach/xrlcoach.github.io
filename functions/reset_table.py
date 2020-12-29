@@ -3,7 +3,7 @@ import boto3
 clean_stats = {
     'wins': 0,
     'draws': 0,
-    'losses': 2,
+    'losses': 0,
     'for': 0,
     'against': 0,
     'points': 0

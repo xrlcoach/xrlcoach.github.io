@@ -10,8 +10,10 @@ for player in lineups:
         Key={
             'name+nrl+xrl+round': player['name+nrl+xrl+round']
         },
-        UpdateExpression="set score = :v",
+        UpdateExpression="set score=:v, played_nrl=:n, played_xrl=:x",
         ExpressionAttributeValues={
-            ':v': 0
+            ':v': 0,
+            ':n': False,
+            ':x': False
         }
     )

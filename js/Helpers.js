@@ -18,9 +18,8 @@ export async function GetLineupScoreByTeamAndRound(round, xrlTeam) {
 }
 
 export function GetPlayerXrlScores(scoringPosition, appearance) {
-    let scores = {}
+    let score = 0;
     for (let position in appearance.scoring_stats) {
-        let score = 0;
         if (position == 'kicker') {
             score += position.goals * 2;
             score += position.field_goals;

@@ -25,6 +25,7 @@ window.onload = async function() {
         let player = allPlayersWithStats.find(p => p.player_id == allStats[i].player_id);
         allStats[i].score = GetPlayerXrlScores(player.position, allStats[i]);
         allStats[i].position = player.position;
+        allStats[i].xrl_team = player.xrl_team;
     }
     playersTotalStats = allPlayersWithStats.map(function(p) {
         let playerStats = allStats.filter(s => s.player_id == p.player_id);

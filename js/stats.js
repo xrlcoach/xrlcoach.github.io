@@ -1,16 +1,26 @@
 import { GetActiveUserInfo, GetAllPlayers, GetAllStats, GetAllUsers, GetCurrentRoundInfo, GetIdToken, GetRoundInfo } from "./ApiFetch.js";
 import { GetPlayerXrlScores } from "./Helpers.js";
 
-let roundToDisplay, allStats, allUsers, activeUser, allPlayers, playersTotalStats;
+let roundToDisplay, allStats, allUsers, activeUser, allPlayersWithStats, playersTotalStats;
 
 window.onload = async function() {
     roundToDisplay = await GetCurrentRoundInfo();
+    for (let i = roundToDisplay; i > 0; i--) {
+        let option = document.createElement('option');
+        option.innerText = i;
+        document.getElementById('roundSelect').appendChild(option);
+    }
     allStats = await GetAllStats();
     let playerIdsWithStats = allStats.map(p => p.player_id);
     allUsers = await GetAllUsers();
+    for (let user of users) {
+        let option = document.createElement('option');
+        option.innerText = user.team_short;
+        document.getElementById('xrlTeamSelect').appendChild(option);
+    }
     activeUser = await GetActiveUserInfo(GetIdToken());
-    allPlayers = await GetAllPlayers();
-    let allPlayersWithStats = allPlayers.filter(p => playerIdsWithStats.includes(p.player_id))
+    let allPlayers = await GetAllPlayers();
+    allPlayersWithStats = allPlayers.filter(p => playerIdsWithStats.includes(p.player_id))
     playersTotalStats = allPlayersWithStats.map(function(p) {
         let playerStats = allStats.filter(s => s.player_id == p.player_id);
         // if (playerStats.length == 0) {
@@ -55,12 +65,14 @@ window.onload = async function() {
         }, 0);
         return p;
     });
-    populateStatsTable(playersTotalStats);
+    populateStatsTable(playersTotalStats, sortByXrlXcore);
 }
 
+
 function populateStatsTable(stats, sortFunction) {
-    let sortedStats = stats.sort(sortByXrlXcore);
+    let sortedStats = stats.sort(sortFunction);
     let table = document.getElementById('statTableBody');
+    table.innerHTML = '';
     for (var player of sortedStats) {
         let tr = document.createElement('tr');
         let name = document.createElement('td');
@@ -106,9 +118,9 @@ function populateStatsTable(stats, sortFunction) {
 function filterStats(event) {
     event.preventDefault();
     let statsToDisplay;
-    let roundNumber = document.getElementById('roundSelect').nodeValue;
-    let nrlClub = document.getElementById('nrlClubSelect').nodeValue;
-    let xrlTeam = document.getElementById('xrlTeamSelect').nodeValue;
+    let roundNumber = document.getElementById('roundSelect').value;
+    let nrlClub = document.getElementById('nrlClubSelect').value;
+    let xrlTeam = document.getElementById('xrlTeamSelect').value;
     if (roundNumber == 'ALL' && nrlClub == 'ALL' && xrlTeam == 'ALL') {
         statsToDisplay = playersTotalStats;
     } else if (roundNumber == 'ALL' && nrlClub == 'ALL') {
@@ -126,7 +138,7 @@ function filterStats(event) {
     } else {
         statsToDisplay = playersTotalStats.filter(p => p.nrl_club == nrlClub && p.xrl_team == xrlTeam && p.round_number == roundNumber);
     }
-    populateStatsTable(statsToDisplay);
+    populateStatsTable(statsToDisplay, allPlayersWithStats);
 }
 
 window.filterStats = filterStats;

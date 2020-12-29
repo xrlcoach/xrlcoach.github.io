@@ -66,7 +66,9 @@
         <form onsubmit="filterStats(event)">
             <div class="form-group">
                 <label for="round">Round</label>
-                <select class="form-control" id="roundSelect"></select>
+                <select class="form-control" id="roundSelect">
+                    <option>ALL</option>
+                </select>
                 <label for="nrl_club">NRL Club</label>
                 <select class="form-control" id="nrlClubSelect" aria-placeholder="Choose a club">
                     <option>All</option>
@@ -88,7 +90,9 @@
                     <option>Wests Tigers</option>
                 </select>
                 <label for="xrl_team">XRL Team</label>
-                <select class="form-control" id="xrlTeamSelect" aria-placeholder="Choose a team"></select>
+                <select class="form-control" id="xrlTeamSelect" aria-placeholder="Choose a team">
+                    <option>ALL</option>
+                </select>
                 <button type="submit" class="btn btn-primary">View stats</button>
         </form>
         </div>

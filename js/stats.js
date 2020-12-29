@@ -41,10 +41,10 @@ window.onload = async function() {
                     if (totals[position][stat] == undefined) {
                         totals[position][stat] = 0;
                     }
-                    if (typeof(positionStats[stat]) == "boolean") {
+                    if (typeof(positionStats[stat]) == "boolean" && positionStats[stat]) {
                         totals[position][stat] += 1;
                     } else {
-                        totals[position][stat] += appearance.scoring_stats[position][stat];
+                        totals[position][stat] += positionStats[stat];
                     }
                 }
             }

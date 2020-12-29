@@ -106,7 +106,7 @@ def lambda_handler(event, context):
                     'xrl_team': team_short,
                     'round_number': str(round_number),
                     'position_specific': player['position'],
-                    'position_general': player['positiion_general'],
+                    'position_general': player['position_general'],
                     'position_number': position_numbers[player['position']],
                     'captain': player['captain'],
                     'vice': player['vice'],

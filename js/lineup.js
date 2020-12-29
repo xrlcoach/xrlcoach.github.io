@@ -37,7 +37,7 @@ window.onload = async () => {
     PopulateLineup();
 }
 
-function togglePowerplay(button) {
+function togglePowerplay(event, button) {
     if (powerplay) {
         document.getElementById('captain2').innerHTML = '';
         document.getElementById('secondCaptainSelect').hidden = true;

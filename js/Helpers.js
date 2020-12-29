@@ -21,16 +21,16 @@ export function GetPlayerXrlScores(scoringPosition, appearance) {
     let score = 0;
     for (let position in appearance.scoring_stats) {
         if (position == 'kicker') {
-            score += position.goals * 2;
-            score += position.field_goals;
+            score += appearance[position].goals * 2;
+            score += appearance[position].field_goals;
         } else if (position == scoringPosition) {
-            score += position.tries * 4;
-            score -= position.sin_bins * 2;
-            score -= position.send_offs * 4;
-            if (position.involvement_try) score += 4;
-            if (position.playmaker_try) score += 4;
-            if (position.mia) score -= 4;
-            if (position.concede) score -= 4;
+            score += appearance[position].tries * 4;
+            score -= appearance[position].sin_bins * 2;
+            score -= appearance[position].send_offs * 4;
+            if (appearance[position].involvement_try) score += 4;
+            if (appearance[position].playmaker_try) score += 4;
+            if (appearance[position].mia) score -= 4;
+            if (appearance[position].concede) score -= 4;
         }
     }
     return score;

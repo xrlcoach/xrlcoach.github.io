@@ -100,6 +100,8 @@ for match in fixtures:
                     )
                     kicking_stats = resp["Item"]["scoring_stats"]["kicker"]
                     kicking_score = kicking_stats["goals"] * 2 + kicking_stats["field_goals"]
+                    if player['captain'] or player['captain2']:
+                        kicking_score *= 2
                     lineups_table.update_item(
                         Key={
                             'name+nrl+xrl+round': player['name+nrl+xrl+round']

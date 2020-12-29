@@ -90,6 +90,7 @@ async function PopulateLineup() {
             for (let j = 0; j < otherInts.length; j++) {
                 createOption(otherInts[j], interchange[i]);
             }
+            fillPositionOptions(document.getElementById(interchange[i]));
         }
         for (let i = 0; i < roles.length; i++) {
             if (roles[i] == 'captain2' && !powerplay) continue;
@@ -120,6 +121,7 @@ async function PopulateLineup() {
             for (var j = 0; j < squad.length; j++) {
                 createOption(squad[j], interchange[i]);
             }
+            fillPositionOptions(document.getElementById(interchange[i]));
         }
         for (var i = 0; i < roles.length; i++) {
             if (roles[i] == 'captain2' && !powerplay) continue;
@@ -138,6 +140,7 @@ function createOption(player, position) {
 }
 
 async function fillPositionOptions(select) {
+    document.getElementById(select.id + 'Position').innerHTML = '';
     let player = squad.find(p => p.player_id == select.value);
     let option = document.createElement('option');
     option.innerText = player['position'];

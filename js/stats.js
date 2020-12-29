@@ -13,7 +13,7 @@ window.onload = async function() {
     allStats = await GetAllStats();
     let playerIdsWithStats = allStats.map(p => p.player_id);
     allUsers = await GetAllUsers();
-    for (let user of users) {
+    for (let user of allUsers) {
         let option = document.createElement('option');
         option.innerText = user.team_short;
         document.getElementById('xrlTeamSelect').appendChild(option);

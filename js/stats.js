@@ -6,11 +6,11 @@ let roundToDisplay, allStats, allUsers, activeUser, allPlayers, playersTotalStat
 window.onload = async function() {
     roundToDisplay = await GetCurrentRoundInfo();
     allStats = await GetAllStats();
-    playerIdsWithStats = allStats.map(p => p.player_id);
+    let playerIdsWithStats = allStats.map(p => p.player_id);
     allUsers = await GetAllUsers();
     activeUser = await GetActiveUserInfo(GetIdToken());
     allPlayers = await GetAllPlayers();
-    allPlayersWithStats = allPlayers.filter(p => playerIdsWithStats.includes(p.player_id))
+    let allPlayersWithStats = allPlayers.filter(p => playerIdsWithStats.includes(p.player_id))
     playersTotalStats = allPlayersWithStats.map(function(p) {
         let playerStats = allStats.filter(s => s.player_id == p.player_id);
         // if (playerStats.length == 0) {

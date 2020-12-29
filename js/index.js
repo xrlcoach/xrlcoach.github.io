@@ -51,7 +51,7 @@ async function displayFixture(roundNumber, fixture) {
         document.getElementById('homeTableHeader').innerText = fixture.home + " Score";
     }
     let awayLineup = await GetLineupByTeamAndRound(roundNumber, fixture.away);
-    if (homeLineup.length == 0) {
+    if (awayLineup.length == 0) {
         document.getElementById('awayTableHeader').innerText = "No lineup yet for " + fixture.away;
     } else {
         populateLineupTable('awayTableBody', awayLineup.sort((a, b) => a.position_number - b.position_number));

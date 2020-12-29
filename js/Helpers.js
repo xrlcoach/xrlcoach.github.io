@@ -4,6 +4,8 @@ export function GetLineupScore(lineup) {
     return lineup.reduce(function(totalScore, player) {
         if (player['playerd_xrl']) {
             return totalScore + player['score'];
+        } else {
+            return totalScore;
         }
     }, 0);
 }

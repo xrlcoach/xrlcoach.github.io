@@ -5,7 +5,7 @@ export function GetLineupScore(lineup) {
         if (player['playerd_xrl']) {
             return totalScore + player['score'];
         }
-    })
+    }, 0);
 }
 
 export async function GetLineupScoreByTeamAndRound(round, xrlTeam) {

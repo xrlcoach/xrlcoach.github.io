@@ -317,9 +317,9 @@ def get_stats():
     print("Stat scraping complete. Calculating player scores...")
     
     for player in player_stats_final:
-        squad_entry = [p for p in squads if p['player_name'] == player[0]['player_name'].lower() and p['nrl_club'] == player[0]['nrl_club']]
+        squad_entry = [p for p in squads if p['player_name'].lower() == player[0]['player_name'].lower() and p['nrl_club'] == player[0]['nrl_club']]
         if len(squad_entry) == 0:
-            squad_entry = [p for p in squads if p['player_name'] == player[0]['player_name'].lower()]
+            squad_entry = [p for p in squads if p['player_name'].lower() == player[0]['player_name'].lower()]
             if len(squad_entry) != 1:
                 if len(squad_entry) == 0:
                     print(f"Couldn't find {player[0]['player_name']} in database. Adding now. Remember to check position later.")
@@ -330,7 +330,7 @@ def get_stats():
                 if player[1]['Position'] in forwards: new_player_position = 'Forward'
                 if player[1]['Position'] in playmakers: new_player_position = 'Playmaker'
                 if player[1]['Position'] in backs: new_player_position = 'Back'
-                player_id = max([int(p['player_id']) for p in squads]) + 1
+                player_id = str(max([int(p['player_id']) for p in squads]) + 1)
                 squads_table.put_item(
                     Item={
                         'player_id': player_id,
@@ -359,6 +359,7 @@ def get_stats():
         else: 
             squad_entry = squad_entry[0]
             player_id = squad_entry['player_id']
+
         player[0]['player_id'] = player_id
         player_scores = {}
         player_scores[squad_entry['position']] = {
@@ -370,7 +371,7 @@ def get_stats():
             'mia': missing(player[1], squad_entry['position']),
             'concede': player[1]['Missed Tackles'] > 4 or player[1]['Errors'] > 2
         }
-        if squad_entry['position2'] and squad_entry['position2'] != '':
+        if 'position2' in squad_entry.keys() and squad_entry['position2'] != '' and squad_entry['position2'] != None:
             player_scores[squad_entry['position2']] = {
             'tries': player[1]['Tries'],
             'sin_bins': player[1]['Sin Bins'],
@@ -389,8 +390,9 @@ def get_stats():
 
     print("Loading to dynamodb, table: stats2020")
     print("round_number: " + number)
-    print("First Player+Club: " + player_stats_final[0][0])
+    print("First Player: " + str(player_stats_final[0][0]))
     print("First stat map: " + str(player_stats_final[0][1]))
+    print("First score map: " + str(player_stats_final[0][2]))
     
     for player in player_stats_final:
         table.delete_item(Key={
@@ -417,12 +419,15 @@ def get_stats():
         lineup = [p for p in round_lineups if p['xrl_team'] == team]
         for player in lineup:
             player_lineup_score = 0
-            player_played = False
+            played_nrl = False
             played_xrl = False
             for player_stats in player_stats_final:
-                if player['player_name'].lower() + ';' +  player['nrl_club'].lower() == player_stats[0].lower():
-                    player_played = player_stats[1]['Mins Played'] > 0
-                    played_xrl = player_played and not player['position_specific'].startswith('int')                       
+                if player['player_id'] == player_stats[0]['player_id']:
+                    played_nrl = player_stats[1]['Mins Played'] > 0
+                    played_xrl = played_nrl and not player['position_specific'].startswith('int')
+                    if player['position_general'] not in player_stats[2].keys():
+                        print(str(player))
+                        print(str(player_stats))                       
                     player_scoring_stats = player_stats[2][player['position_general']]
                     player_lineup_score += player_scoring_stats['tries'] * 4
                     player_lineup_score -= player_scoring_stats['sin_bins'] * 2
@@ -443,7 +448,7 @@ def get_stats():
                 },
                 UpdateExpression="set played_nrl=:p, played_xrl=:x, score=:s",
                 ExpressionAttributeValues={
-                    ':p': player_played,
+                    ':p': played_nrl,
                     ':x': played_xrl,
                     ':s': player_lineup_score
                 }

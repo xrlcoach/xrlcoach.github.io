@@ -18,7 +18,7 @@ window.onload = async function() {
     }
     let heading = `Round ${roundNumber}: ${homeTeam} v ${awayTeam}`;
     document.getElementById('fixtureHeading').innerText = heading;
-    roundInfo = await GetRoundInfo(roundNumber);
+    let roundInfo = await GetRoundInfo(roundNumber);
     document.getElementById('homeTableHeader').innerText = homeTeam + " Score";
     document.getElementById('awayTableHeader').innerText = awayTeam + " Score";
     completed = roundInfo['completed'];
@@ -43,7 +43,7 @@ function populateLineupTable(tableId, lineup) {
         nrlClub.innerText = player['nrl_club'];
         tr.appendChild(nrlClub);
         let position = document.createElement('td');
-        position.innerText = positionNames[player['position_specific']];
+        position.innerText = PositionNames[player['position_specific']];
         tr.appendChild(position);
         let captain = document.createElement('td');
         if (player['captain']) captain.innerText = 'Captain';

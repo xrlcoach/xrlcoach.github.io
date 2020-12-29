@@ -61,13 +61,15 @@
             <p>
             <h4>Select Players</h4>
             </p>
-            <div id="chosenPlayers" class="row" hidden>
-                <div id="picked" class="col" hidden>Picked: </div>
-                <div id="dropped" class="col" hidden>Dropped: </div>
-                <button onclick="submitChoices()"></button>
+            <div id="chosenPlayers" hidden>
+                <div class="row">
+                    <div id="picked" class="col" hidden>Picked: </div>
+                    <div id="dropped" class="col" hidden>Dropped: </div>
+                </div>
+                <button onclick="submitChoices()">Submit</button>
             </div>
             <p id="playerCountMessage"></p>
-            <ul id="playerCountBreakdown">                
+            <ul id="playerCountBreakdown">
             </ul>
             <h4 id="squadName"></h4>
             <form onsubmit="selectNrlClub(event)">
@@ -104,7 +106,7 @@
                             <th>XRL Team</th>
                         </tr>
                     </thead>
-                    <tbody id="pickPlayerTable">                        
+                    <tbody id="pickPlayerTable">
                     </tbody>
 
                 </table>

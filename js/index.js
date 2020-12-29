@@ -1,5 +1,5 @@
 import { GetPlayersFromXrlTeam, GetActiveUserInfo, GetLineupByTeamAndRound, GetAllUsers, GetRoundInfoFromCookie } from './ApiFetch.js';
-import { GetUserFixture, GetOrdinal, PositionNames } from './Helpers.js';
+import { GetUserFixture, GetOrdinal, PositionNames, GetLineupScore } from './Helpers.js';
 
 let user, allUsers, squad, currentRound, fixture;
 let completed = false;

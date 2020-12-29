@@ -77,8 +77,6 @@ export async function GetPlayersFromXrlTeam(team) {
 
 export async function UpdatePlayerXrlTeam(xrlTeam, playerInfo) {
     var newTeam = xrlTeam == null ? 'None' : xrlTeam;
-    // var playerName = playerInfo.split(';')[0]
-    // var playerClub = playerInfo.split(';')[1]
     const response = await fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/players', {
         method: 'POST',
         headers: {
@@ -88,6 +86,28 @@ export async function UpdatePlayerXrlTeam(xrlTeam, playerInfo) {
         body: JSON.stringify({
             "operation": "pick_drop",
             "player_id": playerInfo,
+            "xrl_team": newTeam
+        })
+    });
+    if (response.ok) {
+        const data = await response.json();
+        return data;
+    } else {
+        document.getElementById('feedback').innerText += 'Network response not ok';
+    }
+}
+
+export async function UpdateMultiplePlayerXrlTeams(xrlTeam, players) {
+    var newTeam = xrlTeam == null ? 'None' : xrlTeam;s
+    const response = await fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/players', {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'        
+        },
+        body: JSON.stringify({
+            "operation": "pick_drop_multiple",
+            "players": players,
             "xrl_team": newTeam
         })
     });

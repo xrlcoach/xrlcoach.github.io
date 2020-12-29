@@ -87,6 +87,31 @@ def lambda_handler(event, context):
                     'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
                     },
                     'body': json.dumps({"error": str(e)})
+                }
+        if body['operation'] == "pick_drop_multiple":
+            print('Operation is pick/drop multiple players, updating table...')
+            try:
+                for player in body['players']:
+                    table.update_item(
+                        Key={
+                            'player_id': player['player_id'],
+                        },
+                        UpdateExpression="set xrl_team=:x",
+                        ExpressionAttributeValues={
+                            ':x': body['xrl_team']
+                        }
+                    )
+                    print(f"Player with ID {body['player_id']} XRL team changed to {body['xrl_team']}")
+            except Exception as e:
+                print(e)
+                return {
+                    'statusCode': 500,
+                    'headers': {
+                    'Access-Control-Allow-Headers': 'Content-Type',
+                    'Access-Control-Allow-Origin': '*',
+                    'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
+                    },
+                    'body': json.dumps({"error": str(e)})
                 }       
         return {
                 'statusCode': 200,
@@ -95,8 +120,9 @@ def lambda_handler(event, context):
                 'Access-Control-Allow-Origin': '*',
                 'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
                 },
-                'body': json.dumps({"message": "Player team updated successfully"})
-            }      
+                'body': json.dumps({"message": "Player team updates successful"})
+            }
+              
 
 def replace_decimals(obj):
     if isinstance(obj, list):

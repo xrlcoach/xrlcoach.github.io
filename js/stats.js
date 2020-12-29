@@ -58,9 +58,10 @@ window.onload = async function() {
     populateStatsTable(playersTotalStats);
 }
 
-function populateStatsTable(stats) {
+function populateStatsTable(stats, sortFunction) {
+    let sortedStats = stats.sort(sortByXrlXcore);
     let table = document.getElementById('statTableBody');
-    for (var player of stats) {
+    for (var player of sortedStats) {
         let tr = document.createElement('tr');
         let name = document.createElement('td');
         name.innerText = player.player_name;
@@ -129,3 +130,7 @@ function filterStats(event) {
 }
 
 window.filterStats = filterStats;
+
+function sortByXrlXcore(p1, p2) {
+    return p2.score - p1.score;
+}

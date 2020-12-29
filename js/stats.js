@@ -21,6 +21,9 @@ window.onload = async function() {
         p.stats = playerStatsWithScores.reduce((totals, appearance) => {
             let stats = appearance.stats;
             for (let stat in stats) {
+                if (totals[stat] == undefined) {
+                    totals[stat] = 0;
+                }
                 totals[stat] += stats[stat];
             }
             return totals;
@@ -28,8 +31,14 @@ window.onload = async function() {
         p.scoring_stats = playerStatsWithScores.reduce((totals, appearance) => {
             let scoringStats = appearance.scoring_stats;
             for (let position in scoringStats) {
+                if (totals[position] == undefined) {
+                    totals[position] = {};
+                }
                 let positionStats = scoringStats[position];
                 for (let stat in positionStats) {
+                    if (totals[position][stat] == undefined) {
+                        totals[position][stat] = 0;
+                    }
                     if (typeof(positionStats[stat]) == "boolean") {
                         totals[position][stat] += 1;
                     } else {

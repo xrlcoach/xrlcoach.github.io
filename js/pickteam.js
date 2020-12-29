@@ -1,6 +1,8 @@
-import { GetAllPlayers, GetIdToken, GetPlayersFromNrlClub, GetPlayersFromXrlTeam, GetActiveUserInfo, UpdatePlayerXrlTeam } from "./ApiFetch.js";
+import { GetAllPlayers, GetIdToken, GetPlayersFromNrlClub, GetPlayersFromXrlTeam, GetActiveUserInfo, UpdatePlayerXrlTeam, UpdateMultiplePlayerXrlTeams } from "./ApiFetch.js";
 
 let user;
+const pickedPlayers = [];
+const droppedPlayers = [];
 
 window.onload = async function () {
     const idToken = GetIdToken();
@@ -72,6 +74,7 @@ function PopulatePickPlayerTable(playerData, xrlTeam, tableId) {
             var input = document.createElement('input');
             input.setAttribute('type', 'hidden')
             input.setAttribute('value', player.player_id)
+            input.name = player.player_name;
             form.appendChild(input)
             var button = document.createElement('button');
             button.setAttribute('type', 'submit');
@@ -82,7 +85,20 @@ function PopulatePickPlayerTable(playerData, xrlTeam, tableId) {
                     event.preventDefault();
                     document.getElementById('feedback').innerText += resp.message;
                     const resp = await PickDropPlayer(null, this);
-                    location.reload();
+                };
+            } else if (pickedPlayers.findIndex(p => p.player_id == player.player_id) != -1) {
+                button.className = 'btn btn-warning';
+                button.innerText = 'Cancel';
+                form.onsubmit = function (event) {
+                    event.preventDefault();
+                    removeFromPickedList(this, xrlTeam);
+                };
+            } else if (droppedPlayers.findIndex(p => p.player_id == player.player_id) != -1) {
+                button.className = 'btn btn-warning';
+                button.innerText = 'Cancel';
+                form.onsubmit = function (event) {
+                    event.preventDefault();
+                    removeFromDroppedList(this, xrlTeam);
                 };
             } else {
                 button.className = 'btn btn-success';
@@ -91,7 +107,6 @@ function PopulatePickPlayerTable(playerData, xrlTeam, tableId) {
                     event.preventDefault();
                     const resp = await PickDropPlayer(xrlTeam, this);
                     document.getElementById('feedback').innerText += resp.message;
-                    location.reload();
                 };
             }
             form.appendChild(button);
@@ -120,13 +135,98 @@ async function selectNrlClub(event) {
 window.selectNrlClub = selectNrlClub;
 
 async function PickDropPlayer(xrlTeam, form) {
-    try {
-        const resp = await UpdatePlayerXrlTeam(xrlTeam, form.elements[0].value);
-        return resp.message;
-    } catch (error) {
-        document.getElementById('feedback').innerText += error;
+    let playerId = form.elements[0].value;
+    let playerName = form.elements[0].name;
+    if (xrlTeam == null) {
+        droppedPlayers.push({'player_id': playerId, 'player_name': playerName});
+        form.onsubmit = function (event) {
+            event.preventDefault();
+            removeFromDroppedList(this, xrlTeam);
+        };        
+        form.lastChild.className = 'btn btn-warning';
+        form.lastChild.innerText = 'Cancel';
+        displayChoices();
+    } else {
+        pickedPlayers.push({'player_id': playerId, 'player_name': playerName});
+        form.onsubmit = function (event) {
+            event.preventDefault();
+            removeFromPickedList(this, xrlTeam);
+        };        
+        form.lastChild.className = 'btn btn-warning';
+        form.lastChild.innerText = 'Cancel';
+        displayChoices();
     }
+    // try {
+    //     const resp = await UpdatePlayerXrlTeam(xrlTeam, form.elements[0].value);
+    //     return resp.message;
+    // } catch (error) {
+    //     document.getElementById('feedback').innerText += error;
+    // }
 }
 
+function removeFromPickedList(form, xrlTeam) {
+    pickedPlayers.splice(pickedPlayers.findIndex(p => p.player_id == form.firstChild.value), 1);
+    form.onsubmit = async function (event) {
+        event.preventDefault();
+        const resp = await PickDropPlayer(xrlTeam, this);
+        document.getElementById('feedback').innerText += resp.message;
+        location.reload();
+    };        
+    form.lastChild.className = 'btn btn-success';
+    form.lastChild.innerText = 'Pick';
+    displayChoices();
+}
+
+function removeFromDroppedList(form, xrlTeam) {
+    droppedPlayers.splice(droppedPlayers.findIndex(p => p.player_id == form.firstChild.value), 1);
+    form.onsubmit = async function (event) {
+        event.preventDefault();
+        const resp = await PickDropPlayer(null, this);
+        document.getElementById('feedback').innerText += resp.message;
+        location.reload();
+    };        
+    form.lastChild.className = 'btn btn-danger';
+    form.lastChild.innerText = 'Drop';
+    displayChoices();
+}
+
+function displayChoices() {
+    if (pickedPlayers.length == 0 && droppedPlayers.length == 0) {
+        document.getElementById('chosenPlayers').hidden = true;
+    }
+    if (pickedPlayers.length > 0) {
+        document.getElementById('chosenPlayers').hidden = false;
+        document.getElementById('picked').hidden = false;
+        document.getElementById('picked').innerHTML = '';
+        let list = document.createElement('ul');
+        for (let player of pickedPlayers) {
+            let li = document.createElement('li');
+            li.innerText = player.player_name;
+            li.id = player.player_id;
+            list.appendChild(li);
+        }
+        document.getElementById('picked').appendChild(list);
+    } else document.getElementById('picked').hidden = true;
+    if (droppedPlayers.length > 0) {
+        document.getElementById('chosenPlayers').hidden = false;
+        document.getElementById('dropped').hidden = false;
+        document.getElementById('dropped').innerHTML = '';
+        let list = document.createElement('ul');
+        for (let player of droppedPlayers) {
+            let li = document.createElement('li');
+            li.innerText = player.player_name;
+            li.id = player.player_id;
+            list.appendChild(li);
+        }
+        document.getElementById('dropped').appendChild(list);
+    } else document.getElementById('dropped').hidden = true;
+}
+
+async function submitChoices() {
+    await UpdateMultiplePlayerXrlTeams(null, droppedPlayers);
+    await UpdateMultiplePlayerXrlTeams(user.team_short, pickedPlayers);
+    location.reload();
+}
+window.submitChoices = submitChoices;
 
 

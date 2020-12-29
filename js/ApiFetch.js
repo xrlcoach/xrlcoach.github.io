@@ -98,7 +98,7 @@ export async function UpdatePlayerXrlTeam(xrlTeam, playerInfo) {
 }
 
 export async function UpdateMultiplePlayerXrlTeams(xrlTeam, players) {
-    var newTeam = xrlTeam == null ? 'None' : xrlTeam;s
+    var newTeam = xrlTeam == null ? 'None' : xrlTeam;
     const response = await fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/players', {
         method: 'POST',
         headers: {

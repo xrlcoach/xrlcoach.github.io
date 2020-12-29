@@ -50,8 +50,8 @@ window.onload = async function() {
             }
             return totals;
         }, {});
-        p.score = playerStatsWithScores.reduce((totals, appearance) => {
-            return totals.score + appearance.score;
+        p.score = playerStatsWithScores.reduce((total, appearance) => {
+            return total + appearance.score;
         }, 0);
         return p;
     });
@@ -69,13 +69,13 @@ function populateStatsTable(stats) {
         nrlClub.innerText = player.nrl_club;
         tr.appendChild(nrlClub);
         let xrlTeam = document.createElement('td');
-        xrlTeam.innerText = player.xrl_team;
+        xrlTeam.innerText = player.xrl_team == undefined ? 'None' : player.xrl_team;
         tr.appendChild(xrlTeam);
         let position = document.createElement('td');
         position.innerText = player.position;
         tr.appendChild(position);
         let tries = document.createElement('td');
-        tries.innerText = player.stats.tries;
+        tries.innerText = player.stats.Tries;
         tr.appendChild(tries);
         let goals = document.createElement('td');
         goals.innerText = player.scoring_stats.kicker.goals;

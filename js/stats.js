@@ -21,16 +21,20 @@ window.onload = async function() {
     activeUser = await GetActiveUserInfo(GetIdToken());
     let allPlayers = await GetAllPlayers();
     allPlayersWithStats = allPlayers.filter(p => playerIdsWithStats.includes(p.player_id))
+    for (let i in allStats) {
+        let player = allPlayersWithStats.find(p => p.player_id == allStats[i].player_id);
+        allStats[i].score = GetPlayerXrlScores(player.position, allStats[i]);
+    }
     playersTotalStats = allPlayersWithStats.map(function(p) {
         let playerStats = allStats.filter(s => s.player_id == p.player_id);
         // if (playerStats.length == 0) {
         //     return;
         // }
-        let playerStatsWithScores = playerStats.map(a => {
-            a.score = GetPlayerXrlScores(p.position, a);
-            return a;
-        });
-        p.stats = playerStatsWithScores.reduce((totals, appearance) => {
+        // let playerStatsWithScores = playerStats.map(a => {
+        //     a.score = GetPlayerXrlScores(p.position, a);
+        //     return a;
+        // });
+        p.stats = playerStats.reduce((totals, appearance) => {
             let stats = appearance.stats;
             for (let stat in stats) {
                 if (totals[stat] == undefined) {
@@ -40,7 +44,7 @@ window.onload = async function() {
             }
             return totals;
         }, {});
-        p.scoring_stats = playerStatsWithScores.reduce((totals, appearance) => {
+        p.scoring_stats = playerStats.reduce((totals, appearance) => {
             let scoringStats = appearance.scoring_stats;
             for (let position in scoringStats) {
                 if (totals[position] == undefined) {
@@ -60,7 +64,7 @@ window.onload = async function() {
             }
             return totals;
         }, {});
-        p.score = playerStatsWithScores.reduce((total, appearance) => {
+        p.score = playerStats.reduce((total, appearance) => {
             return total + appearance.score;
         }, 0);
         return p;

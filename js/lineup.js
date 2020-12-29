@@ -53,6 +53,8 @@ function togglePowerplay(button) {
     }
 }
 
+window.togglePowerplay = togglePowerplay;
+
 async function PopulateLineup() {    
     if (lineup.length > 0) {
         console.log('Pre-filling existing lineup');

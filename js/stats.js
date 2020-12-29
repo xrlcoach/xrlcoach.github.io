@@ -98,7 +98,7 @@ function populateStatsTable(stats) {
         let total = document.createElement('td');
         total.innerText = player.scoring_stats.score;
         tr.appendChild(total);
-        table.appendChild(total);
+        table.appendChild(tr);
     }
 }
 

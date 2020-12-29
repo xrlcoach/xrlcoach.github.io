@@ -2,8 +2,10 @@ import { GetLineupByTeamAndRound } from "./ApiFetch.js"
 
 export function GetLineupScore(lineup) {
     return lineup.reduce(function(totalScore, player) {
-        if (player['playerd_xrl']) {
-            return totalScore + player['score'];
+        let playerScore = player.score;
+        let played = player.playerd_xrl;
+        if (played) {
+            return totalScore + playerScore;
         } else {
             return totalScore;
         }

@@ -9,7 +9,7 @@ window.onload = async function() {
     allUsers = await GetAllUsers();
     activeUser = await GetActiveUserInfo(GetIdToken());
     allPlayers = await GetAllPlayers();
-    playersTotalStats = allPlayers.map(p => {
+    playersTotalStats = allPlayers.map(function(p) {
         let playerStats = allStats.filter(s => s.player_id == p.player_id);
         if (playerStats.length == 0) {
             return;

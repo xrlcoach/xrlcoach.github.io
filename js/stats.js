@@ -5,7 +5,7 @@ let roundToDisplay, allStats, allUsers, activeUser, allPlayersWithStats, players
 
 window.onload = async function() {
     roundToDisplay = await GetCurrentRoundInfo();
-    for (let i = roundToDisplay; i > 0; i--) {
+    for (let i = roundToDisplay.round_number; i > 0; i--) {
         let option = document.createElement('option');
         option.innerText = i;
         document.getElementById('roundSelect').appendChild(option);
@@ -138,7 +138,7 @@ function filterStats(event) {
     } else {
         statsToDisplay = playersTotalStats.filter(p => p.nrl_club == nrlClub && p.xrl_team == xrlTeam && p.round_number == roundNumber);
     }
-    populateStatsTable(statsToDisplay, allPlayersWithStats);
+    populateStatsTable(statsToDisplay, sortByXrlXcore);
 }
 
 window.filterStats = filterStats;

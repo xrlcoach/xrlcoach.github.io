@@ -83,8 +83,7 @@ function PopulatePickPlayerTable(playerData, xrlTeam, tableId) {
                 button.innerText = 'Drop';
                 form.onsubmit = async function (event) {
                     event.preventDefault();
-                    document.getElementById('feedback').innerText += resp.message;
-                    const resp = await PickDropPlayer(null, this);
+                    PickDropPlayer(null, this);
                 };
             } else if (pickedPlayers.findIndex(p => p.player_id == player.player_id) != -1) {
                 button.className = 'btn btn-warning';
@@ -103,10 +102,9 @@ function PopulatePickPlayerTable(playerData, xrlTeam, tableId) {
             } else {
                 button.className = 'btn btn-success';
                 button.innerText = 'Pick';
-                form.onsubmit = async function (event) {
+                form.onsubmit = function (event) {
                     event.preventDefault();
-                    const resp = await PickDropPlayer(xrlTeam, this);
-                    document.getElementById('feedback').innerText += resp.message;
+                    PickDropPlayer(xrlTeam, this);
                 };
             }
             form.appendChild(button);

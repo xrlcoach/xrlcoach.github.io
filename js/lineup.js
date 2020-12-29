@@ -20,6 +20,9 @@ window.onload = async () => {
     console.log(numCaptains);
     powerplay = numCaptains == 2;
     console.log(powerplay);
+    if (powerplay) {
+        document.getElementById('secondCaptainSelect').hidden = false;
+    }
     let button = document.getElementById('powerplayButton');
     if (!powerplay && user.powerplays > 0) {
         button.className = 'btn btn-success';

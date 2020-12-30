@@ -1,5 +1,9 @@
 import { GetLineupByTeamAndRound } from "./ApiFetch.js"
 
+export function DisplayFeedback(feedback) {
+    document.getElementById('feedback').innerHTML = feedback;
+}
+
 export function GetLineupScore(lineup) {
     return lineup.reduce(function(totalScore, player) {
         let playerScore = player.score;

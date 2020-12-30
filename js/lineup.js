@@ -1,4 +1,5 @@
 import { GetActiveUserInfo, GetIdToken, GetLineup, GetPlayersFromXrlTeam, SetLineup } from './ApiFetch.js'
+import { DisplayFeedback } from './Helpers.js';
 
 const idToken = GetIdToken();
 const positions_backs = ['fullback', 'winger1', 'winger2', 'centre1', 'centre2'];
@@ -49,7 +50,7 @@ function togglePowerplay(event, button) {
         for (var i = 0; i < squad.length; i++) {
             createOption(squad[i], 'vice');
         }
-        document.getElementById('vice').hidden = false;
+        document.getElementById('viceCaptainSelect').hidden = false;
         button.className = 'btn btn-success';
         button.innerText = 'Use Powerplay';
     } else {
@@ -199,6 +200,23 @@ async function submitLineup(event) {
         }
         lineup.push(entry);
     }
+
+    for (let player of lineup) {
+        if (lineup.filter(p => p.player_id == player.player_id).length != 1) {
+            DisplayFeedback(player.player_name + 'has been picked more than once.');
+            return;
+        }
+        if ((player.captain && player.captain2) || (player.captain && player.vice) || 
+        (player.captain2 && player.vice)) {
+            DisplayFeedback(player.player_name + 'has two captain roles.');
+            return;
+        }
+        if (player.kicker && player.backup_kicker) {
+            DisplayFeedback('Same player chosen as kicker and backup kicker');
+            return;
+        }
+    }
+    
     await SetLineup(idToken, lineup);
     window.location.href = 'index.html';
 }

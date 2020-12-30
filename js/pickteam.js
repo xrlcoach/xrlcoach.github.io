@@ -1,6 +1,7 @@
 import { GetAllPlayers, GetIdToken, GetPlayersFromNrlClub, GetPlayersFromXrlTeam, GetActiveUserInfo, UpdatePlayerXrlTeam, UpdateMultiplePlayerXrlTeams } from "./ApiFetch.js";
+import { DisplayFeedback } from "./Helpers.js";
 
-let user;
+let user, squad, players, modifiedSquad;
 const pickedPlayers = [];
 const droppedPlayers = [];
 
@@ -11,10 +12,12 @@ window.onload = async function () {
     }
     try {
         user = await GetActiveUserInfo(idToken);
+        squad = await GetPlayersFromXrlTeam(xrlTeam);
+        modifiedSquad = squad;
         await DisplayPlayerCounts(user.team_short);
         var club = document.getElementById('nrlClubSelect').value;
         document.getElementById('squadName').innerText = club;
-        const players = await GetPlayersFromNrlClub(club);
+        players = await GetPlayersFromNrlClub(club);
         PopulatePickPlayerTable(players, user.team_short, 'pickPlayerTable');
     } catch (error) {
         document.getElementById('feedback').innerHTML += 'OnLoad: ' + error;
@@ -23,7 +26,6 @@ window.onload = async function () {
 
 async function DisplayPlayerCounts(xrlTeam) {
     try {
-        const squad = await GetPlayersFromXrlTeam(xrlTeam);
         var totalPlayers = squad.length;
         if (totalPlayers == 18) {
             window.location.href = 'index.html';
@@ -124,7 +126,7 @@ async function selectNrlClub(event) {
     var club = document.getElementById('nrlClubSelect').value;
     document.getElementById('squadName').innerText = club;
     try {
-        const players = await GetPlayersFromNrlClub(club);
+        players = await GetPlayersFromNrlClub(club);
         PopulatePickPlayerTable(players, user.team_short, 'pickPlayerTable');
     } catch (error) {
         document.getElementById('feedback').innerText = error;
@@ -133,10 +135,12 @@ async function selectNrlClub(event) {
 window.selectNrlClub = selectNrlClub;
 
 async function PickDropPlayer(xrlTeam, form) {
-    let playerId = form.elements[0].value;
-    let playerName = form.elements[0].name;
+    let player = players.find(p => p.player_id == form.elements[0].value);
+    // let playerId = form.elements[0].value;
+    // let playerName = form.elements[0].name;
     if (xrlTeam == null) {
-        droppedPlayers.push({'player_id': playerId, 'player_name': playerName});
+        droppedPlayers.push(player);
+        modifiedSquad.splice(modifiedSquad.findIndex(p => p.player_id == player.player_id), 1);
         form.onsubmit = function (event) {
             event.preventDefault();
             removeFromDroppedList(this, xrlTeam);
@@ -145,7 +149,52 @@ async function PickDropPlayer(xrlTeam, form) {
         form.lastChild.innerText = 'Cancel';
         displayChoices();
     } else {
-        pickedPlayers.push({'player_id': playerId, 'player_name': playerName});
+        if (modifiedSquad.length == 18) {
+            DisplayFeedback('Adding this player would take your squad size above 18.');
+            return;
+        }
+        let availableSpots = 18 - modifiedSquad.length;
+        let requiredBacks = 5 - squad.filter(p => p.position == 'Back' || p.position2 == 'Back').length;
+        requiredBacks = requiredBacks < 0 ? 0 : requiredBacks;
+        let requiredForwards = 5 - squad.filter(p => p.position == 'Forward' || p.position2 == 'Forward').length;
+        requiredForwards = requiredForwards < 0 ? 0 : requiredForwards;
+        let requiredPlaymakers = 3 - squad.filter(p => p.position == 'Playmaker' || p.position2 == 'Playmaker').length;
+        requiredPlaymakers = requiredPlaymakers < 0 ? 0 : requiredPlaymakers;
+        if (availableSpots == requiredBacks && (player.position != 'Back' && player.position2 != 'Back')) {
+            DisplayFeedback(`You only have ${availableSpots} ${availableSpots > 1 ? 'spots' : 'spot'} left and you need ${requiredBacks}
+             more ${requiredBacks > 1 ? 'backs' : 'back'}`);
+            return;
+        }
+        if (availableSpots == requiredForwards && (player.position != 'Forward' && player.position2 != 'Forward')) {
+            DisplayFeedback(`You only have ${availableSpots} ${availableSpots > 1 ? 'spots' : 'spot'} left and you need 
+            ${requiredForwards} more ${requiredForwards > 1 ? 'forwards' : 'forward'}`);
+            return;
+        }
+        if (availableSpots == requiredPlaymakers && (player.position != 'Playmaker' && player.position2 != 'Playmaker')) {
+            DisplayFeedback(`You only have ${availableSpots} ${availableSpots > 1 ? 'spots' : 'spot'} left and you need 
+            ${requiredPlaymakers} more ${requiredPlaymakers > 1 ? 'playmakers' : 'playmaker'}`);
+            return;
+        }
+        if (availableSpots == requiredBacks + requiredForwards && 
+            (![player.position, player.position2].includes('Back') && ![player.position, player.position2].includes('Forward'))) {
+            DisplayFeedback(`You only have ${availableSpots} ${availableSpots > 1 ? 'spots' : 'spot'} left and you need ${requiredBacks} 
+            more ${requiredBacks > 1 ? 'backs' : 'back'} and ${requiredForwards} more ${requiredForwards > 1 ? 'forwards' : 'forward'}.`);
+            return;
+        }
+        if (availableSpots == requiredBacks + requiredPlaymakers && 
+            (![player.position, player.position2].includes('Back') && ![player.position, player.position2].includes('Playmaker'))) {
+            DisplayFeedback(`You only have ${availableSpots} ${availableSpots > 1 ? 'spots' : 'spot'} left and you need ${requiredBacks} more
+             ${requiredBacks > 1 ? 'backs' : 'back'} and ${requiredPlaymakers} more ${requiredPlaymakers > 1 ? 'playmakers' : 'playmaker'}.`);
+            return;
+        }
+        if (availableSpots == requiredPlaymakers + requiredForwards && 
+            (![player.position, player.position2].includes('Playmaker') && ![player.position, player.position2].includes('Forward'))) {
+            DisplayFeedback(`You only have ${availableSpots} ${availableSpots > 1 ? 'spots' : 'spot'} left and you need ${requiredPlaymakers} 
+            more ${requiredPlaymakers > 1 ? 'playmakers' : 'playmaker'} and ${requiredForwards} more ${requiredForwards > 1 ? 'forwards' : 'forward'}.`);
+            return;
+        }
+        pickedPlayers.push(player);
+        modifiedSquad.push(player);
         form.onsubmit = function (event) {
             event.preventDefault();
             removeFromPickedList(this, xrlTeam);
@@ -164,6 +213,7 @@ async function PickDropPlayer(xrlTeam, form) {
 
 function removeFromPickedList(form, xrlTeam) {
     pickedPlayers.splice(pickedPlayers.findIndex(p => p.player_id == form.firstChild.value), 1);
+    modifiedSquad.splice(modifiedSquad.findIndex(p => p.player_id == form.firstChild.value), 1);
     form.onsubmit = async function (event) {
         event.preventDefault();
         const resp = await PickDropPlayer(xrlTeam, this);
@@ -176,6 +226,7 @@ function removeFromPickedList(form, xrlTeam) {
 }
 
 function removeFromDroppedList(form, xrlTeam) {
+    modifiedSquad.push(droppedPlayers.find(p => p.player_id == form.firstChild.value));
     droppedPlayers.splice(droppedPlayers.findIndex(p => p.player_id == form.firstChild.value), 1);
     form.onsubmit = async function (event) {
         event.preventDefault();

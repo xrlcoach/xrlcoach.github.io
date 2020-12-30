@@ -24,28 +24,28 @@ window.onload = async function () {
     }
 }
 
-async function DisplayPlayerCounts(xrlTeam) {
+async function DisplayPlayerCounts() {
     try {
-        var totalPlayers = squad.length;
+        var totalPlayers = modifiedSquad.length;
         if (totalPlayers == 18) {
             window.location.href = 'index.html';
         }
-        var backs = squad.filter(p => p.position == 'Back' || p.position2 == 'Back')
-        var forwards = squad.filter(p => p.position == 'Forward' || p.position2 == 'Forward')
-        var playmakers = squad.filter(p => p.position == 'Playmaker' || p.position2 == 'Playmaker')
+        var backs = modifiedSquad.filter(p => p.position == 'Back' || p.position2 == 'Back');
+        var forwards = modifiedSquad.filter(p => p.position == 'Forward' || p.position2 == 'Forward');
+        var playmakers = modifiedSquad.filter(p => p.position == 'Playmaker' || p.position2 == 'Playmaker');
         document.getElementById('playerCountMessage').innerText =
-            `You currently have ${totalPlayers} in your squad. You need ${18 - totalPlayers} more in total.`
+            `You currently have ${totalPlayers} in your squad. You need ${18 - totalPlayers} more in total.`;
         if (backs.length < 5) {
             document.getElementById('playerCountBreakdown').innerHTML +=
-                `<li>You need at least ${5 - backs.length} more backs.`
+                `<li>You need at least ${5 - backs.length} more backs.`;
         }
         if (forwards.length < 5) {
             document.getElementById('playerCountBreakdown').innerHTML +=
-                `<li>You need at least ${5 - forwards.length} more forwards.`
+                `<li>You need at least ${5 - forwards.length} more forwards.`;
         }
         if (playmakers.length < 3) {
             document.getElementById('playerCountBreakdown').innerHTML +=
-                `<li>You need at least ${3 - playmakers.length} more playmakers.`
+                `<li>You need at least ${3 - playmakers.length} more playmakers.`;
         }
     } catch (error) {
         document.getElementById('feedback').innerText += 'DPC Function: ' + error;
@@ -147,7 +147,6 @@ async function PickDropPlayer(xrlTeam, form) {
         };        
         form.lastChild.className = 'btn btn-warning';
         form.lastChild.innerText = 'Cancel';
-        displayChoices();
     } else {
         if (modifiedSquad.length == 18) {
             DisplayFeedback('Adding this player would take your squad size above 18.');
@@ -195,8 +194,9 @@ async function PickDropPlayer(xrlTeam, form) {
         };        
         form.lastChild.className = 'btn btn-warning';
         form.lastChild.innerText = 'Cancel';
-        displayChoices();
     }
+    displayChoices();
+    DisplayPlayerCounts();
     // try {
     //     const resp = await UpdatePlayerXrlTeam(xrlTeam, form.elements[0].value);
     //     return resp.message;

@@ -42,11 +42,13 @@ window.onload = async () => {
 
 function togglePowerplay(event, button) {
     if (powerplay) {
+        powerplay = false;
         document.getElementById('captain2').innerHTML = '';
         document.getElementById('secondCaptainSelect').hidden = true;
         button.className = 'btn btn-success';
         button.innerText = 'Use Powerplay';
     } else {
+        powerplay = true;
         for (var i = 0; i < squad.length; i++) {
             createOption(squad[i], 'captain2');
         }

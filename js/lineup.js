@@ -203,17 +203,33 @@ async function submitLineup(event) {
 
     for (let player of lineup) {
         if (lineup.filter(p => p.player_id == player.player_id).length != 1) {
-            DisplayFeedback(player.player_name + 'has been picked more than once.');
+            DisplayFeedback(player.player_name + ' has been picked more than once.');
             return;
         }
         if ((player.captain && player.captain2) || (player.captain && player.vice) || 
         (player.captain2 && player.vice)) {
-            DisplayFeedback(player.player_name + 'has two captain roles.');
+            DisplayFeedback(player.player_name + ' has two captain roles.');
             return;
         }
         if (player.kicker && player.backup_kicker) {
             DisplayFeedback('Same player chosen as kicker and backup kicker');
             return;
+        }
+        if ((player.captain || player.captain2) && player.position.startsWith('int')) {
+            DisplayFeedback('Your chosen captain is starting on the bench');
+        }
+        if (player.vice && player.position.startsWith('int')) {
+            if (!confirm('Your chosen vice-captain is starting on the bench. Proceed with lineup submission?')) {
+                return;
+            }
+        }
+        if (player.kicker && player.position.startsWith('int')) {
+            DisplayFeedback('Your chosen kicker is starting on the bench');
+        }
+        if (player.backup_kicker && player.position.startsWith('int')) {
+            if (!confirm('Your chosen backup kicker is starting on the bench. Proceed with lineup submission?')) {
+                return;
+            }
         }
     }
     

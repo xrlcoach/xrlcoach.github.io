@@ -161,37 +161,31 @@ async function PickDropPlayer(xrlTeam, form) {
         let requiredPlaymakers = 3 - squad.filter(p => p.position == 'Playmaker' || p.position2 == 'Playmaker').length;
         requiredPlaymakers = requiredPlaymakers < 0 ? 0 : requiredPlaymakers;
         if (availableSpots == requiredBacks && (player.position != 'Back' && player.position2 != 'Back')) {
-            DisplayFeedback(`You only have ${availableSpots} ${availableSpots > 1 ? 'spots' : 'spot'} left and you need ${requiredBacks}
-             more ${requiredBacks > 1 ? 'backs' : 'back'}`);
-            return;
+            if (!confirm(`You only have ${availableSpots} ${availableSpots > 1 ? 'spots' : 'spot'} left and you need ${requiredBacks}
+             more ${requiredBacks > 1 ? 'backs' : 'back'}. Would you like to pick ${player.player_name} anyway?`)) return;
         }
         if (availableSpots == requiredForwards && (player.position != 'Forward' && player.position2 != 'Forward')) {
-            DisplayFeedback(`You only have ${availableSpots} ${availableSpots > 1 ? 'spots' : 'spot'} left and you need 
-            ${requiredForwards} more ${requiredForwards > 1 ? 'forwards' : 'forward'}`);
-            return;
+            if (!confirm(`You only have ${availableSpots} ${availableSpots > 1 ? 'spots' : 'spot'} left and you need 
+            ${requiredForwards} more ${requiredForwards > 1 ? 'forwards' : 'forward'}. Would you like to pick ${player.player_name} anyway?`)) return;
         }
         if (availableSpots == requiredPlaymakers && (player.position != 'Playmaker' && player.position2 != 'Playmaker')) {
-            DisplayFeedback(`You only have ${availableSpots} ${availableSpots > 1 ? 'spots' : 'spot'} left and you need 
-            ${requiredPlaymakers} more ${requiredPlaymakers > 1 ? 'playmakers' : 'playmaker'}`);
-            return;
+            if (!confirm(`You only have ${availableSpots} ${availableSpots > 1 ? 'spots' : 'spot'} left and you need 
+            ${requiredPlaymakers} more ${requiredPlaymakers > 1 ? 'playmakers' : 'playmaker'}. Would you like to pick ${player.player_name} anyway?`)) return;
         }
         if (availableSpots == requiredBacks + requiredForwards && 
             (![player.position, player.position2].includes('Back') && ![player.position, player.position2].includes('Forward'))) {
-            DisplayFeedback(`You only have ${availableSpots} ${availableSpots > 1 ? 'spots' : 'spot'} left and you need ${requiredBacks} 
-            more ${requiredBacks > 1 ? 'backs' : 'back'} and ${requiredForwards} more ${requiredForwards > 1 ? 'forwards' : 'forward'}.`);
-            return;
+            if (!confirm(`You only have ${availableSpots} ${availableSpots > 1 ? 'spots' : 'spot'} left and you need ${requiredBacks} 
+            more ${requiredBacks > 1 ? 'backs' : 'back'} and ${requiredForwards} more ${requiredForwards > 1 ? 'forwards' : 'forward'}. Would you like to pick ${player.player_name} anyway?`)) return;
         }
         if (availableSpots == requiredBacks + requiredPlaymakers && 
             (![player.position, player.position2].includes('Back') && ![player.position, player.position2].includes('Playmaker'))) {
-            DisplayFeedback(`You only have ${availableSpots} ${availableSpots > 1 ? 'spots' : 'spot'} left and you need ${requiredBacks} more
-             ${requiredBacks > 1 ? 'backs' : 'back'} and ${requiredPlaymakers} more ${requiredPlaymakers > 1 ? 'playmakers' : 'playmaker'}.`);
-            return;
+            if (!confirm(`You only have ${availableSpots} ${availableSpots > 1 ? 'spots' : 'spot'} left and you need ${requiredBacks} more
+             ${requiredBacks > 1 ? 'backs' : 'back'} and ${requiredPlaymakers} more ${requiredPlaymakers > 1 ? 'playmakers' : 'playmaker'}. Would you like to pick ${player.player_name} anyway?`)) return;
         }
         if (availableSpots == requiredPlaymakers + requiredForwards && 
             (![player.position, player.position2].includes('Playmaker') && ![player.position, player.position2].includes('Forward'))) {
-            DisplayFeedback(`You only have ${availableSpots} ${availableSpots > 1 ? 'spots' : 'spot'} left and you need ${requiredPlaymakers} 
-            more ${requiredPlaymakers > 1 ? 'playmakers' : 'playmaker'} and ${requiredForwards} more ${requiredForwards > 1 ? 'forwards' : 'forward'}.`);
-            return;
+            if (!confirm(`You only have ${availableSpots} ${availableSpots > 1 ? 'spots' : 'spot'} left and you need ${requiredPlaymakers} 
+            more ${requiredPlaymakers > 1 ? 'playmakers' : 'playmaker'} and ${requiredForwards} more ${requiredForwards > 1 ? 'forwards' : 'forward'}. Would you like to pick ${player.player_name} anyway?`)) return;
         }
         pickedPlayers.push(player);
         modifiedSquad.push(player);

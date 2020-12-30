@@ -96,6 +96,11 @@ def lambda_handler(event, context):
                     'name+nrl+xrl+round': player['player_name'] + ';' + player['nrl_club'] + ';' + team_short + ';' + str(round_number)
                 }
             )
+            lineup_table.delete_item(
+                Key={
+                    'name+nrl+xrl+round': player['player_name'] + ';' + player['nrl_club'] + ';' + team_short + ';' + str(round_number + 1)
+                }
+            )
         for player in lineup:
             lineup_table.put_item(
                 Item={
@@ -118,6 +123,29 @@ def lambda_handler(event, context):
                     'score': 0
                 }
             )
+            # Set same lineup for next round, removing powerplay if necessary
+            if round_number < 21:
+                lineup_table.put_item(
+                    Item={
+                        'name+nrl+xrl+round': player['player_name'] + ';' + player['nrl_club'] + ';' + team_short + ';' + str(round_number + 1),
+                        'player_id': player['player_id'],
+                        'player_name': player['player_name'],
+                        'nrl_club': player['nrl_club'],
+                        'xrl_team': team_short,
+                        'round_number': str(round_number + 1),
+                        'position_specific': player['position'],
+                        'position_general': player['position_general'],
+                        'position_number': position_numbers[player['position']],
+                        'captain': player['captain'],
+                        'captain2': False,
+                        'vice': player['vice'] or player['captain2'],
+                        'kicker': player['kicker'],
+                        'backup_kicker': player['backup_kicker'],
+                        'played_nrl': False,
+                        'played_xrl': False,
+                        'score': 0
+                    }
+                )
         print("DB write complete")
         return {
                 'statusCode': 200,

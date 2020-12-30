@@ -12,9 +12,9 @@ window.onload = async function () {
     }
     try {
         user = await GetActiveUserInfo(idToken);
-        squad = await GetPlayersFromXrlTeam(xrlTeam);
+        squad = await GetPlayersFromXrlTeam(user.team_short);
         modifiedSquad = squad;
-        await DisplayPlayerCounts(user.team_short);
+        DisplayPlayerCounts();
         var club = document.getElementById('nrlClubSelect').value;
         document.getElementById('squadName').innerText = club;
         players = await GetPlayersFromNrlClub(club);

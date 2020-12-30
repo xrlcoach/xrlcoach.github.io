@@ -25,7 +25,7 @@ window.onload = async function() {
         let player = allPlayersWithStats.find(p => p.player_id == allStats[i].player_id);
         allStats[i].score = GetPlayerXrlScores(player.position, allStats[i]);
         allStats[i].position = player.position;
-        allStats[i].xrl_team = player.xrl_team;
+        allStats[i].xrl_team = player.xrl_team ? player.xrl_team : 'None';
     }
     playersTotalStats = allPlayersWithStats.map(function(p) {
         let playerStats = allStats.filter(s => s.player_id == p.player_id);
@@ -142,7 +142,7 @@ function filterStats(event) {
     } else if (xrlTeam == 'ALL') {
         statsToDisplay = allStats.filter(p => p.nrl_club == nrlClub && p.round_number == roundNumber);
     } else {
-        statsToDisplay = playersTotalStats.filter(p => p.nrl_club == nrlClub && p.xrl_team == xrlTeam && p.round_number == roundNumber);
+        statsToDisplay = allStats.filter(p => p.nrl_club == nrlClub && p.xrl_team == xrlTeam && p.round_number == roundNumber);
     }
     populateStatsTable(statsToDisplay, sortByXrlXcore);
 }

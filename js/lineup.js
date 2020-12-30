@@ -22,6 +22,7 @@ window.onload = async () => {
     console.log(powerplay);
     if (powerplay) {
         document.getElementById('secondCaptainSelect').hidden = false;
+        document.getElementById('viceCaptainSelect').hidden = true;
     }
     let button = document.getElementById('powerplayButton');
     if (!powerplay && user.powerplays > 0) {
@@ -45,10 +46,16 @@ function togglePowerplay(event, button) {
         powerplay = false;
         document.getElementById('captain2').innerHTML = '';
         document.getElementById('secondCaptainSelect').hidden = true;
+        for (var i = 0; i < squad.length; i++) {
+            createOption(squad[i], 'vice');
+        }
+        document.getElementById('vice').hidden = false;
         button.className = 'btn btn-success';
         button.innerText = 'Use Powerplay';
     } else {
         powerplay = true;
+        document.getElementById('vice').innerHTML = '';
+        document.getElementById('viceCaptainSelect').hidden = true;
         for (var i = 0; i < squad.length; i++) {
             createOption(squad[i], 'captain2');
         }
@@ -99,6 +106,7 @@ async function PopulateLineup() {
         }
         for (let i = 0; i < roles.length; i++) {
             if (roles[i] == 'captain2' && !powerplay) continue;
+            if (roles[i] == 'vice' && powerplay) continue;
             let player = lineup.find(p => p[roles[i]]);
             createOption(player, roles[i]);
             let otherPlayers = squad.filter(p => player['player_id'] != p['player_id']);
@@ -130,6 +138,7 @@ async function PopulateLineup() {
         }
         for (var i = 0; i < roles.length; i++) {
             if (roles[i] == 'captain2' && !powerplay) continue;
+            if (roles[i] == 'vice' && powerplay) continue;
             for (var j = 0; j < squad.length; j++) {
                 createOption(squad[j], roles[i]);
             }

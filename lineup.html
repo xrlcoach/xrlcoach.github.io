@@ -60,230 +60,239 @@
     </header>
 
     <main>
-    <div class="container p-5">
-    <p><h4 id="lineupHeading">{{ user['team_name'] }}: Select Lineup for Round {{ next_round}}</h4></p>
-    <div><button id="powerplayButton" onclick="togglePowerplay(null, this)"></button></div>
-    <div class="table-responsive">
-    <table class="table table-dark table-striped">
-        <thead>
-            <tr>
-                <th style="color: green;">Position</th>
-                <th style="color: green;">Player</th>
-            </tr>
-        </thead>
-        <tbody id="lineupTable">
-        <form onsubmit="submitLineup(event)">
-        <tr>
-            <td style="white-space: nowrap;">Fullback</td>
-            <td>
-                <div class="form-group">
-                    <select class="form-control" name="player" id="fullback"></select>
-                </div>
-            </td>
-        </tr>
-        <tr>
-            <td style="white-space: nowrap;">Winger</td>
-            <td>
-                <div class="form-group">
-                    <select class="form-control" name="player" id="winger1"></select>
-                </div>
-            </td>
-        </tr>
-        <tr>
-            <td style="white-space: nowrap;">Centre</td>
-            <td>
-                <div class="form-group">
-                    <select class="form-control" name="player" id="centre1"></select>
-                </div>
-            </td>
-        </tr>
-        <tr>
-            <td style="white-space: nowrap;">Centre</td>
-            <td>
-                <div class="form-group">
-                    <select class="form-control" name="player" id="centre2"></select>
-                </div>
-            </td>
-        </tr>
-        <tr>
-            <td style="white-space: nowrap;">Winger</td>
-            <td>
-                <div class="form-group">
-                    <select class="form-control" name="player" id="winger2"></select>
-                </div>
-            </td>
-        </tr>
-        <tr>
-            <td style="white-space: nowrap;">Five-Eighth</td>
-            <td>
-                <div class="form-group">
-                    <select class="form-control" name="player" id="five_eighth"></select>
-                </div>
-            </td>
-        </tr>
-        <tr>
-            <td style="white-space: nowrap;">Halfback</td>
-            <td>
-                <div class="form-group">
-                    <select class="form-control" name="player" id="halfback"></select>
-                </div>
-            </td>
-        </tr>
-        <tr>
-            <td style="white-space: nowrap;">Prop</td>
-            <td>
-                <div class="form-group">
-                    <select class="form-control" name="player" id="prop1"></select>
-                </div>
-            </td>
-        </tr>
-        <tr>
-            <td style="white-space: nowrap;">Hooker</td>
-            <td>
-                <div class="form-group">
-                    <select class="form-control" name="player" id="hooker"></select>
-                </div>
-            </td>
-        </tr>
-        <tr>
-            <td style="white-space: nowrap;">Prop</td>
-            <td>
-                <div class="form-group">
-                    <select class="form-control" name="player" id="prop2"></select>
-                </div>
-            </td>
-        </tr>
-        <tr>
-            <td style="white-space: nowrap;">2nd Row</td>
-            <td>
-                <div class="form-group">
-                    <select class="form-control" name="player" id="row1"></select>
-                </div>
-            </td>
-        </tr>
-        <tr>
-            <td style="white-space: nowrap;">2nd Row</td>
-            <td>
-                <div class="form-group">
-                    <select class="form-control" name="player" id="row2"></select>
-                </div>
-            </td>
-        </tr>
-        <tr>
-            <td style="white-space: nowrap;">Lock</td>
-            <td>
-                <div class="form-group">
-                    <select class="form-control" name="player" id="lock"></select>
-                </div>
-            </td>
-        </tr>
-        <tr>
-            <td style="white-space: nowrap;">Interchange 1</td>
-        </tr>
-        <tr>
-            <td>
-                <div class="form-group">
-                    <select class="form-control" name="player" id="int1" onchange="fillPositionOptions(this)"></select>
-                </div>
-            </td>
-            <td>
-                <div class="form-group">
-                    <select class="form-control" name="subPos" id="int1Position"></select>
-                </div>
-            </td>
-        </tr>
-        <tr>
-            <td style="white-space: nowrap;">Interchange 2</td>
-        </tr>
-        <tr>
-            <td>
-                <div class="form-group">
-                    <select class="form-control" name="player" id="int2" onchange="fillPositionOptions(this)"></select>
-                </div>
-            </td>
-            <td>
-                <div class="form-group">
-                    <select class="form-control" name="subPos" id="int2Position"></select>
-                </div>
-            </td>
-        </tr>
-        <tr>
-            <td style="white-space: nowrap;">Interchange 3</td>
-        </tr>
-        <tr>
-            <td>
-                <div class="form-group">
-                    <select class="form-control" name="player" id="int3" onchange="fillPositionOptions(this)"></select>
-                </div>
-            </td>
-            <td>
-                <div class="form-group">
-                    <select class="form-control" name="subPos" id="int3Position" onchange="fillPositionOptions(this)"></select>
-                </div>
-            </td>
-        </tr>
-        <tr>
-            <td style="white-space: nowrap;">Interchange 4</td>
-        </tr>
-        <tr>
-            <td>
-                <div class="form-group">
-                    <select class="form-control" name="player" id="int4"></select>
-                </div>
-            </td>
-            <td>
-                <div class="form-group">
-                    <select class="form-control" name="subPos" id="int4Position"></select>
-                </div>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                Captain:
-                <div class="form-group">
-                    <select class="form-control" name="role" id="captain"></select>
-                </div>
-                <div id="secondCaptainSelect" hidden>
-                Captain 2:
-                <div class="form-group">
-                    <select class="form-control" name="role" id="captain2"></select>
-                </div>
-                </div>
-                Vice-Captain:
-                <div class="form-group">
-                    <select class="form-control" name="role" id="vice"></select>
-                </div>
-            </td>
-            <td>
-                Kicker:
-                <div class="form-group">
-                    <select class="form-control" name="role" id="kicker"></select>
-                </div>
-                Backup Kicker:
-                <div class="form-group">
-                    <select class="form-control" name="role" id="backup_kicker"></select>
-                </div>
-            </td>
-        </tr>
-        <tr>
-            <td></td>
-            <td>
-                <button type="submit" name="submit_lineup" class="btn btn-success">Submit Lineup</button>
-            </td>
-        </tr>
-        </form>
-        </tbody>
+        <div class="container p-5">
+            <p>
+            <h4 id="lineupHeading">{{ user['team_name'] }}: Select Lineup for Round {{ next_round}}</h4>
+            </p>
+            <div><button id="powerplayButton" onclick="togglePowerplay(null, this)"></button></div>
+            <div class="table-responsive">
+                <table class="table table-dark table-striped">
+                    <thead>
+                        <tr>
+                            <th style="color: green;">Position</th>
+                            <th style="color: green;">Player</th>
+                        </tr>
+                    </thead>
+                    <tbody id="lineupTable">
+                        <form onsubmit="submitLineup(event)">
+                            <tr>
+                                <td style="white-space: nowrap;">Fullback</td>
+                                <td>
+                                    <div class="form-group">
+                                        <select class="form-control" name="player" id="fullback"></select>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="white-space: nowrap;">Winger</td>
+                                <td>
+                                    <div class="form-group">
+                                        <select class="form-control" name="player" id="winger1"></select>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="white-space: nowrap;">Centre</td>
+                                <td>
+                                    <div class="form-group">
+                                        <select class="form-control" name="player" id="centre1"></select>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="white-space: nowrap;">Centre</td>
+                                <td>
+                                    <div class="form-group">
+                                        <select class="form-control" name="player" id="centre2"></select>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="white-space: nowrap;">Winger</td>
+                                <td>
+                                    <div class="form-group">
+                                        <select class="form-control" name="player" id="winger2"></select>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="white-space: nowrap;">Five-Eighth</td>
+                                <td>
+                                    <div class="form-group">
+                                        <select class="form-control" name="player" id="five_eighth"></select>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="white-space: nowrap;">Halfback</td>
+                                <td>
+                                    <div class="form-group">
+                                        <select class="form-control" name="player" id="halfback"></select>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="white-space: nowrap;">Prop</td>
+                                <td>
+                                    <div class="form-group">
+                                        <select class="form-control" name="player" id="prop1"></select>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="white-space: nowrap;">Hooker</td>
+                                <td>
+                                    <div class="form-group">
+                                        <select class="form-control" name="player" id="hooker"></select>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="white-space: nowrap;">Prop</td>
+                                <td>
+                                    <div class="form-group">
+                                        <select class="form-control" name="player" id="prop2"></select>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="white-space: nowrap;">2nd Row</td>
+                                <td>
+                                    <div class="form-group">
+                                        <select class="form-control" name="player" id="row1"></select>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="white-space: nowrap;">2nd Row</td>
+                                <td>
+                                    <div class="form-group">
+                                        <select class="form-control" name="player" id="row2"></select>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="white-space: nowrap;">Lock</td>
+                                <td>
+                                    <div class="form-group">
+                                        <select class="form-control" name="player" id="lock"></select>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="white-space: nowrap;">Interchange 1</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="form-group">
+                                        <select class="form-control" name="player" id="int1"
+                                            onchange="fillPositionOptions(this)"></select>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="form-group">
+                                        <select class="form-control" name="subPos" id="int1Position"></select>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="white-space: nowrap;">Interchange 2</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="form-group">
+                                        <select class="form-control" name="player" id="int2"
+                                            onchange="fillPositionOptions(this)"></select>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="form-group">
+                                        <select class="form-control" name="subPos" id="int2Position"></select>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="white-space: nowrap;">Interchange 3</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="form-group">
+                                        <select class="form-control" name="player" id="int3"
+                                            onchange="fillPositionOptions(this)"></select>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="form-group">
+                                        <select class="form-control" name="subPos" id="int3Position"
+                                            onchange="fillPositionOptions(this)"></select>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="white-space: nowrap;">Interchange 4</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="form-group">
+                                        <select class="form-control" name="player" id="int4"></select>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="form-group">
+                                        <select class="form-control" name="subPos" id="int4Position"></select>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Captain:
+                                    <div class="form-group">
+                                        <select class="form-control" name="role" id="captain"></select>
+                                    </div>
+                                    <div id="secondCaptainSelect" hidden>
+                                        Captain 2:
+                                        <div class="form-group">
+                                            <select class="form-control" name="role" id="captain2"></select>
+                                        </div>
+                                    </div>
+                                    <div id="viceCaptainSelect">
+                                        Vice-Captain:
+                                        <div class="form-group">
+                                            <select class="form-control" name="role" id="vice"></select>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    Kicker:
+                                    <div class="form-group">
+                                        <select class="form-control" name="role" id="kicker"></select>
+                                    </div>
+                                    Backup Kicker:
+                                    <div class="form-group">
+                                        <select class="form-control" name="role" id="backup_kicker"></select>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td>
+                                    <button type="submit" name="submit_lineup" class="btn btn-success">Submit
+                                        Lineup</button>
+                                </td>
+                            </tr>
+                        </form>
+                    </tbody>
 
-    </table>
-    </div>
-    </div>
-</main>
+                </table>
+            </div>
+        </div>
+    </main>
 
-<footer class="small text-center text-muted">
-    Data provided by <a href="https://www.nrl.com">NRL.com</a>. View <a
-        href="https://www.nrl.com/terms-of-use">NRL’s Terms of Use</a>.
-</footer>
-<script type="module" src="js/lineup.js"></script>
+    <footer class="small text-center text-muted">
+        Data provided by <a href="https://www.nrl.com">NRL.com</a>. View <a
+            href="https://www.nrl.com/terms-of-use">NRL’s Terms of Use</a>.
+    </footer>
+    <script type="module" src="js/lineup.js"></script>
 </body>
 
 </html>

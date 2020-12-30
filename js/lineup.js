@@ -79,6 +79,7 @@ async function PopulateLineup() {
             for (let j = 0; j < otherBacks.length; j++) {
                 createOption(otherBacks[j], positions_backs[i]);
             }
+            createOption(null, positions_backs[i]);
         }
         for (let i = 0; i < positions_forwards.length; i++) {
             let player = lineup.find(p => p.position_specific == positions_forwards[i]);
@@ -87,6 +88,7 @@ async function PopulateLineup() {
             for (let j = 0; j < otherForwards.length; j++) {
                 createOption(otherForwards[j], positions_forwards[i]);
             }
+            createOption(null, positions_forwards[i]);
         }
         for (let i = 0; i < positions_playmakers.length; i++) {
             let player = lineup.find(p => p.position_specific == positions_playmakers[i]);
@@ -95,6 +97,7 @@ async function PopulateLineup() {
             for (let j = 0; j < otherPlaymakers.length; j++) {
                 createOption(otherPlaymakers[j], positions_playmakers[i]);
             }
+            createOption(null, positions_playmakers[i]);
         }
         for (let i = 0; i < interchange.length; i++) {
             let player = lineup.find(p => p.position_specific == interchange[i]);
@@ -103,6 +106,7 @@ async function PopulateLineup() {
             for (let j = 0; j < otherInts.length; j++) {
                 createOption(otherInts[j], interchange[i]);
             }
+            createOption(null, interchange[i]);
             fillPositionOptions(document.getElementById(interchange[i]));
         }
         for (let i = 0; i < roles.length; i++) {
@@ -114,27 +118,32 @@ async function PopulateLineup() {
             for (let j = 0; j < otherPlayers.length; j++) {
                 createOption(otherPlayers[j], roles[i]);
             }
+            createOption(null, roles[i]);
         }
     } else {
         for (let i = 0; i < positions_backs.length; i++) {
             for (let j = 0; j < backs.length; j++) {
                 createOption(backs[j], positions_backs[i]);
             }
+            createOption(null, positions_backs[i]);
         }
         for (let i = 0; i < positions_forwards.length; i++) {
             for (let j = 0; j < forwards.length; j++) {
                 createOption(forwards[j], positions_forwards[i]);
             }
+            createOption(null, positions_forwards[i]);
         }
         for (let i = 0; i < positions_playmakers.length; i++) {
             for (let j = 0; j < playmakers.length; j++) {
                 createOption(playmakers[j], positions_playmakers[i]);
             }
+            createOption(null, positions_playmakers[i]);
         }    
         for (var i = 0; i < interchange.length; i++) {
             for (var j = 0; j < squad.length; j++) {
                 createOption(squad[j], interchange[i]);
             }
+            createOption(null, interchange[i]);
             fillPositionOptions(document.getElementById(interchange[i]));
         }
         for (var i = 0; i < roles.length; i++) {
@@ -143,19 +152,21 @@ async function PopulateLineup() {
             for (var j = 0; j < squad.length; j++) {
                 createOption(squad[j], roles[i]);
             }
+            createOption(null, roles[i]);
         }
     }
 }
 
 function createOption(player, position) {
     let option = document.createElement('option');
-    option.innerText = player['player_name'];
-    option.value = player['player_id'];
+    option.innerText = player ? player['player_name'] : 'None';
+    option.value = player ? player['player_id']: 'None';
     document.getElementById(position).appendChild(option);
 }
 
 async function fillPositionOptions(select) {
     document.getElementById(select.id + 'Position').innerHTML = '';
+    if (select.value == 'None') return;
     let player = squad.find(p => p.player_id == select.value);
     let option = document.createElement('option');
     option.innerText = player['position'];
@@ -177,7 +188,7 @@ async function submitLineup(event) {
     const players = document.getElementsByName('player');
     const playerRoles = document.getElementsByName('role');
     for (let i = 0; i < players.length; i++) {
-        if (players[i].value === '') continue;
+        if (players[i].value === '' || players[i].value == 'None') continue;
         let playerInfo = squad.find(p => p.player_id == players[i].value);
         let positionGeneral;
         if (positions_backs.includes(players[i].id)) positionGeneral = 'Back'; 

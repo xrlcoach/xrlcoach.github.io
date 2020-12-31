@@ -101,10 +101,10 @@ export async function UpdatePlayerXrlTeam(xrlTeam, player) {
                 'Content-Type': 'application/json',
                 'Authorization': GetIdToken()         
             },
-            body: {
+            body: JSON.stringify({
                 'operation': 'remove',
                 'player': JSON.stringify(player)
-            }
+            })
         });
         const data = await response.json();
     }
@@ -136,10 +136,10 @@ export async function UpdateMultiplePlayerXrlTeams(xrlTeam, players) {
                 'Content-Type': 'application/json',
                 'Authorization': GetIdToken()         
             },
-            body: {
+            body: JSON.stringify({
                 'operation': 'remove_multiple',
                 'players': JSON.stringify(players)
-            }
+            })
         });
         const data = await response.json();
     }
@@ -175,10 +175,10 @@ export async function SetLineup(idToken, players) {
             'Content-Type': 'application/json',
             'Authorization': idToken         
         },
-        body: {
+        body: JSON.stringify({
             'operation': 'set',
             'players': JSON.stringify(players)
-        }
+        })
     });
     const data = await response.json();
     return data;

@@ -68,20 +68,11 @@ def lambda_handler(event, context):
                     'body': json.dumps(replace_decimals(resp['Items']))
             }
     if method == 'POST':
-        if 'operation' in event['body'].keys():
-            if event['body']['operation'] == 'remove_multiple':
-                for player in event['body']['players']:
-                    lineup_table.delete_item(
-                        Key={
-                            'name+nrl+xrl+round': player['player_name'] + ';' + player['nrl_club'] + ';' + team_short + ';' + str(round_number)
-                        }
-                    )
-                    lineup_table.delete_item(
-                        Key={
-                            'name+nrl+xrl+round': player['player_name'] + ';' + player['nrl_club'] + ';' + team_short + ';' + str(round_number + 1)
-                        }
-                    )
-            if event['body']['operation'] == 'remove':
+        body = json.loads(event['body'])
+        operation = body['operation']
+        print("Operation is " + operation)
+        if operation == 'remove_multiple':
+            for player in event['body']['players']:
                 lineup_table.delete_item(
                     Key={
                         'name+nrl+xrl+round': player['player_name'] + ';' + player['nrl_club'] + ';' + team_short + ';' + str(round_number)
@@ -92,8 +83,37 @@ def lambda_handler(event, context):
                         'name+nrl+xrl+round': player['player_name'] + ';' + player['nrl_club'] + ';' + team_short + ';' + str(round_number + 1)
                     }
                 )
-        else: 
-            lineup = json.loads(event['body'])
+                return {
+                    'statusCode': 200,
+                    'headers': {
+                    'Access-Control-Allow-Headers': 'Content-Type',
+                    'Access-Control-Allow-Origin': '*',
+                    'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
+                    },
+                    'body': json.dumps({"message": "Player removed from lineup"})
+                }
+        if operation == 'remove':
+            lineup_table.delete_item(
+                Key={
+                    'name+nrl+xrl+round': player['player_name'] + ';' + player['nrl_club'] + ';' + team_short + ';' + str(round_number)
+                }
+            )
+            lineup_table.delete_item(
+                Key={
+                    'name+nrl+xrl+round': player['player_name'] + ';' + player['nrl_club'] + ';' + team_short + ';' + str(round_number + 1)
+                }
+            )
+            return {
+                    'statusCode': 200,
+                    'headers': {
+                    'Access-Control-Allow-Headers': 'Content-Type',
+                    'Access-Control-Allow-Origin': '*',
+                    'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
+                    },
+                    'body': json.dumps({"message": "Players removed from lineup"})
+                }
+        if operation == 'set':
+            lineup = json.loads(body['players'])
             print("Lineup: " + str(lineup))
             position_numbers = {
                 "fullback": 1,

@@ -1,10 +1,12 @@
 import { GetPlayersFromXrlTeam, GetActiveUserInfo, UpdatePlayerXrlTeam } from './ApiFetch.js';
 
+let squad, user;
+
 window.onload = async function () {
     try {
-        const user = await GetActiveUserInfo(idToken);
+        user = await GetActiveUserInfo(idToken);
         document.getElementById('userData').innerText = JSON.stringify(user);
-        const squad = await GetPlayersFromXrlTeam(user.team_short);
+        squad = await GetPlayersFromXrlTeam(user.team_short);
         if (squad.length < 18) {
             document.getElementById('playerCountMessage').innerText = `Your squad only has ${squad.length} players. You should pick more!`;
             document.getElementById('pickPlayersLink').hidden = false;
@@ -45,7 +47,9 @@ function PopulatePickPlayerTable(playerData, xrlTeam, tableId) {
         form.appendChild(button);
         form.onsubmit = async function (event) {
             event.preventDefault();
+            dropPlayer(this);
             try {
+                let playerToDrop = squad.find()
                 const resp = await UpdatePlayerXrlTeam(null, this.elements[0].value);
                 location.reload();
             } catch (error) {
@@ -56,4 +60,10 @@ function PopulatePickPlayerTable(playerData, xrlTeam, tableId) {
         tr.appendChild(drop);
         tableBody.appendChild(tr);
     }
+}
+
+async function dropPlayer(form) {
+    let playerToDrop = squad.find(p => p.player_id == form.elements[0].value)
+    await UpdatePlayerXrlTeam(null, playerToDrop);
+    location.reload();
 }

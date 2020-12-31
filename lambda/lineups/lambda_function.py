@@ -68,77 +68,79 @@ def lambda_handler(event, context):
                     'body': json.dumps(replace_decimals(resp['Items']))
             }
     if method == 'POST':
-        lineup = json.loads(event['body'])
-        print("Lineup: " + str(lineup))
-        position_numbers = {
-            "fullback": 1,
-            "winger1": 2,
-            "centre1": 3,
-            "centre2": 4,
-            "winger2": 5,
-            "five_eighth": 6,
-            "halfback": 7,
-            "prop1": 8,
-            "hooker": 9,
-            "prop2": 10,
-            "row1": 11,
-            "row2": 12,
-            "lock": 13,
-            "int1": 14,
-            "int2": 15,
-            "int3": 16,
-            "int4": 17,
-            }
-        print("Writing lineup to table")        
-        for player in existing_lineup['Items']:
-            lineup_table.delete_item(
-                Key={
-                    'name+nrl+xrl+round': player['player_name'] + ';' + player['nrl_club'] + ';' + team_short + ';' + str(round_number)
+        if 'operation' in event['body'].keys():
+            if event['body']['operation'] == 'remove_multiple':
+                for player in event['body']['players']:
+                    lineup_table.delete_item(
+                        Key={
+                            'name+nrl+xrl+round': player['player_name'] + ';' + player['nrl_club'] + ';' + team_short + ';' + str(round_number)
+                        }
+                    )
+                    lineup_table.delete_item(
+                        Key={
+                            'name+nrl+xrl+round': player['player_name'] + ';' + player['nrl_club'] + ';' + team_short + ';' + str(round_number + 1)
+                        }
+                    )
+            if event['body']['operation'] == 'remove':
+                lineup_table.delete_item(
+                    Key={
+                        'name+nrl+xrl+round': player['player_name'] + ';' + player['nrl_club'] + ';' + team_short + ';' + str(round_number)
+                    }
+                )
+                lineup_table.delete_item(
+                    Key={
+                        'name+nrl+xrl+round': player['player_name'] + ';' + player['nrl_club'] + ';' + team_short + ';' + str(round_number + 1)
+                    }
+                )
+        else: 
+            lineup = json.loads(event['body'])
+            print("Lineup: " + str(lineup))
+            position_numbers = {
+                "fullback": 1,
+                "winger1": 2,
+                "centre1": 3,
+                "centre2": 4,
+                "winger2": 5,
+                "five_eighth": 6,
+                "halfback": 7,
+                "prop1": 8,
+                "hooker": 9,
+                "prop2": 10,
+                "row1": 11,
+                "row2": 12,
+                "lock": 13,
+                "int1": 14,
+                "int2": 15,
+                "int3": 16,
+                "int4": 17,
                 }
-            )
-            lineup_table.delete_item(
-                Key={
-                    'name+nrl+xrl+round': player['player_name'] + ';' + player['nrl_club'] + ';' + team_short + ';' + str(round_number + 1)
-                }
-            )
-        for player in lineup:
-            lineup_table.put_item(
-                Item={
-                    'name+nrl+xrl+round': player['player_name'] + ';' + player['nrl_club'] + ';' + team_short + ';' + str(round_number),
-                    'player_id': player['player_id'],
-                    'player_name': player['player_name'],
-                    'nrl_club': player['nrl_club'],
-                    'xrl_team': team_short,
-                    'round_number': str(round_number),
-                    'position_specific': player['position'],
-                    'position_general': player['position_general'],
-                    'position_number': position_numbers[player['position']],
-                    'captain': player['captain'],
-                    'captain2': player['captain2'],
-                    'vice': player['vice'],
-                    'kicker': player['kicker'],
-                    'backup_kicker': player['backup_kicker'],
-                    'played_nrl': False,
-                    'played_xrl': False,
-                    'score': 0
-                }
-            )
-            # Set same lineup for next round, removing powerplay if necessary
-            if round_number < 21:
+            print("Writing lineup to table")        
+            for player in existing_lineup['Items']:
+                lineup_table.delete_item(
+                    Key={
+                        'name+nrl+xrl+round': player['player_name'] + ';' + player['nrl_club'] + ';' + team_short + ';' + str(round_number)
+                    }
+                )
+                lineup_table.delete_item(
+                    Key={
+                        'name+nrl+xrl+round': player['player_name'] + ';' + player['nrl_club'] + ';' + team_short + ';' + str(round_number + 1)
+                    }
+                )
+            for player in lineup:
                 lineup_table.put_item(
                     Item={
-                        'name+nrl+xrl+round': player['player_name'] + ';' + player['nrl_club'] + ';' + team_short + ';' + str(round_number + 1),
+                        'name+nrl+xrl+round': player['player_name'] + ';' + player['nrl_club'] + ';' + team_short + ';' + str(round_number),
                         'player_id': player['player_id'],
                         'player_name': player['player_name'],
                         'nrl_club': player['nrl_club'],
                         'xrl_team': team_short,
-                        'round_number': str(round_number + 1),
+                        'round_number': str(round_number),
                         'position_specific': player['position'],
                         'position_general': player['position_general'],
                         'position_number': position_numbers[player['position']],
                         'captain': player['captain'],
-                        'captain2': False,
-                        'vice': player['vice'] or player['captain2'],
+                        'captain2': player['captain2'],
+                        'vice': player['vice'],
                         'kicker': player['kicker'],
                         'backup_kicker': player['backup_kicker'],
                         'played_nrl': False,
@@ -146,16 +148,39 @@ def lambda_handler(event, context):
                         'score': 0
                     }
                 )
-        print("DB write complete")
-        return {
-                'statusCode': 200,
-                'headers': {
-                'Access-Control-Allow-Headers': 'Content-Type',
-                'Access-Control-Allow-Origin': '*',
-                'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
-                },
-                'body': json.dumps({"message": "Lineup saved successfully"})
-            }
+                # Set same lineup for next round, removing powerplay if necessary
+                if round_number < 21:
+                    lineup_table.put_item(
+                        Item={
+                            'name+nrl+xrl+round': player['player_name'] + ';' + player['nrl_club'] + ';' + team_short + ';' + str(round_number + 1),
+                            'player_id': player['player_id'],
+                            'player_name': player['player_name'],
+                            'nrl_club': player['nrl_club'],
+                            'xrl_team': team_short,
+                            'round_number': str(round_number + 1),
+                            'position_specific': player['position'],
+                            'position_general': player['position_general'],
+                            'position_number': position_numbers[player['position']],
+                            'captain': player['captain'],
+                            'captain2': False,
+                            'vice': player['vice'] or player['captain2'],
+                            'kicker': player['kicker'],
+                            'backup_kicker': player['backup_kicker'],
+                            'played_nrl': False,
+                            'played_xrl': False,
+                            'score': 0
+                        }
+                    )
+            print("DB write complete")
+            return {
+                    'statusCode': 200,
+                    'headers': {
+                    'Access-Control-Allow-Headers': 'Content-Type',
+                    'Access-Control-Allow-Origin': '*',
+                    'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
+                    },
+                    'body': json.dumps({"message": "Lineup saved successfully"})
+                }
 
 def replace_decimals(obj):
     if isinstance(obj, list):

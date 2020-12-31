@@ -74,8 +74,14 @@ async function PopulateLineup() {
         console.log(lineup[0]);
         for (let i = 0; i < positions_backs.length; i++) {
             let player = lineup.find(p => p.position_specific == positions_backs[i]);
-            createOption(player, positions_backs[i]);
-            let otherBacks = backs.filter(p => player['player_id'] != p['player_id']);
+            let otherBacks;
+            if (player == undefined) {
+                createOption(null, positions_backs[i]);
+                otherBacks = backs;
+            } else{
+                createOption(player, positions_backs[i]);
+                otherBacks = backs.filter(p => player['player_id'] != p['player_id']);
+            }
             for (let j = 0; j < otherBacks.length; j++) {
                 createOption(otherBacks[j], positions_backs[i]);
             }
@@ -83,8 +89,14 @@ async function PopulateLineup() {
         }
         for (let i = 0; i < positions_forwards.length; i++) {
             let player = lineup.find(p => p.position_specific == positions_forwards[i]);
-            createOption(player, positions_forwards[i]);
-            let otherForwards = forwards.filter(p => player['player_id'] != p['player_id']);
+            let otherForwards;
+            if (player == undefined) {
+                createOption(null, positions_forwards[i]);
+                otherForwards = forwards;
+            } else {
+                createOption(player, positions_forwards[i]);
+                otherForwards = forwards.filter(p => player['player_id'] != p['player_id']);
+            }
             for (let j = 0; j < otherForwards.length; j++) {
                 createOption(otherForwards[j], positions_forwards[i]);
             }
@@ -92,8 +104,14 @@ async function PopulateLineup() {
         }
         for (let i = 0; i < positions_playmakers.length; i++) {
             let player = lineup.find(p => p.position_specific == positions_playmakers[i]);
-            createOption(player, positions_playmakers[i]);
-            let otherPlaymakers = playmakers.filter(p => player['player_id'] != p['player_id']);
+            let otherPlaymakers;
+            if (player == undefined) {
+                createOption(null, positions_playmakers[i]);
+                otherPlaymakers = playmakers;
+            } else {
+                createOption(player, positions_playmakers[i]);
+                otherPlaymakers = playmakers.filter(p => player['player_id'] != p['player_id']);
+            }
             for (let j = 0; j < otherPlaymakers.length; j++) {
                 createOption(otherPlaymakers[j], positions_playmakers[i]);
             }
@@ -101,8 +119,14 @@ async function PopulateLineup() {
         }
         for (let i = 0; i < interchange.length; i++) {
             let player = lineup.find(p => p.position_specific == interchange[i]);
-            createOption(player, interchange[i]);
-            let otherInts = squad.filter(p => player['player_id'] != p['player_id']);
+            let otherInts;
+            if (player == undefined) {
+                createOption(null, interchange[i]);
+                otherInts = squad;
+            } else {
+                otherInts = squad.filter(p => player['player_id'] != p['player_id']);
+                createOption(player, interchange[i]);
+            }
             for (let j = 0; j < otherInts.length; j++) {
                 createOption(otherInts[j], interchange[i]);
             }
@@ -113,8 +137,14 @@ async function PopulateLineup() {
             if (roles[i] == 'captain2' && !powerplay) continue;
             if (roles[i] == 'vice' && powerplay) continue;
             let player = lineup.find(p => p[roles[i]]);
-            createOption(player, roles[i]);
-            let otherPlayers = squad.filter(p => player['player_id'] != p['player_id']);
+            let otherPlayers;
+            if (player == undefined) {
+                createOption(null, roles[i]);
+                otherPlayers = squad;
+            } else {
+                otherPlayers = squad.filter(p => player['player_id'] != p['player_id']);
+                createOption(player, roles[i]);
+            }
             for (let j = 0; j < otherPlayers.length; j++) {
                 createOption(otherPlayers[j], roles[i]);
             }
@@ -122,37 +152,37 @@ async function PopulateLineup() {
         }
     } else {
         for (let i = 0; i < positions_backs.length; i++) {
+            createOption(null, positions_backs[i]);
             for (let j = 0; j < backs.length; j++) {
                 createOption(backs[j], positions_backs[i]);
             }
-            createOption(null, positions_backs[i]);
         }
         for (let i = 0; i < positions_forwards.length; i++) {
+            createOption(null, positions_forwards[i]);
             for (let j = 0; j < forwards.length; j++) {
                 createOption(forwards[j], positions_forwards[i]);
             }
-            createOption(null, positions_forwards[i]);
         }
         for (let i = 0; i < positions_playmakers.length; i++) {
+            createOption(null, positions_playmakers[i]);
             for (let j = 0; j < playmakers.length; j++) {
                 createOption(playmakers[j], positions_playmakers[i]);
             }
-            createOption(null, positions_playmakers[i]);
         }    
         for (var i = 0; i < interchange.length; i++) {
+            createOption(null, interchange[i]);
             for (var j = 0; j < squad.length; j++) {
                 createOption(squad[j], interchange[i]);
             }
-            createOption(null, interchange[i]);
             fillPositionOptions(document.getElementById(interchange[i]));
         }
         for (var i = 0; i < roles.length; i++) {
             if (roles[i] == 'captain2' && !powerplay) continue;
             if (roles[i] == 'vice' && powerplay) continue;
+            createOption(null, roles[i]);
             for (var j = 0; j < squad.length; j++) {
                 createOption(squad[j], roles[i]);
             }
-            createOption(null, roles[i]);
         }
     }
 }

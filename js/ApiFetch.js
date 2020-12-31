@@ -75,7 +75,7 @@ export async function GetPlayersFromXrlTeam(team) {
     return data;   
 }
 
-export async function UpdatePlayerXrlTeam(xrlTeam, playerInfo) {
+export async function UpdatePlayerXrlTeam(xrlTeam, player) {
     var newTeam = xrlTeam == null ? 'None' : xrlTeam;
     const response = await fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/players', {
         method: 'POST',
@@ -85,15 +85,28 @@ export async function UpdatePlayerXrlTeam(xrlTeam, playerInfo) {
         },
         body: JSON.stringify({
             "operation": "pick_drop",
-            "player_id": playerInfo,
+            "player_id": player.player_id,
             "xrl_team": newTeam
         })
     });
     if (response.ok) {
         const data = await response.json();
-        return data;
     } else {
         document.getElementById('feedback').innerText += 'Network response not ok';
+    }
+    if (newTeam == 'None') {
+        const response2 = await fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/lineup', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': GetIdToken()         
+            },
+            body: {
+                'operation': 'remove',
+                'player': JSON.stringify(player)
+            }
+        });
+        const data = await response.json();
     }
 }
 
@@ -113,9 +126,22 @@ export async function UpdateMultiplePlayerXrlTeams(xrlTeam, players) {
     });
     if (response.ok) {
         const data = await response.json();
-        return data;
     } else {
         document.getElementById('feedback').innerText += 'Network response not ok';
+    }
+    if (newTeam == 'None') {
+        const response2 = await fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/lineup', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': GetIdToken()         
+            },
+            body: {
+                'operation': 'remove_multiple',
+                'players': JSON.stringify(players)
+            }
+        });
+        const data = await response.json();
     }
 }
 

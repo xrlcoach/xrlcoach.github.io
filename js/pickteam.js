@@ -215,6 +215,7 @@ function removeFromPickedList(form, xrlTeam) {
     form.lastChild.className = 'btn btn-success';
     form.lastChild.innerText = 'Pick';
     displayChoices();
+    DisplayPlayerCounts();
 }
 
 function removeFromDroppedList(form, xrlTeam) {
@@ -229,6 +230,7 @@ function removeFromDroppedList(form, xrlTeam) {
     form.lastChild.className = 'btn btn-danger';
     form.lastChild.innerText = 'Drop';
     displayChoices();
+    DisplayPlayerCounts();
 }
 
 function displayChoices() {

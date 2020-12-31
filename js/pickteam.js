@@ -132,7 +132,7 @@ async function selectNrlClub(event) {
 }
 window.selectNrlClub = selectNrlClub;
 
-async function PickDropPlayer(xrlTeam, form) {
+function PickDropPlayer(xrlTeam, form) {
     let player = players.find(p => p.player_id == form.elements[0].value);
     // let playerId = form.elements[0].value;
     // let playerName = form.elements[0].name;
@@ -208,7 +208,7 @@ function removeFromPickedList(form, xrlTeam) {
     modifiedSquad.splice(modifiedSquad.findIndex(p => p.player_id == form.firstChild.value), 1);
     form.onsubmit = async function (event) {
         event.preventDefault();
-        const resp = await PickDropPlayer(xrlTeam, this);
+        PickDropPlayer(xrlTeam, this);
         document.getElementById('feedback').innerText += resp.message;
         location.reload();
     };        
@@ -223,7 +223,7 @@ function removeFromDroppedList(form, xrlTeam) {
     droppedPlayers.splice(droppedPlayers.findIndex(p => p.player_id == form.firstChild.value), 1);
     form.onsubmit = async function (event) {
         event.preventDefault();
-        const resp = await PickDropPlayer(null, this);
+        PickDropPlayer(null, this);
         document.getElementById('feedback').innerText += resp.message;
         location.reload();
     };        

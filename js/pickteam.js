@@ -209,8 +209,6 @@ function removeFromPickedList(form, xrlTeam) {
     form.onsubmit = async function (event) {
         event.preventDefault();
         PickDropPlayer(xrlTeam, this);
-        document.getElementById('feedback').innerText += resp.message;
-        location.reload();
     };        
     form.lastChild.className = 'btn btn-success';
     form.lastChild.innerText = 'Pick';
@@ -224,8 +222,6 @@ function removeFromDroppedList(form, xrlTeam) {
     form.onsubmit = async function (event) {
         event.preventDefault();
         PickDropPlayer(null, this);
-        document.getElementById('feedback').innerText += resp.message;
-        location.reload();
     };        
     form.lastChild.className = 'btn btn-danger';
     form.lastChild.innerText = 'Drop';

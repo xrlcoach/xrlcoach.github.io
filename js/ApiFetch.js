@@ -141,7 +141,7 @@ export async function UpdateMultiplePlayerXrlTeams(xrlTeam, players) {
                 'players': JSON.stringify(players)
             })
         });
-        const data = await response.json();
+        const data = await response2.json();
     }
 }
 

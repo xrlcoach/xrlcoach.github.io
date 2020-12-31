@@ -59,6 +59,14 @@ export function GetOrdinal(num) {
     }
 }
 
+export function GetActiveRoundFromFixtures(rounds) {
+    let activeRounds = rounds.filter(r => r.active);
+    let roundNumbers = activeRounds.map(r => r.round_number);
+    let currentRoundNumber = Math.max(...roundNumbers);
+    let currentRound = rounds.find(r => r.round_number == currentRoundNumber);
+    return currentRound;
+}
+
 export const PositionNames = {
     'fullback': 'Fullback',
     'winger1': 'Winger',

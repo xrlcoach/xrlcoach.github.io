@@ -1,5 +1,5 @@
 import { GetAllFixtures, GetAllUsers, GetCurrentRoundInfo } from "./ApiFetch.js";
-import { GetLineupScoreByTeamAndRound } from "./Helpers.js";
+import { GetLineupScoreByTeamAndRound, GetActiveRoundFromFixtures } from "./Helpers.js";
 
 let draw;
 let roundToDisplay;
@@ -14,7 +14,7 @@ window.onload = async function() {
         document.getElementById('feedback').innerText = 'No draw yet. Fixtures will be generated once all teams have joined.';
         return;
     }
-    roundToDisplay = GetCurrentRoundInfo();
+    roundToDisplay = GetActiveRoundFromFixtures(fixtures);
     console.log('Current round: ' + roundToDisplay.round_number);
     for (let i = 0; i < draw.length; i++) {
         let option = document.createElement('option');

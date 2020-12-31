@@ -30,6 +30,7 @@ async function DisplayPlayerCounts() {
         var backs = modifiedSquad.filter(p => p.position == 'Back' || p.position2 == 'Back');
         var forwards = modifiedSquad.filter(p => p.position == 'Forward' || p.position2 == 'Forward');
         var playmakers = modifiedSquad.filter(p => p.position == 'Playmaker' || p.position2 == 'Playmaker');
+        document.getElementById('playerCountBreakdown').innerHTML = '';
         document.getElementById('playerCountMessage').innerText =
             `You currently have ${totalPlayers} in your squad. You need ${18 - totalPlayers} more in total.`;
         if (backs.length < 5) {

@@ -1,4 +1,4 @@
-import { GetActiveUserInfo, GetIdToken, GetLineup, GetPlayersFromXrlTeam, SetLineup } from './ApiFetch.js'
+import { GetActiveUserInfo, GetAllFixtures, GetIdToken, GetLineup, GetPlayersFromXrlTeam, SetLineup } from './ApiFetch.js'
 import { DisplayFeedback } from './Helpers.js';
 
 const idToken = GetIdToken();
@@ -7,7 +7,7 @@ const positions_playmakers = ['five_eighth', 'halfback', 'hooker'];
 const positions_forwards = ['prop1', 'prop2', 'lock', 'row1', 'row2'];
 const interchange = ['int1', 'int2', 'int3', 'int4'];
 const roles = ['captain', 'captain2', 'vice', 'kicker', 'backup_kicker'];
-let user, squad, lineup, backs, forwards, playmakers, powerplay;
+let user, squad, lineup, backs, forwards, playmakers, powerplay, nextRound;
 
 window.onload = async () => {
     user = await GetActiveUserInfo(idToken);
@@ -16,6 +16,11 @@ window.onload = async () => {
     console.log(squad[0]);
     lineup = await GetLineup(idToken);
     console.log(lineup.length);
+    let rounds = await GetAllFixtures();
+    let notInProgress = rounds.filter(r => !r.in_progress);
+    let roundNumbers = notInProgress.map(r => r.round_number);
+    nextRound = Math.min(...roundNumbers);
+    document.getElementById('lineupHeading').innerText = `Select ${user.team_short} lineup for Round ${nextRound}`;
     let captains = lineup.filter(p => p.captain || p.captain2);
     let numCaptains = captains.length;
     console.log(numCaptains);

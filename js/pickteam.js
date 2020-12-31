@@ -27,9 +27,6 @@ window.onload = async function () {
 async function DisplayPlayerCounts() {
     try {
         var totalPlayers = modifiedSquad.length;
-        if (totalPlayers == 18) {
-            window.location.href = 'index.html';
-        }
         var backs = modifiedSquad.filter(p => p.position == 'Back' || p.position2 == 'Back');
         var forwards = modifiedSquad.filter(p => p.position == 'Forward' || p.position2 == 'Forward');
         var playmakers = modifiedSquad.filter(p => p.position == 'Playmaker' || p.position2 == 'Playmaker');

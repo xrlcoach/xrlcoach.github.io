@@ -175,7 +175,10 @@ export async function SetLineup(idToken, players) {
             'Content-Type': 'application/json',
             'Authorization': idToken         
         },
-        body: JSON.stringify(players)
+        body: {
+            'operation': 'set',
+            'players': JSON.stringify(players)
+        }
     });
     const data = await response.json();
     return data;

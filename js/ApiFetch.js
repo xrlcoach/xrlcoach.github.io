@@ -106,7 +106,7 @@ export async function UpdatePlayerXrlTeam(xrlTeam, player) {
                 'player': JSON.stringify(player)
             })
         });
-        const data = await response.json();
+        const data = await response2.json();
     }
 }
 

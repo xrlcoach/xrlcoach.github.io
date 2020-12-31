@@ -72,7 +72,7 @@ def lambda_handler(event, context):
         operation = body['operation']
         print("Operation is " + operation)
         if operation == 'remove_multiple':
-            for player in event['body']['players']:
+            for player in json.loads(body['players']):
                 lineup_table.delete_item(
                     Key={
                         'name+nrl+xrl+round': player['player_name'] + ';' + player['nrl_club'] + ';' + team_short + ';' + str(round_number)
@@ -93,6 +93,7 @@ def lambda_handler(event, context):
                     'body': json.dumps({"message": "Player removed from lineup"})
                 }
         if operation == 'remove':
+            player = json.loads(body['player'])
             lineup_table.delete_item(
                 Key={
                     'name+nrl+xrl+round': player['player_name'] + ';' + player['nrl_club'] + ';' + team_short + ';' + str(round_number)

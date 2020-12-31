@@ -262,8 +262,12 @@ function displayChoices() {
 }
 
 async function submitChoices() {
-    await UpdateMultiplePlayerXrlTeams(null, droppedPlayers);
-    await UpdateMultiplePlayerXrlTeams(user.team_short, pickedPlayers);
+    if (droppedPlayers.length > 0) {
+        await UpdateMultiplePlayerXrlTeams(null, droppedPlayers);
+    }
+    if (pickedPlayers.length > 0) {
+        await UpdateMultiplePlayerXrlTeams(user.team_short, pickedPlayers);
+    }
     location.reload();
 }
 window.submitChoices = submitChoices;

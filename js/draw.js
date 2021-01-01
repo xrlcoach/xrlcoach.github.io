@@ -21,7 +21,7 @@ window.onload = async function() {
         let option = document.createElement('option');
         option.innerText = draw[i].round_number;
         option.value = draw[i].round_number;
-        if (i == roundToDisplay.round_number) option.selected = true;
+        if (draw[i].round_number == roundToDisplay.round_number) option.selected = true;
         document.getElementById('roundSelect').appendChild(option);
     }
     PopulateFixtureTable(roundToDisplay);

@@ -73,7 +73,7 @@ export const PositionNames = {
     'winger2': 'Winger',
     'centre1': 'Centre',
     'centre2': 'Centre',
-    'five-eighth': 'Five-Eighth',
+    'five_eighth': 'Five-Eighth',
     'halfback': 'Halfback',
     'hooker': 'Hooker',
     'prop1': 'Prop',

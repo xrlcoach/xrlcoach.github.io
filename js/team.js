@@ -5,8 +5,8 @@ let squad, user;
 window.onload = async function () {
     try {
         user = await GetActiveUserInfo(idToken);
-        document.getElementById('userData').innerText = JSON.stringify(user);
         squad = await GetPlayersFromXrlTeam(user.team_short);
+        document.getElementById('teamHeader').innerHTML = user.team_name + "<br />First Team Squad";
         if (squad.length < 18) {
             document.getElementById('playerCountMessage').innerText = `Your squad only has ${squad.length} players. You should pick more!`;
             document.getElementById('pickPlayersLink').hidden = false;

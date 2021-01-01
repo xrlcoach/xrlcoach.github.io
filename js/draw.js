@@ -15,11 +15,13 @@ window.onload = async function() {
         return;
     }
     roundToDisplay = GetActiveRoundFromFixtures(fixtures);
+    document.getElementById('roundHeading').innerText = 'Round ' + roundToDisplay.round_number;
     console.log('Current round: ' + roundToDisplay.round_number);
     for (let i = 0; i < draw.length; i++) {
         let option = document.createElement('option');
         option.innerText = draw[i].round_number;
         option.value = draw[i].round_number;
+        if (i == roundToDisplay.round_number) option.selected = true;
         document.getElementById('roundSelect').appendChild(option);
     }
     PopulateFixtureTable(roundToDisplay);

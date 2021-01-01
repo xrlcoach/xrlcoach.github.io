@@ -4,7 +4,15 @@ let users;
 
 window.onload = async function() {
     users = await GetAllUsers();
-    users = users.sort((u1, u2) => u2.stats.points - u1.stats.points);
+    users = users.sort(function(u1, u2) {
+        if (u2.stats.points != u1.stats.points) {
+            return u2.stats.points - u1.stats.points;
+        }
+        if (u2.stats.wins != u1.stats.wins) {
+            return u2.stats.wins - u1.stats.wins;
+        }
+        return (u2.stats.for - u2.stats.against) - (u1.stats.for - u1.stats.against);
+    });
     PopulateLeagueTable(users);
 }
 

@@ -33,7 +33,9 @@ function selectNrlClub(event) {
     var club = document.getElementById('nrlClubSelect').value;
     document.getElementById('squadName').innerText = club;
     filteredPlayers = players.filter(p => p.nrl_club == club);
-    PopulatePlayerTable(filteredPlayers, 'squadTable');
+    PopulatePlayerTable(filteredPlayers.sort(function(p1, p2) {
+        return p1.player_name.split(' ')[1] > p2.player_name.split(' ')[1]
+    }), 'squadTable');
 }
 window.selectNrlClub = selectNrlClub;
 
@@ -42,7 +44,9 @@ function selectXrlTeam(event) {
     var team = document.getElementById('xrlTeamSelect').value;
     document.getElementById('squadName').innerText = team;
     filteredPlayers = players.filter(p => p.xrl_team == team);
-    PopulatePlayerTable(filteredPlayers, 'squadTable');
+    PopulatePlayerTable(filteredPlayers.sort(function(p1, p2) {
+        return p1.player_name.split(' ')[1] > p2.player_name.split(' ')[1]
+    }), 'squadTable');
 }
 window.selectXrlTeam = selectXrlTeam;
 

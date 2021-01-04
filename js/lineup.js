@@ -45,7 +45,7 @@ window.onload = async () => {
     let match = GetUserFixture(user, nextRound);
     let homeGame = match.home == user.team_short;
     let opponent = homeGame ? match.away : match.home;
-    document.getElementById('lineupHeading').innerHTML = `Select ${user.team_short} lineup for Round ${nextRound} vs ${opponent} ${homeGame ? "AT HOME" : "AWAY"}`;
+    document.getElementById('lineupHeading').innerHTML = `Select ${user.team_short} lineup for Round ${nextRound.round_number} vs ${opponent} ${homeGame ? "AT HOME" : "AWAY"}`;
     //Check if existing lineup is using powerplay
     let numCaptains = lineup.filter(p => p.captain || p.captain2).length;
     console.log(numCaptains);

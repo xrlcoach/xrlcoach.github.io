@@ -36,7 +36,7 @@ users = resp["Items"]
 print("Finalising lineup substitutions and scores...")
 for match in fixtures:
     print(f"Finalising {match['home']} v {match['away']}")
-    for team in match:
+    for team in ['home', 'away']:
         print(f"Finalising {match[team]} lineup")
         lineup = [player for player in lineups if player['xrl_team'] == match[team]]
         # captain_count = len([player for player in lineup if player['captain'] or player['captain2']])
@@ -114,7 +114,7 @@ for match in fixtures:
             'Playmaker': len([p for p in starters if p['position_general'] == 'Playmaker' and not p['played_nrl']]),
             'Forward': len([p for p in starters if p['position_general'] == 'Forward' and not p['played_nrl']])
         }
-        for sub in sorted(bench.items(), key=lambda p: p['position_number']):
+        for sub in sorted(bench, key=lambda p: p['position_number']):
             subbed_in = False
             if freeSpots[sub['position_general']] > 0:
                 print(f"Subbing in {sub['player_name']} as a {sub['position_general']}")
@@ -129,7 +129,7 @@ for match in fixtures:
                                 ':p': True
                             }
                         )
-            if not subbed_in:
+            if not subbed_in and sub['second_position'] != '':
                 if freeSpots[sub['second_position']] > 0:
                     print(f"Subbing in {sub['player_name']} as a {sub['second_position']}")
                     freeSpots[sub['second_position']] -= 1
@@ -260,14 +260,16 @@ positions_general = {
     'Halfback': 'Playmaker',
     'Hooker': 'Playmaker',
     'Prop': 'Forward',
-    '2nd Row': 'Forward',
+    '2nd': 'Forward',
     'Lock': 'Forward'
 }
 appearances = stats_table.scan(
     FilterExpression=Attr('round_number').eq(str(round_number))
 )['Items']
-squads = squads_table.scan()
+squads = squads_table.scan()['Items']
 for player in appearances:
+    if player['stats']['Position'] == 'Interchange':
+        continue
     player_info = [p for p in squads if p['player_id'] == player['player_id']][0]
     played_position = positions_general[player['stats']['Position']]
     if played_position not in [player_info['position'], player_info['position2']]:

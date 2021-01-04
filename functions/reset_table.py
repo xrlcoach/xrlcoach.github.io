@@ -25,9 +25,10 @@ for user in users:
         Key={
             'username': user['username']
         },
-        UpdateExpression="set powerplays=:p, stats=:s",
+        UpdateExpression="set powerplays=:p, stats=:s, captain_counts=:cc",
         ExpressionAttributeValues={
             ':p': 3,
-            ':s': clean_stats
+            ':s': clean_stats,
+            ':cc': {}
         }
     )

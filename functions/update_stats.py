@@ -20,7 +20,8 @@ import sys
 
 log = open('logs/update_stats.log', 'a')
 sys.stdout = log
-print(f"Script executing at {datetime.now()}")
+start = datetime.now()
+print(f"Script executing at {start}")
 
 dynamodbClient = boto3.client('dynamodb', 'ap-southeast-2')
 dynamodbResource = boto3.resource('dynamodb', 'ap-southeast-2')
@@ -124,7 +125,7 @@ def get_stats():
     with driver_setup() as driver:
         
         url = 'https://www.nrl.com/draw/nrl-premiership/2020/'
-        url1 = 'https://www.nrl.com/draw/?competition=111&season=2020&round=1'
+        url1 = 'https://www.nrl.com/draw/?competition=111&season=2020&round=2'
 
         # Set timeout time
         wait = WebDriverWait(driver, 10)
@@ -449,7 +450,8 @@ def get_stats():
     )
     round_lineups = resp["Items"]
     for match in fixtures:
-        for team in match.keys():
+        scores = {}
+        for team in ['home', 'away']:
             lineup = [p for p in round_lineups if p['xrl_team'] == match[team]]
             lineup_score = 0
             for player in lineup:
@@ -493,7 +495,9 @@ def get_stats():
                 )
                 if played_xrl:
                     lineup_score += player_lineup_score
-            fixtures[match][team + '_score'] = lineup_score
+            scores[team] = lineup_score
+        match['home_score'] = scores['home']
+        match['away_score'] = scores['away']
     rounds_table.update_item(
         Key={
             'round_number': int(number)
@@ -503,7 +507,9 @@ def get_stats():
             ':f': fixtures
         }
     )
-    print('Lineup scoring complete')       
+    print('Lineup scoring complete')
+    finish = datetime.now()
+    print(f"Execution took {finish - start}")       
             
 
 if __name__ == '__main__':

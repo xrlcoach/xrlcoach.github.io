@@ -72,6 +72,7 @@ function populateLineupTable(tableId, lineup) {
         if (player.played_xrl) tr.style.color = "green";
         if (!player.played_xrl && completed) tr.style.color = "red";
         let name = document.createElement('td');
+        name.style.whiteSpace = 'nowrap';
         name.innerText = player.player_name;
         tr.appendChild(name);
         let nrlClub = document.createElement('td');

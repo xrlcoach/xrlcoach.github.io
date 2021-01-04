@@ -26,6 +26,12 @@ nav .nav-item
     font-size: large;
 }
 
+header {
+    background-color: rgb(0, 112, 0);
+    color: white;
+    height: 40px;
+}
+
 main .form-control
 {
     /* center form controls */

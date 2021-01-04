@@ -1,7 +1,7 @@
 import { GetActiveUserInfo, GetAllPlayers, GetAllStats, GetAllUsers, GetCurrentRoundInfo, GetIdToken, GetRoundInfo } from "./ApiFetch.js";
 import { GetPlayerXrlScores } from "./Helpers.js";
 
-let roundToDisplay, allStats, allUsers, activeUser, allPlayersWithStats, playersTotalStats;
+let roundToDisplay, allStats, allUsers, activeUser, allPlayersWithStats, playersTotalStats, statsToDisplay;
 
 window.onload = async function() {
     roundToDisplay = await GetCurrentRoundInfo();
@@ -79,7 +79,8 @@ window.onload = async function() {
         }, 0);
         return p;
     });
-    populateStatsTable(playersTotalStats, sortByXrlXcore);
+    statsToDisplay = playersTotalStats;
+    populateStatsTable(statsToDisplay, sortByXrlXcore);
 }
 
 
@@ -131,7 +132,6 @@ function populateStatsTable(stats, sortFunction) {
 
 function filterStats(event) {
     event.preventDefault();
-    let statsToDisplay;
     let roundNumber = document.getElementById('roundSelect').value;
     let nrlClub = document.getElementById('nrlClubSelect').value;
     let xrlTeam = document.getElementById('xrlTeamSelect').value;
@@ -160,3 +160,20 @@ window.filterStats = filterStats;
 function sortByXrlXcore(p1, p2) {
     return p2.score - p1.score;
 }
+
+function sortPlayers(attribute) {
+    let sortFunction;
+    if (['involvement_try', 'positional_try', 'concede', 'mia', 'tries'].includes(attribute)) {
+        sortFunction = (p1, p2) => p2.scoring_stats[p2.position][attribute] - p1.scoring_stats[p2.position][attribute];
+    } else if (['goals', 'field_goals'].includes(attribute)) {
+        sortFunction = (p1, p2) => p2.scoring_stats.kicker[attribute] - p1.scoring_stats.kicker[attribute];
+    } else if (attribute == 'player_name') {
+        sortFunction = (p1, p2) => p1.player_name.split(' ')[1] > p2.player_name.split(' ')[1];
+    } else if (attribute == 'score') {
+        sortFunction = (p1, p2) => p2[attribute] - p1[attribute];
+    } else {
+        sortFunction = (p1, p2) => p1[attribute] - p2[attribute];
+    }
+    populateStatsTable(statsToDisplay, sortFunction);
+}
+window.sortPlayers = sortPlayers;

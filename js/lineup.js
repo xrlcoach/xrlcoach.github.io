@@ -322,7 +322,7 @@ function fillInterchangeOptions() {
     }
     let benchPlayers = squad.filter(p => !selectedPlayers.includes(p.player_id));
     for (var i = 0; i < interchange.length; i++) {
-        let player = lineup.find(p => p.position_specific == positions_forwards[i]);
+        let player = lineup.find(p => p.position_specific == interchange[i]);
         if (player == undefined || selectedPlayers.includes(document.getElementById(interchange[i]).value)) {
             document.getElementById(interchange[i]).innerHTML = '';
             createOption(null, interchange[i]);

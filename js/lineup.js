@@ -43,8 +43,8 @@ window.onload = async () => {
     //Retrieve and display info for the next round
     nextRound = await GetNextRoundInfo();
     let match = GetUserFixture(user, nextRound);
-    let opponent = match.find(team => team != user.team_short);
     let homeGame = match.home == user.team_short;
+    let opponent = homeGame ? match.away : match.home;
     document.getElementById('lineupHeading').innerHTML = `Select ${user.team_short} lineup for Round ${nextRound} vs ${opponent} ${homeGame ? "AT HOME" : "AWAY"}`;
     //Check if existing lineup is using powerplay
     let numCaptains = lineup.filter(p => p.captain || p.captain2).length;

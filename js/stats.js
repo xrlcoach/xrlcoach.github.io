@@ -57,8 +57,16 @@ window.onload = async function() {
                     if (totals[position][stat] == undefined) {
                         totals[position][stat] = 0;
                     }
-                    if (typeof(positionStats[stat]) == "boolean" && positionStats[stat]) {
-                        totals[position][stat] += 1;
+                    if (stat == 'positional_try') {
+                        if (positionStats[stat] > 0) {
+                            totals[position][stat] += 1;
+                        }
+                        continue;
+                    }
+                    if (typeof(positionStats[stat]) == "boolean") {
+                        if (positionStats[stat]) {
+                            totals[position][stat] += 1;
+                        } 
                     } else {
                         totals[position][stat] += positionStats[stat];
                     }

@@ -60,7 +60,7 @@ export function GetPlayerXrlScores(scoringPosition, appearance, scoreAsKicker=tr
             score -= stats[position].send_offs * 4;
             //4 points for involvement and positional tries
             if (stats[position].involvement_try) score += 4;
-            if (stats[position].positional_try) score += 4;
+            if (stats[position].positional_try > 0) score += 4;
             //-4 points for conceding and missing-in-action
             if (stats[position].mia) score -= 4;
             if (stats[position].concede) score -= 4;

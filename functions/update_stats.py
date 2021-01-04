@@ -471,7 +471,7 @@ def get_stats():
                             deduction = round(minutes / 10) + 4
                             player_lineup_score -= deduction
                         if player_scoring_stats['involvement_try']: player_lineup_score += 4
-                        if player_scoring_stats['positional_try']: player_lineup_score += 4
+                        if player_scoring_stats['positional_try'] > 0: player_lineup_score += 4
                         if player_scoring_stats['mia']: player_lineup_score -= 4
                         if player_scoring_stats['concede']: player_lineup_score -= 4
                         if player['kicker']:

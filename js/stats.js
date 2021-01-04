@@ -24,6 +24,7 @@ window.onload = async function() {
     for (let i in allStats) {
         let player = allPlayersWithStats.find(p => p.player_id == allStats[i].player_id);
         allStats[i].score = GetPlayerXrlScores(player.position, allStats[i]);
+        allStats[i].score_not_kicking = GetPlayerXrlScores(player.position, allStats[i], false);
         allStats[i].position = player.position;
         allStats[i].xrl_team = player.xrl_team ? player.xrl_team : 'None';
     }
@@ -76,6 +77,9 @@ window.onload = async function() {
         }, {});
         p.score = playerStats.reduce((total, appearance) => {
             return total + appearance.score;
+        }, 0);
+        p.score_not_kicking = playerStats.reduce((total, appearance) => {
+            return total + appearance.score_not_kicking;
         }, 0);
         return p;
     });
@@ -135,23 +139,34 @@ function filterStats(event) {
     let roundNumber = document.getElementById('roundSelect').value;
     let nrlClub = document.getElementById('nrlClubSelect').value;
     let xrlTeam = document.getElementById('xrlTeamSelect').value;
-    if (roundNumber == 'ALL' && nrlClub == 'ALL' && xrlTeam == 'ALL') {
-        statsToDisplay = playersTotalStats;
-    } else if (roundNumber == 'ALL' && nrlClub == 'ALL') {
-        statsToDisplay = playersTotalStats.filter(p => p.xrl_team == xrlTeam);
-    } else if (roundNumber == 'ALL' && xrlTeam == 'ALL') {
-        statsToDisplay = playersTotalStats.filter(p => p.nrl_club == nrlClub);
-    } else if (nrlClub == 'ALL' && xrlTeam == 'ALL') {
-        statsToDisplay = allStats.filter(p => p.round_number == roundNumber);
-    } else if (roundNumber == 'ALL') {
-        statsToDisplay = playersTotalStats.filter(p => p.nrl_club == nrlClub && p.xrl_team == xrlTeam);
-    } else if (nrlClub == 'ALL') {
-        statsToDisplay = allStats.filter(p => p.round_number == roundNumber && p.xrl_team == xrlTeam);
-    } else if (xrlTeam == 'ALL') {
-        statsToDisplay = allStats.filter(p => p.nrl_club == nrlClub && p.round_number == roundNumber);
-    } else {
-        statsToDisplay = allStats.filter(p => p.nrl_club == nrlClub && p.xrl_team == xrlTeam && p.round_number == roundNumber);
-    }
+    let position = document.getElementById('positionSelect').value;
+    let scoreAsKicker = document.getElementById('scoreKickerSelect').value == 'Yes' ? true : false;
+    statsToDisplay = roundNumber == 'ALL' ? playersTotalStats : playersTotalStats.filter(p => p.xrl_team == xrlTeam);
+    if (nrlClub != 'ALL') statsToDisplay = statsToDisplay.filter(p => p.nrl_club == nrlClub);
+    if (xrlTeam != 'ALL') statsToDisplay = statsToDisplay.filter(p => p.xrl_team == xrl_team);
+    if (position != 'ALL') statsToDisplay = statsToDisplay.filter(p => p.position == position);
+    if (!scoreAsKicker) statsToDisplay = statsToDisplay.map(function(p) {
+        p.score = p.score_not_kicking;
+        return p;
+    });
+    
+    // if (roundNumber == 'ALL' && nrlClub == 'ALL' && xrlTeam == 'ALL') {
+    //     statsToDisplay = playersTotalStats;
+    // } else if (roundNumber == 'ALL' && nrlClub == 'ALL') {
+    //     statsToDisplay = playersTotalStats.filter(p => p.xrl_team == xrlTeam);
+    // } else if (roundNumber == 'ALL' && xrlTeam == 'ALL') {
+    //     statsToDisplay = playersTotalStats.filter(p => p.nrl_club == nrlClub);
+    // } else if (nrlClub == 'ALL' && xrlTeam == 'ALL') {
+    //     statsToDisplay = allStats.filter(p => p.round_number == roundNumber);
+    // } else if (roundNumber == 'ALL') {
+    //     statsToDisplay = playersTotalStats.filter(p => p.nrl_club == nrlClub && p.xrl_team == xrlTeam);
+    // } else if (nrlClub == 'ALL') {
+    //     statsToDisplay = allStats.filter(p => p.round_number == roundNumber && p.xrl_team == xrlTeam);
+    // } else if (xrlTeam == 'ALL') {
+    //     statsToDisplay = allStats.filter(p => p.nrl_club == nrlClub && p.round_number == roundNumber);
+    // } else {
+    //     statsToDisplay = allStats.filter(p => p.nrl_club == nrlClub && p.xrl_team == xrlTeam && p.round_number == roundNumber);
+    // }
     populateStatsTable(statsToDisplay, sortByXrlXcore);
 }
 

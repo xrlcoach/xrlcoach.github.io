@@ -69,14 +69,22 @@
                 <button type="submit" class="btn btn-primary">View</button>
             </div>
         </form>
+        <form onsubmit="selectTeam(event)">
+            <div class="form-group">
+                <select class="form-control" name="xrl_team" id="teamSelect"></select>
+                <button type="submit" class="btn btn-primary">View</button>
+            </div>
+        </form>
     </p>
     <p><h4 id="roundStatus"></h4></p>
     <div class="table-responsive">
     <table class="table table-dark table-striped">
         <thead style="color: green;">
             <tr>
+                <th></th>
                 <th>Home Team</th>
                 <th>Away Team</th>
+                <th></th>
             </tr>
         </thead>
         <tbody id="fixturesTableBody">

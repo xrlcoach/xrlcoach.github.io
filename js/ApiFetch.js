@@ -27,6 +27,12 @@ export function GetIdToken() {
     return getCookie('id');
 }
 /**
+ * Retrieves the team acronym stored in the 'team' cookie
+ */
+export function GetActiveUserTeamShort() {
+    return getCookie('team');
+}
+/**
  * Calls GetUsers lambda function to retrieve all users' data
  */
 export async function GetAllUsers() {

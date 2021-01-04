@@ -1,8 +1,8 @@
 /* Script controlling draw.html, the page which allows user to brows past, current
 and future XRL fixtures. */
 
-import { GetAllFixtures, GetAllUsers, GetCurrentRoundInfo } from "./ApiFetch.js";
-import { GetLineupScoreByTeamAndRound, GetActiveRoundFromFixtures } from "./Helpers.js";
+import { GetActiveUserTeamShort, GetAllFixtures, GetAllUsers, GetCurrentRoundInfo } from "./ApiFetch.js";
+import { GetLineupScoreByTeamAndRound, GetActiveRoundFromFixtures, GetUserFixture } from "./Helpers.js";
 /**
  * An array of round objects sorted by round number.
  */
@@ -41,6 +41,15 @@ window.onload = async function() {
         //Make current round the selected value
         if (draw[i].round_number == roundToDisplay.round_number) option.selected = true;
         document.getElementById('roundSelect').appendChild(option);
+    }
+    //Populate XRL Team dropdown options
+    for (let u of users) {
+        let option = document.createElement('option');
+        option.innerText = u.team_short;
+        option.value = u.team_short;
+        //Make user's team the selected value
+        if (u.team_short == GetActiveUserTeamShort()) option.selected = true;
+        document.getElementById('teamSelect').appendChild(option);
     }
     //Call table constructor
     PopulateFixtureTable(roundToDisplay);
@@ -111,3 +120,69 @@ function selectRound(event) {
 }
 //Give the function global scope, allowing it to be called from HTML.
 window.selectRound = selectRound;
+/**
+ * Populates the fixtures table body with the desired round's XRL matches.
+ * @param {Object} round An XRL round data object
+ */
+async function PopulateTeamFixtureTable(team) {
+    //Display team name
+    document.getElementById('roundStatus').innerText = team + ' Fixtures';
+    //Locate table body element
+    let table = document.getElementById('fixturesTableBody');
+    //Clear previous contents
+    table.innerHTML = '';
+    //Iterate through the all the rounds
+    for (let round of draw) {
+        //Create table row
+        let tr = document.createElement('tr');
+        let roundCell = document.createElement('td');
+        roundCell.innerText = round.round_number;
+        tr.appendChild(roundCell);
+        //Get user's match from round
+        let match = GetUserFixture(team, round);
+        //Use match to find user data for home and away teams 
+        let homeUser = users.find(u => u.team_short == match.home);
+        let awayUser = users.find(u => u.team_short == match.away);
+        //Create table cells for each team and fill with team names
+        let home = document.createElement('td');
+        home.innerText = homeUser.team_name;
+        let away = document.createElement('td');
+        away.innerText = awayUser.team_name;
+        //If the round is ongoing or finished, get the team scores and display them alongside the team name
+        if (round.completed || round.in_progress) {
+            //let homeScore = await GetLineupScoreByTeamAndRound(round.round_number, homeUser.team_short);
+            let homeScore = match.home_score;
+            home.innerText += " " + homeScore;
+            //let awayScore = await GetLineupScoreByTeamAndRound(round.round_number, awayUser.team_short);
+            let awayScore = match.away_score;
+            away.innerText += " " + awayScore;
+        }
+        //Append cells to row
+        tr.appendChild(home);
+        tr.appendChild(away);
+        //If round is ongoing or finished, add a link to the fixture page, using the match data to construct a query parameter
+        if (round.completed || round.in_progress) {
+            let view = document.createElement('td');
+            let link = document.createElement('a');
+            link.innerText = 'View';
+            link.href = `fixture.html?round=${round.round_number}&fixture=${match.home}-v-${match.away}`;
+            view.appendChild(link);
+            tr.appendChild(view);
+        }
+        //Append the row to the table
+        table.appendChild(tr);
+    }
+}
+/**
+ * Reconstructs the fixtures table with all matches for a particular team.
+ * @param {*} event 
+ */
+function selectTeam(event) {
+    event.preventDefault();
+    //Get the selected XRL team
+    teamToDisplay = document.getElementById('teamSelect').value;
+    //Calls the user's fixture table constructor with the team acronym
+    PopulateTeamFixtureTable(teamToDisplay);
+}
+//Give the function global scope, allowing it to be called from HTML.
+window.selectTeam = selectTeam;

@@ -326,5 +326,28 @@ async function submitLineup(event) {
     await SetLineup(idToken, lineup);
     window.location.href = 'index.html';
 }
-
 window.submitLineup = submitLineup;
+
+function fillInterchangeOptions() {
+    let selectedPlayers = document.getElementsByName('player').map(e => e.value);
+    let benchPlayers = squad.filter(p => !selectedPlayers.includes(p.player_id));
+    for (var i = 0; i < interchange.length; i++) {
+        if (selectedPlayers.includes(document.getElementById(interchange[i].value))) {
+            document.getElementById(interchange[i]).innerHTML = '';
+            createOption(null, interchange[i]);
+            for (var j = 0; j < benchPlayers.length; j++) {
+                createOption(benchPlayers[j], interchange[i]);
+            }
+            fillPositionOptions(document.getElementById(interchange[i]));
+        } else {
+            document.getElementById(interchange[i]).innerHTML = '';
+            createOption(squad.find(p => p.player_id == document.getElementById(interchange[i].value)), interchange[i]);
+            let restOfBench = benchPlayers.filter(p => p.player_id != document.getElementById(interchange[i].value));
+            for (var j = 0; j < restOfBench.length; j++) {
+                createOption(restOfBench[j], interchange[i]);
+            }
+            fillPositionOptions(document.getElementById(interchange[i]));
+        }
+    }
+}
+window.fillInterchangeOptions = fillInterchangeOptions;

@@ -164,7 +164,7 @@ function sortByXrlXcore(p1, p2) {
 function sortPlayers(attribute) {
     let sortFunction;
     if (['involvement_try', 'positional_try', 'concede', 'mia', 'tries'].includes(attribute)) {
-        sortFunction = (p1, p2) => p2.scoring_stats[p2.position][attribute] - p1.scoring_stats[p2.position][attribute];
+        sortFunction = (p1, p2) => p2.scoring_stats[p2.position][attribute] - p1.scoring_stats[p1.position][attribute];
     } else if (['goals', 'field_goals'].includes(attribute)) {
         sortFunction = (p1, p2) => p2.scoring_stats.kicker[attribute] - p1.scoring_stats.kicker[attribute];
     } else if (attribute == 'player_name') {
@@ -172,7 +172,7 @@ function sortPlayers(attribute) {
     } else if (attribute == 'score') {
         sortFunction = (p1, p2) => p2[attribute] - p1[attribute];
     } else {
-        sortFunction = (p1, p2) => p1[attribute] - p2[attribute];
+        sortFunction = (p1, p2) => p1[attribute] > p2[attribute];
     }
     populateStatsTable(statsToDisplay, sortFunction);
 }

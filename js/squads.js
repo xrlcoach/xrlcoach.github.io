@@ -68,7 +68,7 @@ function sortByNameDesc() {
         return p1.player_name.split(' ')[1] < p2.player_name.split(' ')[1]
     });
     document.getElementById('sortByNameButton').onclick = sortByName;
-    PopulatePlayerTable(sortedPlayers);
+    PopulatePlayerTable(sortedPlayers, 'squadTable');
 }
 window.sortByNameDesc = sortByNameDesc;
 function sortByPosition() {

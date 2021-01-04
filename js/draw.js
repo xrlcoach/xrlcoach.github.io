@@ -117,6 +117,8 @@ function selectRound(event) {
     event.preventDefault();
     //Uses the selected round number to locate round info from pre-loaded array
     roundToDisplay = draw.find(r => r.round_number == document.getElementById('roundSelect').value);
+    //Display round heading
+    document.getElementById('roundHeading').innerText = 'Round ' + roundToDisplay.round_number;
     //Calls the table constructor with the new round info
     PopulateFixtureTable(roundToDisplay);
 }
@@ -127,8 +129,8 @@ window.selectRound = selectRound;
  * @param {Object} round An XRL round data object
  */
 async function PopulateTeamFixtureTable(team) {
-    //Display team name
-    document.getElementById('roundStatus').innerText = team + ' Fixtures';
+    //Clear status heading
+    document.getElementById('roundStatus').innerText = '';
     //Locate table body element
     let table = document.getElementById('fixturesTableBody');
     //Clear previous contents
@@ -183,6 +185,8 @@ function selectTeam(event) {
     event.preventDefault();
     //Get the selected XRL team
     let teamToDisplay = document.getElementById('teamSelect').value;
+    //Display team in heading
+    document.getElementById('roundHeading').innerText = teamToDisplay + 'Fixtures';
     //Calls the user's fixture table constructor with the team acronym
     PopulateTeamFixtureTable(teamToDisplay);
 }

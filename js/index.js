@@ -43,7 +43,7 @@ async function displayFixture(roundNumber, fixture) {
     let homeUser = allUsers.find(u => u.team_short == fixture.home);
     let awayUser = allUsers.find(u => u.team_short == fixture.away);
     document.getElementById('roundNumberDisplay').innerHTML = `<h4>Round ${roundNumber}</h4>`;
-    document.getElementById('roundNumberDisplay').innerHTML = `<h4>${homeUser.team_name} v ${awayUser.team_name}</h4>`;
+    document.getElementById('matchTeamsDisplay').innerHTML = `<h4>${homeUser.team_name} v ${awayUser.team_name}</h4>`;
     document.getElementById('homegroundDisplay').innerHTML = `<h4>@ ${homeUser.homeground}</h4>`;
     document.getElementById('homeLogo').src = `/static/${homeUser.team_short}.png`;
     document.getElementById('awayLogo').src = `/static/${awayUser.team_short}.png`;

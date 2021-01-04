@@ -91,14 +91,19 @@
                 </div>
             </form>
             <form onsubmit="selectXrlTeam(event)">
-        <div class="form-group">
-            <select class="form-control" id="xrlTeamSelect">
-                <option disabled selected>Choose XRL Team</option>
-                    
-            </select>
-            <button type="submit" class="btn btn-primary">View players</button>
-        </div>
-    </form>
+                <div class="form-group">
+                    <select class="form-control" id="xrlTeamSelect">
+                        <option disabled selected>Choose XRL Team</option>
+                    </select>
+                    <button type="submit" class="btn btn-primary">View players</button>
+                </div>
+            </form>
+            <form onsubmit="searchPlayer(event)">
+                <div class="form-group">
+                    <input type="search" class="form-control" id="playerSearch" />
+                    <button type="submit" class="btn btn-primary">Search</button>
+                </div>
+            </form>
             <h4 id="squadName"></h4>
 
             <!-- <img src="static/{{ user['team_logo'] }}" alt="{{ user['team_short'] }}" height="80" style="padding: 10px;"><h4>{{ user['team_name'] }} Squad</h4> -->

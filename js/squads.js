@@ -1,11 +1,14 @@
 import { GetAllPlayers, GetAllUsers, GetPlayersFromNrlClub, GetPlayersFromXrlTeam } from "./ApiFetch.js";
-import { PopulatePlayerTable } from './Tables.js'
+import { PopulatePlayerTable } from './Tables.js';
+
+let users, players;
 
 window.onload = async function () {
     var club = document.getElementById('nrlClubSelect').value;
     document.getElementById('squadName').innerText = club;
     try {
-        const users = await GetAllUsers();
+        users = await GetAllUsers();
+        players = await GetAllPlayers();
         var select = document.getElementById('xrlTeamSelect');
         for (var i = 0; i < users.length; i++) {
             var option = document.createElement('option');
@@ -25,28 +28,29 @@ window.onload = async function () {
     // });
 }
 
-async function selectNrlClub(event) {
+function selectNrlClub(event) {
     event.preventDefault();
     var club = document.getElementById('nrlClubSelect').value;
     document.getElementById('squadName').innerText = club;
-    try {
-        const players = await GetPlayersFromNrlClub(club);
-        PopulatePlayerTable(players, 'squadTable');
-    } catch (error) {
-        document.getElementById('feedback').innerText += error;
-    }
+    let filteredPlayers = players.filter(p => p.nrl_club == club);
+    PopulatePlayerTable(filteredPlayers, 'squadTable');
 }
 window.selectNrlClub = selectNrlClub;
 
-async function selectXrlTeam(event) {
+function selectXrlTeam(event) {
     event.preventDefault();
     var team = document.getElementById('xrlTeamSelect').value;
     document.getElementById('squadName').innerText = team;
-    try {
-        const players = await GetPlayersFromXrlTeam(team);
-        PopulatePlayerTable(players, 'squadTable');
-    } catch (error) {
-        document.getElementById('feedback').innerText += error;
-    }
+    let filteredPlayers = players.filter(p => p.xrl_team == team);
+    PopulatePlayerTable(filteredPlayers, 'squadTable');
 }
 window.selectXrlTeam = selectXrlTeam;
+
+function searchPlayer(event) {
+    event.preventDefault();
+    let player = document.getElementById('playerSearch').value.toLowerCase();
+    document.getElementById('squadName').innerText = 'Sarch: ' + player;
+    let filteredPlayers = players.filter(p => p.search_name.toLowerCase().includes(player));
+    PopulatePlayerTable(filteredPlayers, 'squadTable');
+}
+window.searchPlayer = searchPlayer;

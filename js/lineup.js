@@ -338,7 +338,7 @@ function fillInterchangeOptions() {
                 createOption(restOfBench[j], interchange[i]);
             }
             fillPositionOptions(document.getElementById(interchange[i]));
-            createOption(null, interchange[i]);c
+            createOption(null, interchange[i]);
         }
     }
 }

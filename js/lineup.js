@@ -317,11 +317,12 @@ function fillInterchangeOptions() {
     let playerSelections = document.getElementsByName('player');
     let selectedPlayers = [];
     for (let i = 0; i < playerSelections.length; i++) {
+        if (interchange.includes(playerSelections[i].id)) continue;
         selectedPlayers.push(playerSelections[i].value);
     }
     let benchPlayers = squad.filter(p => !selectedPlayers.includes(p.player_id));
     for (var i = 0; i < interchange.length; i++) {
-        if (document.getElementById(interchange[i].value) == 'None' || selectedPlayers.includes(document.getElementById(interchange[i].value))) {
+        if (document.getElementById(interchange[i]).value == 'None' || selectedPlayers.includes(document.getElementById(interchange[i]).value)) {
             document.getElementById(interchange[i]).innerHTML = '';
             createOption(null, interchange[i]);
             for (var j = 0; j < benchPlayers.length; j++) {
@@ -330,8 +331,8 @@ function fillInterchangeOptions() {
             fillPositionOptions(document.getElementById(interchange[i]));
         } else {
             document.getElementById(interchange[i]).innerHTML = '';
-            createOption(squad.find(p => p.player_id == document.getElementById(interchange[i].value)), interchange[i]);
-            let restOfBench = benchPlayers.filter(p => p.player_id != document.getElementById(interchange[i].value));
+            createOption(squad.find(p => p.player_id == document.getElementById(interchange[i]).value), interchange[i]);
+            let restOfBench = benchPlayers.filter(p => p.player_id != document.getElementById(interchange[i]).value);
             for (var j = 0; j < restOfBench.length; j++) {
                 createOption(restOfBench[j], interchange[i]);
             }

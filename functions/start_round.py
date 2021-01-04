@@ -3,7 +3,7 @@ from boto3.dynamodb.conditions import Key, Attr
 import sys
 from datetime import datetime
 
-log = open('start_round.log', 'a')
+log = open('logs/start_round.log', 'a')
 sys.stdout = log
 print(f"Script executing at {datetime.now()}")
 
@@ -33,25 +33,14 @@ print(f"Updating captaincy numbers...")
 resp = users_table.scan()
 users = resp["Items"]
 resp = lineups_table.scan(
-    FilterExpression=Attr('round_number').eq(round_number)
+    FilterExpression=Attr('round_number').eq(str(round_number))
 )
 lineups = resp["Items"]
 
 for user in users:
-    lineup = [player for player in lineup if player['xrl_team'] == user['team_short']]
+    lineup = [player for player in lineups if player['xrl_team'] == user['team_short']]
     captains = [player for player in lineup if player['captain'] or player['captain2']]
     powerplay = len(captains) > 1
-    if powerplay:
-        print(f"{user['team_name']} used a powerplay. Updating database")
-        users_table.update_item(
-                Key={
-                    'username': user['username']
-                },
-                UpdateExpression="set powerplays = powerplays - :v",
-                ExpressionAttributeValues={
-                    ':v': 1
-                }
-            )
     for captain in captains:
         print(f"{user['team_name']} captained {captain['player_name']}")
         if "captain_counts" not in user.keys():
@@ -60,3 +49,26 @@ for user in users:
             user['captain_counts'][captain['player_id']] = 1
         else:
             user['captain_counts'][captain['player_id']] += 1
+    if powerplay:
+        print(f"{user['team_name']} used a powerplay. Updating database")
+        users_table.update_item(
+                Key={
+                    'username': user['username']
+                },
+                UpdateExpression="set captain_counts=:cc, powerplays = powerplays - :v",
+                ExpressionAttributeValues={
+                    ':cc': user['captain_counts'],
+                    ':v': 1
+                }
+            )
+    else:
+        users_table.update_item(
+                Key={
+                    'username': user['username']
+                },
+                UpdateExpression="set captain_counts=:cc",
+                ExpressionAttributeValues={
+                    ':cc': user['captain_counts']
+                }
+            )
+    

@@ -3,7 +3,7 @@ import random
 import sys
 from datetime import datetime
 
-log = open('generate_fixtures.log', 'a')
+log = open('logs/generate_fixtures.log', 'a')
 sys.stdout = log
 print(f"Script executing at {datetime.now()}")
 

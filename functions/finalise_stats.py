@@ -3,7 +3,7 @@ import boto3
 from boto3.dynamodb.conditions import Key, Attr
 import sys
 
-log = open('finalise_stats.log', 'a')
+log = open('logs/finalise_stats.log', 'a')
 sys.stdout = log
 print(f"Script executing at {datetime.now()}")
 

@@ -18,7 +18,7 @@ from selenium.common.exceptions import TimeoutException
 from selenium.common.exceptions import NoSuchElementException
 import sys
 
-log = open('update_stats.log', 'a')
+log = open('logs/update_stats.log', 'a')
 sys.stdout = log
 print(f"Script executing at {datetime.now()}")
 
@@ -124,7 +124,7 @@ def get_stats():
     with driver_setup() as driver:
         
         url = 'https://www.nrl.com/draw/nrl-premiership/2020/'
-        url1 = 'https://www.nrl.com/draw/?competition=111&season=2020&round=2'
+        url1 = 'https://www.nrl.com/draw/?competition=111&season=2020&round=1'
 
         # Set timeout time
         wait = WebDriverWait(driver, 10)

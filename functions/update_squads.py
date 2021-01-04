@@ -2,7 +2,7 @@ import boto3
 import sys
 from datetime import datetime
 
-log = open('update_squads.log', 'a')
+log = open('logs/update_squads.log', 'a')
 sys.stdout = log
 print(f"Script executing at {datetime.now()}")
 

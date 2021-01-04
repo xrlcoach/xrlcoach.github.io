@@ -156,22 +156,7 @@ async function PopulateLineup() {
             }
             createOption(null, positions_playmakers[i]);
         }
-        for (let i = 0; i < interchange.length; i++) {
-            let player = lineup.find(p => p.position_specific == interchange[i]);
-            let otherInts;
-            if (player == undefined) {
-                createOption(null, interchange[i]);
-                otherInts = squad;
-            } else {
-                otherInts = squad.filter(p => player['player_id'] != p['player_id']);
-                createOption(player, interchange[i]);
-            }
-            for (let j = 0; j < otherInts.length; j++) {
-                createOption(otherInts[j], interchange[i]);
-            }
-            createOption(null, interchange[i]);
-            fillPositionOptions(document.getElementById(interchange[i]));
-        }
+        fillInterchangeOptions();
         for (let i = 0; i < roles.length; i++) {
             if (roles[i] == 'captain2' && !powerplay) continue;
             if (roles[i] == 'vice' && powerplay) continue;
@@ -329,11 +314,14 @@ async function submitLineup(event) {
 window.submitLineup = submitLineup;
 
 function fillInterchangeOptions() {
-    let selectedPlayers = document.getElementsByName('player');
-    selectedPlayers = selectedPlayers.map(e => e.value);
+    let playerSelections = document.getElementsByName('player');
+    let selectedPlayers = [];
+    for (let i = 0; i < playerSelections.length; i++) {
+        selectedPlayers.push(playerSelections[i].value);
+    }
     let benchPlayers = squad.filter(p => !selectedPlayers.includes(p.player_id));
     for (var i = 0; i < interchange.length; i++) {
-        if (selectedPlayers.includes(document.getElementById(interchange[i].value))) {
+        if (document.getElementById(interchange[i].value) == 'None' || selectedPlayers.includes(document.getElementById(interchange[i].value))) {
             document.getElementById(interchange[i]).innerHTML = '';
             createOption(null, interchange[i]);
             for (var j = 0; j < benchPlayers.length; j++) {

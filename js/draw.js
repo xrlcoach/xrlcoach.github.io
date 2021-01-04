@@ -74,6 +74,8 @@ async function PopulateFixtureTable(round) {
     for (let match of round.fixtures) {
         //Create table row
         let tr = document.createElement('tr');
+        //Add blank cell
+        tr.appendChild(document.createElement('td'));
         //Use match to find user data for home and away teams 
         let homeUser = users.find(u => u.team_short == match.home);
         let awayUser = users.find(u => u.team_short == match.away);
@@ -180,7 +182,7 @@ async function PopulateTeamFixtureTable(team) {
 function selectTeam(event) {
     event.preventDefault();
     //Get the selected XRL team
-    teamToDisplay = document.getElementById('teamSelect').value;
+    let teamToDisplay = document.getElementById('teamSelect').value;
     //Calls the user's fixture table constructor with the team acronym
     PopulateTeamFixtureTable(teamToDisplay);
 }

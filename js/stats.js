@@ -143,7 +143,7 @@ function filterStats(event) {
     let scoreAsKicker = document.getElementById('scoreKickerSelect').value == 'Yes' ? true : false;
     statsToDisplay = roundNumber == 'ALL' ? playersTotalStats : allStats.filter(p => p.round_number == roundNumber);
     if (nrlClub != 'ALL') statsToDisplay = statsToDisplay.filter(p => p.nrl_club == nrlClub);
-    if (xrlTeam != 'ALL') statsToDisplay = statsToDisplay.filter(p => p.xrl_team == xrl_team);
+    if (xrlTeam != 'ALL') statsToDisplay = statsToDisplay.filter(p => p.xrl_team == xrlTeam);
     if (position != 'ALL') statsToDisplay = statsToDisplay.filter(p => p.position == position);
     if (!scoreAsKicker) statsToDisplay = statsToDisplay.map(function(p) {
         p.score = p.score_not_kicking;

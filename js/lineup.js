@@ -322,7 +322,8 @@ function fillInterchangeOptions() {
     }
     let benchPlayers = squad.filter(p => !selectedPlayers.includes(p.player_id));
     for (var i = 0; i < interchange.length; i++) {
-        if (document.getElementById(interchange[i]).value == 'None' || selectedPlayers.includes(document.getElementById(interchange[i]).value)) {
+        let player = lineup.find(p => p.position_specific == positions_forwards[i]);
+        if (player == undefined || selectedPlayers.includes(document.getElementById(interchange[i]).value)) {
             document.getElementById(interchange[i]).innerHTML = '';
             createOption(null, interchange[i]);
             for (var j = 0; j < benchPlayers.length; j++) {
@@ -331,12 +332,13 @@ function fillInterchangeOptions() {
             fillPositionOptions(document.getElementById(interchange[i]));
         } else {
             document.getElementById(interchange[i]).innerHTML = '';
-            createOption(squad.find(p => p.player_id == document.getElementById(interchange[i]).value), interchange[i]);
-            let restOfBench = benchPlayers.filter(p => p.player_id != document.getElementById(interchange[i]).value);
+            createOption(player, interchange[i]);
+            let restOfBench = benchPlayers.filter(p => p.player_id != player.player_id);
             for (var j = 0; j < restOfBench.length; j++) {
                 createOption(restOfBench[j], interchange[i]);
             }
             fillPositionOptions(document.getElementById(interchange[i]));
+            createOption(null, interchange[i]);c
         }
     }
 }

@@ -39,7 +39,6 @@ function displayUserData() {
 }
 
 async function displayFixture(roundNumber, fixture) {
-    document.getElementById('fixtureHeading').innerText = 'Retrieving current fixture info...';
     let homeUser = allUsers.find(u => u.team_short == fixture.home);
     let awayUser = allUsers.find(u => u.team_short == fixture.away);
     document.getElementById('roundNumberDisplay').innerHTML = `<h4>Round ${roundNumber}</h4>`;

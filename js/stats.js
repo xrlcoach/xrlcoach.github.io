@@ -106,7 +106,7 @@ function populateStatsTable(stats, sortFunction) {
         ITs.innerText = player.scoring_stats[player.position].involvement_try;
         tr.appendChild(ITs);
         let PTs = document.createElement('td');
-        PTs.innerText = player.scoring_stats[player.position].playmaker_try;
+        PTs.innerText = player.scoring_stats[player.position].positional_try;
         tr.appendChild(PTs);
         let mia = document.createElement('td');
         mia.innerText = player.scoring_stats[player.position].mia;

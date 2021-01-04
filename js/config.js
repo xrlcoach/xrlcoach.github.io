@@ -1,3 +1,4 @@
+//Not sure if I need this anymore?
 window._config = {
     cognito: {
         userPoolId: 'ap-southeast-2_ADGpVrjZ7', // e.g. us-east-2_uXboG5pAb

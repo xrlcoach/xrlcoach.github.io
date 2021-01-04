@@ -1,5 +1,11 @@
 import boto3
 import random
+import sys
+from datetime import datetime
+
+log = open('generate_fixtures.log', 'a')
+sys.stdout = log
+print(f"Script executing at {datetime.now()}")
 
 dynamodbClient = boto3.client('dynamodb', 'ap-southeast-2')
 dynamodbResource = boto3.resource('dynamodb', 'ap-southeast-2')

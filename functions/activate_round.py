@@ -1,5 +1,11 @@
 import boto3
 from boto3.dynamodb.conditions import Key, Attr
+from datetime import datetime
+import sys
+
+log = open('activate_round.log', 'a')
+sys.stdout = log
+print(f"Script executing at {datetime.now()}")
 
 dynamodb = boto3.resource('dynamodb', 'ap-southeast-2')
 rounds_table = dynamodb.Table('rounds2020')

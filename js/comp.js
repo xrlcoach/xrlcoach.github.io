@@ -1,9 +1,16 @@
+/* Script controlling comp.html, which displays league table */
+
 import { GetAllUsers } from "./ApiFetch.js";
 
+/**
+ * Array of user data objects
+ */
 let users;
 
 window.onload = async function() {
+    //Retrieve users' data
     users = await GetAllUsers();
+    //Sort users first by points, then by wins, then by for/against
     users = users.sort(function(u1, u2) {
         if (u2.stats.points != u1.stats.points) {
             return u2.stats.points - u1.stats.points;
@@ -13,14 +20,23 @@ window.onload = async function() {
         }
         return (u2.stats.for - u2.stats.against) - (u1.stats.for - u1.stats.against);
     });
+    //Pass sorted array to table constructor
     PopulateLeagueTable(users);
 }
-
+/**
+ * Populates the league table with each user's info and season stats
+ * @param {Array} users A sorted array of user data objects
+ */
 function PopulateLeagueTable(users) {
     let user;
+    //Locate table body element
+    let table = document.getElementById('ladderTableBody');
+    //Iterate through array of users
     for (user of users) {
-        let table = document.getElementById('ladderTableBody');
+        //Create a new row
         let tr = document.createElement('tr');
+        /*For each property to display, create a table cell, assign the data to the innerText property,
+        and append it to the table row*/
         let xrlTeam = document.createElement('td');
         xrlTeam.innerText = user.team_name;
         tr.appendChild(xrlTeam);
@@ -42,6 +58,7 @@ function PopulateLeagueTable(users) {
         let points = document.createElement('td');
         points.innerText = user.stats.points;
         tr.appendChild(points);
+        //Append the row to the table body
         table.appendChild(tr);
     }
 }

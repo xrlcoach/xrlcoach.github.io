@@ -1,49 +1,83 @@
-import { GetActiveUserInfo, GetAllFixtures, GetIdToken, GetLineup, GetPlayersFromXrlTeam, SetLineup } from './ApiFetch.js'
-import { DisplayFeedback } from './Helpers.js';
+/* Script controlling lineup.html, the page where the user sets their lineup for the next round */
 
+import { GetActiveUserInfo, GetAllFixtures, GetIdToken, GetLineup, GetNextRoundInfo, GetPlayersFromXrlTeam, SetLineup } from './ApiFetch.js'
+import { DisplayFeedback, GetUserFixture } from './Helpers.js';
+
+/**
+ * The active user's id token
+ */
 const idToken = GetIdToken();
+/**
+ * An array of position element ids that map to Back positions
+ */
 const positions_backs = ['fullback', 'winger1', 'winger2', 'centre1', 'centre2'];
+/**
+ * An array of position element ids that map to Playmaker positions
+ */
 const positions_playmakers = ['five_eighth', 'halfback', 'hooker'];
+/**
+ * An array of position element ids that map to Forward positions
+ */
 const positions_forwards = ['prop1', 'prop2', 'lock', 'row1', 'row2'];
+/**
+ * An array of position element ids that map to interchange positions
+ */
 const interchange = ['int1', 'int2', 'int3', 'int4'];
+/**
+ * An array of element ids that map to player roles
+ */
 const roles = ['captain', 'captain2', 'vice', 'kicker', 'backup_kicker'];
+
 let user, squad, lineup, backs, forwards, playmakers, powerplay, nextRound;
 
 window.onload = async () => {
+    //Get the active user's data
     user = await GetActiveUserInfo(idToken);
     console.log(user);
+    //Get player data for the user's XRL squad
     squad = await GetPlayersFromXrlTeam(user.team_short);
     console.log(squad[0]);
+    //Get the user's lineup data for the current round, if already set
     lineup = await GetLineup(idToken);
     console.log(lineup.length);
-    let rounds = await GetAllFixtures();
-    let notInProgress = rounds.filter(r => !r.in_progress);
-    let roundNumbers = notInProgress.map(r => r.round_number);
-    nextRound = Math.min(...roundNumbers);
-    document.getElementById('lineupHeading').innerText = `Select ${user.team_short} lineup for Round ${nextRound}`;
-    let captains = lineup.filter(p => p.captain || p.captain2);
-    let numCaptains = captains.length;
+    //Retrieve and display info for the next round
+    nextRound = await GetNextRoundInfo();
+    let match = GetUserFixture(user, nextRound);
+    let opponent = match.find(team => team != user.team_short);
+    let homeGame = match.home == user.team_short;
+    document.getElementById('lineupHeading').innerHTML = `Select ${user.team_short} lineup for Round ${nextRound} vs ${opponent} ${homeGame ? "AT HOME" : "AWAY"}`;
+    //Check if existing lineup is using powerplay
+    let numCaptains = lineup.filter(p => p.captain || p.captain2).length;
     console.log(numCaptains);
     powerplay = numCaptains == 2;
     console.log(powerplay);
+    //If so, change second captain input to visible, and vice captain to hidden
     if (powerplay) {
         document.getElementById('secondCaptainSelect').hidden = false;
         document.getElementById('viceCaptainSelect').hidden = true;
     }
+    //Locate powerplay button
     let button = document.getElementById('powerplayButton');
-    if (!powerplay && user.powerplays > 0) {
+    //If powerplay is not already active, and the user is at home and has some left to use, show the green
+    //'Use Powerplay' button
+    if (!powerplay && homeGame && user.powerplays > 0) {
+        button.hidden = false;
         button.className = 'btn btn-success';
         button.innerText = 'Use Powerplay';
-    } else if (powerplay) {
+    } // If powerplay is already active, show the red 'Turn Off Powerplay' button
+    else if (powerplay) {
+        button.hidden = false;
         button.className = 'btn btn-danger';
         button.innerText = 'Turn Off Powerplay';
     }
+    //Organise user's XRL squad into separate arrays based on their position
     backs = squad.filter(p => p.position == 'Back' || p.position2 == 'Back');
     console.log('Backs: ' + backs[0]);
     forwards = squad.filter(p => p.position == 'Forward' || p.position2 == 'Forward');
     console.log('Forwards: ' + forwards[0]);
     playmakers = squad.filter(p => p.position == 'Playmaker' || p.position2 == 'Playmaker');
     console.log('Playmakers: ' + playmakers[0]);
+    //Call the table constructor
     PopulateLineup();
 }
 
@@ -226,16 +260,23 @@ async function submitLineup(event) {
         if (players[i].value === '' || players[i].value == 'None') continue;
         let playerInfo = squad.find(p => p.player_id == players[i].value);
         let positionGeneral;
+        let secondPosition = '';
         if (positions_backs.includes(players[i].id)) positionGeneral = 'Back'; 
         if (positions_forwards.includes(players[i].id)) positionGeneral = 'Forward'; 
         if (positions_playmakers.includes(players[i].id)) positionGeneral = 'Playmaker'; 
-        if (interchange.includes(players[i].id)) positionGeneral = document.getElementById(players[i].id + 'Position').value; 
+        if (interchange.includes(players[i].id)) {
+            positionGeneral = document.getElementById(players[i].id + 'Position').value;
+            if (playerInfo.position2 && playerInfo.position2 != '') {
+                secondPosition = positionGeneral == playerInfo.position ? playerInfo.position2 : playerInfo.position;
+            }
+        }
         let entry = {
             "player_id": playerInfo.player_id,
             "player_name": playerInfo.player_name,
             "nrl_club": playerInfo.nrl_club,
             "position": players[i].id,
-            "position_general": positionGeneral
+            "position_general": positionGeneral,
+            "second_position": secondPosition
         };
         for (let j = 0; j < playerRoles.length; j++) {
             if (playerRoles[j].value == players[i].value) {
@@ -252,8 +293,11 @@ async function submitLineup(event) {
             DisplayFeedback(player.player_name + ' has been picked more than once.');
             return;
         }
-        if ((player.captain && player.captain2) || (player.captain && player.vice) || 
-        (player.captain2 && player.vice)) {
+        if (user.captain_counts && user.captain_counts[player.player_id] > 5) {
+            DisplayFeedback(player.player_name + ' has already been captained 6 times.');
+            return;
+        }
+        if ((player.captain && player.captain2) || (player.captain && player.vice)) {
             DisplayFeedback(player.player_name + ' has two captain roles.');
             return;
         }

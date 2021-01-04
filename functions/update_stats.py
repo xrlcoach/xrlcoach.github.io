@@ -1,5 +1,5 @@
 import time
-import datetime
+from datetime import datetime
 import boto3
 from boto3.dynamodb.conditions import Key, Attr
 import os
@@ -16,6 +16,11 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.expected_conditions import presence_of_element_located
 from selenium.common.exceptions import TimeoutException
 from selenium.common.exceptions import NoSuchElementException
+import sys
+
+log = open('update_stats.log', 'a')
+sys.stdout = log
+print(f"Script executing at {datetime.now()}")
 
 dynamodbClient = boto3.client('dynamodb', 'ap-southeast-2')
 dynamodbResource = boto3.resource('dynamodb', 'ap-southeast-2')
@@ -56,7 +61,7 @@ def driver_setup():
         executable_path='../../chromedriver.exe', options=options
     )
     
-options = Options()
+#options = Options()
 #options.headless = True
 #options.binary_location = '/opt/headless-chromium'
 #options.add_argument('--headless')
@@ -77,27 +82,28 @@ def involvement_try(player, position):
         return True
     return False 
 
-def playmaker_try(player, position):
+def positional_try(player, position):
     #=IF(S2>7,1,IF(D2="Back",IF(L2>16,1,0),IF(T2>39,1,IF(D2="Playmaker",IF(W2>249,1,0),IF(D2="Forward",IF(M2>139,1,0),0)))))
+    tries = 0
     relevant_stats = ["Line Breaks", "Line Break Assists", "Try Assists", "Tackle Breaks",
-        "Offloads", "40/20", "20/40"]
+        "Offloads", "40/20", "20/40", "One on One Steal"]
     creative = sum([player[stat] for stat in player.keys() if stat in relevant_stats])
     if creative > 7:
-        return True
+        tries += 1
     if position == 'Back':
         if player["All Runs"] > 16:
-            return True
+            tries += 1
     if position == 'Playmaker':
         if player["Tackles Made"] > 39:
-            return True
+            tries += 1
         if player["Kicking Metres"] > 249:
-            return True
+            tries += 1
     if position == 'Forward':
         if player["Tackles Made"] > 39:
-            return True
+            tries += 1
         if player["All Run Metres"] > 139:
-            return True
-    return False
+            tries += 1
+    return tries
 
 def missing(player, position):
     #=IF(AND(F2>49,G2<2),IF(AND(D2="Back",AB2<15),1,IF(AND(D2="Playmaker",AB2<20),1,IF(AND(D2="Forward",AB2<25),1,0))),0)
@@ -171,6 +177,24 @@ def get_stats():
             print(f'\u001b[32mGetting player stats for {title}\u001b[0m')
             # Send browser to match url
             driver.get(match)
+
+            # PUT SEND OFF SCRAPING HERE
+            send_offs = {}
+            divs = driver.find_elements_by_class_name('u-display-flex')
+            for div in divs:
+                try:
+                    h4 = div.find_element_by_tag_name('h4')
+                except NoSuchElementException:
+                    continue
+                if "sendOff" in h4.text:
+                    ul = div.find_element_by_tag_name('ul')
+                    lis = ul.find_elements_by_tag_name('li')
+                    for li in lis:
+                        print("Red card: " + li.text)
+                        split = li.text.split()
+                        name = ' '.join(split[:-1])
+                        minute = split[-1][:-1]
+                        send_offs[name] = minute
 
             # find player stats
             try:
@@ -270,7 +294,8 @@ def get_stats():
                         except ValueError:
                             stat_map[stat_columns_final[j]] = ps[j]
                 #player.append(home_team)
-                
+                if home_players[i] in send_offs.keys():
+                    stat_map['Send Offs'] = send_offs[home_players[i]]
                 player.append(stat_map)
                 player_stats_final.append(player)
 
@@ -305,6 +330,8 @@ def get_stats():
                         except ValueError:
                             stat_map[stat_columns_final[j]] = ps[j]
                 #player.append(away_team)
+                if away_players[i] in send_offs.keys():
+                    stat_map['Send Offs'] = send_offs[away_players[i]]
                 player.append(stat_map)
                 player_stats_final.append(player)
 
@@ -367,9 +394,9 @@ def get_stats():
             'sin_bins': player[1]['Sin Bins'],
             'send_offs': player[1]['Send Offs'],
             'involvement_try': involvement_try(player[1], squad_entry['position']),
-            'playmaker_try': playmaker_try(player[1], squad_entry['position']),
+            'positional_try': positional_try(player[1], squad_entry['position']) > 0,
             'mia': missing(player[1], squad_entry['position']),
-            'concede': player[1]['Missed Tackles'] > 4 or player[1]['Errors'] > 2
+            'concede': False if positional_try(player[1], squad_entry['position']) > 1 else player[1]['Missed Tackles'] > 4 or player[1]['Errors'] > 2
         }
         if 'position2' in squad_entry.keys() and squad_entry['position2'] != '' and squad_entry['position2'] != None:
             player_scores[squad_entry['position2']] = {
@@ -377,9 +404,9 @@ def get_stats():
             'sin_bins': player[1]['Sin Bins'],
             'send_offs': player[1]['Send Offs'],
             'involvement_try': involvement_try(player[1], squad_entry['position2']),
-            'playmaker_try': playmaker_try(player[1], squad_entry['position2']),
+            'positional_try': positional_try(player[1], squad_entry['position2']) > 0,
             'mia': missing(player[1], squad_entry['position2']),
-            'concede': player[1]['Missed Tackles'] > 4 or player[1]['Errors'] > 2
+            'concede': False if positional_try(player[1], squad_entry['position2']) > 1 else player[1]['Missed Tackles'] > 4 or player[1]['Errors'] > 2
             }
         player_scores['kicker'] = {
             'goals': player[1]['Conversions'] + player[1]['Penalty Goals'],
@@ -409,50 +436,73 @@ def get_stats():
         })            
 
     print("Stats update complete, scoring lineups")
-    users = users_table.scan()['Items']
-    xrl_teams = [user['team_short'] for user in users]
+    # users = users_table.scan()['Items']
+    # xrl_teams = [user['team_short'] for user in users]
+    round_info = rounds_table.get_item(
+        Key={
+            'round_number': int(number)
+        }
+    )['Item']
+    fixtures = round_info['fixtures']
     resp = lineups_table.scan(
         FilterExpression=Attr('round_number').eq(number)
     )
     round_lineups = resp["Items"]
-    for team in xrl_teams:
-        lineup = [p for p in round_lineups if p['xrl_team'] == team]
-        for player in lineup:
-            player_lineup_score = 0
-            played_nrl = False
-            played_xrl = False
-            for player_stats in player_stats_final:
-                if player['player_id'] == player_stats[0]['player_id']:
-                    played_nrl = player_stats[1]['Mins Played'] > 0
-                    played_xrl = played_nrl and not player['position_specific'].startswith('int')
-                    if player['position_general'] not in player_stats[2].keys():
-                        print(str(player))
-                        print(str(player_stats))                       
-                    player_scoring_stats = player_stats[2][player['position_general']]
-                    player_lineup_score += player_scoring_stats['tries'] * 4
-                    player_lineup_score -= player_scoring_stats['sin_bins'] * 2
-                    player_lineup_score -= player_scoring_stats['send_offs'] * 4
-                    if player_scoring_stats['involvement_try']: player_lineup_score += 4
-                    if player_scoring_stats['playmaker_try']: player_lineup_score += 4
-                    if player_scoring_stats['mia']: player_lineup_score -= 4
-                    if player_scoring_stats['concede']: player_lineup_score -= 4
-                    if player['kicker']:
-                        player_kicking_stats = player_stats[2]['kicker']
-                        player_lineup_score += player_kicking_stats['goals'] * 2
-                        player_lineup_score += player_kicking_stats['field_goals']
-                    if player['captain'] or player['captain2']:
-                        player_lineup_score *= 2
-            lineups_table.update_item(
-                Key={
-                    'name+nrl+xrl+round': player['name+nrl+xrl+round']
-                },
-                UpdateExpression="set played_nrl=:p, played_xrl=:x, score=:s",
-                ExpressionAttributeValues={
-                    ':p': played_nrl,
-                    ':x': played_xrl,
-                    ':s': player_lineup_score
-                }
-            )
+    for match in fixtures:
+        for team in match.keys():
+            lineup = [p for p in round_lineups if p['xrl_team'] == match[team]]
+            lineup_score = 0
+            for player in lineup:
+                player_lineup_score = 0
+                played_nrl = False
+                played_xrl = False
+                for player_stats in player_stats_final:
+                    if player['player_id'] == player_stats[0]['player_id']:
+                        played_nrl = player_stats[1]['Mins Played'] > 0
+                        played_xrl = played_nrl and not player['position_specific'].startswith('int')
+                        if player['position_general'] not in player_stats[2].keys():
+                            print(str(player))
+                            print(str(player_stats))                       
+                        player_scoring_stats = player_stats[2][player['position_general']]
+                        player_lineup_score += player_scoring_stats['tries'] * 4
+                        player_lineup_score -= player_scoring_stats['sin_bins'] * 2
+                        if player_scoring_stats['send_offs'] != 0:
+                            minutes = 80 - player_scoring_stats['send_offs']
+                            deduction = round(minutes / 10) + 4
+                            player_lineup_score -= deduction
+                        if player_scoring_stats['involvement_try']: player_lineup_score += 4
+                        if player_scoring_stats['positional_try']: player_lineup_score += 4
+                        if player_scoring_stats['mia']: player_lineup_score -= 4
+                        if player_scoring_stats['concede']: player_lineup_score -= 4
+                        if player['kicker']:
+                            player_kicking_stats = player_stats[2]['kicker']
+                            player_lineup_score += player_kicking_stats['goals'] * 2
+                            player_lineup_score += player_kicking_stats['field_goals']
+                        if player['captain'] or player['captain2']:
+                            player_lineup_score *= 2
+                lineups_table.update_item(
+                    Key={
+                        'name+nrl+xrl+round': player['name+nrl+xrl+round']
+                    },
+                    UpdateExpression="set played_nrl=:p, played_xrl=:x, score=:s",
+                    ExpressionAttributeValues={
+                        ':p': played_nrl,
+                        ':x': played_xrl,
+                        ':s': player_lineup_score
+                    }
+                )
+                if played_xrl:
+                    lineup_score += player_lineup_score
+            fixtures[match][team + '_score'] = lineup_score
+    rounds_table.update_item(
+        Key={
+            'round_number': int(number)
+        },
+        UpdateExpression="set fixtures=:f",
+        ExpressionAttributeValues={
+            ':f': fixtures
+        }
+    )
     print('Lineup scoring complete')       
             
 

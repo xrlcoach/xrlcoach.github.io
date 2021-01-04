@@ -1,0 +1,29 @@
+- Configure update_stats and finalise_stats to calculate lineup score and store it in the fixtures data of the round
+    e.g. 'fixtures': [{
+        'home': {
+            'team': 'ITC',
+            'score': 48
+        },
+        'away': {
+            'team': 'TT1',
+            'score': 30
+        }
+    }]
+    UPDATE: Just did it like this:
+    'fixtures': [{
+        'home': 'ITC',
+        'away': 'TT1',
+        'home_score': 48,
+        'away_score': 25
+    }]
+
+- Configure update_stats to scrape send-off records from fixture page BEFORE going to player stats. Perhaps store in list of dicts,
+e.g. send_offs = [{player_name: minute}], and then check each player against the send_offs list, and assign minute value to send offs stat if found.
+
+- Configure lineup setting to allow for positional preference for interchange players who have more than one position.
+ -- KIND OF DONE. Substitutions go in order of interchange listing. Program will try to sub them on in first choice, and then will try second choice.
+    No 'smart' subbing which looks for way to sub in all bench players.
+
+- Plan waiver system
+
+- Make individual player page

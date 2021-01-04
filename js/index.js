@@ -45,6 +45,8 @@ async function displayFixture(roundNumber, fixture) {
     document.getElementById('fixtureHeading').innerHTML = `<h4>Round ${roundNumber}</h4>`;
     document.getElementById('fixtureHeading').innerHTML += `<h4>${homeUser.team_name} v ${awayUser.team_name}</h4>`;
     document.getElementById('fixtureHeading').innerHTML += `<h4>@ ${homeUser.homeground}</h4>`;
+    document.getElementById('homeLogo').src = `/static/${homeTeam}.png`;
+    document.getElementById('awayLogo').src = `/static/${awayTeam}.png`;
     let homeLineup = await GetLineupByTeamAndRound(roundNumber, fixture.home);
     if (homeLineup.length == 0) {
         document.getElementById('homeTableHeader').innerText = "No lineup yet for " + fixture.home;

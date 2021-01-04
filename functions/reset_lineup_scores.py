@@ -1,4 +1,10 @@
 import boto3
+import sys
+from datetime import datetime
+
+# log = open('reset_lineup_scores.log', 'a')
+# sys.stdout = log
+# print(f"Script executing at {datetime.now()}")
 
 dynamodb = boto3.resource('dynamodb', 'ap-southeast-2')
 lineups_table = dynamodb.Table('lineups2020')

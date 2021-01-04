@@ -1,4 +1,10 @@
 import boto3
+import sys
+from datetime import datetime
+
+# log = open('reset_table.log', 'a')
+# sys.stdout = log
+# print(f"Script executing at {datetime.now()}")
 
 clean_stats = {
     'wins': 0,
@@ -21,7 +27,7 @@ for user in users:
         },
         UpdateExpression="set powerplays=:p, stats=:s",
         ExpressionAttributeValues={
-            ':p': 2,
+            ':p': 3,
             ':s': clean_stats
         }
     )

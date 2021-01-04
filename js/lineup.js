@@ -329,7 +329,8 @@ async function submitLineup(event) {
 window.submitLineup = submitLineup;
 
 function fillInterchangeOptions() {
-    let selectedPlayers = document.getElementsByName('player').map(e => e.value);
+    let selectedPlayers = document.getElementsByName('player');
+    selectedPlayers = selectedPlayers.map(e => e.value);
     let benchPlayers = squad.filter(p => !selectedPlayers.includes(p.player_id));
     for (var i = 0; i < interchange.length; i++) {
         if (selectedPlayers.includes(document.getElementById(interchange[i].value))) {

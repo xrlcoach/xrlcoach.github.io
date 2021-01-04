@@ -22,14 +22,17 @@ window.onload = async function () {
         for (let player in user.captain_counts) {
             document.getElementById('captainCountList').innerHTML += `<li>${player}: ${user.captain_counts[player]}</li>`
         }
-        PopulatePickPlayerTable(squad);
+        let sortedSquad = squad.sort(function(p1, p2) {
+            return p1.player_name.split(' ')[1] > p2.player_name.split(' ')[1]
+        });
+        PopulatePickPlayerTable(sortedSquad);
     } catch (error) {
         document.getElementById('feedback').innerText += error;
     }
 }
 
 function PopulatePickPlayerTable(playerData) {
-    var tableBody = document.getElementById(playerSquadTable);
+    var tableBody = document.getElementById('playerSquadTable');
     tableBody.innerHTML = '';
     for (var i = 0; i < playerData.length; i++) {
         var player = playerData[i];
@@ -127,7 +130,7 @@ function sortByPosition2Desc() {
     document.getElementById('sortByPosition2Button').onclick = sortByPosition2;
     PopulatePickPlayerTable(sortedSquad);
 }
-window.sortByPositionDesc2 = sortByPositionDesc2;
+window.sortByPosition2Desc = sortByPosition2Desc;
 function sortByClub() {
     let sortedSquad = squad.sort(function(p1, p2) {
         return p1.nrl_club > p2.nrl_club

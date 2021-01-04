@@ -33,18 +33,18 @@ window.onload = async function () {
 function displayUserData() {
     let ladder = allUsers.sort((u1, u2) => u2.stats.points - u1.stats.points);
     let position = ladder.findIndex(u => u.username == user.username) + 1;
-    document.getElementById('userData').innerHTML = `<h4>${user.team_name}</h4>`;
-    document.getElementById('userData').innerHTML += `<h4>Position: ${GetOrdinal(position)}</h4>`;
-    document.getElementById('userData').innerHTML += `<h4>Wins: ${user.stats.wins}, Draws: ${user.stats.draws}, Losses: ${user.stats.losses}</h4>`;
+    document.getElementById('teamNameDisplay').innerHTML = `<h4>${user.team_name}</h4>`;
+    document.getElementById('teamPositionDisplay').innerHTML = `<h4>Position: ${GetOrdinal(position)}</h4>`;
+    document.getElementById('teamStatsDisplay').innerHTML = `<h4>Wins: ${user.stats.wins}, Draws: ${user.stats.draws}, Losses: ${user.stats.losses}</h4>`;
 }
 
 async function displayFixture(roundNumber, fixture) {
     document.getElementById('fixtureHeading').innerText = 'Retrieving current fixture info...';
     let homeUser = allUsers.find(u => u.team_short == fixture.home);
     let awayUser = allUsers.find(u => u.team_short == fixture.away);
-    document.getElementById('fixtureHeading').innerHTML = `<h4>Round ${roundNumber}</h4>`;
-    document.getElementById('fixtureHeading').innerHTML += `<h4>${homeUser.team_name} v ${awayUser.team_name}</h4>`;
-    document.getElementById('fixtureHeading').innerHTML += `<h4>@ ${homeUser.homeground}</h4>`;
+    document.getElementById('roundNumberDisplay').innerHTML = `<h4>Round ${roundNumber}</h4>`;
+    document.getElementById('roundNumberDisplay').innerHTML = `<h4>${homeUser.team_name} v ${awayUser.team_name}</h4>`;
+    document.getElementById('homegroundDisplay').innerHTML = `<h4>@ ${homeUser.homeground}</h4>`;
     document.getElementById('homeLogo').src = `/static/${homeUser.team_short}.png`;
     document.getElementById('awayLogo').src = `/static/${awayUser.team_short}.png`;
     let homeLineup = await GetLineupByTeamAndRound(roundNumber, fixture.home);

@@ -1,18 +1,16 @@
 import { GetPlayersFromXrlTeam, GetActiveUserInfo, GetLineupByTeamAndRound, GetAllUsers, GetRoundInfoFromCookie } from './ApiFetch.js';
-import { GetUserFixture, GetOrdinal, PositionNames, GetLineupScore } from './Helpers.js';
+import { GetUserFixture, GetOrdinal, PositionNames, GetLineupScore, DisplayFeedback } from './Helpers.js';
 
 let user, allUsers, squad, currentRound, fixture;
 let completed = false;
 
 window.onload = async function () {
     try {
-        document.getElementById('feedback').innerText = 'Loading...';
         user = await GetActiveUserInfo(idToken);
         allUsers = await GetAllUsers();
         currentRound = await GetRoundInfoFromCookie();
         completed = currentRound.completed;
         squad = await GetPlayersFromXrlTeam(user.team_short);
-        document.getElementById('feedback').hidden = true;
         displayUserData();
         if (squad.length < 18) {
             document.getElementById('playerCountMessage').innerText = `Your squad only has ${squad.length} players. You should pick more!`;
@@ -137,6 +135,9 @@ function populateLineupTable(tableId, lineup) {
     table.appendChild(tr);
 }
 
-
+function showModal() {
+    DisplayFeedback('Success!', 'The modal thingy worked!');
+}
+window.showModal = showModal;
 
 

@@ -3,8 +3,15 @@ import { GetLineupByTeamAndRound } from "./ApiFetch.js"
  * Displays feedback message in the feedback element on the top of each page
  * @param {String} feedback 
  */
-export function DisplayFeedback(feedback) {
-    document.getElementById('feedback').innerHTML = feedback;
+export function DisplayFeedback(title, message, confirm=false, onConfirmFunction=null) {
+    let feedback = new bootstrap.Modal(document.getElementById('feedback'));
+    document.getElementById('feedbackTitle').innerText = title;
+    document.getElementById('feedbackMessage').innerText = message;
+    if (confirm) {
+        document.getElementById('feedbackFooter').hidden = false;
+        document.getElementById('feedbackConfirm').onclick = onConfirmFunction;
+    }
+    feedback.show();
 }
 /**
  * Tallies up the scores of all players in a lineup who played or subbed in

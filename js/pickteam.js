@@ -159,91 +159,50 @@ function PickDropPlayer(xrlTeam, form) {
         requiredForwards = requiredForwards < 0 ? 0 : requiredForwards;
         let requiredPlaymakers = 3 - squad.filter(p => p.position == 'Playmaker' || p.position2 == 'Playmaker').length;
         requiredPlaymakers = requiredPlaymakers < 0 ? 0 : requiredPlaymakers;
+        let pickFunction = function() {
+            pickedPlayers.push(player);
+            modifiedSquad.push(player);
+            form.onsubmit = function (event) {
+                event.preventDefault();
+                removeFromPickedList(this, xrlTeam);
+            };
+            form.lastChild.className = 'btn btn-warning';
+            form.lastChild.innerText = 'Cancel';
+            displayChoices();
+            DisplayPlayerCounts();
+            document.getElementById('feedback').modal('hide');
+        }
         if (availableSpots == requiredBacks && (player.position != 'Back' && player.position2 != 'Back')) {
             DisplayFeedback('Warning', `You only have ${availableSpots} ${availableSpots > 1 ? 'spots' : 'spot'} left and you need ${requiredBacks} more ${requiredBacks > 1 ? 'backs' : 'back'}. Would you like to pick ${player.player_name} anyway?`,
-                true, function () {
-                    pickedPlayers.push(player);
-                    modifiedSquad.push(player);
-                    form.onsubmit = function (event) {
-                        event.preventDefault();
-                        removeFromPickedList(this, xrlTeam);
-                    };
-                    form.lastChild.className = 'btn btn-warning';
-                    form.lastChild.innerText = 'Cancel';
-                });
+                true, pickFunction);
             return;
         }
         if (availableSpots == requiredForwards && (player.position != 'Forward' && player.position2 != 'Forward')) {
             DisplayFeedback('Warning', `You only have ${availableSpots} ${availableSpots > 1 ? 'spots' : 'spot'} left and you need ${requiredForwards} more ${requiredForwards > 1 ? 'forwards' : 'forward'}. Would you like to pick ${player.player_name} anyway?`,
-                true, function () {
-                    pickedPlayers.push(player);
-                    modifiedSquad.push(player);
-                    form.onsubmit = function (event) {
-                        event.preventDefault();
-                        removeFromPickedList(this, xrlTeam);
-                    };
-                    form.lastChild.className = 'btn btn-warning';
-                    form.lastChild.innerText = 'Cancel';
-                });
+                true, pickFunction);
             return;
         }
         if (availableSpots == requiredPlaymakers && (player.position != 'Playmaker' && player.position2 != 'Playmaker')) {
             DisplayFeedback('Warning', `You only have ${availableSpots} ${availableSpots > 1 ? 'spots' : 'spot'} left and you need ${requiredPlaymakers} more ${requiredPlaymakers > 1 ? 'playmakers' : 'playmaker'}. Would you like to pick ${player.player_name} anyway?`,
-                true, function () {
-                    pickedPlayers.push(player);
-                    modifiedSquad.push(player);
-                    form.onsubmit = function (event) {
-                        event.preventDefault();
-                        removeFromPickedList(this, xrlTeam);
-                    };
-                    form.lastChild.className = 'btn btn-warning';
-                    form.lastChild.innerText = 'Cancel';
-                });
+                true, pickFunction);
             return;
         }
         if (availableSpots == requiredBacks + requiredForwards &&
             (![player.position, player.position2].includes('Back') && ![player.position, player.position2].includes('Forward'))) {
             DisplayFeedback('Warning', `You only have ${availableSpots} ${availableSpots > 1 ? 'spots' : 'spot'} left and you need ${requiredBacks} more ${requiredBacks > 1 ? 'backs' : 'back'} and ${requiredForwards} more ${requiredForwards > 1 ? 'forwards' : 'forward'}. Would you like to pick ${player.player_name} anyway?`,
-                true, function () {
-                    pickedPlayers.push(player);
-                    modifiedSquad.push(player);
-                    form.onsubmit = function (event) {
-                        event.preventDefault();
-                        removeFromPickedList(this, xrlTeam);
-                    };
-                    form.lastChild.className = 'btn btn-warning';
-                    form.lastChild.innerText = 'Cancel';
-                });
+                true, pickFunction);
             return;
         }
         if (availableSpots == requiredBacks + requiredPlaymakers &&
             (![player.position, player.position2].includes('Back') && ![player.position, player.position2].includes('Playmaker'))) {
             DisplayFeedback('Warning', `You only have ${availableSpots} ${availableSpots > 1 ? 'spots' : 'spot'} left and you need ${requiredBacks} more ${requiredBacks > 1 ? 'backs' : 'back'} and ${requiredPlaymakers} more ${requiredPlaymakers > 1 ? 'playmakers' : 'playmaker'}. Would you like to pick ${player.player_name} anyway?`,
-                true, function () {
-                    pickedPlayers.push(player);
-                    modifiedSquad.push(player);
-                    form.onsubmit = function (event) {
-                        event.preventDefault();
-                        removeFromPickedList(this, xrlTeam);
-                    };
-                    form.lastChild.className = 'btn btn-warning';
-                    form.lastChild.innerText = 'Cancel';
-                });
+                true, pickFunction);
             return;
         }
         if (availableSpots == requiredPlaymakers + requiredForwards &&
             (![player.position, player.position2].includes('Playmaker') && ![player.position, player.position2].includes('Forward'))) {
             DisplayFeedback('Warning', `You only have ${availableSpots} ${availableSpots > 1 ? 'spots' : 'spot'} left and you need ${requiredPlaymakers} more ${requiredPlaymakers > 1 ? 'playmakers' : 'playmaker'} and ${requiredForwards} more ${requiredForwards > 1 ? 'forwards' : 'forward'}. Would you like to pick ${player.player_name} anyway?`,
-                true, function () {
-                    pickedPlayers.push(player);
-                    modifiedSquad.push(player);
-                    form.onsubmit = function (event) {
-                        event.preventDefault();
-                        removeFromPickedList(this, xrlTeam);
-                    };
-                    form.lastChild.className = 'btn btn-warning';
-                    form.lastChild.innerText = 'Cancel';
-                });
+                true, pickFunction);
             return;
         }
         pickedPlayers.push(player);

@@ -20,7 +20,7 @@ window.onload = async function () {
         players = await GetPlayersFromNrlClub(club);
         PopulatePickPlayerTable(players, user.team_short, 'pickPlayerTable');
     } catch (error) {
-        document.getElementById('feedback').innerHTML += 'OnLoad: ' + error;
+        DisplayFeedback('Error while loading', error);
     }
 }
 
@@ -46,7 +46,7 @@ async function DisplayPlayerCounts() {
                 `<li>You need at least ${3 - playmakers.length} more ${3 - playmakers.length > 1 ? 'playmakers' : 'playmaker'}.`;
         }
     } catch (error) {
-        document.getElementById('feedback').innerText += 'DPC Function: ' + error;
+        DisplayFeedback('Error while displaying player counts', error);
     }
 }
 
@@ -127,7 +127,7 @@ async function selectNrlClub(event) {
         players = await GetPlayersFromNrlClub(club);
         PopulatePickPlayerTable(players, user.team_short, 'pickPlayerTable');
     } catch (error) {
-        document.getElementById('feedback').innerText = error;
+        DisplayFeedback('Error while loading club', error);
     }
 }
 window.selectNrlClub = selectNrlClub;
@@ -147,7 +147,7 @@ function PickDropPlayer(xrlTeam, form) {
         form.lastChild.innerText = 'Cancel';
     } else {
         if (modifiedSquad.length == 18) {
-            DisplayFeedback('Adding this player would take your squad size above 18.');
+            DisplayFeedback('Sorry!', 'Adding this player would take your squad size above 18.');
             return;
         }
         let availableSpots = 18 - modifiedSquad.length;

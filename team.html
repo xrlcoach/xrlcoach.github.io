@@ -48,17 +48,17 @@
     </nav>
 
     <header>
-        <div class="alert alert-primary border text-center" role="alert" id="feedback">
+        <div class="row">
+        <span class="col-md-4" id="teamHeader"></span>
+        <span class="col-md-4" id="squadCount"></span>
+        <span class="col-md-4" id="powerplayCount"></span>
         </div>
     </header>
 
     <main>
-        <div id="headerContainer">
-            <h4 id="teamHeader"></h4>
-            <p id="squadCount"></p>
+        <div name="secondaryHeader" class="row">
             <p id="positionCounts"></p>
             <a id="pickPlayersLink" class="btn btn-primary" href="pickteam.html" hidden>Pick Players</a>            
-            <p id="powerplayCount"></p>
             <div id="captainCounts">
                 <p>Captaincy Tally</p>
                 <ul id="captainCountList"></ul>
@@ -89,6 +89,7 @@
         Data provided by <a href="https://www.nrl.com">NRL.com</a>. View <a
             href="https://www.nrl.com/terms-of-use">NRL’s Terms of Use</a>.
     </footer>
+    <div class="alert alert-primary border text-center" role="alert" id="feedback"></div>
     <script type="module" src="js/team.js"></script>
 </body>
 

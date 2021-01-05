@@ -272,39 +272,48 @@ async function submitLineup(event) {
         }
         lineup.push(entry);
     }
-
+    let completeSubmission = function() {
+        await SetLineup(idToken, lineup);
+        window.location.href = 'index.html';
+    }
+    let problem = false;
+    let message = '';
     for (let player of lineup) {
         if (lineup.filter(p => p.player_id == player.player_id).length != 1) {
-            DisplayFeedback(player.player_name + ' has been picked more than once.');
-            return;
+            problem = true;
+            message += `<li>${player.player_name} has been picked twice.</li>`;
         }
         if (user.captain_counts && user.captain_counts[player.player_id] > 5) {
-            DisplayFeedback(player.player_name + ' has already been captained 6 times.');
+            DisplayFeedback('Invalid Lineup', player.player_name + ' has already been captained 6 times.');
             return;
         }
         if ((player.captain && player.captain2) || (player.captain && player.vice)) {
-            DisplayFeedback(player.player_name + ' has two captain roles.');
-            return;
+            problem = true;
+            message += `<li>${player.player_name} has two captain roles.</li>`;
         }
         if (player.kicker && player.backup_kicker) {
-            DisplayFeedback('Same player chosen as kicker and backup kicker');
-            return;
+            problem = true;
+            message += `<li>Same player chosen as kicker and backup kicker</li>`;
         }
         if ((player.captain || player.captain2) && player.position.startsWith('int')) {
-            DisplayFeedback('Your chosen captain is starting on the bench');
+            DisplayFeedback('Invalid Lineup', 'Your chosen captain is starting on the bench');
+            return;
         }
         if (player.vice && player.position.startsWith('int')) {
-            if (!confirm('Your chosen vice-captain is starting on the bench. Proceed with lineup submission?')) {
-                return;
-            }
+            problem = true;
+            message += `<li>Your chosen vice-captain is starting on the bench.</li>`;
         }
         if (player.kicker && player.position.startsWith('int')) {
-            DisplayFeedback('Your chosen kicker is starting on the bench');
+            DisplayFeedback('Invalid Lineup', 'Your chosen kicker is starting on the bench');
+            return;
         }
         if (player.backup_kicker && player.position.startsWith('int')) {
-            if (!confirm('Your chosen backup kicker is starting on the bench. Proceed with lineup submission?')) {
-                return;
-            }
+            problem = true;
+            message += `<li>Your chosen backup kicker is starting on the bench.</li>`;
+        }
+        if (problem) {
+            DisplayFeedback('Warning!', "<ul>" + message + "</ul><p>Would you like to proceed with lineup submission?</p>", true, completeSubmission);
+            return;
         }
     }
     

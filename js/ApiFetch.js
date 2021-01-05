@@ -1,3 +1,5 @@
+import { DisplayFeedback } from "./Helpers.js";
+
 /**
  * Passes username and password to lambda login function, which authenticates user against Cognito user pool.
  * Returns Cognito id token in response body.
@@ -126,7 +128,7 @@ export async function UpdatePlayerXrlTeam(xrlTeam, player) {
     if (response.ok) {
         const data = await response.json();
     } else {
-        document.getElementById('feedback').innerText += 'Network response not ok';
+        DisplayFeedback('Error', 'Network response not ok');
     }
     if (newTeam == 'None') {
         const response2 = await fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/lineup', {
@@ -165,7 +167,7 @@ export async function UpdateMultiplePlayerXrlTeams(xrlTeam, players) {
     if (response.ok) {
         const data = await response.json();
     } else {
-        document.getElementById('feedback').innerText += 'Network response not ok';
+        DisplayFeedback('Error', 'Network response not ok');
     }
     if (newTeam == 'None') {
         const response2 = await fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/lineup', {

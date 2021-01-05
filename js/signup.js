@@ -1,3 +1,5 @@
+import { DisplayFeedback } from "./Helpers.js";
+
 function signUp(event) {
     event.preventDefault();
     var username = document.getElementById('username').value;
@@ -24,10 +26,10 @@ function signUp(event) {
         if (response.ok) {
             window.location.replace('login.html');
         } else {
-            document.getElementById('feedback').innerText = 'Network response not ok';
+            DisplayFeedback('Error', 'Network response not ok');
         }        
     })
     .catch((error) => {
-        document.getElementById('feedback').innerText += error;
+        DisplayFeedback('Error', error);
     })
 }

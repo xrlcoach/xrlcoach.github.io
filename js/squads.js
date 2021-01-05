@@ -1,4 +1,5 @@
 import { GetAllPlayers, GetAllUsers, GetPlayersFromNrlClub, GetPlayersFromXrlTeam } from "./ApiFetch.js";
+import { DisplayFeedback } from "./Helpers.js";
 import { PopulatePlayerTable } from './Tables.js';
 
 let users, players, filteredPlayers;
@@ -17,7 +18,7 @@ window.onload = async function () {
             select.appendChild(option);
         }
     } catch (error) {
-        document.getElementById('feedback').innerText += error;
+        DisplayFeedback('Error', error);
     }
     // GetPlayersFromNrlClub(club)
     // .then((players) => {

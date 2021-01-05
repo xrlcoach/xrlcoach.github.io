@@ -2,7 +2,7 @@
 and future XRL fixtures. */
 
 import { GetActiveUserTeamShort, GetAllFixtures, GetAllUsers, GetCurrentRoundInfo } from "./ApiFetch.js";
-import { GetLineupScoreByTeamAndRound, GetActiveRoundFromFixtures, GetUserFixture } from "./Helpers.js";
+import { GetLineupScoreByTeamAndRound, GetActiveRoundFromFixtures, GetUserFixture, DisplayFeedback } from "./Helpers.js";
 /**
  * An array of round objects sorted by round number.
  */
@@ -26,7 +26,7 @@ window.onload = async function() {
     console.log(draw);
     //If draw has not been created yet, alert user and stop loading process.
     if (draw.length == 0) {
-        document.getElementById('feedback').innerText = 'No draw yet. Fixtures will be generated once all teams have joined.';
+        DisplayFeedback('Sorry!', 'No draw yet. Fixtures will be generated once all teams have joined.');
         return;
     }
     //Isolate curent active round and display heading

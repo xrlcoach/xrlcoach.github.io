@@ -1,4 +1,5 @@
 import { GetPlayersFromXrlTeam, GetActiveUserInfo, UpdatePlayerXrlTeam } from './ApiFetch.js';
+import { DisplayFeedback } from './Helpers.js';
 
 let squad, user;
 
@@ -30,7 +31,7 @@ window.onload = async function () {
         });
         PopulatePickPlayerTable(sortedSquad);
     } catch (error) {
-        document.getElementById('feedback').innerText += error;
+        DisplayFeedback('Error', error);
     }
 }
 
@@ -71,7 +72,7 @@ function PopulatePickPlayerTable(playerData) {
                 const resp = await UpdatePlayerXrlTeam(null, this.elements[0].value);
                 location.reload();
             } catch (error) {
-                document.getElementById('feedback').innerText += error;
+                DisplayFeedback('Error', error);
             }
         };
         drop.appendChild(form);

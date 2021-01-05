@@ -141,7 +141,6 @@ function showModal() {
         window.location.href = 'team.html';
     }
     DisplayFeedback('Success!', 'The modal thingy worked! Would you like to go to the team page?', true, redirect);
-    window.location.href = 'team.html';
 }
 window.showModal = showModal;
 

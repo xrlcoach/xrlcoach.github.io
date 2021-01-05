@@ -142,9 +142,11 @@ function PickDropPlayer(xrlTeam, form) {
         form.onsubmit = function (event) {
             event.preventDefault();
             removeFromDroppedList(this, xrlTeam);
-        };        
+        };
         form.lastChild.className = 'btn btn-warning';
         form.lastChild.innerText = 'Cancel';
+        displayChoices();
+        DisplayPlayerCounts();
     } else {
         if (modifiedSquad.length == 18) {
             DisplayFeedback('Sorry!', 'Adding this player would take your squad size above 18.');
@@ -158,32 +160,98 @@ function PickDropPlayer(xrlTeam, form) {
         let requiredPlaymakers = 3 - squad.filter(p => p.position == 'Playmaker' || p.position2 == 'Playmaker').length;
         requiredPlaymakers = requiredPlaymakers < 0 ? 0 : requiredPlaymakers;
         if (availableSpots == requiredBacks && (player.position != 'Back' && player.position2 != 'Back')) {
-            if (!confirm(`You only have ${availableSpots} ${availableSpots > 1 ? 'spots' : 'spot'} left and you need ${requiredBacks} more ${requiredBacks > 1 ? 'backs' : 'back'}. Would you like to pick ${player.player_name} anyway?`)) return;
+            DisplayFeedback('Warning', `You only have ${availableSpots} ${availableSpots > 1 ? 'spots' : 'spot'} left and you need ${requiredBacks} more ${requiredBacks > 1 ? 'backs' : 'back'}. Would you like to pick ${player.player_name} anyway?`,
+                true, function (player, form) {
+                    pickedPlayers.push(player);
+                    modifiedSquad.push(player);
+                    form.onsubmit = function (event) {
+                        event.preventDefault();
+                        removeFromPickedList(this, xrlTeam);
+                    };
+                    form.lastChild.className = 'btn btn-warning';
+                    form.lastChild.innerText = 'Cancel';
+                });
+            return;
         }
         if (availableSpots == requiredForwards && (player.position != 'Forward' && player.position2 != 'Forward')) {
-            if (!confirm(`You only have ${availableSpots} ${availableSpots > 1 ? 'spots' : 'spot'} left and you need ${requiredForwards} more ${requiredForwards > 1 ? 'forwards' : 'forward'}. Would you like to pick ${player.player_name} anyway?`)) return;
+            DisplayFeedback('Warning', `You only have ${availableSpots} ${availableSpots > 1 ? 'spots' : 'spot'} left and you need ${requiredForwards} more ${requiredForwards > 1 ? 'forwards' : 'forward'}. Would you like to pick ${player.player_name} anyway?`,
+                true, function (player, form) {
+                    pickedPlayers.push(player);
+                    modifiedSquad.push(player);
+                    form.onsubmit = function (event) {
+                        event.preventDefault();
+                        removeFromPickedList(this, xrlTeam);
+                    };
+                    form.lastChild.className = 'btn btn-warning';
+                    form.lastChild.innerText = 'Cancel';
+                });
+            return;
         }
         if (availableSpots == requiredPlaymakers && (player.position != 'Playmaker' && player.position2 != 'Playmaker')) {
-            if (!confirm(`You only have ${availableSpots} ${availableSpots > 1 ? 'spots' : 'spot'} left and you need ${requiredPlaymakers} more ${requiredPlaymakers > 1 ? 'playmakers' : 'playmaker'}. Would you like to pick ${player.player_name} anyway?`)) return;
+            DisplayFeedback('Warning', `You only have ${availableSpots} ${availableSpots > 1 ? 'spots' : 'spot'} left and you need ${requiredPlaymakers} more ${requiredPlaymakers > 1 ? 'playmakers' : 'playmaker'}. Would you like to pick ${player.player_name} anyway?`,
+                true, function (player, form) {
+                    pickedPlayers.push(player);
+                    modifiedSquad.push(player);
+                    form.onsubmit = function (event) {
+                        event.preventDefault();
+                        removeFromPickedList(this, xrlTeam);
+                    };
+                    form.lastChild.className = 'btn btn-warning';
+                    form.lastChild.innerText = 'Cancel';
+                });
+            return;
         }
-        if (availableSpots == requiredBacks + requiredForwards && 
+        if (availableSpots == requiredBacks + requiredForwards &&
             (![player.position, player.position2].includes('Back') && ![player.position, player.position2].includes('Forward'))) {
-            if (!confirm(`You only have ${availableSpots} ${availableSpots > 1 ? 'spots' : 'spot'} left and you need ${requiredBacks} more ${requiredBacks > 1 ? 'backs' : 'back'} and ${requiredForwards} more ${requiredForwards > 1 ? 'forwards' : 'forward'}. Would you like to pick ${player.player_name} anyway?`)) return;
+            DisplayFeedback('Warning', `You only have ${availableSpots} ${availableSpots > 1 ? 'spots' : 'spot'} left and you need ${requiredBacks} more ${requiredBacks > 1 ? 'backs' : 'back'} and ${requiredForwards} more ${requiredForwards > 1 ? 'forwards' : 'forward'}. Would you like to pick ${player.player_name} anyway?`,
+                true, function (player, form) {
+                    pickedPlayers.push(player);
+                    modifiedSquad.push(player);
+                    form.onsubmit = function (event) {
+                        event.preventDefault();
+                        removeFromPickedList(this, xrlTeam);
+                    };
+                    form.lastChild.className = 'btn btn-warning';
+                    form.lastChild.innerText = 'Cancel';
+                });
+            return;
         }
-        if (availableSpots == requiredBacks + requiredPlaymakers && 
+        if (availableSpots == requiredBacks + requiredPlaymakers &&
             (![player.position, player.position2].includes('Back') && ![player.position, player.position2].includes('Playmaker'))) {
-            if (!confirm(`You only have ${availableSpots} ${availableSpots > 1 ? 'spots' : 'spot'} left and you need ${requiredBacks} more ${requiredBacks > 1 ? 'backs' : 'back'} and ${requiredPlaymakers} more ${requiredPlaymakers > 1 ? 'playmakers' : 'playmaker'}. Would you like to pick ${player.player_name} anyway?`)) return;
+            DisplayFeedback('Warning', `You only have ${availableSpots} ${availableSpots > 1 ? 'spots' : 'spot'} left and you need ${requiredBacks} more ${requiredBacks > 1 ? 'backs' : 'back'} and ${requiredPlaymakers} more ${requiredPlaymakers > 1 ? 'playmakers' : 'playmaker'}. Would you like to pick ${player.player_name} anyway?`,
+                true, function (player, form) {
+                    pickedPlayers.push(player);
+                    modifiedSquad.push(player);
+                    form.onsubmit = function (event) {
+                        event.preventDefault();
+                        removeFromPickedList(this, xrlTeam);
+                    };
+                    form.lastChild.className = 'btn btn-warning';
+                    form.lastChild.innerText = 'Cancel';
+                });
+            return;
         }
-        if (availableSpots == requiredPlaymakers + requiredForwards && 
+        if (availableSpots == requiredPlaymakers + requiredForwards &&
             (![player.position, player.position2].includes('Playmaker') && ![player.position, player.position2].includes('Forward'))) {
-            if (!confirm(`You only have ${availableSpots} ${availableSpots > 1 ? 'spots' : 'spot'} left and you need ${requiredPlaymakers} more ${requiredPlaymakers > 1 ? 'playmakers' : 'playmaker'} and ${requiredForwards} more ${requiredForwards > 1 ? 'forwards' : 'forward'}. Would you like to pick ${player.player_name} anyway?`)) return;
+            DisplayFeedback('Warning', `You only have ${availableSpots} ${availableSpots > 1 ? 'spots' : 'spot'} left and you need ${requiredPlaymakers} more ${requiredPlaymakers > 1 ? 'playmakers' : 'playmaker'} and ${requiredForwards} more ${requiredForwards > 1 ? 'forwards' : 'forward'}. Would you like to pick ${player.player_name} anyway?`,
+                true, function (player, form) {
+                    pickedPlayers.push(player);
+                    modifiedSquad.push(player);
+                    form.onsubmit = function (event) {
+                        event.preventDefault();
+                        removeFromPickedList(this, xrlTeam);
+                    };
+                    form.lastChild.className = 'btn btn-warning';
+                    form.lastChild.innerText = 'Cancel';
+                });
+            return;
         }
         pickedPlayers.push(player);
         modifiedSquad.push(player);
         form.onsubmit = function (event) {
             event.preventDefault();
             removeFromPickedList(this, xrlTeam);
-        };        
+        };
         form.lastChild.className = 'btn btn-warning';
         form.lastChild.innerText = 'Cancel';
     }
@@ -203,7 +271,7 @@ function removeFromPickedList(form, xrlTeam) {
     form.onsubmit = async function (event) {
         event.preventDefault();
         PickDropPlayer(xrlTeam, this);
-    };        
+    };
     form.lastChild.className = 'btn btn-success';
     form.lastChild.innerText = 'Pick';
     displayChoices();
@@ -216,7 +284,7 @@ function removeFromDroppedList(form, xrlTeam) {
     form.onsubmit = async function (event) {
         event.preventDefault();
         PickDropPlayer(null, this);
-    };        
+    };
     form.lastChild.className = 'btn btn-danger';
     form.lastChild.innerText = 'Drop';
     displayChoices();

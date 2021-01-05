@@ -59,8 +59,6 @@ window.onload = async function() {
         option.onclick = function() {
             selectTeam(this.value);
         }
-        //Make user's team the selected value
-        if (u.team_short == GetActiveUserTeamShort()) option.selected = true;
         li.appendChild(option);
         document.getElementById('teamSelect').appendChild(li);
     }
@@ -109,15 +107,15 @@ async function PopulateFixtureTable(round) {
         //Append cells to row
         tr.appendChild(home);
         tr.appendChild(away);
+        let view = document.createElement('td');
         //If round is ongoing or finished, add a link to the fixture page, using the match data to construct a query parameter
         if (round.completed || round.in_progress) {
-            let view = document.createElement('td');
             let link = document.createElement('a');
             link.innerText = 'View';
             link.href = `fixture.html?round=${round.round_number}&fixture=${match.home}-v-${match.away}`;
             view.appendChild(link);
-            tr.appendChild(view);
         }
+        tr.appendChild(view);
         //Append the row to the table
         table.appendChild(tr);
     }
@@ -174,15 +172,15 @@ async function PopulateTeamFixtureTable(team) {
         //Append cells to row
         tr.appendChild(home);
         tr.appendChild(away);
+        let view = document.createElement('td');
         //If round is ongoing or finished, add a link to the fixture page, using the match data to construct a query parameter
         if (round.completed || round.in_progress) {
-            let view = document.createElement('td');
             let link = document.createElement('a');
             link.innerText = 'View';
             link.href = `fixture.html?round=${round.round_number}&fixture=${match.home}-v-${match.away}`;
             view.appendChild(link);
-            tr.appendChild(view);
         }
+        tr.appendChild(view);
         //Append the row to the table
         table.appendChild(tr);
     }

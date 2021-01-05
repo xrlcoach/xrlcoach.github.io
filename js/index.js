@@ -68,7 +68,7 @@ function populateLineupTable(tableId, lineup) {
     for (let player of starters) {
         let tr = document.createElement('tr');
         if (player.played_xrl) tr.style.color = "green";
-        if (!player.played_xrl && completed) tr.style.color = "red";
+        if (!player.played_xrl && completed) tr.style.color = "#c94d38";
         let name = document.createElement('td');
         name.style.whiteSpace = 'nowrap';
         name.innerText = player.player_name;
@@ -101,7 +101,7 @@ function populateLineupTable(tableId, lineup) {
     for (let player of bench) {
         let tr = document.createElement('tr');
         if (player.played_xrl) tr.style.color = "green";
-        if (!player.played_xrl && completed) tr.style.color = "red";
+        if (!player.played_xrl && completed) tr.style.color = "#c94d38";
         if (!player.played_xrl && !completed) tr.style.color = "grey";
         let name = document.createElement('td');
         name.innerText = player.player_name;
@@ -136,7 +136,10 @@ function populateLineupTable(tableId, lineup) {
 }
 
 function showModal() {
-    DisplayFeedback('Success!', 'The modal thingy worked!');
+    let redirect = function() {
+        window.location.href = 'team.html';
+    }
+    DisplayFeedback('Success!', 'The modal thingy worked! Would you like to go to the team page?', true, redirect);
 }
 window.showModal = showModal;
 

@@ -58,8 +58,8 @@
 
     <main>
         <div class="container">
-            <div class="row">
-                <div class="dropdown col-auto">
+            <div class="row p-3">
+                <div class="dropdown col">
                     <button class="btn btn-success dropdown-toggle" type="button" id="nrlSelectButton"
                         data-bs-toggle="dropdown" aria-expanded="false">
                         Select NRL Club
@@ -83,7 +83,7 @@
                         <li><a href="#" class="dropdown-item" onclick="selectNrlClub(this.value)">Wests Tigers</a></li>
                     </ul>
                 </div>
-                <div class="dropdown col-auto">
+                <div class="dropdown col">
                     <button class="btn btn-success dropdown-toggle" type="button" id="xrlSelectButton"
                         data-bs-toggle="dropdown" aria-expanded="false">
                         Select XRL Team
@@ -91,13 +91,13 @@
                     <ul id="teamSelect" class="dropdown-menu dropdown-menu-dark" aria-labelledby="dropdownMenuButton">
                     </ul>
                 </div>
-                <div class="form-group col-auto">
+                <div class="form-group col">
                     <div class="row">
                         <form onsubmit="searchPlayer(event)">
-                            <div class="col-auto">
+                            <div class="col">
                                 <input type="search" class="form-control col-auto" id="playerSearch" />
                             </div>
-                            <div class="col-auto">
+                            <div class="col">
                                 <button type="submit" class="btn btn-primary">Search</button>
                             </div>
                         </form>

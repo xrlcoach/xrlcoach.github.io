@@ -5,8 +5,6 @@ import { PopulatePlayerTable } from './Tables.js';
 let users, players, filteredPlayers;
 
 window.onload = async function () {
-    var club = document.getElementById('nrlClubSelect').value;
-    document.getElementById('squadName').innerText = club;
     try {
         users = await GetAllUsers();
         players = await GetAllPlayers();
@@ -56,7 +54,7 @@ window.selectXrlTeam = selectXrlTeam;
 function searchPlayer(event) {
     event.preventDefault();
     let player = document.getElementById('playerSearch').value.toLowerCase();
-    document.getElementById('squadName').innerText = 'Sarch: ' + player;
+    document.getElementById('squadName').innerText = 'Search: ' + player;
     filteredPlayers = players.filter(p => p.search_name.toLowerCase().includes(player));
     PopulatePlayerTable(filteredPlayers, 'squadTable');
 }

@@ -59,49 +59,65 @@
         <h4>Select Filters</h4>
         </p>
         <form onsubmit="filterStats(event)">
-            <div class="form-group">
-                <label for="round">Round</label>
-                <select class="form-select" id="roundSelect">
-                    <option>ALL</option>
-                </select>
-                <label for="nrl_club">NRL Club</label>
-                <select class="form-select" id="nrlClubSelect" aria-placeholder="Choose a club">
-                    <option>ALL</option>
-                    <option>Broncos</option>
-                    <option>Bulldogs</option>
-                    <option>Cowboys</option>
-                    <option>Dragons</option>
-                    <option>Eels</option>
-                    <option>Knights</option>
-                    <option>Panthers</option>
-                    <option>Rabbitohs</option>
-                    <option>Raiders</option>
-                    <option>Roosters</option>
-                    <option>Sea Eagles</option>
-                    <option>Sharks</option>
-                    <option>Storm</option>
-                    <option>Titans</option>
-                    <option>Warriors</option>
-                    <option>Wests Tigers</option>
-                </select>
-                <label for="xrl_team">XRL Team</label>
-                <select class="form-select" id="xrlTeamSelect" aria-placeholder="Choose a team">
-                    <option>ALL</option>
-                </select>
-                <p></p>
-                <label for="position">Position</label>
-                <select class="form-select" id="positionSelect">
-                    <option>ALL</option>
-                    <option>Back</option>
-                    <option>Playmaker</option>
-                    <option>Forward</option>
-                </select>
-                <label for="scoreKicker">Score kicking stats</label>
-                <select class="form-select" id="scoreKickerSelect">
-                    <option>Yes</option>
-                    <option>No</option>
-                </select>
-                <button type="submit" class="btn btn-primary">View stats</button>
+            <div class="row">
+                <div class="col-4 row">
+                    <label class="col-5" for="round">Round</label>
+                    <select class="form-select col-5" id="roundSelect">
+                        <option>ALL</option>
+                    </select>
+                </div>
+                <div class="col-4 row">
+                    <label class="col-5" for="nrl_club">NRL Club</label>
+                    <select class="form-select col-5" id="nrlClubSelect" aria-placeholder="Choose a club">
+                        <option>ALL</option>
+                        <option>Broncos</option>
+                        <option>Bulldogs</option>
+                        <option>Cowboys</option>
+                        <option>Dragons</option>
+                        <option>Eels</option>
+                        <option>Knights</option>
+                        <option>Panthers</option>
+                        <option>Rabbitohs</option>
+                        <option>Raiders</option>
+                        <option>Roosters</option>
+                        <option>Sea Eagles</option>
+                        <option>Sharks</option>
+                        <option>Storm</option>
+                        <option>Titans</option>
+                        <option>Warriors</option>
+                        <option>Wests Tigers</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-4 row">
+                    <label class="col-5" for="position">Position</label>
+                    <select class="form-select col-5" id="positionSelect">
+                        <option>ALL</option>
+                        <option>Back</option>
+                        <option>Playmaker</option>
+                        <option>Forward</option>
+                    </select>
+                </div>
+                <div class="col-4 row">
+                    <label class="col-5" for="xrl_team">XRL Team</label>
+                    <select class="form-select col-5" id="xrlTeamSelect" aria-placeholder="Choose a team">
+                        <option>ALL</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-4 row">
+                    <label class="col-5" for="scoreKicker">Score kicking stats</label>
+                    <select class="form-select col-5" id="scoreKickerSelect">
+                        <option>Yes</option>
+                        <option>No</option>
+                    </select>
+                </div>
+                <div class="col-4 row">
+                    <button type="submit" class="btn btn-primary col-4">View stats</button>
+                </div>
+            </div>
         </form>
         </div>
         <div class="container table-responsive" style="height: 750px;">

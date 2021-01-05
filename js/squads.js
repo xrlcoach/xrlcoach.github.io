@@ -15,6 +15,7 @@ window.onload = async function () {
             option.value = users[i].team_short;
             option.innerText = users[i].team_short;
             option.href = '#';
+            option.className = "dropdown-item";
             option.onclick = function() {
                 selectXrlTeam(this.value);
             }

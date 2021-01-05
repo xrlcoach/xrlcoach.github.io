@@ -11,8 +11,10 @@ window.onload = async function () {
         let backs = squad.filter(p => p.position == 'Back' || p.position2 == 'Back');
         let playmakers = squad.filter(p => p.position == 'Playmaker' || p.position2 == 'Playmaker');
         let forwards = squad.filter(p => p.position == 'Forward' || p.position2 == 'Forward');
+        document.getElementById('backsCount').innerText = 'Backs: ' + backs.length;
+        document.getElementById('playmakersCount').innerText = 'Playmakers: ' + playmakers.length;
+        document.getElementById('forwardsCount').innerText = 'Forwards: ' + forwards.length;
         let duals = squad.filter(p => p.position2 != '');
-        document.getElementById('positionCounts').innerText = `Backs: ${backs.length}   Playmakers: ${playmakers.length}    Forwards: ${forwards.length}`
         if (duals.length == 1) document.getElementById('positionCounts').innerHTML += `<br />Includes ${duals.length} dual-position player`;
         else if (duals.length > 1) document.getElementById('positionCounts').innerHTML += `<br />Includes ${duals.length} dual-position players`;
         if (squad.length < 18) {

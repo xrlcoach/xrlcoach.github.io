@@ -121,12 +121,12 @@ function populateStatsTable(stats, sortFunction) {
         let PTs = document.createElement('td');
         PTs.innerText = player.scoring_stats[player.position].positional_try;
         tr.appendChild(PTs);
-        let mia = document.createElement('td');
-        mia.innerText = player.scoring_stats[player.position].mia;
-        tr.appendChild(mia);
         let concede = document.createElement('td');
         concede.innerText = player.scoring_stats[player.position].concede;
         tr.appendChild(concede);
+        let mia = document.createElement('td');
+        mia.innerText = player.scoring_stats[player.position].mia;
+        tr.appendChild(mia);
         let total = document.createElement('td');
         total.innerText = player.score;
         tr.appendChild(total);

@@ -10,6 +10,8 @@ export function DisplayFeedback(title, message, confirm=false, onConfirmFunction
     if (confirm) {
         document.getElementById('feedbackFooter').hidden = false;
         document.getElementById('feedbackConfirm').onclick = onConfirmFunction;
+    } else {
+        document.getElementById('feedbackFooter').hidden = true;
     }
     feedback.show();
 }

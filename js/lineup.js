@@ -281,7 +281,9 @@ async function submitLineup(event) {
     for (let player of lineup) {
         if (lineup.filter(p => p.player_id == player.player_id).length != 1) {
             problem = true;
-            message += `<li>${player.player_name} has been picked twice.</li>`;
+            if (!message.includes(`<li>${player.player_name} has been picked more than once.</li>`)) {
+                message += `<li>${player.player_name} has been picked more than once.</li>`;
+            }
         }
         if (user.captain_counts && user.captain_counts[player.player_id] > 5) {
             DisplayFeedback('Invalid Lineup', player.player_name + ' has already been captained 6 times.');

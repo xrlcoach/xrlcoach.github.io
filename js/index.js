@@ -122,6 +122,7 @@ function populateLineupTable(tableId, lineup) {
         table.appendChild(tr);
     }
     tr = document.createElement('tr');
+    tr.className = 'rounded-bottom';
     for (let i = 0; i < 4; i++) {
         tr.appendChild(document.createElement('td'));
     }

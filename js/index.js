@@ -24,7 +24,7 @@ window.onload = async function () {
             displayFixture(currentRound.round_number, fixture);
         }
     } catch (error) {
-        document.getElementById('feedback').innerText += error;
+        DisplayFeedback('Error While Loading', error);
     }
 }
 

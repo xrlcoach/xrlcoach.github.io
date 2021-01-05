@@ -20,7 +20,8 @@ window.onload = async function () {
         }
         document.getElementById('powerplayCount').innerText = 'Powerplays left: ' + user.powerplays;
         for (let player in user.captain_counts) {
-            document.getElementById('captainCountList').innerHTML += `<li>${player}: ${user.captain_counts[player]}</li>`
+            let name = squad.find(p => p.player_id == player).player_name;
+            document.getElementById('captainCountList').innerHTML += `<li>${name}: ${user.captain_counts[player]}</li>`
         }
         let sortedSquad = squad.sort(function(p1, p2) {
             return p1.player_name.split(' ')[1] > p2.player_name.split(' ')[1]

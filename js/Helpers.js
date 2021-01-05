@@ -6,7 +6,7 @@ import { GetLineupByTeamAndRound } from "./ApiFetch.js"
 export function DisplayFeedback(title, message, confirm=false, onConfirmFunction=null) {
     let feedback = new bootstrap.Modal(document.getElementById('feedback'));
     document.getElementById('feedbackTitle').innerText = title;
-    document.getElementById('feedbackMessage').innerText = message;
+    document.getElementById('feedbackMessage').innerHTML = message;
     if (confirm) {
         document.getElementById('feedbackFooter').hidden = false;
         document.getElementById('feedbackConfirm').onclick = onConfirmFunction;

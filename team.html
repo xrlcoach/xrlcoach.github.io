@@ -48,22 +48,31 @@
         </div>
     </nav>
 
-    <header>
-        <div class="row">
-            <span class="col-md-4" id="teamHeader"></span>
-            <span class="col-md-4" id="squadCount"></span>
-            <span class="col-md-4" id="powerplayCount"></span>
+    <header class="p-3">
+        <div class="row text-center">
+            <span class="col-md-4 text-white h4" id="teamHeader"></span>
+            <span class="col-md-4 text-white h4" id="squadCount"></span>
+            <span class="col-md-4 text-white h4" id="powerplayCount"></span>
         </div>
     </header>
 
     <main>
         <div name="secondaryHeader" class="row">
-            <p id="positionCounts"></p>
-            <a id="pickPlayersLink" class="btn btn-primary" href="pickteam.html" hidden>Pick Players</a>
-            <div id="captainCounts">
-                <p>Captaincy Tally</p>
-                <ul id="captainCountList"></ul>
+            <div class="col p-3 card" id="positionCounts">
+                <h5 class="card-header">Squad Breakdown</h5>
+                <div class="card-body">
+                    <p id="backsCount"></p>
+                    <p id="playmakersCount"></p>
+                    <p id="forwardsCount"></p>
+                </div>
             </div>
+            <div class="col p-3 card" id="captainCounts">
+                <h5 class="card-header">Captain Counts</h5>
+                <div class="card-body">
+                    <ul id="captainCountList"></ul>
+                </div>
+            </div>
+            <a id="pickPlayersLink" class="col p-3 btn btn-primary" href="pickteam.html" hidden>Pick Players</a>
         </div>
         <div class="container p-5">
             <div class="table-responsive">

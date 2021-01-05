@@ -31,25 +31,38 @@ window.onload = async function() {
     }
     //Isolate curent active round and display heading
     roundToDisplay = GetActiveRoundFromFixtures(fixtures);
-    document.getElementById('roundHeading').innerText = 'Round ' + roundToDisplay.round_number;
     console.log('Current round: ' + roundToDisplay.round_number);
     //Populate round number dropdown options
     for (let i = 0; i < draw.length; i++) {
-        let option = document.createElement('option');
+        let li = document.createElement('li');
+        let option = document.createElement('a');
         option.innerText = draw[i].round_number;
         option.value = draw[i].round_number;
+        option.href = '#';
+        option.className = 'dropdown-item';
+        option.onclick = function() {
+            selectRound(this.value);
+        }
         //Make current round the selected value
-        if (draw[i].round_number == roundToDisplay.round_number) option.selected = true;
-        document.getElementById('roundSelect').appendChild(option);
+        if (draw[i].round_number == roundToDisplay.round_number) option.className += ' active';
+        li.appendChild(option);
+        document.getElementById('roundSelect').appendChild(li);
     }
     //Populate XRL Team dropdown options
     for (let u of users) {
+        let li = document.createElement('li');
         let option = document.createElement('option');
         option.innerText = u.team_short;
         option.value = u.team_short;
+        option.href = '#';
+        option.className = 'dropdown-item';
+        option.onclick = function() {
+            selectTeam(this.value);
+        }
         //Make user's team the selected value
         if (u.team_short == GetActiveUserTeamShort()) option.selected = true;
-        document.getElementById('teamSelect').appendChild(option);
+        li.appendChild(option);
+        document.getElementById('teamSelect').appendChild(li);
     }
     //Call table constructor
     PopulateFixtureTable(roundToDisplay);
@@ -65,7 +78,7 @@ async function PopulateFixtureTable(round) {
     else if (round.in_progress) status = 'In Progress';
     else if (round.active) status = 'Active';
     else status = 'Inactive';
-    document.getElementById('roundStatus').innerText = 'Status: ' + status;
+    document.getElementById('tableHeading').innerText = `Round ${round.round_number}    -   ${status}`;
     //Locate table body element
     let table = document.getElementById('fixturesTableBody');
     //Clear previous contents
@@ -113,12 +126,9 @@ async function PopulateFixtureTable(round) {
  * Reconstructs the fixtures table with matches from the selected round.
  * @param {*} event 
  */
-function selectRound(event) {
-    event.preventDefault();
+function selectRound(number) {
     //Uses the selected round number to locate round info from pre-loaded array
-    roundToDisplay = draw.find(r => r.round_number == document.getElementById('roundSelect').value);
-    //Display round heading
-    document.getElementById('roundHeading').innerText = 'Round ' + roundToDisplay.round_number;
+    roundToDisplay = draw.find(r => r.round_number == number);
     //Calls the table constructor with the new round info
     PopulateFixtureTable(roundToDisplay);
 }
@@ -129,8 +139,8 @@ window.selectRound = selectRound;
  * @param {Object} round An XRL round data object
  */
 async function PopulateTeamFixtureTable(team) {
-    //Clear status heading
-    document.getElementById('roundStatus').innerText = '';
+    //Display team heading
+    document.getElementById('tableHeading').innerText = team + ' Fixtures';
     //Locate table body element
     let table = document.getElementById('fixturesTableBody');
     //Clear previous contents
@@ -181,14 +191,9 @@ async function PopulateTeamFixtureTable(team) {
  * Reconstructs the fixtures table with all matches for a particular team.
  * @param {*} event 
  */
-function selectTeam(event) {
-    event.preventDefault();
-    //Get the selected XRL team
-    let teamToDisplay = document.getElementById('teamSelect').value;
-    //Display team in heading
-    document.getElementById('roundHeading').innerText = teamToDisplay + 'Fixtures';
+function selectTeam(team) {
     //Calls the user's fixture table constructor with the team acronym
-    PopulateTeamFixtureTable(teamToDisplay);
+    PopulateTeamFixtureTable(team);
 }
 //Give the function global scope, allowing it to be called from HTML.
 window.selectTeam = selectTeam;

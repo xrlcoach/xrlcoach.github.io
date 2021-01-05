@@ -9,7 +9,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- documentation at http://getbootstrap.com/docs/4.1/, alternative themes at https://bootswatch.com/ -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
 
     <!-- https://favicon.io/emoji-favicons/money-mouth-face/ -->
     <link href="/static/xrl-logo.png" rel="icon">
@@ -37,7 +38,7 @@
                 <li class="nav-item"><a class="nav-link" href="comp.html">Ladder</a></li>
                 <li class="nav-item"><a class="nav-link" href="squads.html">Squads</a></li>
                 <li class="nav-item"><a class="nav-link" href="stats.html">Stats</a></li>
-            </ul>            
+            </ul>
             <ul class="navbar-nav ml-auto mt-2">
                 <li class="nav-item"><a class="nav-link" href="signup.html">Register</a></li>
             </ul>
@@ -53,7 +54,8 @@
         <div class="container p-5">
             <form onsubmit="login(event)">
                 <div class="form-group">
-                    <input autocomplete="off" autofocus class="form-control" id="username" placeholder="Username" type="text">
+                    <input autocomplete="off" autofocus class="form-control" id="username" placeholder="Username"
+                        type="text">
                 </div>
                 <div class="form-group">
                     <input class="form-control" id="password" placeholder="Password" type="password">
@@ -68,21 +70,25 @@
         Data provided by <a href="https://www.nrl.com">NRL.com</a>. View <a
             href="https://www.nrl.com/terms-of-use">NRL’s Terms of Use</a>.
     </footer>
-    <div class="modal fade" id="feedback" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal fade" id="feedback" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title" id="feedbackTitle"></h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-              </div>
-              <div class="modal-body" id="feedbackMessage"></div>
-              <div class="modal-footer" id="feedbackFooter" hidden>
-                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-success" id="feedbackConfirm">Proceed</button>
-              </div>
+                <div class="modal-header">
+                    <h5 class="modal-title" id="feedbackTitle"></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="feedbackMessage"></div>
+                <div class="modal-footer" id="feedbackFooter" hidden>
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-success" id="feedbackConfirm">Proceed</button>
+                </div>
             </div>
-          </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW"
+        crossorigin="anonymous"></script>
     <script type="module" src="js/login.js"></script>
 </body>
 

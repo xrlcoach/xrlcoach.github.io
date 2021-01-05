@@ -12,13 +12,9 @@ window.onload = async function () {
         completed = currentRound.completed;
         squad = await GetPlayersFromXrlTeam(user.team_short);
         displayUserData();
-        if (squad.length < 18) {
-            document.getElementById('playerCountMessage').innerText = `Your squad only has ${squad.length} players. You should pick more!`;
-            document.getElementById('pickPlayersLink').hidden = false;
-        }
         fixture = GetUserFixture(user, currentRound);
         if (fixture == undefined) {
-            document.getElementById('fixtureHeading').innerText = 'No fixture to display...';
+            document.getElementById('matchTeamsDisplay').innerHTML = '<h4>No fixture to display...</h4>';
         }
         else {
             displayFixture(currentRound.round_number, fixture);

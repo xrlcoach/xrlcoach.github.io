@@ -311,10 +311,10 @@ async function submitLineup(event) {
             problem = true;
             message += `<li>Your chosen backup kicker is starting on the bench.</li>`;
         }
-        if (problem) {
-            DisplayFeedback('Warning!', "<ul>" + message + "</ul><p>Would you like to proceed with lineup submission?</p>", true, completeSubmission);
-            return;
-        }
+    }
+    if (problem) {
+        DisplayFeedback('Warning!', "<ul>" + message + "</ul><p>Would you like to proceed with lineup submission?</p>", true, completeSubmission);
+        return;
     }
     
     await SetLineup(idToken, lineup);

@@ -170,7 +170,6 @@ function PickDropPlayer(xrlTeam, form) {
             form.lastChild.innerText = 'Cancel';
             displayChoices();
             DisplayPlayerCounts();
-            document.getElementById('feedback').modal('hide');
         }
         if (availableSpots == requiredBacks && (player.position != 'Back' && player.position2 != 'Back')) {
             DisplayFeedback('Warning', `You only have ${availableSpots} ${availableSpots > 1 ? 'spots' : 'spot'} left and you need ${requiredBacks} more ${requiredBacks > 1 ? 'backs' : 'back'}. Would you like to pick ${player.player_name} anyway?`,

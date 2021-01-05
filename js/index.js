@@ -97,6 +97,7 @@ function populateLineupTable(tableId, lineup) {
     let tr = document.createElement('tr');
     let benchHeader = document.createElement('td');
     benchHeader.innerText = 'Interchange'; 
+    benchHeader.colSpan = "6";
     tr.appendChild(benchHeader);
     table.appendChild(tr);
     for (let player of bench) {

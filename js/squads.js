@@ -12,10 +12,16 @@ window.onload = async function () {
         players = await GetAllPlayers();
         var select = document.getElementById('xrlTeamSelect');
         for (var i = 0; i < users.length; i++) {
-            var option = document.createElement('option');
+            let li = document.createElement('li')
+            var option = document.createElement('a');
             option.value = users[i].team_short;
             option.innerText = users[i].team_short;
-            select.appendChild(option);
+            option.href = '#';
+            option.onclick = function() {
+                selectXrlTeam(this.value);
+            }
+            li.appendChild(option);
+            select.appendChild(li);
         }
     } catch (error) {
         DisplayFeedback('Error', error);
@@ -29,9 +35,7 @@ window.onload = async function () {
     // });
 }
 
-function selectNrlClub(event) {
-    event.preventDefault();
-    var club = document.getElementById('nrlClubSelect').value;
+function selectNrlClub(club) {
     document.getElementById('squadName').innerText = club;
     filteredPlayers = players.filter(p => p.nrl_club == club);
     PopulatePlayerTable(filteredPlayers.sort(function(p1, p2) {
@@ -40,9 +44,7 @@ function selectNrlClub(event) {
 }
 window.selectNrlClub = selectNrlClub;
 
-function selectXrlTeam(event) {
-    event.preventDefault();
-    var team = document.getElementById('xrlTeamSelect').value;
+function selectXrlTeam(team) {
     document.getElementById('squadName').innerText = team;
     filteredPlayers = players.filter(p => p.xrl_team == team);
     PopulatePlayerTable(filteredPlayers.sort(function(p1, p2) {

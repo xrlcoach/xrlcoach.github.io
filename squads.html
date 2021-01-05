@@ -52,51 +52,58 @@
         </div>
     </nav>
 
-    <header class="p-3 bg-success bg-gradient"></header>
+    <header class="p-3 bg-success bg-gradient text-center text-white">
+        <h4>2020 Squads</h4>
+    </header>
 
     <main>
         <div class="container">
-            <p>
-            <h4>Select Players</h4>
-            </p>
-            <form onsubmit="selectNrlClub(event)">
-                <div class="form-group">
-                    <select class="form-control" id="nrlClubSelect">
-                        <option disabled selected>Choose NRL club</option>
-                        <option>Broncos</option>
-                        <option>Bulldogs</option>
-                        <option>Cowboys</option>
-                        <option>Dragons</option>
-                        <option>Eels</option>
-                        <option>Knights</option>
-                        <option>Panthers</option>
-                        <option>Rabbitohs</option>
-                        <option>Raiders</option>
-                        <option>Roosters</option>
-                        <option>Sea Eagles</option>
-                        <option>Sharks</option>
-                        <option>Storm</option>
-                        <option>Titans</option>
-                        <option>Warriors</option>
-                        <option>Wests Tigers</option>
-                    </select>
-                    <button type="submit" class="btn btn-primary">View players</button>
+            <div class="row">
+                <div class="dropdown col-auto">
+                    <button class="btn btn-success dropdown-toggle" type="button" id="nrlSelectButton"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        Select NRL Club
+                    </button>
+                    <ul id="clubSelect" class="dropdown-menu dropdown-menu-dark" aria-labelledby="dropdownMenuButton">
+                        <li><a href="#" class="dropdown-item" onclick="selectNrlClub(this.value)">Broncos</a></li>
+                        <li><a href="#" class="dropdown-item" onclick="selectNrlClub(this.value)">Bulldogs</a></li>
+                        <li><a href="#" class="dropdown-item" onclick="selectNrlClub(this.value)">Cowboys</a></li>
+                        <li><a href="#" class="dropdown-item" onclick="selectNrlClub(this.value)">Dragons</a></li>
+                        <li><a href="#" class="dropdown-item" onclick="selectNrlClub(this.value)">Eels</a></li>
+                        <li><a href="#" class="dropdown-item" onclick="selectNrlClub(this.value)">Knights</a></li>
+                        <li><a href="#" class="dropdown-item" onclick="selectNrlClub(this.value)">Panthers</a></li>
+                        <li><a href="#" class="dropdown-item" onclick="selectNrlClub(this.value)">Rabbitohs</a></li>
+                        <li><a href="#" class="dropdown-item" onclick="selectNrlClub(this.value)">Raiders</a></li>
+                        <li><a href="#" class="dropdown-item" onclick="selectNrlClub(this.value)">Roosters</a></li>
+                        <li><a href="#" class="dropdown-item" onclick="selectNrlClub(this.value)">Sea Eagles</a></li>
+                        <li><a href="#" class="dropdown-item" onclick="selectNrlClub(this.value)">Sharks</a></li>
+                        <li><a href="#" class="dropdown-item" onclick="selectNrlClub(this.value)">Storm</a></li>
+                        <li><a href="#" class="dropdown-item" onclick="selectNrlClub(this.value)">Titans</a></li>
+                        <li><a href="#" class="dropdown-item" onclick="selectNrlClub(this.value)">Warriors</a></li>
+                        <li><a href="#" class="dropdown-item" onclick="selectNrlClub(this.value)">Wests Tigers</a></li>
+                    </ul>
                 </div>
-            </form>
-            <form onsubmit="selectXrlTeam(event)">
-                <div class="form-group">
-                    <select class="form-control" id="xrlTeamSelect">
-                        <option disabled selected>Choose XRL Team</option>
-                    </select>
-                    <button type="submit" class="btn btn-primary">View players</button>
+                <div class="dropdown col-auto">
+                    <button class="btn btn-success dropdown-toggle" type="button" id="xrlSelectButton"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        Select XRL Team
+                    </button>
+                    <ul id="teamSelect" class="dropdown-menu dropdown-menu-dark" aria-labelledby="dropdownMenuButton">
+                    </ul>
                 </div>
-            </form>
-            <form onsubmit="searchPlayer(event)">
-                <div class="form-group">
-                    <input type="search" class="form-control" id="playerSearch" />
-                    <button type="submit" class="btn btn-primary">Search</button>
+                <div class="form-group col-auto">
+                    <div class="row">
+                        <form onsubmit="searchPlayer(event)">
+                            <div class="col-auto">
+                                <input type="search" class="form-control col-auto" id="playerSearch" />
+                            </div>
+                            <div class="col-auto">
+                                <button type="submit" class="btn btn-primary">Search</button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
-            </form>
+            </div>
             <h4 id="squadName"></h4>
 
             <!-- <img src="static/{{ user['team_logo'] }}" alt="{{ user['team_short'] }}" height="80" style="padding: 10px;"><h4>{{ user['team_name'] }} Squad</h4> -->

@@ -58,15 +58,15 @@
         <p>
         <h4>Select Filters</h4>
         </p>
-        <form onsubmit="filterStats(event)">
-            <div class="row">
-                <div class="col-4 row">
+        <form onsubmit="filterStats(event)" class="text-center">
+            <div class="row m-2">
+                <div class="col-4 row m-2">
                     <label class="col-5" for="round">Round</label>
                     <select class="form-select col-5" id="roundSelect">
                         <option>ALL</option>
                     </select>
                 </div>
-                <div class="col-4 row">
+                <div class="col-4 row m-2">
                     <label class="col-5" for="nrl_club">NRL Club</label>
                     <select class="form-select col-5" id="nrlClubSelect" aria-placeholder="Choose a club">
                         <option>ALL</option>
@@ -89,8 +89,8 @@
                     </select>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-4 row">
+            <div class="row m-2">
+                <div class="col-4 row m-2">
                     <label class="col-5" for="position">Position</label>
                     <select class="form-select col-5" id="positionSelect">
                         <option>ALL</option>
@@ -99,22 +99,22 @@
                         <option>Forward</option>
                     </select>
                 </div>
-                <div class="col-4 row">
+                <div class="col-4 row m-2">
                     <label class="col-5" for="xrl_team">XRL Team</label>
                     <select class="form-select col-5" id="xrlTeamSelect" aria-placeholder="Choose a team">
                         <option>ALL</option>
                     </select>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-4 row">
+            <div class="row m-2">
+                <div class="col-4 row m-2">
                     <label class="col-5" for="scoreKicker">Score kicking stats</label>
                     <select class="form-select col-5" id="scoreKickerSelect">
                         <option>Yes</option>
                         <option>No</option>
                     </select>
                 </div>
-                <div class="col-4 row">
+                <div class="col-4 row m-2">
                     <button type="submit" class="btn btn-primary col-4">View stats</button>
                 </div>
             </div>

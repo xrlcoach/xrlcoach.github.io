@@ -272,7 +272,7 @@ async function submitLineup(event) {
         }
         lineup.push(entry);
     }
-    let completeSubmission = function() {
+    let completeSubmission = async function() {
         await SetLineup(idToken, lineup);
         window.location.href = 'index.html';
     }

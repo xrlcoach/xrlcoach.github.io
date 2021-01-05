@@ -161,7 +161,7 @@ function PickDropPlayer(xrlTeam, form) {
         requiredPlaymakers = requiredPlaymakers < 0 ? 0 : requiredPlaymakers;
         if (availableSpots == requiredBacks && (player.position != 'Back' && player.position2 != 'Back')) {
             DisplayFeedback('Warning', `You only have ${availableSpots} ${availableSpots > 1 ? 'spots' : 'spot'} left and you need ${requiredBacks} more ${requiredBacks > 1 ? 'backs' : 'back'}. Would you like to pick ${player.player_name} anyway?`,
-                true, function (player, form) {
+                true, function () {
                     pickedPlayers.push(player);
                     modifiedSquad.push(player);
                     form.onsubmit = function (event) {
@@ -175,7 +175,7 @@ function PickDropPlayer(xrlTeam, form) {
         }
         if (availableSpots == requiredForwards && (player.position != 'Forward' && player.position2 != 'Forward')) {
             DisplayFeedback('Warning', `You only have ${availableSpots} ${availableSpots > 1 ? 'spots' : 'spot'} left and you need ${requiredForwards} more ${requiredForwards > 1 ? 'forwards' : 'forward'}. Would you like to pick ${player.player_name} anyway?`,
-                true, function (player, form) {
+                true, function () {
                     pickedPlayers.push(player);
                     modifiedSquad.push(player);
                     form.onsubmit = function (event) {
@@ -189,7 +189,7 @@ function PickDropPlayer(xrlTeam, form) {
         }
         if (availableSpots == requiredPlaymakers && (player.position != 'Playmaker' && player.position2 != 'Playmaker')) {
             DisplayFeedback('Warning', `You only have ${availableSpots} ${availableSpots > 1 ? 'spots' : 'spot'} left and you need ${requiredPlaymakers} more ${requiredPlaymakers > 1 ? 'playmakers' : 'playmaker'}. Would you like to pick ${player.player_name} anyway?`,
-                true, function (player, form) {
+                true, function () {
                     pickedPlayers.push(player);
                     modifiedSquad.push(player);
                     form.onsubmit = function (event) {
@@ -204,7 +204,7 @@ function PickDropPlayer(xrlTeam, form) {
         if (availableSpots == requiredBacks + requiredForwards &&
             (![player.position, player.position2].includes('Back') && ![player.position, player.position2].includes('Forward'))) {
             DisplayFeedback('Warning', `You only have ${availableSpots} ${availableSpots > 1 ? 'spots' : 'spot'} left and you need ${requiredBacks} more ${requiredBacks > 1 ? 'backs' : 'back'} and ${requiredForwards} more ${requiredForwards > 1 ? 'forwards' : 'forward'}. Would you like to pick ${player.player_name} anyway?`,
-                true, function (player, form) {
+                true, function () {
                     pickedPlayers.push(player);
                     modifiedSquad.push(player);
                     form.onsubmit = function (event) {
@@ -219,7 +219,7 @@ function PickDropPlayer(xrlTeam, form) {
         if (availableSpots == requiredBacks + requiredPlaymakers &&
             (![player.position, player.position2].includes('Back') && ![player.position, player.position2].includes('Playmaker'))) {
             DisplayFeedback('Warning', `You only have ${availableSpots} ${availableSpots > 1 ? 'spots' : 'spot'} left and you need ${requiredBacks} more ${requiredBacks > 1 ? 'backs' : 'back'} and ${requiredPlaymakers} more ${requiredPlaymakers > 1 ? 'playmakers' : 'playmaker'}. Would you like to pick ${player.player_name} anyway?`,
-                true, function (player, form) {
+                true, function () {
                     pickedPlayers.push(player);
                     modifiedSquad.push(player);
                     form.onsubmit = function (event) {
@@ -234,7 +234,7 @@ function PickDropPlayer(xrlTeam, form) {
         if (availableSpots == requiredPlaymakers + requiredForwards &&
             (![player.position, player.position2].includes('Playmaker') && ![player.position, player.position2].includes('Forward'))) {
             DisplayFeedback('Warning', `You only have ${availableSpots} ${availableSpots > 1 ? 'spots' : 'spot'} left and you need ${requiredPlaymakers} more ${requiredPlaymakers > 1 ? 'playmakers' : 'playmaker'} and ${requiredForwards} more ${requiredForwards > 1 ? 'forwards' : 'forward'}. Would you like to pick ${player.player_name} anyway?`,
-                true, function (player, form) {
+                true, function () {
                     pickedPlayers.push(player);
                     modifiedSquad.push(player);
                     form.onsubmit = function (event) {

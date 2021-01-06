@@ -50,18 +50,36 @@
 
     <header class="p-3 bg-success bg-gradient">
         <div class="row text-center">
-            <span class="text-white h4" id="teamHeader"></span>
+            <span class="text-white h4">Home</span>
         </div>
     </header>
 
     <main class="container-lg">
         <div class="row justify-content-center">
+            <div class="col card" id="teamInfoCard">
+                <h2 class="card-header bg-primary bg-gradient text-white" id="teamNameDisplay"></h2>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-4 p-2">
+                            <img id="teamLogo" />
+                        </div>
+                        <div class="col p-2">
+                            <h5 id="teamOwner"></h5>
+                            <h5 id="teamPosition"></h5>
+                            <h4 id="teamWinStats"></h4>
+                            <h4 id="teamPointStats"></h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row justify-content-center">
             <div class="col-4 m-5 p-3 card">
                 <h4 class="card-header bg-success bg-gradient text-white">Last Match</h4>
                 <div class="card-body">
                     <h5 id="lastMatchOpponent">BWS @ The Bondi Pavilion</h5>
-                    <p id="lastMatchScore">45 - 28<span id="lastMatchResult" style="color: green"> WIN </span></p>
-                    <a class="btn btn-primary">View</a>
+                    <p id="lastMatchScore">45 - 28<span id="lastMatchResult"> WIN </span></p>
+                    <a class="btn btn-primary" id="lastMatchView">View</a>
                 </div>
             </div>
             <div class="col-4 m-5 p-3 card">
@@ -69,13 +87,13 @@
                 <div class="card-body">
                     <h5 id="nextMatchOpponent">WOL @ The Den</h5>
                     <p id="nextMatchStatus" style="color: orange">Status: Upcoming</p>
-                    <p id="nextMatchScore" hidden><span id="lastMatchResult" style="color: green"></span></p>
-                    <a class="btn btn-primary" id="nextMatchButton">Set Lineup</a>
+                    <p id="nextMatchScore" hidden><span id="nextMatchResult" hidden></span></p>
+                    <a class="btn btn-primary" id="nextMatchButton"></a>
                 </div>
             </div>
         </div>
         <div class="row">
-            <div class="col card" id="teamInfoCard">
+            <div class="col card" id="squadInfoCard">
                 <h4 class="card-header bg-secondary bg-gradient text-white">Team Info</h4>
                 <div class="card-body">
                     <div class="row">

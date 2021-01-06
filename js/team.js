@@ -1,31 +1,21 @@
-import { GetPlayersFromXrlTeam, GetActiveUserInfo, UpdatePlayerXrlTeam } from './ApiFetch.js';
-import { DisplayFeedback } from './Helpers.js';
+import { GetPlayersFromXrlTeam, GetActiveUserInfo, UpdatePlayerXrlTeam, GetAllUsers, GetActiveUserTeamShort, GetAllFixtures } from './ApiFetch.js';
+import { DisplayFeedback, GetActiveRoundFromFixtures, GetOrdinal, GetUserFixture } from './Helpers.js';
 
-let squad, user;
+let squad, allUsers, user, allRounds, lastRound, nextRound;
 
 window.onload = async function () {
     try {
-        user = await GetActiveUserInfo(idToken);
+        allUsers = await GetAllUsers();
+        user = allUsers.find(u => u.team_short == GetActiveUserTeamShort());
         squad = await GetPlayersFromXrlTeam(user.team_short);
-        document.getElementById('teamHeader').innerHTML = user.team_name;
-        document.getElementById('squadCount').innerText = squad.length;
-        let backs = squad.filter(p => p.position == 'Back' || p.position2 == 'Back');
-        let playmakers = squad.filter(p => p.position == 'Playmaker' || p.position2 == 'Playmaker');
-        let forwards = squad.filter(p => p.position == 'Forward' || p.position2 == 'Forward');
-        document.getElementById('backsCount').innerText = 'Backs: ' + backs.length;
-        document.getElementById('playmakersCount').innerText = 'Playmakers: ' + playmakers.length;
-        document.getElementById('forwardsCount').innerText = 'Forwards: ' + forwards.length;
-        let duals = squad.filter(p => p.position2 != '');
-        if (duals.length == 1) document.getElementById('positionCounts').innerHTML += `<br />Includes ${duals.length} dual-position player`;
-        else if (duals.length > 1) document.getElementById('positionCounts').innerHTML += `<br />Includes ${duals.length} dual-position players`;
-        if (squad.length < 18) {
-            document.getElementById('pickPlayersLink').hidden = false;
-        }
-        document.getElementById('powerplayCount').innerText = user.powerplays;
-        for (let player in user.captain_counts) {
-            let name = squad.find(p => p.player_id == player).player_name;
-            document.getElementById('captainCountList').innerHTML += `<li>${name}: ${user.captain_counts[player]}</li>`
-        }
+        allRounds = await GetAllFixtures();
+        nextRound = GetActiveRoundFromFixtures(allRounds);
+        lastRound = allRounds.find(r => r.round_number == nextRound.round_number - 1);
+        if (lastRound) DisplayLastMatch();
+        DisplayNextMatch();
+        DisplayTeamInfo();
+        DisplaySquadInfo();
+        DisplayCaptainInfo();
         let sortedSquad = squad.sort(function(p1, p2) {
             return p1.player_name.split(' ')[1] > p2.player_name.split(' ')[1]
         });
@@ -33,6 +23,90 @@ window.onload = async function () {
     } catch (error) {
         DisplayFeedback('Error', error);
     }
+}
+
+function DisplayLastMatch() {
+    let match = GetUserFixture(user, nextRound);
+    let homeGame = match.home == user.team_short;
+    let opponent = homeGame ? match.away : match.home;
+    let ground = homeGame ? user.homeground : allUsers.find(u => u.team_short == opponent).homeground;
+    document.getElementById('lastMatchOpponent').innerText = opponent + ' @ ' + ground;
+    document.getElementById('lastMatchScore').innerText = match.homeScore + ' - ' + match.awayScore;
+    let result = match.homeScore == match.awayScore ? 'DRAW' : homeGame ? match.homeScore > match.awayScore ? 'WIN' : 'LOSS' : match.awayScore > match.homeScore ? 'WIN' : 'LOSS';
+    document.getElementById('lastMatchResult').style.color = result == 'WIN' ? 'green' : result == 'LOSS' ? 'c94d38' : 'orange'; 
+    document.getElementById('lastMatchResult').innerText = result; 
+    document.getElementById('lastMatchView').href = `fixture.html?round=${lastRound.round_number}&fixture=${match.home}-v-${match.away}`;
+}
+
+function DisplayNextMatch() {
+    let match = GetUserFixture(user, lastRound);
+    let homeGame = match.home == user.team_short;
+    let opponent = homeGame ? match.away : match.home;
+    let ground = homeGame ? user.homeground : allUsers.find(u => u.team_short == opponent).homeground;
+    document.getElementById('nextMatchOpponent').innerText = opponent + ' @ ' + ground;
+    if (nextRound.completed) status = 'Completed';
+    else if (nextRound.in_progress) status = 'In Progress';
+    else if (nextRound.active) status = 'Active';
+    else status = 'Inactive';
+    document.getElementById('nextMatchStatus').innerText = 'Status: ' + status;
+    if (!nextRound.in_progress) {
+        document.getElementById('nextMatchButton').href = `lineup.html`;
+        document.getElementById('nextMatchButton').innerText = 'Set Lineup';
+    } else {
+        document.getElementById('nextMatchScore').innerText = match.homeScore + ' - ' + match.awayScore; 
+        document.getElementById('nextMatchScore').hidden = false; 
+        document.getElementById('nextMatchButton').href = `fixture.html?round=${lastRound.round_number}&fixture=${match.home}-v-${match.away}`;
+        document.getElementById('nextMatchButton').innerText = 'View';
+    }
+    if (nextRound.completed) {
+        let result = match.homeScore == match.awayScore ? 'DRAW' : homeGame ? match.homeScore > match.awayScore ? 'WIN' : 'LOSS' : match.awayScore > match.homeScore ? 'WIN' : 'LOSS';
+        document.getElementById('nextMatchResult').style.color = result == 'WIN' ? 'green' : result == 'LOSS' ? 'c94d38' : 'orange'; 
+        document.getElementById('nextMatchResult').innerText = result;
+    } 
+}
+
+function DisplayCaptainInfo() {
+    document.getElementById('powerplayCount').innerText = user.powerplays;
+    for (let player in user.captain_counts) {
+        let name = squad.find(p => p.player_id == player).player_name;
+        document.getElementById('captainCountList').innerHTML += `<li>${name}: ${user.captain_counts[player]}</li>`;
+    }
+}
+
+function DisplaySquadInfo() {
+    document.getElementById('squadCount').innerText = squad.length;
+    let backs = squad.filter(p => p.position == 'Back' || p.position2 == 'Back');
+    let playmakers = squad.filter(p => p.position == 'Playmaker' || p.position2 == 'Playmaker');
+    let forwards = squad.filter(p => p.position == 'Forward' || p.position2 == 'Forward');
+    document.getElementById('backsCount').innerText = 'Backs: ' + backs.length;
+    document.getElementById('playmakersCount').innerText = 'Playmakers: ' + playmakers.length;
+    document.getElementById('forwardsCount').innerText = 'Forwards: ' + forwards.length;
+    let duals = squad.filter(p => p.position2 != '');
+    if (duals.length == 1)
+        document.getElementById('positionCounts').innerHTML += `<br />Includes ${duals.length} dual-position player`;
+    else if (duals.length > 1)
+        document.getElementById('positionCounts').innerHTML += `<br />Includes ${duals.length} dual-position players`;
+    if (squad.length < 18) {
+        document.getElementById('pickPlayersLink').hidden = false;
+    }
+}
+
+function DisplayTeamInfo() {
+    document.getElementById('teamNameDisplay').innerHTML = user.team_name;
+    document.getElementById('teamLogo').src = '/static/' + user.team_short + '.png';
+    document.getElementById('teamOwner').innerText = user.username;
+    let ladder = allUsers.sort(function (u1, u2) {
+        if (u2.stats.points != u1.stats.points) {
+            return u2.stats.points - u1.stats.points;
+        } if ((u2.stats.for - u2.stats.against) != (u1.stats.for - u1.stats.against)) {
+            return (u2.stats.for - u2.stats.against) - (u1.stats.for - u1.stats.against);
+        }
+        return u2.stats.for - u1.stats.for;
+    });
+    let position = ladder.findIndex(u => u.username == user.username) + 1;
+    document.getElementById('teamPosition').innerText = 'Position: ' + GetOrdinal(position) + ' (' + user.stats.points + ' points)';
+    document.getElementById('teamWinStats').innerText = `Wins: ${user.stats.wins}, Draws: ${user.stats.draws}, Losses: ${user.stats.losses}`;
+    document.getElementById('teamPointStats').innerText = `For: ${user.stats.for}, Against: ${user.stats.against}, Differential: ${user.stats.for - user.stats.against}`;
 }
 
 function PopulatePickPlayerTable(playerData) {

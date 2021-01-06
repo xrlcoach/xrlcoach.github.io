@@ -1,5 +1,5 @@
 import { GetPlayersFromXrlTeam, GetActiveUserInfo, UpdatePlayerXrlTeam, GetAllUsers, GetActiveUserTeamShort, GetAllFixtures } from './ApiFetch.js';
-import { DisplayFeedback, GetActiveRoundFromFixtures, GetOrdinal, GetTeamFixture } from './Helpers.js';
+import { DisplayFeedback, DisplayPlayerInfo, GetActiveRoundFromFixtures, GetOrdinal, GetTeamFixture } from './Helpers.js';
 
 let squad, allUsers, user, allRounds, lastRound, nextRound;
 
@@ -131,7 +131,7 @@ function PopulatePickPlayerTable(playerData) {
         var team = document.createElement('td');
         team.textContent = player.nrl_club;
         tr.appendChild(team);
-        var drop = document.createElement('td');
+        var details = document.createElement('td');
         var form = document.createElement('form');
         var input = document.createElement('input');
         input.setAttribute('type', 'hidden')
@@ -139,22 +139,26 @@ function PopulatePickPlayerTable(playerData) {
         form.appendChild(input)
         var button = document.createElement('button');
         button.setAttribute('type', 'submit');
-        button.className = 'btn btn-danger';
-        button.innerText = 'Drop';
+        button.className = 'btn btn-success';
+        button.innerText = 'Details';
         form.appendChild(button);
-        form.onsubmit = async function (event) {
+        form.onsubmit = function(event) {
             event.preventDefault();
-            dropPlayer(this);
-            try {
-                let playerToDrop = squad.find()
-                const resp = await UpdatePlayerXrlTeam(null, this.elements[0].value);
-                location.reload();
-            } catch (error) {
-                DisplayFeedback('Error', error);
-            }
-        };
-        drop.appendChild(form);
-        tr.appendChild(drop);
+            DisplayPlayerInfo(squad.find(p => p.player_id == this.firstChild.value));
+        }
+        // form.onsubmit = async function (event) {
+        //     event.preventDefault();
+        //     dropPlayer(this);
+        //     try {
+        //         let playerToDrop = squad.find()
+        //         const resp = await UpdatePlayerXrlTeam(null, this.elements[0].value);
+        //         location.reload();
+        //     } catch (error) {
+        //         DisplayFeedback('Error', error);
+        //     }
+        // };
+        details.appendChild(form);
+        tr.appendChild(details);
         tableBody.appendChild(tr);
     }
 }

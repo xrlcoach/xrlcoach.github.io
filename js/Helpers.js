@@ -15,6 +15,15 @@ export function DisplayFeedback(title, message, confirm=false, onConfirmFunction
     }
     feedback.show();
 }
+export function DisplayPlayerInfo(player) {
+    let playerInfo = new bootstrap.Modal(document.getElementById('playerInfo'));
+    document.getElementById('playerInfoTitle').innerText = player.player_name;
+    document.getElementById('playerNrlClub').innerText = player.nrl_club;
+    document.getElementById('playerXrlTeam').innerText = player.xrl_team;
+    document.getElementById('playerPositions').innerText = player.position;
+    if (player.position2) document.getElementById('playerPositions').innerText += ', ' + player.position2;
+    playerInfo.show();
+}
 /**
  * Tallies up the scores of all players in a lineup who played or subbed in
  * @param {Array} lineup 

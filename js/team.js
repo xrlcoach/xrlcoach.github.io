@@ -31,10 +31,10 @@ function DisplayLastMatch() {
     let opponent = homeGame ? match.away : match.home;
     let ground = homeGame ? user.homeground : allUsers.find(u => u.team_short == opponent).homeground;
     document.getElementById('lastMatchOpponent').innerText = opponent + ' @ ' + ground;
-    document.getElementById('lastMatchScore').innerText = match.homeScore + ' - ' + match.awayScore;
-    let result = match.homeScore == match.awayScore ? 'DRAW' : homeGame ? match.homeScore > match.awayScore ? 'WIN' : 'LOSS' : match.awayScore > match.homeScore ? 'WIN' : 'LOSS';
-    document.getElementById('lastMatchResult').style.color = result == 'WIN' ? 'green' : result == 'LOSS' ? 'c94d38' : 'orange'; 
-    document.getElementById('lastMatchResult').innerText = result; 
+    document.getElementById('lastMatchScore').innerText = match.home_score + ' - ' + match.away_score;
+    let result = match.home_score == match.away_score ? 'DRAW' : homeGame ? match.home_score > match.away_score ? 'WIN' : 'LOSS' : match.away_score > match.home_score ? 'WIN' : 'LOSS';
+    document.getElementById('lastMatchResult').style.color = result == 'WIN' ? 'green' : result == 'LOSS' ? '#c94d38' : 'orange'; 
+    document.getElementById('lastMatchResult').innerText = ' ' + result; 
     document.getElementById('lastMatchView').href = `fixture.html?round=${lastRound.round_number}&fixture=${match.home}-v-${match.away}`;
 }
 
@@ -44,24 +44,26 @@ function DisplayNextMatch() {
     let opponent = homeGame ? match.away : match.home;
     let ground = homeGame ? user.homeground : allUsers.find(u => u.team_short == opponent).homeground;
     document.getElementById('nextMatchOpponent').innerText = opponent + ' @ ' + ground;
-    if (nextRound.completed) status = 'Completed';
-    else if (nextRound.in_progress) status = 'In Progress';
-    else if (nextRound.active) status = 'Active';
-    else status = 'Inactive';
+    let status, color;
+    if (nextRound.completed) { status = 'Completed'; color = 'green'; }
+    else if (nextRound.in_progress) { status = 'In Progress'; color = 'green'; }
+    else if (nextRound.active) { status = 'Active'; color = 'orange'; }
+    else { status = 'Inactive'; color = '#c94d38'; }
+    document.getElementById('nextMatchStatus').style.color = color;
     document.getElementById('nextMatchStatus').innerText = 'Status: ' + status;
     if (!nextRound.in_progress) {
         document.getElementById('nextMatchButton').href = `lineup.html`;
         document.getElementById('nextMatchButton').innerText = 'Set Lineup';
     } else {
-        document.getElementById('nextMatchScore').innerText = match.homeScore + ' - ' + match.awayScore; 
+        document.getElementById('nextMatchScore').innerText = match.home_score + ' - ' + match.away_score; 
         document.getElementById('nextMatchScore').hidden = false; 
         document.getElementById('nextMatchButton').href = `fixture.html?round=${lastRound.round_number}&fixture=${match.home}-v-${match.away}`;
         document.getElementById('nextMatchButton').innerText = 'View';
     }
     if (nextRound.completed) {
-        let result = match.homeScore == match.awayScore ? 'DRAW' : homeGame ? match.homeScore > match.awayScore ? 'WIN' : 'LOSS' : match.awayScore > match.homeScore ? 'WIN' : 'LOSS';
-        document.getElementById('nextMatchResult').style.color = result == 'WIN' ? 'green' : result == 'LOSS' ? 'c94d38' : 'orange'; 
-        document.getElementById('nextMatchResult').innerText = result;
+        let result = match.home_score == match.away_score ? 'DRAW' : homeGame ? match.home_score > match.away_score ? 'WIN' : 'LOSS' : match.away_score > match.home_score ? 'WIN' : 'LOSS';
+        document.getElementById('nextMatchResult').style.color = result == 'WIN' ? 'green' : result == 'LOSS' ? '#c94d38' : 'orange'; 
+        document.getElementById('nextMatchResult').innerText = ' ' + result;
     } 
 }
 

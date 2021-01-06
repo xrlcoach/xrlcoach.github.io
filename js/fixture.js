@@ -43,8 +43,8 @@ window.onload = async function() {
     homeLineup = await GetLineupByTeamAndRound(roundNumber, homeTeam);
     awayLineup = await GetLineupByTeamAndRound(roundNumber, awayTeam);
     //Construct the lineup tables
-    populateLineupTable('homeTableBody', homeLineup.sort((a, b) => a.position_number - b.position_number));
-    populateLineupTable('awayTableBody', awayLineup.sort((a, b) => a.position_number - b.position_number));
+    populateLineupTable('homeTableBody', homeLineup.sort((a, b) => a.position_number - b.position_number), match.home_score);
+    populateLineupTable('awayTableBody', awayLineup.sort((a, b) => a.position_number - b.position_number), match.away_score);
 }
 /**
  * Fills specified table with provided lineup data. Colourises players to indicate whether they
@@ -52,7 +52,7 @@ window.onload = async function() {
  * @param {String} tableId The id of the table body element to construct
  * @param {Array} lineup An array of player lineup entries
  */
-function populateLineupTable(tableId, lineup) {
+function populateLineupTable(tableId, lineup, score) {
     //Locate table body element
     let table = document.getElementById(tableId);
     //Separate the starting lineup from the interchange players
@@ -139,7 +139,7 @@ function populateLineupTable(tableId, lineup) {
     label.innerText = 'Total:';
     tr.appendChild(label);
     //Pass the lineup to the GetLineupScore function from Helpers module
-    let total = GetLineupScore(lineup);
+    let total = score ? score : GetLineupScore(lineup);
     //Create cell to display total
     let totalDisplay = document.createElement('td');
     totalDisplay.innerText = total;

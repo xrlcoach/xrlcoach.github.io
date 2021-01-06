@@ -53,15 +53,19 @@
             <span class="text-white h4">Home</span>
         </div>
     </header>
-
-    <main class="container-lg">
+    <div id="loading">
+        <div class="spinner-border text-success" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+    <main class="container-lg" id="mainContent" hidden>
         <div class="row align-items-center mt-5">
             <div class="col-lg card border border-secondary" id="teamInfoCard">
                 <h2 class="card-header bg-primary bg-gradient text-white" id="teamNameDisplay"></h2>
                 <div class="card-body">
                     <div class="row">
                         <div class="col-4 p-2">
-                            <img id="teamLogo" width="100px"/>
+                            <img id="teamLogo" width="100px" />
                         </div>
                         <div class="col p-2 align-items-center">
                             <h4 class="m-1" id="teamOwner"></h4>

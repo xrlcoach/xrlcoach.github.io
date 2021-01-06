@@ -20,6 +20,8 @@ window.onload = async function () {
             return p1.player_name.split(' ')[1] > p2.player_name.split(' ')[1]
         });
         PopulatePickPlayerTable(sortedSquad);
+        document.getElementById('loading').hidden = true;
+        document.getElementById('mainContent').hidden = false;
     } catch (error) {
         DisplayFeedback(error, error.stack);
     }

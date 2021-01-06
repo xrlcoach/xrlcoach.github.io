@@ -26,7 +26,7 @@ window.onload = async function () {
 }
 
 function DisplayLastMatch() {
-    let match = GetUserFixture(user, nextRound);
+    let match = GetUserFixture(user, lastRound);
     let homeGame = match.home == user.team_short;
     let opponent = homeGame ? match.away : match.home;
     let ground = homeGame ? user.homeground : allUsers.find(u => u.team_short == opponent).homeground;
@@ -39,7 +39,7 @@ function DisplayLastMatch() {
 }
 
 function DisplayNextMatch() {
-    let match = GetUserFixture(user, lastRound);
+    let match = GetUserFixture(user, nextRound);
     let homeGame = match.home == user.team_short;
     let opponent = homeGame ? match.away : match.home;
     let ground = homeGame ? user.homeground : allUsers.find(u => u.team_short == opponent).homeground;

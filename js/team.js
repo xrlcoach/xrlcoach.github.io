@@ -7,7 +7,7 @@ window.onload = async function () {
     try {
         user = await GetActiveUserInfo(idToken);
         squad = await GetPlayersFromXrlTeam(user.team_short);
-        document.getElementById('teamHeader').innerHTML = user.team_name + "<br />First Team Squad";
+        document.getElementById('teamHeader').innerHTML = user.team_name;
         document.getElementById('squadCount').innerText = 'Squad Size: ' + squad.length;
         let backs = squad.filter(p => p.position == 'Back' || p.position2 == 'Back');
         let playmakers = squad.filter(p => p.position == 'Playmaker' || p.position2 == 'Playmaker');

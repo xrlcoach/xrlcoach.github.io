@@ -8,7 +8,7 @@ window.onload = async function () {
         user = await GetActiveUserInfo(idToken);
         squad = await GetPlayersFromXrlTeam(user.team_short);
         document.getElementById('teamHeader').innerHTML = user.team_name;
-        document.getElementById('squadCount').innerText = 'Squad Size: ' + squad.length;
+        document.getElementById('squadCount').innerText = squad.length;
         let backs = squad.filter(p => p.position == 'Back' || p.position2 == 'Back');
         let playmakers = squad.filter(p => p.position == 'Playmaker' || p.position2 == 'Playmaker');
         let forwards = squad.filter(p => p.position == 'Forward' || p.position2 == 'Forward');
@@ -21,7 +21,7 @@ window.onload = async function () {
         if (squad.length < 18) {
             document.getElementById('pickPlayersLink').hidden = false;
         }
-        document.getElementById('powerplayCount').innerText = 'Powerplays left: ' + user.powerplays;
+        document.getElementById('powerplayCount').innerText = user.powerplays;
         for (let player in user.captain_counts) {
             let name = squad.find(p => p.player_id == player).player_name;
             document.getElementById('captainCountList').innerHTML += `<li>${name}: ${user.captain_counts[player]}</li>`

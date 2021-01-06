@@ -82,8 +82,8 @@ export function GetPlayerXrlScores(scoringPosition, appearance, scoreAsKicker=tr
  * @param {*} user A user data object
  * @param {*} round A round data object
  */
-export function GetUserFixture(user, round) {
-    return round.fixtures.find(f => f.home == user.team_short || f.away == user.team_short);
+export function GetTeamFixture(team_short, round) {
+    return round.fixtures.find(f => f.home == team_short || f.away == team_short);
 }
 /**
  * Returns ordinal number string for provided integer, e.g. 1 = '1st', 11 = '11th' 

@@ -2,7 +2,7 @@
 and future XRL fixtures. */
 
 import { GetActiveUserTeamShort, GetAllFixtures, GetAllUsers, GetCurrentRoundInfo } from "./ApiFetch.js";
-import { GetLineupScoreByTeamAndRound, GetActiveRoundFromFixtures, GetUserFixture, DisplayFeedback } from "./Helpers.js";
+import { GetLineupScoreByTeamAndRound, GetActiveRoundFromFixtures, GetTeamFixture, DisplayFeedback } from "./Helpers.js";
 /**
  * An array of round objects sorted by round number.
  */

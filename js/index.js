@@ -1,143 +1,231 @@
-import { GetPlayersFromXrlTeam, GetActiveUserInfo, GetLineupByTeamAndRound, GetAllUsers, GetRoundInfoFromCookie } from './ApiFetch.js';
-import { GetUserFixture, GetOrdinal, PositionNames, GetLineupScore, DisplayFeedback } from './Helpers.js';
+import { GetPlayersFromXrlTeam, GetActiveUserInfo, UpdatePlayerXrlTeam, GetAllUsers, GetActiveUserTeamShort, GetAllFixtures } from './ApiFetch.js';
+import { DisplayFeedback, GetActiveRoundFromFixtures, GetOrdinal, GetTeamFixture } from './Helpers.js';
 
-let user, allUsers, squad, currentRound, fixture;
-let completed = false;
+let squad, allUsers, user, allRounds, lastRound, nextRound;
 
 window.onload = async function () {
     try {
-        user = await GetActiveUserInfo(idToken);
         allUsers = await GetAllUsers();
-        currentRound = await GetRoundInfoFromCookie();
-        completed = currentRound.completed;
+        user = allUsers.find(u => u.team_short == GetActiveUserTeamShort());
         squad = await GetPlayersFromXrlTeam(user.team_short);
-        displayUserData();
-        fixture = GetUserFixture(user, currentRound);
-        if (fixture == undefined) {
-            document.getElementById('matchTeamsDisplay').innerHTML = '<h4>No fixture to display...</h4>';
-        }
-        else {
-            displayFixture(currentRound.round_number, fixture);
-        }
+        allRounds = await GetAllFixtures();
+        nextRound = GetActiveRoundFromFixtures(allRounds);
+        lastRound = allRounds.find(r => r.round_number == nextRound.round_number - 1);
+        if (lastRound) DisplayLastMatch();
+        DisplayNextMatch();
+        DisplayTeamInfo();
+        DisplaySquadInfo();
+        DisplayCaptainInfo();
+        let sortedSquad = squad.sort(function(p1, p2) {
+            return p1.player_name.split(' ')[1] > p2.player_name.split(' ')[1]
+        });
+        PopulatePickPlayerTable(sortedSquad);
+        document.getElementById('loading').hidden = true;
+        document.getElementById('mainContent').hidden = false;
     } catch (error) {
-        DisplayFeedback('Error While Loading', error);
+        DisplayFeedback(error, error.stack);
     }
 }
 
-function displayUserData() {
-    let ladder = allUsers.sort((u1, u2) => u2.stats.points - u1.stats.points);
+function DisplayLastMatch() {
+    let match = GetTeamFixture(user.team_short, lastRound);
+    let homeGame = match.home == user.team_short;
+    let opponent = homeGame ? match.away : match.home;
+    let ground = homeGame ? user.homeground : allUsers.find(u => u.team_short == opponent).homeground;
+    document.getElementById('lastMatchOpponent').innerText = opponent + ' @ ' + ground;
+    document.getElementById('lastMatchScore').innerText = match.home_score + ' - ' + match.away_score;
+    let result = match.home_score == match.away_score ? 'DRAW' : homeGame ? match.home_score > match.away_score ? 'WIN' : 'LOSS' : match.away_score > match.home_score ? 'WIN' : 'LOSS';
+    document.getElementById('lastMatchResult').style.color = result == 'WIN' ? 'green' : result == 'LOSS' ? '#c94d38' : 'orange'; 
+    document.getElementById('lastMatchResult').innerText = ' ' + result; 
+    document.getElementById('lastMatchView').href = `fixture.html?round=${lastRound.round_number}&fixture=${match.home}-v-${match.away}`;
+}
+
+function DisplayNextMatch() {
+    let match = GetTeamFixture(user.team_short, nextRound);
+    let homeGame = match.home == user.team_short;
+    let opponent = homeGame ? match.away : match.home;
+    let ground = homeGame ? user.homeground : allUsers.find(u => u.team_short == opponent).homeground;
+    document.getElementById('nextMatchOpponent').innerText = opponent + ' @ ' + ground;
+    let status, color;
+    if (nextRound.completed) { status = 'Completed'; color = 'green'; }
+    else if (nextRound.in_progress) { status = 'In Progress'; color = 'green'; }
+    else if (nextRound.active) { status = 'Active'; color = 'orange'; }
+    else { status = 'Inactive'; color = '#c94d38'; }
+    document.getElementById('nextMatchStatus').style.color = color;
+    document.getElementById('nextMatchStatus').innerText = 'Status: ' + status;
+    if (!nextRound.in_progress) {
+        document.getElementById('nextMatchButton').href = `lineup.html`;
+        document.getElementById('nextMatchButton').innerText = 'Set Lineup';
+    } else {
+        document.getElementById('nextMatchScore').innerText = match.home_score + ' - ' + match.away_score; 
+        document.getElementById('nextMatchScore').hidden = false; 
+        document.getElementById('nextMatchButton').href = `fixture.html?round=${lastRound.round_number}&fixture=${match.home}-v-${match.away}`;
+        document.getElementById('nextMatchButton').innerText = 'View';
+    }
+    if (nextRound.completed) {
+        let result = match.home_score == match.away_score ? 'DRAW' : homeGame ? match.home_score > match.away_score ? 'WIN' : 'LOSS' : match.away_score > match.home_score ? 'WIN' : 'LOSS';
+        document.getElementById('nextMatchResult').style.color = result == 'WIN' ? 'green' : result == 'LOSS' ? '#c94d38' : 'orange'; 
+        document.getElementById('nextMatchResult').innerText = ' ' + result;
+    } 
+}
+
+function DisplayCaptainInfo() {
+    document.getElementById('powerplayCount').innerText = user.powerplays;
+    for (let player in user.captain_counts) {
+        let name = squad.find(p => p.player_id == player).player_name;
+        document.getElementById('captainCountList').innerHTML += `<li>${name}: ${user.captain_counts[player]}</li>`;
+    }
+}
+
+function DisplaySquadInfo() {
+    document.getElementById('squadCount').innerText = squad.length;
+    let backs = squad.filter(p => p.position == 'Back' || p.position2 == 'Back');
+    let playmakers = squad.filter(p => p.position == 'Playmaker' || p.position2 == 'Playmaker');
+    let forwards = squad.filter(p => p.position == 'Forward' || p.position2 == 'Forward');
+    document.getElementById('backsCount').innerText = 'Backs: ' + backs.length;
+    document.getElementById('playmakersCount').innerText = 'Playmakers: ' + playmakers.length;
+    document.getElementById('forwardsCount').innerText = 'Forwards: ' + forwards.length;
+    let duals = squad.filter(p => p.position2 != '');
+    if (duals.length == 1)
+        document.getElementById('positionCounts').innerHTML += `<br />Includes ${duals.length} dual-position player`;
+    else if (duals.length > 1)
+        document.getElementById('positionCounts').innerHTML += `<br />Includes ${duals.length} dual-position players`;
+    if (squad.length < 18) {
+        document.getElementById('pickPlayersLink').hidden = false;
+    }
+}
+
+function DisplayTeamInfo() {
+    document.getElementById('teamNameDisplay').innerHTML = user.team_name;
+    document.getElementById('teamLogo').src = '/static/' + user.team_short + '.png';
+    document.getElementById('teamOwner').innerText = 'Club Owner: ' + user.username;
+    let ladder = allUsers.sort(function (u1, u2) {
+        if (u2.stats.points != u1.stats.points) {
+            return u2.stats.points - u1.stats.points;
+        } if ((u2.stats.for - u2.stats.against) != (u1.stats.for - u1.stats.against)) {
+            return (u2.stats.for - u2.stats.against) - (u1.stats.for - u1.stats.against);
+        }
+        return u2.stats.for - u1.stats.for;
+    });
     let position = ladder.findIndex(u => u.username == user.username) + 1;
-    document.getElementById('teamNameDisplay').innerHTML = `<h4>${user.team_name}</h4>`;
-    document.getElementById('teamPositionDisplay').innerHTML = `<h4>Position: ${GetOrdinal(position)}</h4>`;
-    document.getElementById('teamStatsDisplay').innerHTML = `<h4>Wins: ${user.stats.wins}, Draws: ${user.stats.draws}, Losses: ${user.stats.losses}</h4>`;
+    document.getElementById('teamPosition').innerText = 'Position: ' + GetOrdinal(position) + ' (' + user.stats.points + ' points)';
+    document.getElementById('teamWinStats').innerText = `Wins: ${user.stats.wins}, Draws: ${user.stats.draws}, Losses: ${user.stats.losses}`;
+    document.getElementById('teamPointStats').innerText = `For: ${user.stats.for}, Against: ${user.stats.against}, Differential: ${user.stats.for - user.stats.against}`;
 }
 
-async function displayFixture(roundNumber, fixture) {
-    let homeUser = allUsers.find(u => u.team_short == fixture.home);
-    let awayUser = allUsers.find(u => u.team_short == fixture.away);
-    document.getElementById('roundNumberDisplay').innerHTML = `<h4>Round ${roundNumber}</h4>`;
-    document.getElementById('matchTeamsDisplay').innerHTML = `<h4>${homeUser.team_name} v ${awayUser.team_name}</h4>`;
-    document.getElementById('homegroundDisplay').innerHTML = `<h4>@ ${homeUser.homeground}</h4>`;
-    document.getElementById('homeLogo').src = `/static/${homeUser.team_short}.png`;
-    document.getElementById('awayLogo').src = `/static/${awayUser.team_short}.png`;
-    let homeLineup = await GetLineupByTeamAndRound(roundNumber, fixture.home);
-    if (homeLineup.length == 0) {
-        document.getElementById('homeTableHeader').innerText = "No lineup yet for " + fixture.home;
-    } else {
-        populateLineupTable('homeTableBody', homeLineup.sort((a, b) => a.position_number - b.position_number));
-        document.getElementById('homeTableHeader').innerText = fixture.home + " Score";
-    }
-    let awayLineup = await GetLineupByTeamAndRound(roundNumber, fixture.away);
-    if (awayLineup.length == 0) {
-        document.getElementById('awayTableHeader').innerText = "No lineup yet for " + fixture.away;
-    } else {
-        populateLineupTable('awayTableBody', awayLineup.sort((a, b) => a.position_number - b.position_number));
-        document.getElementById('awayTableHeader').innerText = fixture.away + " Score";
-    }
-    document.getElementById('fixtureContainer').hidden = false;
-}
-
-function populateLineupTable(tableId, lineup) {
-    let table = document.getElementById(tableId);
-    let starters = lineup.filter(p => p.position_number < 14);
-    let bench = lineup.filter(p => p.position_number >= 14);
-    for (let player of starters) {
-        let tr = document.createElement('tr');
-        if (player.played_xrl) tr.style.color = "green";
-        if (!player.played_xrl && completed) tr.style.color = "#c94d38";
-        let name = document.createElement('td');
-        name.style.whiteSpace = 'nowrap';
-        name.innerText = player.player_name;
+function PopulatePickPlayerTable(playerData) {
+    var tableBody = document.getElementById('playerSquadTable');
+    tableBody.innerHTML = '';
+    for (var i = 0; i < playerData.length; i++) {
+        var player = playerData[i];
+        var tr = document.createElement('tr');
+        var name = document.createElement('td');
+        name.textContent = player.player_name;
         tr.appendChild(name);
-        let nrlClub = document.createElement('td');
-        nrlClub.innerText = player.nrl_club;
-        tr.appendChild(nrlClub);
-        let position = document.createElement('td');
-        position.innerText = PositionNames[player.position_specific];
-        tr.appendChild(position);
-        let captain = document.createElement('td');
-        if (player.captain || player.captain2) captain.innerText = 'Captain';
-        if (player.vice) captain.innerText = 'Vice-Captain';
-        tr.appendChild(captain);
-        let kicker = document.createElement('td');
-        if (player.kicker) kicker.innerText = 'Kicker';
-        if (player.backup_kicker) kicker.innerText = 'Backup Kicker';
-        tr.appendChild(kicker);
-        let score = document.createElement('td');
-        score.innerText = player.score;
-        tr.appendChild(score);
-        table.appendChild(tr);
+        var pos1 = document.createElement('td');
+        pos1.textContent = player.position;
+        tr.appendChild(pos1);
+        var pos2 = document.createElement('td');
+        pos2.textContent = player.position2;
+        tr.appendChild(pos2);
+        var team = document.createElement('td');
+        team.textContent = player.nrl_club;
+        tr.appendChild(team);
+        var drop = document.createElement('td');
+        var form = document.createElement('form');
+        var input = document.createElement('input');
+        input.setAttribute('type', 'hidden')
+        input.setAttribute('value', player.player_id)
+        form.appendChild(input)
+        var button = document.createElement('button');
+        button.setAttribute('type', 'submit');
+        button.className = 'btn btn-danger';
+        button.innerText = 'Drop';
+        form.appendChild(button);
+        form.onsubmit = async function (event) {
+            event.preventDefault();
+            dropPlayer(this);
+            try {
+                let playerToDrop = squad.find()
+                const resp = await UpdatePlayerXrlTeam(null, this.elements[0].value);
+                location.reload();
+            } catch (error) {
+                DisplayFeedback('Error', error);
+            }
+        };
+        drop.appendChild(form);
+        tr.appendChild(drop);
+        tableBody.appendChild(tr);
     }
-    let tr = document.createElement('tr');
-    let benchHeader = document.createElement('td');
-    benchHeader.innerText = 'Interchange'; 
-    benchHeader.colSpan = "6";
-    tr.appendChild(benchHeader);
-    table.appendChild(tr);
-    for (let player of bench) {
-        let tr = document.createElement('tr');
-        if (player.played_xrl) tr.style.color = "green";
-        if (!player.played_xrl && completed) tr.style.color = "#c94d38";
-        if (!player.played_xrl && !completed) tr.style.color = "grey";
-        let name = document.createElement('td');
-        name.innerText = player.player_name;
-        tr.appendChild(name);
-        let nrlClub = document.createElement('td');
-        nrlClub.innerText = player.nrl_club;
-        tr.appendChild(nrlClub);
-        let position = document.createElement('td');
-        position.innerText = player.position_general;
-        tr.appendChild(position);
-        let captain = document.createElement('td');
-        tr.appendChild(captain);
-        let kicker = document.createElement('td');
-        tr.appendChild(kicker);
-        let score = document.createElement('td');
-        score.innerText = player.score;
-        tr.appendChild(score);
-        table.appendChild(tr);
-    }
-    tr = document.createElement('tr');
-    tr.className = 'rounded-bottom';
-    for (let i = 0; i < 4; i++) {
-        tr.appendChild(document.createElement('td'));
-    }
-    let label = document.createElement('td');
-    label.innerText = 'Total:';
-    tr.appendChild(label);
-    let total = GetLineupScore(lineup);
-    let totalDisplay = document.createElement('td');
-    totalDisplay.innerText = total;
-    tr.appendChild(totalDisplay);
-    table.appendChild(tr);
 }
 
-function showModal() {
-    let redirect = function() {
-        window.location.href = 'team.html';
-    }
-    DisplayFeedback('Success!', 'The modal thingy worked! Would you like to go to the team page?', true, redirect);
+async function dropPlayer(form) {
+    let playerToDrop = squad.find(p => p.player_id == form.elements[0].value)
+    await UpdatePlayerXrlTeam(null, playerToDrop);
+    location.reload();
 }
-window.showModal = showModal;
 
-
+function sortByName() {
+    let sortedSquad = squad.sort(function(p1, p2) {
+        return p1.player_name.split(' ')[1] > p2.player_name.split(' ')[1]
+    });
+    document.getElementById('sortByNameButton').onclick = sortByNameDesc;
+    PopulatePickPlayerTable(sortedSquad);
+}
+window.sortByName = sortByName;
+function sortByNameDesc() {
+    let sortedSquad = squad.sort(function(p1, p2) {
+        return p1.player_name.split(' ')[1] < p2.player_name.split(' ')[1]
+    });
+    document.getElementById('sortByNameButton').onclick = sortByName;
+    PopulatePickPlayerTable(sortedSquad);
+}
+window.sortByNameDesc = sortByNameDesc;
+function sortByPosition() {
+    let sortedSquad = squad.sort(function(p1, p2) {
+        return p1.position > p2.position
+    });
+    document.getElementById('sortByPositionButton').onclick = sortByPositionDesc;
+    PopulatePickPlayerTable(sortedSquad);
+}
+window.sortByPosition = sortByPosition;
+function sortByPositionDesc() {
+    let sortedSquad = squad.sort(function(p1, p2) {
+        return p1.position < p2.position
+    });
+    document.getElementById('sortByPositionButton').onclick = sortByPosition;
+    PopulatePickPlayerTable(sortedSquad);
+}
+window.sortByPositionDesc = sortByPositionDesc;
+function sortByPosition2() {
+    let sortedSquad = squad.sort(function(p1, p2) {
+        return p1.position2 > p2.position2
+    });
+    document.getElementById('sortByPosition2Button').onclick = sortByPosition2Desc;
+    PopulatePickPlayerTable(sortedSquad);
+}
+window.sortByPosition2 = sortByPosition2;
+function sortByPosition2Desc() {
+    let sortedSquad = squad.sort(function(p1, p2) {
+        return p1.position < p2.position
+    });
+    document.getElementById('sortByPosition2Button').onclick = sortByPosition2;
+    PopulatePickPlayerTable(sortedSquad);
+}
+window.sortByPosition2Desc = sortByPosition2Desc;
+function sortByClub() {
+    let sortedSquad = squad.sort(function(p1, p2) {
+        return p1.nrl_club > p2.nrl_club
+    });
+    document.getElementById('sortByClubButton').onclick = sortByClubDesc;
+    PopulatePickPlayerTable(sortedSquad);
+}
+window.sortByClub = sortByClub;
+function sortByClubDesc() {
+    let sortedSquad = squad.sort(function(p1, p2) {
+        return p1.nrl_club < p2.nrl_club
+    });
+    document.getElementById('sortByClubButton').onclick = sortByClub;
+    PopulatePickPlayerTable(sortedSquad);
+}
+window.sortByClubDesc = sortByClubDesc;

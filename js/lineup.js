@@ -1,7 +1,7 @@
 /* Script controlling lineup.html, the page where the user sets their lineup for the next round */
 
 import { GetActiveUserInfo, GetAllFixtures, GetIdToken, GetLineup, GetNextRoundInfo, GetPlayersFromXrlTeam, SetLineup } from './ApiFetch.js'
-import { DisplayFeedback, GetUserFixture } from './Helpers.js';
+import { DisplayFeedback, GetTeamFixture } from './Helpers.js';
 
 /**
  * The active user's id token
@@ -42,7 +42,7 @@ window.onload = async () => {
     console.log(lineup.length);
     //Retrieve and display info for the next round
     nextRound = await GetNextRoundInfo();
-    let match = GetUserFixture(user, nextRound);
+    let match = GetTeamFixture(user.team_short, nextRound);
     let homeGame = match.home == user.team_short;
     let opponent = homeGame ? match.away : match.home;
     document.getElementById('lineupHeading').innerHTML = `Select ${user.team_short} lineup for Round ${nextRound.round_number} vs ${opponent} ${homeGame ? "AT HOME" : "AWAY"}`;

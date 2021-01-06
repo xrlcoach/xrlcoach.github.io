@@ -1,35 +1,43 @@
 /* Script controlling fixture.html, which displays XRL match stats */
 
-import { GetLineupByTeamAndRound, GetRoundInfo } from "./ApiFetch.js";
-import { GetLineupScore, PositionNames } from "./Helpers.js";
+import { GetLineupByTeamAndRound, GetRoundInfo, getCookie, GetRoundInfoFromCookie, GetActiveUserInfo, GetIdToken } from "./ApiFetch.js";
+import { GetLineupScore, GetTeamFixture, PositionNames } from "./Helpers.js";
 
-let roundNumber, completed, homeTeam, awayTeam, homeLineup, awayLineup;
+let roundNumber, roundInfo, completed, match, homeTeam, awayTeam, homeLineup, awayLineup;
 
 window.onload = async function() {
-    //Get query parameters
+    //Get query parameters, if present
     let query = window.location.href.split('?')[1];
-    //Split into individual params
-    let queries = query.split('&');
-    //Iterate through queries and find round number and match
-    for (let q of queries) {
-        if (q.startsWith('round')) {
-            roundNumber = q.split('=')[1];
+    if (query) {
+        //Split into individual params
+        let queries = query.split('&');
+        //Iterate through queries and find round number and match
+        for (let q of queries) {
+            if (q.startsWith('round')) {
+                roundNumber = q.split('=')[1];
+                roundInfo = await GetRoundInfo(roundNumber);
+            }
+            if (q.startsWith('fixture')) {
+                let fixture = q.split('=')[1];
+                match = GetTeamFixture(fixture.split('-v-')[0], roundInfo);
+            }
         }
-        if (q.startsWith('fixture')) {
-            let fixture = q.split('=')[1];
-            homeTeam = fixture.split('-v-')[0];
-            awayTeam = fixture.split('-v-')[1];
-        }
+    } else { //If now query, get user's current match
+        roundInfo = GetRoundInfoFromCookie();
+        roundNumber = roundInfo.round_number;
+        let user = await GetActiveUserInfo(GetIdToken());
+        match = GetTeamFixture(user.team_short, roundInfo);
     }
+    homeTeam = match.home;
+    awayTeam = match.away;
     //Display match and team headings
     let heading = `Round ${roundNumber}: ${homeTeam} v ${awayTeam}`;
     document.getElementById('fixtureHeading').innerText = heading;
-    document.getElementById('homeTableHeader').innerText = homeTeam + " Score";
-    document.getElementById('awayTableHeader').innerText = awayTeam + " Score";
+    document.getElementById('homeTableHeader').innerText = homeTeam + " Lineup";
+    document.getElementById('awayTableHeader').innerText = awayTeam + " Lineup";
     document.getElementById('homeLogo').src = `/static/${homeTeam}.png`;
     document.getElementById('awayLogo').src = `/static/${awayTeam}.png`;
-    //Get round indo and check if round has been completed
-    let roundInfo = await GetRoundInfo(roundNumber);
+    //Check if round has been completed 
     completed = roundInfo['completed'];
     //Retrieve team lineups
     homeLineup = await GetLineupByTeamAndRound(roundNumber, homeTeam);
@@ -56,7 +64,7 @@ function populateLineupTable(tableId, lineup) {
         let tr = document.createElement('tr');
         //Colour row green if the player played that week, red if not
         if (player['played_xrl']) tr.style.color = "green";
-        if (!player['played_xrl'] && completed) tr.style.color = "red";
+        if (!player['played_xrl'] && completed) tr.style.color = "#c94d38";
         /*For each property to display, create a table cell, assign the data to the innerText property,
         and append it to the table row*/
         let name = document.createElement('td');
@@ -85,6 +93,8 @@ function populateLineupTable(tableId, lineup) {
     //Create heading for Interchange section of the table
     let tr = document.createElement('tr');
     let benchHeader = document.createElement('td');
+    benchHeader.colSpan = "6";
+    benchHeader.className = "border-bottom border-white";
     benchHeader.innerText = 'Interchange'; 
     tr.appendChild(benchHeader);
     table.appendChild(tr);
@@ -95,7 +105,7 @@ function populateLineupTable(tableId, lineup) {
         /*Colour row green if player played that week and was subbed on, red if not,
         and grey if they haven't been subbed on but the round isn't over*/
         if (player['played_xrl']) tr.style.color = "green";
-        if (!player['played_xrl'] && completed) tr.style.color = "red";
+        if (!player['played_xrl'] && completed) tr.style.color = "#c94d38";
         if (!player['played_xrl'] && !completed) tr.style.color = "grey";
         /*Create the same table cells as for the starters, but no need to conditionally fill
         captain and kicker cells*/

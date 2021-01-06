@@ -27,7 +27,7 @@
 <body>
 
     <nav class="navbar navbar-expand-md navbar-dark" style="background-color: rgb(44, 48, 52);">
-        <a class="navbar-brand" href="/"><img src="static/xrl-logo.png" alt="XRL Badge" height="40"><span
+        <a class="navbar-brand ms-2" href="/"><img src="static/xrl-logo.png" alt="XRL Badge" height="40"><span
                 class="green">X</span><span class="yellow">R</span><span class="green">L</span></a>
         <button aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler"
             data-bs-target="#navbar" data-bs-toggle="collapse" type="button">
@@ -35,82 +35,143 @@
         </button>
         <div class="collapse navbar-collapse" id="navbar">
             <ul class="navbar-nav me-auto mt-2">
-                <li class="nav-item"><a class="nav-link" href="team.html">My Team</a></li>
                 <li class="nav-item"><a class="nav-link" href="lineup.html">Lineup</a></li>
+                <li class="nav-item"><a class="nav-link" href="fixture.html">Match Centre</a></li>
                 <li class="nav-item"><a class="nav-link" href="draw.html">Draw</a></li>
                 <li class="nav-item"><a class="nav-link" href="comp.html">Ladder</a></li>
                 <li class="nav-item"><a class="nav-link" href="squads.html">Squads</a></li>
                 <li class="nav-item"><a class="nav-link" href="stats.html">Stats</a></li>
             </ul>
-            <ul class="navbar-nav ms-auto mt-2">
+            <ul class="navbar-nav ms-auto me-2 mt-2">
                 <li class="nav-item"><a class="nav-link" href="#" onclick="logout()">Log Out</a></li>
             </ul>
         </div>
     </nav>
 
     <header class="p-3 bg-success bg-gradient">
-        <div class="row text-center" id="userData">
-            <span class="col text-white" id="teamNameDisplay" onclick="showModal()"></span>
-            <span class="col text-white" id="teamPositionDisplay"></span>
-            <span class="col text-white" id="teamStatsDisplay"></span>
+        <div class="row text-center">
+            <span class="text-white h4">Home</span>
         </div>
     </header>
-    <main class="mt-5">
-        <div class="row text-center p-3" name="secondaryHeader">
-            <span class="col" id="roundNumberDisplay"></span>
-            <span class="col" id="matchTeamsDisplay"></span>
-            <span class="col" id="homegroundDisplay"></span>
+    <div id="loading">
+        <div class="spinner-border text-success mx-auto" role="status">
+            <span class="visually-hidden">Loading...</span>
         </div>
-        <div id="fixtureContainer" class="row p-5" hidden>
-            <div class="col table-responsive align-self-start">
-                <table class="table table-dark table-striped rounded">
-                    <thead class="rounded-top">
-                        <tr class="rounded-top">
-                            <td colspan="6">
-                                <img id="homeLogo" style="padding-right:5px;padding-bottom:5px;display:inline-block;"
-                                    width="50px" height="50px">
-                                <h3 id="homeTableHeader" style="display:inline;"></h3>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th style="color: green;">Player</th>
-                            <th style="color: green;">NRL Team</th>
-                            <th style="color: green;">Position</th>
-                            <th> </th>
-                            <th> </th>
-                            <th style="color: green;">Score</th>
-                        </tr>
-                    </thead>
-                    <tbody id="homeTableBody" class="rounded-bottom"></tbody>
-                </table>
+    </div>
+    <main class="container-lg" id="mainContent" hidden>
+        <div class="row align-items-center mt-5">
+            <div class="col-lg card border border-secondary" id="teamInfoCard">
+                <h2 class="card-header bg-primary bg-gradient text-white" id="teamNameDisplay"></h2>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-4 p-2">
+                            <img id="teamLogo" height="200px" />
+                        </div>
+                        <div class="col p-2 align-items-center">
+                            <h4 class="m-1" id="teamOwner"></h4>
+                            <h4 class="m-1" id="teamPosition"></h4>
+                            <h4 class="m-1" id="teamWinStats"></h4>
+                            <h4 class="m-1" id="teamPointStats"></h4>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="col table-responsive align-self-start">
-                <table class="table table-dark table-striped rounded">
-                    <thead>
-                        <tr>
-                            <td colspan="6">
-                                <h3 id="awayTableHeader" style="display:inline-block;"></h3>
-                                <img id="awayLogo" style="padding-left:5px;padding-bottom:5px;" width="50px"
-                                    height="50px">
-                            </td>
-                        </tr>
-                        <tr>
-                            <th style="color: green;">Player</th>
-                            <th style="color: green;">NRL Team</th>
-                            <th style="color: green;">Position</th>
-                            <th> </th>
-                            <th> </th>
-                            <th style="color: green;">Score</th>
-                        </tr>
-                    </thead>
-                    <tbody id="awayTableBody"></tbody>
-                </table>
+        </div>
+        <div class="row justify-content-center mt-5">
+            <div class="col-4 card border border-secondary mx-3">
+                <h4 class="card-header bg-success bg-gradient text-white">Last Match</h4>
+                <div class="card-body">
+                    <h5 id="lastMatchOpponent"></h5>
+                    <p><span id="lastMatchScore"></span><span id="lastMatchResult"></span></p>
+                    <a class="btn btn-primary" id="lastMatchView">View</a>
+                </div>
+            </div>
+            <div class="col-4 card border border-secondary mx-3">
+                <h4 class="card-header bg-success bg-gradient text-white" id="nextMatchHeader">Next Match</h4>
+                <div class="card-body">
+                    <h5 id="nextMatchOpponent"></h5>
+                    <p id="nextMatchStatus"></p>
+                    <p><span id="nextMatchScore" hidden></span><span id="nextMatchResult" hidden></span></p>
+                    <a class="btn btn-primary" id="nextMatchButton"></a>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col-lg card border border-secondary" id="squadInfoCard">
+                <h4 class="card-header bg-dark bg-gradient text-white">Team Info</h4>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col m-2 card border  border-secondary" id="positionCounts">
+                            <h5 class="card-header bg-secondary bg-gradient text-white">Squad At A Glance</h5>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col align-items-center">
+                                        <h5>Players</h5>
+                                        <p class="h2 text-success" id="squadCount"></p>
+                                        <a id="pickPlayersLink" class="btn btn-success" href="pickteam.html" hidden>Pick
+                                            Players</a>
+                                    </div>
+                                    <div class="col align-items-center">
+                                        <h5>Breakdown</h5>
+                                        <ul>
+                                            <li id="backsCount"></li>
+                                            <li id="playmakersCount"></li>
+                                            <li id="forwardsCount"></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col m-2 card border  border-secondary" id="captainInfo">
+                            <h5 class="card-header bg-secondary bg-gradient text-white">Captains At A Glance</h5>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col align-items-center">
+                                        <h5>Powerplays</h5>
+                                        <p class="h2 text-success" id="powerplayCount"></p>
+                                    </div>
+                                    <div class="col align-items-center">
+                                        <h5>Times As Captain</h5>
+                                        <ul id="captainCountList"></ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col-lg card border  border-secondary mb-3">
+                <h4 class="card-header bg-dark bg-gradient text-white">First Team Squad</h4>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-dark table-striped">
+                            <thead>
+                                <tr>
+                                    <th><a id="sortByNameButton" href="#" onclick="sortByNameDesc()">Player</a></th>
+                                    <th><a id="sortByPositionButton" href="#" onclick="sortByPosition()">Position</a>
+                                    </th>
+                                    <th><a id="sortByPosition2Button" href="#" onclick="sortByPosition2()">Position
+                                            2</a>
+                                    </th>
+                                    <th><a id="sortByClubButton" href="#" onclick="sortByClub()">NRL Club</a></th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody id="playerSquadTable">
 
+                            </tbody>
+
+                        </table>
+                    </div>
+                </div>
             </div>
+        </div>
         </div>
     </main>
 
-    <footer class="small text-center text-muted">
+    <footer class="small text-center text-muted m-2">
         Data provided by <a href="https://www.nrl.com">NRL.com</a>. View <a
             href="https://www.nrl.com/terms-of-use">NRL’s Terms of Use</a>.
     </footer>
@@ -133,7 +194,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW"
         crossorigin="anonymous"></script>
-    <script type="module" src="js/index.js"></script>
+    <script type="module" src="js/old_index.js"></script>
 </body>
 
 </html>

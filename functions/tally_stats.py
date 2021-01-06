@@ -1,0 +1,45 @@
+import boto3
+from boto3.dynamodb.conditions import Key, Attr
+
+dynamodbResource = boto3.resource('dynamodb', 'ap-southeast-2')
+stats_table = dynamodbResource.Table('stats2020')
+squads_table = dynamodbResource.Table('players2020')
+
+all_stats = stats_table.scan()['Items']
+squads = squads_table.scan()['Items']
+count = 0
+for player in squads:
+    count += 1
+    player_stats = {}
+    player_appearances = [stat for stat in all_stats if stat['player_id'] == player['player_id']]
+    if len(player_appearances) == 0:
+        continue
+    player_stats['stats'] = {}
+    player_stats['scoring_stats'] = {}
+    for app in player_appearances:
+        for stat in app['stats'].keys():
+            if type(app['stats'][stat]) is str:
+                continue 
+            if app['stats'][stat] % 1 != 0:
+                continue
+            if stat not in player_stats['stats']:
+                player_stats['stats'][stat] = 0
+            player_stats['stats'][stat] += app['stats'][stat]
+        for position in app['scoring_stats'].keys():
+            if position not in player_stats['scoring_stats']:
+                player_stats['scoring_stats'][position] = {}
+            for stat in app['scoring_stats'][position]:
+                if stat not in player_stats['scoring_stats'][position]:
+                    player_stats['scoring_stats'][position][stat] = 0
+                player_stats['scoring_stats'][position][stat] += app['scoring_stats'][position][stat]
+    print('Updating ' + player['player_name'])
+    squads_table.update_item(
+        Key={
+            'player_id': player['player_id']
+        },
+        UpdateExpression="set stats=:stats, scoring_stats=:scoring_stats",
+        ExpressionAttributeValues={
+            ':stats': player_stats['stats'],
+            ':scoring_stats': player_stats['scoring_stats']
+        }
+    )

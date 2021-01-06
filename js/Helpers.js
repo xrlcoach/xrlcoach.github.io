@@ -22,7 +22,19 @@ export function DisplayPlayerInfo(player) {
     document.getElementById('playerXrlTeam').innerText = player.xrl_team;
     document.getElementById('playerPositions').innerText = player.position;
     if (player.position2) document.getElementById('playerPositions').innerText += ', ' + player.position2;
+    document.getElementById('playerTries').innerText = player.stats.Tries;
+    document.getElementById('playerITs').innerText = player.scoring_stats[player.position].involvement_try;
+    document.getElementById('playerPTs').innerText = player.scoring_stats[player.position].positional_try;
+    document.getElementById('playerGoals').innerText = player.scoring_stats.kicker.goals;
+    document.getElementById('playerFGs').innerText = player.scoring_stats.kicker.field_goals;
+    document.getElementById('playerMIAs').innerText = player.scoring_stats[player.position].mia;
+    document.getElementById('playerConcedes').innerText = player.scoring_stats[player.position].concede;
+    document.getElementById('playerSinBins').innerText = player.stats['Sin Bins'];
+    document.getElementById('playerSendOffs').innerText = player.stats['Send Offs'];
     playerInfo.show();
+}
+export function DisplayPlayerLineupInfo(appearance) {
+    
 }
 /**
  * Tallies up the scores of all players in a lineup who played or subbed in

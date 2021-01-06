@@ -21,7 +21,7 @@ window.onload = async function () {
         });
         PopulatePickPlayerTable(sortedSquad);
     } catch (error) {
-        DisplayFeedback('Error', error);
+        DisplayFeedback(error, error.stack);
     }
 }
 

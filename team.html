@@ -30,11 +30,11 @@
         <a class="navbar-brand" href="/"><img src="static/xrl-logo.png" alt="XRL Badge" height="40"><span
                 class="green">X</span><span class="yellow">R</span><span class="green">L</span></a>
         <button aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler"
-            data-target="#navbar" data-toggle="collapse" type="button">
+            data-bs-target="#navbar" data-bs-toggle="collapse" type="button">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbar">
-            <ul class="navbar-nav mr-auto mt-2">
+            <ul class="navbar-nav me-auto mt-2">
                 <li class="nav-item"><a class="nav-link" href="team.html">My Team</a></li>
                 <li class="nav-item"><a class="nav-link" href="lineup.html">Lineup</a></li>
                 <li class="nav-item"><a class="nav-link" href="draw.html">Draw</a></li>
@@ -42,7 +42,7 @@
                 <li class="nav-item"><a class="nav-link" href="squads.html">Squads</a></li>
                 <li class="nav-item"><a class="nav-link" href="stats.html">Stats</a></li>
             </ul>
-            <ul class="navbar-nav ml-auto mt-2">
+            <ul class="navbar-nav ms-auto mt-2">
                 <li class="nav-item"><a class="nav-link" href="#" onclick="logout()">Log Out</a></li>
             </ul>
         </div>
@@ -50,51 +50,93 @@
 
     <header class="p-3 bg-success bg-gradient">
         <div class="row text-center">
-            <span class="col-md-4 text-white h4" id="teamHeader"></span>
-            <span class="col-md-4 text-white h4" id="squadCount"></span>
-            <span class="col-md-4 text-white h4" id="powerplayCount"></span>
+            <span class="text-white h4" id="teamHeader"></span>
         </div>
     </header>
 
-    <main>
-        <div name="secondaryHeader" class="row">
-            <div class="col m-3 p-3 card" id="positionCounts">
-                <h5 class="card-header">Squad Breakdown</h5>
+    <main class="container-large">
+        <div class="row justify-content-center">
+            <div class="col-4 m-5 p-3 card">
+                <h4 class="card-header bg-success bg-gradient text-white">Last Match</h4>
                 <div class="card-body">
-                    <ul>
-                        <li id="backsCount"></li>
-                        <li id="playmakersCount"></li>
-                        <li id="forwardsCount"></li>
-                    </ul>
+                    <h5 id="lastMatchOpponent">BWS @ The Bondi Pavilion</h5>
+                    <p id="lastMatchScore">45 - 28<span id="lastMatchResult" style="color: green"> WIN </span></p>
+                    <a class="btn btn-primary">View</a>
                 </div>
             </div>
-            <div class="col m-3 p-3 card" id="captainCounts">
-                <h5 class="card-header">Captain Counts</h5>
+            <div class="col-4 m-5 p-3 card">
+                <h4 class="card-header bg-success bg-gradient text-white" id="nextMatchHeader">Next Match</h4>
                 <div class="card-body">
-                    <ul id="captainCountList"></ul>
+                    <h5 id="nextMatchOpponent">WOL @ The Den</h5>
+                    <p id="nextMatchStatus" style="color: orange">Status: Upcoming</p>
+                    <p id="nextMatchScore" hidden><span id="lastMatchResult" style="color: green"></span></p>
+                    <a class="btn btn-primary" id="nextMatchButton">Set Lineup</a>
                 </div>
-            </div>
-            <div class="col m-3 p-3 card">
-                <a id="pickPlayersLink" class="btn btn-success" href="pickteam.html" hidden>Pick Players</a>
             </div>
         </div>
-        <div class="container p-5">
-            <div class="table-responsive">
-                <table class="table table-dark table-striped">
-                    <thead>
-                        <tr>
-                            <th><a id="sortByNameButton" href="#" onclick="sortByNameDesc()">Player</a></th>
-                            <th><a id="sortByPositionButton" href="#" onclick="sortByPosition()">Position</a></th>
-                            <th><a id="sortByPosition2Button" href="#" onclick="sortByPosition2()">Position 2</a></th>
-                            <th><a id="sortByClubButton" href="#" onclick="sortByClub()">NRL Club</a></th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody id="playerSquadTable">
+        <div class="row">
+            <div class="col card bg-secondary bg-gradient text-white" id="teamInfoCard">
+                <h4 class="card-header">Team Info</h4>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col m-3 p-3 card" id="positionCounts">
+                            <h5 class="card-header">Squad At A Glance</h5>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col align-items-center">
+                                        <h5>Players</h5>
+                                        <p class="h2 text-success" id="squadCount"></p>
+                                        <a id="pickPlayersLink" class="btn btn-success" href="pickteam.html" hidden>Pick
+                                            Players</a>
+                                    </div>
+                                    <div class="col align-items-center">
+                                        <ul>
+                                            <li id="backsCount"></li>
+                                            <li id="playmakersCount"></li>
+                                            <li id="forwardsCount"></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col m-3 p-3 card" id="captainInfo">
+                            <h5 class="card-header">Captains At A Glance</h5>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col align-items-center">
+                                        <h5>Powerplays</h5>
+                                        <p class="h2 text-success" id="powerplayCount"></p>
+                                    </div>
+                                    <div class="col align-items-center">
+                                        <ul id="captainCountList"></ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg">
+                <div class="table-responsive">
+                    <table class="table table-dark table-striped">
+                        <thead>
+                            <tr>
+                                <th><a id="sortByNameButton" href="#" onclick="sortByNameDesc()">Player</a></th>
+                                <th><a id="sortByPositionButton" href="#" onclick="sortByPosition()">Position</a></th>
+                                <th><a id="sortByPosition2Button" href="#" onclick="sortByPosition2()">Position 2</a>
+                                </th>
+                                <th><a id="sortByClubButton" href="#" onclick="sortByClub()">NRL Club</a></th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody id="playerSquadTable">
 
-                    </tbody>
+                        </tbody>
 
-                </table>
+                    </table>
+                </div>
             </div>
         </div>
     </main>

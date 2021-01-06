@@ -27,7 +27,7 @@
 <body>
 
     <nav class="navbar navbar-expand-md navbar-dark" style="background-color: rgb(44, 48, 52);">
-        <a class="navbar-brand" href="/"><img src="static/xrl-logo.png" alt="XRL Badge" height="40"><span
+        <a class="navbar-brand ms-2" href="/"><img src="static/xrl-logo.png" alt="XRL Badge" height="40"><span
                 class="green">X</span><span class="yellow">R</span><span class="green">L</span></a>
         <button aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler"
             data-bs-target="#navbar" data-bs-toggle="collapse" type="button">
@@ -42,7 +42,7 @@
                 <li class="nav-item"><a class="nav-link" href="squads.html">Squads</a></li>
                 <li class="nav-item"><a class="nav-link" href="stats.html">Stats</a></li>
             </ul>
-            <ul class="navbar-nav ms-auto mt-2">
+            <ul class="navbar-nav ms-auto me-2 mt-2">
                 <li class="nav-item"><a class="nav-link" href="#" onclick="logout()">Log Out</a></li>
             </ul>
         </div>
@@ -55,8 +55,8 @@
     </header>
 
     <main class="container-lg">
-        <div class="row justify-content-center">
-            <div class="col-lg card border border-2 border-secondary mt-5 p-3" id="teamInfoCard">
+        <div class="row align-items-center mt-5">
+            <div class="col-lg card border border-secondary" id="teamInfoCard">
                 <h2 class="card-header bg-primary bg-gradient text-white" id="teamNameDisplay"></h2>
                 <div class="card-body">
                     <div class="row justify-content-center">
@@ -64,19 +64,17 @@
                             <img id="teamLogo" />
                         </div>
                         <div class="col p-2">
-                            <h4 class="m-1" id="teamOwner">
-                                </h5>
-                                <h4 class="m-1" id="teamPosition">
-                                    </h5>
-                                    <h4 class="m-1" id="teamWinStats"></h4>
-                                    <h4 class="m-1" id="teamPointStats"></h4>
+                            <h4 class="m-1" id="teamOwner"></h4>
+                            <h4 class="m-1" id="teamPosition"></h4>
+                            <h4 class="m-1" id="teamWinStats"></h4>
+                            <h4 class="m-1" id="teamPointStats"></h4>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="row justify-content-center">
-            <div class="col-4 m-5 p-3 card border border-2 border-secondary">
+        <div class="row justify-content-center mt-5">
+            <div class="col-4 card border border-secondary">
                 <h4 class="card-header bg-success bg-gradient text-white">Last Match</h4>
                 <div class="card-body">
                     <h5 id="lastMatchOpponent"></h5>
@@ -84,7 +82,7 @@
                     <a class="btn btn-primary" id="lastMatchView">View</a>
                 </div>
             </div>
-            <div class="col-4 m-5 p-3 card border border-2 border-secondary">
+            <div class="col-4 card border border-secondary">
                 <h4 class="card-header bg-success bg-gradient text-white" id="nextMatchHeader">Next Match</h4>
                 <div class="card-body">
                     <h5 id="nextMatchOpponent"></h5>
@@ -94,12 +92,12 @@
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-lg card border border-2 border-secondary mb-3" id="squadInfoCard">
+        <div class="row mt-5">
+            <div class="col-lg card border border-secondary" id="squadInfoCard">
                 <h4 class="card-header bg-dark bg-gradient text-white">Team Info</h4>
                 <div class="card-body">
                     <div class="row">
-                        <div class="col m-3 p-3 card border border-2 border-secondary" id="positionCounts">
+                        <div class="col m-2 card border  border-secondary" id="positionCounts">
                             <h5 class="card-header bg-secondary bg-gradient text-white">Squad At A Glance</h5>
                             <div class="card-body">
                                 <div class="row">
@@ -119,7 +117,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col m-3 p-3 card border border-2 border-secondary" id="captainInfo">
+                        <div class="col m-2 card border  border-secondary" id="captainInfo">
                             <h5 class="card-header bg-secondary bg-gradient text-white">Captains At A Glance</h5>
                             <div class="card-body">
                                 <div class="row">
@@ -137,16 +135,13 @@
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-lg card border border-2 border-secondary mb-3">
+        <div class="row mt-5">
+            <div class="col-lg card border  border-secondary mb-3">
                 <h4 class="card-header bg-dark bg-gradient text-white">First Team Squad</h4>
                 <div class="card-body">
                     <div class="table-responsive">
                         <table class="table table-dark table-striped">
                             <thead>
-                                <tr>
-                                    <th class="h4" colspan="5">First Team Squad</th>
-                                </tr>
                                 <tr>
                                     <th><a id="sortByNameButton" href="#" onclick="sortByNameDesc()">Player</a></th>
                                     <th><a id="sortByPositionButton" href="#" onclick="sortByPosition()">Position</a>
@@ -170,7 +165,7 @@
         </div>
     </main>
 
-    <footer class="small text-center text-muted">
+    <footer class="small text-center text-muted m-2">
         Data provided by <a href="https://www.nrl.com">NRL.com</a>. View <a
             href="https://www.nrl.com/terms-of-use">NRL’s Terms of Use</a>.
     </footer>

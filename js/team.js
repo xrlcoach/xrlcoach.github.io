@@ -96,7 +96,7 @@ function DisplaySquadInfo() {
 function DisplayTeamInfo() {
     document.getElementById('teamNameDisplay').innerHTML = user.team_name;
     document.getElementById('teamLogo').src = '/static/' + user.team_short + '.png';
-    document.getElementById('teamOwner').innerText = user.username;
+    document.getElementById('teamOwner').innerText = 'Club Owner: ' + user.username;
     let ladder = allUsers.sort(function (u1, u2) {
         if (u2.stats.points != u1.stats.points) {
             return u2.stats.points - u1.stats.points;

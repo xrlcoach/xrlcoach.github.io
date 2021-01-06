@@ -56,25 +56,27 @@
 
     <main class="container-lg">
         <div class="row justify-content-center">
-            <div class="col card mt-5" id="teamInfoCard">
+            <div class="col-lg card border border-2 border-secondary mt-5 p-3" id="teamInfoCard">
                 <h2 class="card-header bg-primary bg-gradient text-white" id="teamNameDisplay"></h2>
                 <div class="card-body">
-                    <div class="row">
+                    <div class="row justify-content-center">
                         <div class="col-4 p-2">
                             <img id="teamLogo" />
                         </div>
                         <div class="col p-2">
-                            <h5 id="teamOwner"></h5>
-                            <h5 id="teamPosition"></h5>
-                            <h4 id="teamWinStats"></h4>
-                            <h4 id="teamPointStats"></h4>
+                            <h4 class="m-1" id="teamOwner">
+                                </h5>
+                                <h4 class="m-1" id="teamPosition">
+                                    </h5>
+                                    <h4 class="m-1" id="teamWinStats"></h4>
+                                    <h4 class="m-1" id="teamPointStats"></h4>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
         <div class="row justify-content-center">
-            <div class="col-4 m-5 p-3 card">
+            <div class="col-4 m-5 p-3 card border border-2 border-secondary">
                 <h4 class="card-header bg-success bg-gradient text-white">Last Match</h4>
                 <div class="card-body">
                     <h5 id="lastMatchOpponent"></h5>
@@ -82,7 +84,7 @@
                     <a class="btn btn-primary" id="lastMatchView">View</a>
                 </div>
             </div>
-            <div class="col-4 m-5 p-3 card">
+            <div class="col-4 m-5 p-3 card border border-2 border-secondary">
                 <h4 class="card-header bg-success bg-gradient text-white" id="nextMatchHeader">Next Match</h4>
                 <div class="card-body">
                     <h5 id="nextMatchOpponent"></h5>
@@ -93,11 +95,11 @@
             </div>
         </div>
         <div class="row">
-            <div class="col card" id="squadInfoCard">
+            <div class="col-lg card border border-2 border-secondary mb-3" id="squadInfoCard">
                 <h4 class="card-header bg-dark bg-gradient text-white">Team Info</h4>
                 <div class="card-body">
                     <div class="row">
-                        <div class="col m-3 p-3 card" id="positionCounts">
+                        <div class="col m-3 p-3 card border border-2 border-secondary" id="positionCounts">
                             <h5 class="card-header bg-secondary bg-gradient text-white">Squad At A Glance</h5>
                             <div class="card-body">
                                 <div class="row">
@@ -117,7 +119,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col m-3 p-3 card" id="captainInfo">
+                        <div class="col m-3 p-3 card border border-2 border-secondary" id="captainInfo">
                             <h5 class="card-header bg-secondary bg-gradient text-white">Captains At A Glance</h5>
                             <div class="card-body">
                                 <div class="row">
@@ -136,29 +138,35 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-lg">
-                <div class="table-responsive">
-                    <table class="table table-dark table-striped">
-                        <thead>
-                            <tr>
-                                <th class="h4" colspan="5">First Team Squad</th>
-                            </tr>
-                            <tr>
-                                <th><a id="sortByNameButton" href="#" onclick="sortByNameDesc()">Player</a></th>
-                                <th><a id="sortByPositionButton" href="#" onclick="sortByPosition()">Position</a></th>
-                                <th><a id="sortByPosition2Button" href="#" onclick="sortByPosition2()">Position 2</a>
-                                </th>
-                                <th><a id="sortByClubButton" href="#" onclick="sortByClub()">NRL Club</a></th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody id="playerSquadTable">
+            <div class="col-lg card border border-2 border-secondary mb-3">
+                <h4 class="card-header bg-dark bg-gradient text-white">First Team Squad</h4>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-dark table-striped">
+                            <thead>
+                                <tr>
+                                    <th class="h4" colspan="5">First Team Squad</th>
+                                </tr>
+                                <tr>
+                                    <th><a id="sortByNameButton" href="#" onclick="sortByNameDesc()">Player</a></th>
+                                    <th><a id="sortByPositionButton" href="#" onclick="sortByPosition()">Position</a>
+                                    </th>
+                                    <th><a id="sortByPosition2Button" href="#" onclick="sortByPosition2()">Position
+                                            2</a>
+                                    </th>
+                                    <th><a id="sortByClubButton" href="#" onclick="sortByClub()">NRL Club</a></th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody id="playerSquadTable">
 
-                        </tbody>
+                            </tbody>
 
-                    </table>
+                        </table>
+                    </div>
                 </div>
             </div>
+        </div>
         </div>
     </main>
 

@@ -14,11 +14,10 @@ window.onload = async function() {
     users = users.sort(function(u1, u2) {
         if (u2.stats.points != u1.stats.points) {
             return u2.stats.points - u1.stats.points;
+        } if ((u2.stats.for - u2.stats.against) != (u1.stats.for - u1.stats.against)) {
+            return (u2.stats.for - u2.stats.against) - (u1.stats.for - u1.stats.against);
         }
-        if (u2.stats.wins != u1.stats.wins) {
-            return u2.stats.wins - u1.stats.wins;
-        }
-        return (u2.stats.for - u2.stats.against) - (u1.stats.for - u1.stats.against);
+        return u2.stats.for - u1.stats.for;
     });
     //Pass sorted array to table constructor
     PopulateLeagueTable(users);
@@ -55,6 +54,12 @@ function PopulateLeagueTable(users) {
         let pointsagainst = document.createElement('td');
         pointsagainst.innerText = user.stats.against;
         tr.appendChild(pointsagainst);
+        let differential = document.createElement('td');
+        let pd = user.stats.for - user.stats.against;
+        if (pd > 0) differential.style.color = 'green';
+        if (pd < 0) differential.style.color = '#c94d38';
+        differential.innerText = pd;
+        tr.appendChild(differential);
         let points = document.createElement('td');
         points.innerText = user.stats.points;
         tr.appendChild(points);

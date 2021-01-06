@@ -38,6 +38,15 @@ main .form-control
     width: auto;
 }
 
+main .form-select
+{
+    /* center form controls */
+    display: inline-block;
+
+    /* override Bootstrap's 100% width for form controls */
+    width: auto;
+}
+
 main
 {
     /* scroll horizontally as needed */

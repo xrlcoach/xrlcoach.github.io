@@ -1,6 +1,6 @@
 /* Script controlling fixture.html, which displays XRL match stats */
 
-import { GetLineupByTeamAndRound, GetRoundInfo, getCookie, GetRoundInfoFromCookie, GetActiveUserInfo, GetIdToken } from "./ApiFetch.js";
+import { GetLineupByTeamAndRound, GetRoundInfo, getCookie, GetRoundInfoFromCookie, GetActiveUserInfo, GetIdToken, GetActiveUserTeamShort } from "./ApiFetch.js";
 import { GetLineupScore, GetTeamFixture, PositionNames } from "./Helpers.js";
 
 let roundNumber, roundInfo, completed, match, homeTeam, awayTeam, homeLineup, awayLineup;
@@ -23,10 +23,9 @@ window.onload = async function() {
             }
         }
     } else { //If now query, get user's current match
-        roundInfo = GetRoundInfoFromCookie();
+        roundInfo = await GetRoundInfoFromCookie();
         roundNumber = roundInfo.round_number;
-        let user = await GetActiveUserInfo(GetIdToken());
-        match = GetTeamFixture(user.team_short, roundInfo);
+        match = GetTeamFixture(GetActiveUserTeamShort(), roundInfo);
     }
     homeTeam = match.home;
     awayTeam = match.away;

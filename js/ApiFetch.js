@@ -276,7 +276,8 @@ export async function GetCurrentRoundInfo() {
  * Retrieves current active round number from 'round' cookie and passes that to GetRoundInfo, returning data.
  */
 export async function GetRoundInfoFromCookie() {
-    return GetRoundInfo(getCookie('round'));
+    let data = await GetRoundInfo(getCookie('round'));
+    return data; 
 }
 /**
  * Calls GetAllFixtures and then identifies and returns next round, i.e. the next round not in progress or completed.

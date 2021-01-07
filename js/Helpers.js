@@ -1,4 +1,4 @@
-import { GetActiveUserTeamShort, GetLineupByTeamAndRound, GetPlayersFromXrlTeam, UpdatePlayerXrlTeam } from "./ApiFetch.js"
+import { GetActiveUserTeamShort, GetLineupByTeamAndRound, GetPlayersFromXrlTeam, UpdatePlayerXrlTeam, GetPlayerAppearanceStats } from "./ApiFetch.js"
 /**
  * Displays feedback message in the feedback element on the top of each page
  * @param {String} feedback 

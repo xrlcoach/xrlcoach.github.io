@@ -33,9 +33,21 @@ def lambda_handler(event, context):
             if 'round' in params.keys():
                 round_number = params['round']
                 print(f'Querying table for PlayerId {playerId} in round {round_number}')
-                resp = table.scan(
-                    FilterExpression=Attr('player_id').eq(playerId) & Attr('round_number').eq(round_number)
+                resp = table.get_item(
+                    Key={
+                        'player_id': playerId,
+                        'round_number': round_number
+                    }
                 )
+                return {
+                    'statusCode': 200,
+                    'headers': {
+                    'Access-Control-Allow-Headers': 'Content-Type',
+                    'Access-Control-Allow-Origin': '*',
+                    'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
+                    },
+                    'body': json.dumps(replace_decimals(resp['Item']))
+                }
             else:
                 print(f'Querying table for PlayerId {playerId}')
                 resp = table.scan(

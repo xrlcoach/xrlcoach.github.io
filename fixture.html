@@ -229,6 +229,183 @@
             </div>
         </div>
     </div>
+    <div class="modal fade" id="appearanceInfo" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-success bg-gradient text-white">
+                    <h2 class="modal-title" id="appearanceInfoTitle">
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div id="appearanceInfoLoading" class="row justify-content-centre align-items-center" style="height: 100px;">
+                    <div class="col align-items-center justify-content-center text-center">
+                        <div class="spinner-border text-success" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-body" id="appearanceInfoBody" hidden>
+                    <div class="row">
+                        <div class="col">
+                            <table class="table table-dark table-striped">
+                                <tr>
+                                    <th>
+                                        <p class="h5">NRL Club</p>
+                                    </th>
+                                    <th>
+                                        <p class="h5">XRL Team</p>
+                                    </th>
+                                    <th>
+                                        <p class="h5">Positions</span></p>
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <td><span id="appearanceInfoNrlClub"></span><img class="ms-2" height="50px"
+                                            id="appearanceInfoNrlLogo" /></td>
+                                    <td><span id="appearanceInfoXrlTeam"></span><img class="ms-2" height="50px"
+                                            id="appearanceInfoXrlLogo" /></td>
+                                    <td><span id="appearanceInfoPositions"></span></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <div class="card">
+                                <h4 class="card-header">NRL Match</h4>
+                                <div class="card-body">
+                                    <table class="table table-dark table-striped">
+                                        <tr>
+                                            <th>
+                                                <p class="h5">Opponent</p>
+                                            </th>
+                                            <th>
+                                                <p class="h5">Minutes</p>
+                                            </th>
+                                            <th>
+                                                <p class="h5">Position</span></p>
+                                            </th>
+                                        </tr>
+                                        <tr>
+                                            <td><span id="appearanceInfoOpponent"></span><img class="ms-2" height="50px"
+                                                    id="appearanceInfoOpponentLogo" /></td>
+                                            <td><span id="appearanceInfoMinutes"></span></td>
+                                            <td><span id="appearanceInfoNrlPosition"></span></td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <div class="card">
+                                <h4 class="card-header">XRL Appearance</h4>
+                                <div class="card-body">
+                                    <table class="table table-dark table-striped">
+                                        <tr>
+                                            <th>
+                                                <p class="h5">Points</p>
+                                            </th>
+                                            <th>
+                                                <p class="h5">Played As</p>
+                                            </th>
+                                            <th>
+                                                <p class="h5">Scored As</span></p>
+                                            </th>
+                                        </tr>
+                                        <tr>
+                                            <td><span id="appearanceInfoXrlPoints"
+                                                style="color: green;"></span></td>
+                                            <td><span id="appearanceInfoPositionSpecific"></span></td>
+                                            <td><span id="appearanceInfoPositionGeneral"></span></td>
+                                        </tr>
+                                    </table>
+                                    <div class="row p-2 align-items-center justify-content-center" id="appearanceInfoRoles" hidden>
+                                        <div class="col-3 mx-2">
+                                            <p class="bg-dark bg-gradient text-success h5" id="appearanceInfoCaptain" hidden></p>
+                                        </div>
+                                        <div class="col-3 mx-2">
+                                            <p class="bg-dark bg-gradient text-success h5" id="appearanceInfoKicker" hidden></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <div class="card">
+                                <h4 class="card-header">Stats</h4>
+                                <div class="card-body">                                    
+                                    <div class="row align-items-start">
+                                        <div class="col-md-4">
+                                            <p>Tries: <span id="appearanceInfoTries" style="color: green;"></span></p>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <p>Involvement Tries: <span id="appearanceInfoITs"
+                                                    style="color: green;"></span></p>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <p>Positional Tries: <span id="appearanceInfoPTs"
+                                                    style="color: green;"></span></p>
+                                        </div>
+                                    </div>
+                                    <div class="row align-items-start">
+                                        <div class="col-md-4">
+                                            <p>Goals: <span id="appearanceInfoGoals" style="color: green;"></span></p>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <p>Field Goals: <span id="appearanceInfoFGs" style="color: green;"></span>
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="row align-items-start">
+                                        <div class="col-md-4">
+                                            <p>MIAs: <span id="appearanceInfoMIAs" style="color: #c94d38;"></span></p>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <p>Concedes: <span id="appearanceInfoConcedes"
+                                                    style="color: #c94d38;"></span></p>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <p>Sin Bins: <span id="appearanceInfoSinBins" style="color: orange;"></span>
+                                            </p>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <p>Send Offs: <span id="appearanceInfoSendOffs"
+                                                    style="color: #c94d38;"></span></p>
+                                        </div>
+                                    </div>
+                                    <div class="row justify-content-start mt-2">
+                                        <div class="col-3">
+                                            <p>
+                                                <button class="btn btn-success" type="button" data-bs-toggle="collapse"
+                                                    data-bs-target="#appearanceInfoAllStatsDisplay"
+                                                    aria-expanded="false" aria-controls="appearanceInfoAllStatsDisplay"
+                                                    id="appearanceInfoAllStatsToggle">Show All
+                                                    Stats</button>
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="collapse" id="appearanceInfoAllStatsDisplay">
+                                                <div class="card card-body">
+                                                    <div class="row" id="appearanceInfoAllStatsContainer"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="modal fade" id="feedback" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
         aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">

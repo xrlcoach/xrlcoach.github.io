@@ -89,8 +89,75 @@ export function DisplayPlayerInfo(player) {
     }
     playerInfo.show();
 }
-export function DisplayPlayerLineupInfo(appearance) {
-    
+export function DisplayAppearanceInfoFromLineup(appearance) {
+    let appearanceInfo = new bootstrap.Modal(document.getElementById('appearanceInfo'));
+    document.getElementById('appearanceInfoLoading').hidden = false;
+    document.getElementById('appearanceInfoBody').hidden = true;
+    document.getElementById('appearanceInfoTitle').innerText = player.player_name;
+    appearanceInfo.show();
+    let statsRecord = await GetPlayerAppearanceStats(appearance.player_id, appearance.round_number)
+    document.getElementById('appearanceInfoNrlClub').innerText = player.nrl_club;
+    document.getElementById('appearanceInfoNrlLogo').src = '/static/' + player.nrl_club + '.svg';
+    document.getElementById('appearanceInfoXrlTeam').innerText = player.xrl_team ? player.xrl_team : 'None';
+    if (!player.xrl_team || player.xrl_team == 'None') {
+        document.getElementById('appearanceInfoXrlLogo').hidden = true;
+    } else {
+        document.getElementById('appearanceInfoXrlLogo').hidden = false;
+        document.getElementById('appearanceInfoXrlLogo').src = '/static/' + player.xrl_team + '.png';
+    }
+    document.getElementById('appearanceInfoPositions').innerText = player.position;
+    if (player.position2) document.getElementById('appearanceInfoPositions').innerText += ', ' + player.position2;
+    document.getElementById('appearanceInfoOpponent').innerText = statsRecord.opponent;
+    document.getElementById('appearanceInfoOpponentLogo').src = '/static/' + statsRecord.opponent + '.svg';
+    document.getElementById('appearanceInfoMinutes').innerText = statsRecord.stats['Mins Played'];
+    document.getElementById('appearanceInfoNrlPosition').innerText = statsRecord.stats['Position'];
+    document.getElementById('appearanceInfoXrlPoints').innerText = appearance.score;
+    document.getElementById('appearanceInfoPositionSpecific').innerText = PositionNames[appearance.position_specific];
+    document.getElementById('appearanceInfoPositionGeneral').innerText = appearance.position_general;
+    if (appearance.captain || appearance.captain2 || appearance.vice || appearance.kicker || appearance.backup_kicker) {
+        document.getElementById('appearanceInfoRoles').hidden = false;
+    } else {
+        document.getElementById('appearanceInfoRoles').hidden = true;
+    }
+    if (appearance.captain || appearance.captain2 ) {
+        document.getElementById('appearanceInfoCaptain').hidden = false;
+        document.getElementById('appearanceInfoCaptain').innerText = 'Captain';
+    } else if (appearance.vice) {
+        document.getElementById('appearanceInfoCaptain').hidden = false;
+        document.getElementById('appearanceInfoCaptain').innerText = 'Vice-Captain';
+    } else {
+        document.getElementById('appearanceInfoCaptain').hidden = true;
+    }
+    if (appearance.kicker) {
+        document.getElementById('appearanceInfoKicker').hidden = false;
+        document.getElementById('appearanceInfoKicker').innerText = 'Kicker';
+    } else if (appearance.backup_kicker ) {
+        document.getElementById('appearanceInfoKicker').hidden = false;
+        document.getElementById('appearanceInfoKicker').innerText = 'Backup Kicker';
+    } else {
+        document.getElementById('appearanceInfoKicker').hidden = true;
+    }
+    document.getElementById('appearanceInfoTries').innerText = statsRecord.stats.Tries;
+    document.getElementById('appearanceInfoITs').innerText = statsRecord.scoring_stats[appearance.position_general].involvement_try;
+    document.getElementById('appearanceInfoPTs').innerText = statsRecord.scoring_stats[appearance.position_general].positional_try;
+    document.getElementById('appearanceInfoGoals').innerText = statsRecord.scoring_stats.kicker.goals;
+    document.getElementById('appearanceInfoFGs').innerText = statsRecord.scoring_stats.kicker.field_goals;
+    document.getElementById('appearanceInfoMIAs').innerText = statsRecord.scoring_stats[appearance.position_general].mia;
+    document.getElementById('appearanceInfoConcedes').innerText = statsRecord.scoring_stats[appearance.position_general].concede;
+    document.getElementById('appearanceInfoSinBins').innerText = statsRecord.stats['Sin Bins'];
+    document.getElementById('appearanceInfoSendOffs').innerText = statsRecord.stats['Send Offs'];
+    document.getElementById('appearanceInfoAllStatsContainer').innerHTML = '';
+    let sortedKeys = Object.keys(statsRecord.stats).sort();
+    for (let stat of sortedKeys) {
+        let col = document.createElement('div');
+        col.className = 'col-4';
+        let p = document.createElement('p');
+        p.innerText = stat + ': ' + statsRecord.stats[stat];
+        col.appendChild(p);
+        document.getElementById('appearanceInfoAllStatsContainer').appendChild(col);
+    }
+    document.getElementById('appearanceInfoLoading').hidden = true;
+    document.getElementById('appearanceInfoBody').hidden = false;
 }
 /**
  * Tallies up the scores of all players in a lineup who played or subbed in
@@ -212,4 +279,8 @@ export const PositionNames = {
     'row1': '2nd Row',
     'row2': '2nd Row',
     'lock': 'Lock',
+    'int1': 'Interchange', 
+    'int2': 'Interchange',
+    'int3': 'Interchange',
+    'int4': 'Interchange',
 }

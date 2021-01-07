@@ -267,7 +267,7 @@ def get_stats():
 
             for i in range(len(home_players)):
                 player = []
-                player.append({'player_name': home_players[i], 'nrl_club': home_team})
+                player.append({'player_name': home_players[i], 'nrl_club': home_team, 'opponent': away_team})
                 stat_map = {}
                 ps = home_stats[i].split()
                 if len(ps) > len(stat_columns_final):
@@ -303,7 +303,7 @@ def get_stats():
 
             for i in range(len(away_players)):
                 player = []
-                player.append({'player_name': away_players[i], 'nrl_club': away_team})
+                player.append({'player_name': away_players[i], 'nrl_club': away_team, 'opponent': home_team})
                 stat_map = {}
                 ps = away_stats[i].split()
                 if len(ps) > len(stat_columns_final):
@@ -433,6 +433,7 @@ def get_stats():
             "round_number": number,
             "player_name": player[0]['player_name'],
             "nrl_club": player[0]['nrl_club'],
+            "opponent": player[0]['opponent'],
             "stats": player[1],
             "scoring_stats": player[2]
         })            

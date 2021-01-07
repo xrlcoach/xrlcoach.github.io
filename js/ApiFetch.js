@@ -314,14 +314,18 @@ export async function GetStatsByRound(roundNumber) {
     return data;
 }
 export async function GetPlayerAppearanceStats(playerId, roundNumber) {
-    const response = await fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/stats?playerId=' + playerId + '&round=' + roundNumber, {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json'        
-        }
-    });
-    const data = await response.json();
-    return data;
+    try {
+        const response = await fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/stats?playerId=' + playerId + '&round=' + roundNumber, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'        
+            }
+        });
+        const data = await response.json();
+        return data;
+    } catch (err) {
+        return undefined;
+    }
 }
 /**
  * Isolates the desired cookie from the browser cookie string

@@ -89,13 +89,15 @@ export function DisplayPlayerInfo(player) {
     }
     playerInfo.show();
 }
+
+
 export async function DisplayAppearanceInfoFromLineup(appearance) {
     let appearanceInfo = new bootstrap.Modal(document.getElementById('appearanceInfo'));
     document.getElementById('appearanceInfoLoading').hidden = false;
     document.getElementById('appearanceInfoBody').hidden = true;
     document.getElementById('appearanceInfoTitle').innerText = appearance.player_name;
     appearanceInfo.show();
-    let statsRecord = await GetPlayerAppearanceStats(appearance.player_id, appearance.round_number)
+    let statsRecord = await GetPlayerAppearanceStats(appearance.player_id, appearance.round_number);
     document.getElementById('appearanceInfoNrlClub').innerText = appearance.nrl_club;
     document.getElementById('appearanceInfoNrlLogo').src = '/static/' + appearance.nrl_club + '.svg';
     document.getElementById('appearanceInfoXrlTeam').innerText = appearance.xrl_team ? appearance.xrl_team : 'None';
@@ -105,7 +107,10 @@ export async function DisplayAppearanceInfoFromLineup(appearance) {
         document.getElementById('appearanceInfoXrlLogo').hidden = false;
         document.getElementById('appearanceInfoXrlLogo').src = '/static/' + appearance.xrl_team + '.png';
     }
-    document.getElementById('appearanceInfoPositions').innerText = PositionNames[appearance.position_specific];
+    let appearancePositions = Object.keys(statsRecord.scoring_stats);
+    appearancePositions = appearancePositions.filter(p => p != 'kicker');
+    document.getElementById('appearanceInfoPositions').innerText = appearancePositions[0];
+    if (appearancePositions.length > 1) document.getElementById('appearanceInfoPositions').innerText += ', ' + appearancePositions[1];
     document.getElementById('appearanceInfoOpponent').innerText = statsRecord.opponent;
     document.getElementById('appearanceInfoOpponentLogo').src = '/static/' + statsRecord.opponent + '.svg';
     document.getElementById('appearanceInfoMinutes').innerText = statsRecord.stats['Mins Played'];
@@ -144,14 +149,53 @@ export async function DisplayAppearanceInfoFromLineup(appearance) {
         document.getElementById('appearanceInfoKicker').hidden = true;
     }
     document.getElementById('appearanceInfoTries').innerText = statsRecord.stats.Tries;
-    document.getElementById('appearanceInfoITs').innerText = statsRecord.scoring_stats[appearance.position_general].involvement_try;
-    document.getElementById('appearanceInfoPTs').innerText = statsRecord.scoring_stats[appearance.position_general].positional_try;
+    if (statsRecord.stats.Tries > 0) document.getElementById('appearanceInfoTries').style.color = 'green';
+    else document.getElementById('appearanceInfoTries').style.color = 'default';
+    if (statsRecord.scoring_stats[appearance.position_general].involvement_try) {
+        document.getElementById('appearanceInfoITs').innerText = 'Yes';
+        document.getElementById('appearanceInfoITs').style.color = 'green';
+    } else {
+        document.getElementById('appearanceInfoITs').innerText = 'No';
+        document.getElementById('appearanceInfoITs').style.color = 'default';
+    }
+    if (statsRecord.scoring_stats[appearance.position_general].positional_try) {
+        document.getElementById('appearanceInfoPTs').innerText = 'Yes';
+        document.getElementById('appearanceInfoPTs').style.color = 'green';
+    } else {
+        document.getElementById('appearanceInfoPTs').innerText = 'No';
+        document.getElementById('appearanceInfoPTs').style.color = 'default';
+    }
     document.getElementById('appearanceInfoGoals').innerText = statsRecord.scoring_stats.kicker.goals;
+    if (statsRecord.scoring_stats.kicker.goals > 0) document.getElementById('appearanceInfoGoals').style.color = 'green';
+    else document.getElementById('appearanceInfoGoals').style.color = 'default';
     document.getElementById('appearanceInfoFGs').innerText = statsRecord.scoring_stats.kicker.field_goals;
-    document.getElementById('appearanceInfoMIAs').innerText = statsRecord.scoring_stats[appearance.position_general].mia;
-    document.getElementById('appearanceInfoConcedes').innerText = statsRecord.scoring_stats[appearance.position_general].concede;
+    if (statsRecord.scoring_stats.kicker.field_goals > 0) document.getElementById('appearanceInfoFGs').style.color = 'green';
+    else document.getElementById('appearanceInfoFGs').style.color = 'default';
+    if (statsRecord.scoring_stats[appearance.position_general].mia) {
+        document.getElementById('appearanceInfoMIAs').innerText = 'Yes';
+        document.getElementById('appearanceInfoMIAs').style.color = '#c94d38';
+    } else {
+        document.getElementById('appearanceInfoMIAs').innerText = 'No';
+        document.getElementById('appearanceInfoMIAs').style.color = 'default';
+    }
+    if (statsRecord.scoring_stats[appearance.position_general].concede) {
+        document.getElementById('appearanceInfoConcedes').innerText = 'Yes';
+        document.getElementById('appearanceInfoConcedes').style.color = '#c94d38';
+    } else {
+        document.getElementById('appearanceInfoConcedes').innerText = 'No';
+        document.getElementById('appearanceInfoConcedes').style.color = 'default';
+    }
     document.getElementById('appearanceInfoSinBins').innerText = statsRecord.stats['Sin Bins'];
-    document.getElementById('appearanceInfoSendOffs').innerText = statsRecord.stats['Send Offs'];
+    if (statsRecord.stats['Sin Bins'] > 0) document.getElementById('appearanceInfoSinBins').style.color = '#c94d38';
+    else document.getElementById('appearanceInfoSinBins').style.color = 'default';
+    if (statsRecord.stats['Send Offs'] == 0) {
+        document.getElementById('appearanceInfoSendOffs').innerText = 'No';
+        document.getElementById('appearanceInfoSendOffs').style.color = 'default';
+    } else {
+        document.getElementById('appearanceInfoSendOffs').innerText = 'Yes (' + appearance.stats['Send Offs'] + "')";
+        document.getElementById('appearanceInfoSendOffs').style.color = '#c94d38';
+    }
+    
     document.getElementById('appearanceInfoAllStatsContainer').innerHTML = '';
     let sortedKeys = Object.keys(statsRecord.stats).sort();
     for (let stat of sortedKeys) {
@@ -165,6 +209,8 @@ export async function DisplayAppearanceInfoFromLineup(appearance) {
     document.getElementById('appearanceInfoLoading').hidden = true;
     document.getElementById('appearanceInfoBody').hidden = false;
 }
+
+
 export function DisplayAppearanceInfoFromStats(appearance) {
     let appearanceInfo = new bootstrap.Modal(document.getElementById('appearanceInfo'));
     document.getElementById('appearanceInfoTitle').innerText = appearance.player_name;
@@ -179,25 +225,83 @@ export function DisplayAppearanceInfoFromStats(appearance) {
     document.getElementById('appearanceInfoMinutes').innerText = appearance.stats['Mins Played'];
     document.getElementById('appearanceInfoNrlPosition').innerText = appearance.stats['Position'];
     document.getElementById('appearanceInfoTries').innerText = appearance.stats.Tries;
+    if (appearance.stats.Tries > 0) document.getElementById('appearanceInfoTries').style.color = 'green';
+    else document.getElementById('appearanceInfoTries').style.color = 'default';
     document.getElementById('appearanceInfoGoals').innerText = appearance.scoring_stats.kicker.goals;
+    if (appearance.scoring_stats.kicker.goals > 0) document.getElementById('appearanceInfoGoals').style.color = 'green';
+    else document.getElementById('appearanceInfoGoals').style.color = 'default';
     document.getElementById('appearanceInfoFGs').innerText = appearance.scoring_stats.kicker.field_goals;
+    if (appearance.scoring_stats.kicker.field_goals > 0) document.getElementById('appearanceInfoFGs').style.color = 'green';
+    else document.getElementById('appearanceInfoFGs').style.color = 'default';
     document.getElementById('appearanceInfoSinBins').innerText = appearance.stats['Sin Bins'];
-    if (appearance.stats['Send Offs']) {
+    if (appearance.stats['Sin Bins'] > 0) document.getElementById('appearanceInfoSinBins').style.color = '#c94d38';
+    else document.getElementById('appearanceInfoSinBins').style.color = 'default';
+    if (appearance.stats['Send Offs'] == 0) {
         document.getElementById('appearanceInfoSendOffs').innerText = 'No';
+        document.getElementById('appearanceInfoSendOffs').style.color = 'default';
     } else {
         document.getElementById('appearanceInfoSendOffs').innerText = 'Yes (' + appearance.stats['Send Offs'] + "')";
+        document.getElementById('appearanceInfoSendOffs').style.color = '#c94d38';
     }
     document.getElementById('appearanceInfoPosition1').innerText = appearancePositions[0];
-    document.getElementById('appearanceInfoITs').innerText = appearance.scoring_stats[appearancePositions[0]].involvement_try;
-    document.getElementById('appearanceInfoPTs').innerText = appearance.scoring_stats[appearancePositions[0]].positional_try;
-    document.getElementById('appearanceInfoMIAs').innerText = appearance.scoring_stats[appearancePositions[0]].mia;
-    document.getElementById('appearanceInfoConcedes').innerText = appearance.scoring_stats[appearancePositions[0]].concede;
+    if (appearance.scoring_stats[appearancePositions[0]].involvement_try) {
+        document.getElementById('appearanceInfoITs').innerText = 'Yes';
+        document.getElementById('appearanceInfoITs').style.color = 'green';
+    } else {
+        document.getElementById('appearanceInfoITs').innerText = 'No';
+        document.getElementById('appearanceInfoITs').style.color = 'default';
+    }
+    if (appearance.scoring_stats[appearancePositions[0]].positional_try) {
+        document.getElementById('appearanceInfoPTs').innerText = 'Yes';
+        document.getElementById('appearanceInfoPTs').style.color = 'green';
+    } else {
+        document.getElementById('appearanceInfoPTs').innerText = 'No';
+        document.getElementById('appearanceInfoPTs').style.color = 'default';
+    }
+    if (appearance.scoring_stats[appearancePositions[0]].mia) {
+        document.getElementById('appearanceInfoMIAs').innerText = 'Yes';
+        document.getElementById('appearanceInfoMIAs').style.color = '#c94d38';
+    } else {
+        document.getElementById('appearanceInfoMIAs').innerText = 'No';
+        document.getElementById('appearanceInfoMIAs').style.color = 'default';
+    }
+    if (appearance.scoring_stats[appearancePositions[0]].concede) {
+        document.getElementById('appearanceInfoConcedes').innerText = 'Yes';
+        document.getElementById('appearanceInfoConcedes').style.color = '#c94d38';
+    } else {
+        document.getElementById('appearanceInfoConcedes').innerText = 'No';
+        document.getElementById('appearanceInfoConcedes').style.color = 'default';
+    }
     if (appearancePositions.length > 1) {
         document.getElementById('appearanceInfoPosition2').innerText = appearancePositions[1];
-        document.getElementById('appearanceInfoITs2').innerText = appearance.scoring_stats[appearancePositions[1]].involvement_try;
-        document.getElementById('appearanceInfoPTs2').innerText = appearance.scoring_stats[appearancePositions[1]].positional_try;
-        document.getElementById('appearanceInfoMIAs2').innerText = appearance.scoring_stats[appearancePositions[1]].mia;
-        document.getElementById('appearanceInfoConcedes2').innerText = appearance.scoring_stats[appearancePositions[1]].concede;
+        if (appearance.scoring_stats[appearancePositions[1]].involvement_try) {
+            document.getElementById('appearanceInfoITs2').innerText = 'Yes';
+            document.getElementById('appearanceInfoITs2').style.color = 'green';
+        } else {
+            document.getElementById('appearanceInfoITs2').innerText = 'No';
+            document.getElementById('appearanceInfoITs2').style.color = 'default';
+        }
+        if (appearance.scoring_stats[appearancePositions[1]].positional_try) {
+            document.getElementById('appearanceInfoPTs2').innerText = 'Yes';
+            document.getElementById('appearanceInfoPTs2').style.color = 'green';
+        } else {
+            document.getElementById('appearanceInfoPTs2').innerText = 'No';
+            document.getElementById('appearanceInfoPTs2').style.color = 'default';
+        }
+        if (appearance.scoring_stats[appearancePositions[1]].mia) {
+            document.getElementById('appearanceInfoMIAs2').innerText = 'Yes';
+            document.getElementById('appearanceInfoMIAs2').style.color = '#c94d38';
+        } else {
+            document.getElementById('appearanceInfoMIAs2').innerText = 'No';
+            document.getElementById('appearanceInfoMIAs2').style.color = 'default';
+        }
+        if (appearance.scoring_stats[appearancePositions[1]].concede) {
+            document.getElementById('appearanceInfoConcedes2').innerText = 'Yes';
+            document.getElementById('appearanceInfoConcedes2').style.color = '#c94d38';
+        } else {
+            document.getElementById('appearanceInfoConcedes2').innerText = 'No';
+            document.getElementById('appearanceInfoConcedes2').style.color = 'default';
+        }
         document.getElementById('appearanceInfoSecondPositionRow').hidden = false
     } else {
         document.getElementById('appearanceInfoSecondPositionRow').hidden = true

@@ -158,7 +158,10 @@ function filterStats(event) {
     let singleRound = roundNumber != 'ALL';
     let statsToDisplay = !singleRound ? allPlayers : allStats.filter(p => p.round_number == roundNumber);
     if (nrlClub != 'ALL') statsToDisplay = statsToDisplay.filter(p => p.nrl_club == nrlClub);
-    if (xrlTeam != 'ALL') statsToDisplay = statsToDisplay.filter(p => p.xrl_team == xrlTeam);
+    if (xrlTeam != 'ALL') {
+        if (xrlTeam == 'Free Agents') statsToDisplay = statsToDisplay.filter(p => p.xrl_team == undefined || p.xrl_team == 'None');
+        else statsToDisplay = statsToDisplay.filter(p => p.xrl_team == xrlTeam);
+    }
     if (position != 'ALL') statsToDisplay = statsToDisplay.filter(p => p.position == position);
     
     // if (roundNumber == 'ALL' && nrlClub == 'ALL' && xrlTeam == 'ALL') {

@@ -98,7 +98,7 @@ function DisplaySquadInfo() {
 function DisplayTeamInfo() {
     document.getElementById('teamNameDisplay').innerHTML = user.team_name;
     document.getElementById('teamLogo').src = '/static/' + user.team_short + '.png';
-    document.getElementById('teamOwner').innerText = 'Club Owner: ' + user.username;
+    document.getElementById('teamOwner').innerText = user.username;
     let ladder = allUsers.sort(function (u1, u2) {
         if (u2.stats.points != u1.stats.points) {
             return u2.stats.points - u1.stats.points;
@@ -108,9 +108,13 @@ function DisplayTeamInfo() {
         return u2.stats.for - u1.stats.for;
     });
     let position = ladder.findIndex(u => u.username == user.username) + 1;
-    document.getElementById('teamPosition').innerText = 'Position: ' + GetOrdinal(position) + ' (' + user.stats.points + ' points)';
-    document.getElementById('teamWinStats').innerText = `Wins: ${user.stats.wins}, Draws: ${user.stats.draws}, Losses: ${user.stats.losses}`;
-    document.getElementById('teamPointStats').innerText = `For: ${user.stats.for}, Against: ${user.stats.against}, Differential: ${user.stats.for - user.stats.against}`;
+    document.getElementById('teamPosition').innerText = GetOrdinal(position) + ' (' + user.stats.points + ' points)';
+    document.getElementById('teamWins').innerText = user.stats.wins;
+    document.getElementById('teamDraws').innerText = user.stats.draws;
+    document.getElementById('teamLosses').innerText = user.stats.losses;
+    document.getElementById('teamFor').innerText = user.stats.for;
+    document.getElementById('teamAgainst').innerText = user.stats.against;
+    document.getElementById('teamPD').innerText = user.stats.for - user.stats.against;
 }
 
 function PopulatePickPlayerTable(playerData) {

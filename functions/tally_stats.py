@@ -18,6 +18,7 @@ for player in squads:
         players_without_stats.append(player)
         continue
     player_stats['stats'] = {}
+    player_stats['stats']['appearances'] = len(player_appearances)
     player_stats['scoring_stats'] = {}
     for app in player_appearances:
         for stat in app['stats'].keys():
@@ -64,48 +65,48 @@ for player in squads:
             ':scoring_stats': player_stats['scoring_stats']
         }
     )
-for player in players_without_stats:
-    count += 1
-    player_stats = {}
-    player_appearances = [all_stats[0]]
-    player_stats['stats'] = {}
-    player_stats['scoring_stats'] = {}
-    for app in player_appearances:
-        for stat in app['stats'].keys():
-            if type(app['stats'][stat]) is str:
-                continue 
-            if app['stats'][stat] % 1 != 0:
-                continue
-            if stat not in player_stats['stats']:
-                player_stats['stats'][stat] = 0
-        for position in app['scoring_stats'].keys():
-            if position == 'kicker':
-                player_stats['scoring_stats'][position] = {}
-                for stat in app['scoring_stats'][position].keys():
-                    if stat not in player_stats['scoring_stats'][position]:
-                        player_stats['scoring_stats'][position][stat] = 0
-            else:
-                player_stats['scoring_stats'][player['position']] = {}
-                for stat in app['scoring_stats'][position].keys():
-                    if stat not in player_stats['scoring_stats'][player['position']]:
-                        player_stats['scoring_stats'][player['position']][stat] = 0
-                    if stat == 'send_offs':
-                        if 'send_off_deduction' not in player_stats['scoring_stats'][player['position']]:
-                            player_stats['scoring_stats'][player['position']]['send_off_deduction'] = 0
+# for player in players_without_stats:
+#     count += 1
+#     player_stats = {}
+#     player_appearances = [all_stats[0]]
+#     player_stats['stats'] = {}
+#     player_stats['scoring_stats'] = {}
+#     for app in player_appearances:
+#         for stat in app['stats'].keys():
+#             if type(app['stats'][stat]) is str:
+#                 continue 
+#             if app['stats'][stat] % 1 != 0:
+#                 continue
+#             if stat not in player_stats['stats']:
+#                 player_stats['stats'][stat] = 0
+#         for position in app['scoring_stats'].keys():
+#             if position == 'kicker':
+#                 player_stats['scoring_stats'][position] = {}
+#                 for stat in app['scoring_stats'][position].keys():
+#                     if stat not in player_stats['scoring_stats'][position]:
+#                         player_stats['scoring_stats'][position][stat] = 0
+#             else:
+#                 player_stats['scoring_stats'][player['position']] = {}
+#                 for stat in app['scoring_stats'][position].keys():
+#                     if stat not in player_stats['scoring_stats'][player['position']]:
+#                         player_stats['scoring_stats'][player['position']][stat] = 0
+#                     if stat == 'send_offs':
+#                         if 'send_off_deduction' not in player_stats['scoring_stats'][player['position']]:
+#                             player_stats['scoring_stats'][player['position']]['send_off_deduction'] = 0
                     
-    for position in player_stats['scoring_stats'].keys():
-        if position == 'kicker':
-            player_stats['scoring_stats'][position]['points'] = 0
-        else:
-            player_stats['scoring_stats'][position]['points'] = 0
-    print('Giving ' + player['player_name'] + ' a blank stats entry')
-    squads_table.update_item(
-        Key={
-            'player_id': player['player_id']
-        },
-        UpdateExpression="set stats=:stats, scoring_stats=:scoring_stats",
-        ExpressionAttributeValues={
-            ':stats': player_stats['stats'],
-            ':scoring_stats': player_stats['scoring_stats']
-        }
-    )
+#     for position in player_stats['scoring_stats'].keys():
+#         if position == 'kicker':
+#             player_stats['scoring_stats'][position]['points'] = 0
+#         else:
+#             player_stats['scoring_stats'][position]['points'] = 0
+#     print('Giving ' + player['player_name'] + ' a blank stats entry')
+#     squads_table.update_item(
+#         Key={
+#             'player_id': player['player_id']
+#         },
+#         UpdateExpression="set stats=:stats, scoring_stats=:scoring_stats",
+#         ExpressionAttributeValues={
+#             ':stats': player_stats['stats'],
+#             ':scoring_stats': player_stats['scoring_stats']
+#         }
+#     )

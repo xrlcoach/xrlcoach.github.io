@@ -130,20 +130,20 @@ for match in fixtures:
                                 ':p': True
                             }
                         )
-            if not subbed_in and sub['second_position'] != '':
-                if freeSpots[sub['second_position']] > 0:
-                    print(f"Subbing in {sub['player_name']} as a {sub['second_position']}")
-                    freeSpots[sub['second_position']] -= 1
-                    subbed_in = True
-                    lineups_table.update_item(
-                                Key={
-                                    'name+nrl+xrl+round': sub['name+nrl+xrl+round']
-                                },
-                                UpdateExpression="set played_xrl=:p",
-                                ExpressionAttributeValues={
-                                    ':p': True
-                                }
-                            )
+            # if not subbed_in and sub['second_position'] != '':
+            #     if freeSpots[sub['second_position']] > 0:
+            #         print(f"Subbing in {sub['player_name']} as a {sub['second_position']}")
+            #         freeSpots[sub['second_position']] -= 1
+            #         subbed_in = True
+            #         lineups_table.update_item(
+            #                     Key={
+            #                         'name+nrl+xrl+round': sub['name+nrl+xrl+round']
+            #                     },
+            #                     UpdateExpression="set played_xrl=:p",
+            #                     ExpressionAttributeValues={
+            #                         ':p': True
+            #                     }
+            #                 )
                 
 
             #     valid_sub = False
@@ -314,12 +314,12 @@ for player in appearances:
                 )
 print('Positional updates complete. Updating player total stats')
 for player in squads:
-    count += 1
     player_stats = {}
     player_appearances = [stat for stat in all_stats if stat['player_id'] == player['player_id']]
     if len(player_appearances) == 0:
         continue
     player_stats['stats'] = {}
+    player_stats['stats']['appearances'] = len(player_appearances)
     player_stats['scoring_stats'] = {}
     for app in player_appearances:
         for stat in app['stats'].keys():

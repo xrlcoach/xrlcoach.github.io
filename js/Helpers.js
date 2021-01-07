@@ -35,7 +35,7 @@ export function DisplayPlayerInfo(player) {
     if (player.xrl_team == GetActiveUserTeamShort()) {
         document.getElementById('playerInfoFooter').hidden = false;
         document.getElementById('playerInfoDropButton').onclick = DisplayFeedback('Confirm', 'Are you sure you want to drop ' + player.player_name + '?',
-        true, function() {
+        true, async function() {
             await UpdatePlayerXrlTeam(null, player);
             DisplayFeedback('Success', player.player_name + ' has been dropped from your squad.');
             playerInfo.hide();
@@ -44,7 +44,7 @@ export function DisplayPlayerInfo(player) {
     } else if (player.xrl_team == 'None') {
         document.getElementById('playerInfoFooter').hidden = false;
         document.getElementById('playerInfoPickButton').onclick = DisplayFeedback('Confirm', 'Are you sure you want to pick ' + player.player_name + '?',
-        true, function() {
+        true, async function() {
             let playerSquad = await GetPlayersFromXrlTeam(GetActiveUserTeamShort());
             if (playerSquad.length > 17) {
                 DisplayFeedback('Sorry!', 'Your squad already has 18 players.');

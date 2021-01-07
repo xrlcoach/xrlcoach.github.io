@@ -180,7 +180,7 @@ function filterStats(event) {
     // }
 
     displayedStats = statsToDisplay;
-    let sortFunction = singleRound ? sortByXrlXcore : sortByTotalXrlScore;
+    let sortFunction = singleRound ? scoreAsKicker ? sortByXrlXcore : sortByXrlXcoreNoKicking : scoreAsKicker ? sortByTotalXrlScore : sortByTotalXrlScoreNoKicking;
     populateStatsTable(statsToDisplay, sortFunction, scoreAsKicker, singleRound);
 }
 
@@ -190,8 +190,16 @@ function sortByTotalXrlScore(p1, p2) {
     return (p2.scoring_stats[p2.position].points + p2.scoring_stats.kicker.points) - (p1.scoring_stats[p1.position].points + p1.scoring_stats.kicker.points);
 }
 
+function sortByTotalXrlScoreNoKicking(p1, p2) {
+    return p2.scoring_stats[p2.position].points - p1.scoring_stats[p1.position].points;
+}
+
 function sortByXrlXcore(p1, p2) {
     return p2.score - p1.score;
+}
+
+function sortByXrlXcoreNoKicking(p1, p2) {
+    return p2.score_not_kicking - p1.score_not_kicking;
 }
 
 function sortPlayers(attribute) {

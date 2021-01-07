@@ -118,18 +118,19 @@ for match in fixtures:
         for sub in sorted(bench, key=lambda p: p['position_number']):
             subbed_in = False
             if freeSpots[sub['position_general']] > 0:
-                print(f"Subbing in {sub['player_name']} as a {sub['position_general']}")
-                freeSpots[sub['position_general']] -= 1
-                subbed_in = True
-                lineups_table.update_item(
-                            Key={
-                                'name+nrl+xrl+round': sub['name+nrl+xrl+round']
-                            },
-                            UpdateExpression="set played_xrl=:p",
-                            ExpressionAttributeValues={
-                                ':p': True
-                            }
-                        )
+                if sub['played_nrl']:
+                    print(f"Subbing in {sub['player_name']} as a {sub['position_general']}")
+                    freeSpots[sub['position_general']] -= 1
+                    subbed_in = True
+                    lineups_table.update_item(
+                                Key={
+                                    'name+nrl+xrl+round': sub['name+nrl+xrl+round']
+                                },
+                                UpdateExpression="set played_xrl=:p",
+                                ExpressionAttributeValues={
+                                    ':p': True
+                                }
+                            )
             # if not subbed_in and sub['second_position'] != '':
             #     if freeSpots[sub['second_position']] > 0:
             #         print(f"Subbing in {sub['player_name']} as a {sub['second_position']}")

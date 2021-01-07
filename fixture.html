@@ -67,7 +67,7 @@
         <div id="fixtureContainer" class="row mt-5">
             <div class="col-lg table-responsive align-self-start">
 
-                <table class="table table-dark table-striped">
+                <table class="table table-dark table-striped table-hover">
                     <thead>
                         <tr>
                             <th colspan="6">
@@ -270,7 +270,7 @@
                             </table>
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="row" id="appearanceInfoNrlMatchRow">
                         <div class="col">
                             <div class="card">
                                 <h4 class="card-header">NRL Match</h4>
@@ -298,10 +298,10 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="row" id="appearanceInfoXrlMatchRow">
                         <div class="col">
                             <div class="card">
-                                <h4 class="card-header">XRL Appearance<span id="appearanceInfoPlayedXrl" class="ms-auto"></span></h4>
+                                <h4 class="card-header"><span class="me-auto">XRL Appearance</span><span id="appearanceInfoPlayedXrl" class="ms-auto"></span></h4>
                                 <div class="card-body">
                                     <table class="table table-dark table-striped text-center">
                                         <tr>
@@ -323,18 +323,18 @@
                                         </tr>
                                     </table>
                                     <div class="row p-2 align-items-center justify-content-center" id="appearanceInfoRoles" hidden>
-                                        <div class="col-3 mx-2">
-                                            <p class="bg-dark bg-gradient text-success h5" id="appearanceInfoCaptain" hidden></p>
+                                        <div class="col-3 mx-2 bg-dark bg-gradient text-success rounded">
+                                            <p class="h5" id="appearanceInfoCaptain" hidden></p>
                                         </div>
-                                        <div class="col-3 mx-2">
-                                            <p class="bg-dark bg-gradient text-success h5" id="appearanceInfoKicker" hidden></p>
+                                        <div class="col-3 mx-2 bg-dark bg-gradient text-success rounded">
+                                            <p class="h5" id="appearanceInfoKicker" hidden></p>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="row" id="appearanceInfoStatsRow">
                         <div class="col">
                             <div class="card">
                                 <h4 class="card-header">Stats</h4>
@@ -400,6 +400,11 @@
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                    <div class="row justify-content-center" id="appearanceInfoDNPRow" hidden>
+                        <div class="col text-center">
+                            <h4 style="color: #c94d38;">DID NOT PLAY</h4>
                         </div>
                     </div>
                 </div>

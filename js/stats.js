@@ -1,5 +1,5 @@
-import { GetActiveUserInfo, GetActiveUserTeamShort, GetAllPlayers, GetAllStats, GetAllUsers, getCookie, GetCurrentRoundInfo, GetIdToken, GetRoundInfo } from "./ApiFetch.js";
-import { GetPlayerXrlScores } from "./Helpers.js";
+import { GetActiveUserInfo, GetActiveUserTeamShort, GetAllPlayers, GetAllStats, GetAllUsers, getCookie, GetCurrentRoundInfo, GetIdToken, GetRoundInfo, GetStatsByRound } from "./ApiFetch.js";
+import { GetPlayerXrlScores, DisplayPlayerInfo, DisplayFeedback } from "./Helpers.js";
 
 let roundToDisplay, allPlayers, allStats, allUsers, activeUser, allPlayersWithStats, displayedStats, scoreAsKicker, singleRound;
 
@@ -10,8 +10,8 @@ window.onload = async function() {
         option.innerText = i;
         document.getElementById('roundSelect').appendChild(option);
     }
-    allStats = await GetAllStats();
-    let playerIdsWithStats = allStats.map(p => p.player_id);
+    // allStats = await GetAllStats();
+    // let playerIdsWithStats = allStats.map(p => p.player_id);
     allUsers = await GetAllUsers();
     for (let user of allUsers) {
         let option = document.createElement('option');
@@ -20,14 +20,14 @@ window.onload = async function() {
     }
     activeUser = allUsers.find(u => u.team_short == GetActiveUserTeamShort());
     allPlayers = await GetAllPlayers();
-    allPlayersWithStats = allPlayers.filter(p => playerIdsWithStats.includes(p.player_id))
-    for (let i in allStats) {
-        let player = allPlayersWithStats.find(p => p.player_id == allStats[i].player_id);
-        allStats[i].score = GetPlayerXrlScores(player.position, allStats[i]);
-        allStats[i].score_not_kicking = GetPlayerXrlScores(player.position, allStats[i], false);
-        allStats[i].position = player.position;
-        allStats[i].xrl_team = player.xrl_team ? player.xrl_team : 'None';
-    }
+    // allPlayersWithStats = allPlayers.filter(p => playerIdsWithStats.includes(p.player_id))
+    // for (let i in allStats) {
+    //     let player = allPlayersWithStats.find(p => p.player_id == allStats[i].player_id);
+    //     allStats[i].score = GetPlayerXrlScores(player.position, allStats[i]);
+    //     allStats[i].score_not_kicking = GetPlayerXrlScores(player.position, allStats[i], false);
+    //     allStats[i].position = player.position;
+    //     allStats[i].xrl_team = player.xrl_team ? player.xrl_team : 'None';
+    // }
     // playersTotalStats = allPlayersWithStats.map(function(p) {
     //     let playerStats = allStats.filter(s => s.player_id == p.player_id);
     //     // if (playerStats.length == 0) {
@@ -98,6 +98,7 @@ function populateStatsTable(stats, sortFunction, scoringAsKicker=true, isSingleR
         let tr = document.createElement('tr');
         let name = document.createElement('td');
         let nameLink = document.createElement('a');
+        nameLink.href = '#';
         nameLink.innerText = player.player_name;
         nameLink.value = player.player_id;
         if (!isSingleRound) {
@@ -156,7 +157,7 @@ function populateStatsTable(stats, sortFunction, scoringAsKicker=true, isSingleR
     }
 }
 
-function filterStats(event) {
+async function filterStats(event) {
     event.preventDefault();
     let roundNumber = document.getElementById('roundSelect').value;
     let nrlClub = document.getElementById('nrlClubSelect').value;
@@ -164,7 +165,20 @@ function filterStats(event) {
     let position = document.getElementById('positionSelect').value;
     scoreAsKicker = document.getElementById('scoreKickerSelect').value == 'Yes' ? true : false;
     singleRound = roundNumber != 'ALL';
-    let statsToDisplay = !singleRound ? allPlayers : allStats.filter(p => p.round_number == roundNumber);
+    let statsToDisplay;
+    if (singleRound) {
+        let roundStats = await GetStatsByRound(roundNumber);
+        for (let i in roundStats) {
+            let player = allPlayers.find(p => p.player_id == roundStats[i].player_id);
+            roundStats[i].score = GetPlayerXrlScores(player.position, roundStats[i]);
+            roundStats[i].score_not_kicking = GetPlayerXrlScores(player.position, roundStats[i], false);
+            roundStats[i].position = player.position;
+            roundStats[i].xrl_team = player.xrl_team ? player.xrl_team : 'None';
+        }
+        statsToDisplay = roundStats;
+    } else {
+        statsToDisplay = allPlayers;
+    }
     if (nrlClub != 'ALL') statsToDisplay = statsToDisplay.filter(p => p.nrl_club == nrlClub);
     if (xrlTeam != 'ALL') {
         if (xrlTeam == 'Free Agents') statsToDisplay = statsToDisplay.filter(p => p.xrl_team == undefined || p.xrl_team == 'None');

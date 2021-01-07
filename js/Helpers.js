@@ -93,20 +93,19 @@ export async function DisplayAppearanceInfoFromLineup(appearance) {
     let appearanceInfo = new bootstrap.Modal(document.getElementById('appearanceInfo'));
     document.getElementById('appearanceInfoLoading').hidden = false;
     document.getElementById('appearanceInfoBody').hidden = true;
-    document.getElementById('appearanceInfoTitle').innerText = player.player_name;
+    document.getElementById('appearanceInfoTitle').innerText = appearance.player_name;
     appearanceInfo.show();
     let statsRecord = await GetPlayerAppearanceStats(appearance.player_id, appearance.round_number)
-    document.getElementById('appearanceInfoNrlClub').innerText = player.nrl_club;
-    document.getElementById('appearanceInfoNrlLogo').src = '/static/' + player.nrl_club + '.svg';
-    document.getElementById('appearanceInfoXrlTeam').innerText = player.xrl_team ? player.xrl_team : 'None';
-    if (!player.xrl_team || player.xrl_team == 'None') {
+    document.getElementById('appearanceInfoNrlClub').innerText = appearance.nrl_club;
+    document.getElementById('appearanceInfoNrlLogo').src = '/static/' + appearance.nrl_club + '.svg';
+    document.getElementById('appearanceInfoXrlTeam').innerText = appearance.xrl_team ? appearance.xrl_team : 'None';
+    if (!appearance.xrl_team || appearance.xrl_team == 'None') {
         document.getElementById('appearanceInfoXrlLogo').hidden = true;
     } else {
         document.getElementById('appearanceInfoXrlLogo').hidden = false;
-        document.getElementById('appearanceInfoXrlLogo').src = '/static/' + player.xrl_team + '.png';
+        document.getElementById('appearanceInfoXrlLogo').src = '/static/' + appearance.xrl_team + '.png';
     }
-    document.getElementById('appearanceInfoPositions').innerText = player.position;
-    if (player.position2) document.getElementById('appearanceInfoPositions').innerText += ', ' + player.position2;
+    document.getElementById('appearanceInfoPositions').innerText = PositionNames[appearance.position_specific];
     document.getElementById('appearanceInfoOpponent').innerText = statsRecord.opponent;
     document.getElementById('appearanceInfoOpponentLogo').src = '/static/' + statsRecord.opponent + '.svg';
     document.getElementById('appearanceInfoMinutes').innerText = statsRecord.stats['Mins Played'];

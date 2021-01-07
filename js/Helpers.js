@@ -22,7 +22,7 @@ export function DisplayPlayerInfo(player) {
     let playerInfo = new bootstrap.Modal(document.getElementById('playerInfo'));
     document.getElementById('playerInfoTitle').innerText = player.player_name;
     document.getElementById('playerNrlClub').innerText = player.nrl_club;
-    document.getElementById('playerNrlLogo').src = '/static/' + player.nrl_club + '.png';
+    document.getElementById('playerNrlLogo').src = '/static/' + player.nrl_club + '.svg';
     document.getElementById('playerXrlTeam').innerText = player.xrl_team ? player.xrl_team : 'None';
     document.getElementById('playerXrlLogo').src = '/static/' + player.xrl_team + '.png';
     document.getElementById('playerPositions').innerText = player.position;

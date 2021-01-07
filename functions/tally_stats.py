@@ -1,5 +1,6 @@
 import boto3
 from boto3.dynamodb.conditions import Key, Attr
+import math
 
 dynamodbResource = boto3.resource('dynamodb', 'ap-southeast-2')
 stats_table = dynamodbResource.Table('stats2020')
@@ -28,10 +29,28 @@ for player in squads:
         for position in app['scoring_stats'].keys():
             if position not in player_stats['scoring_stats']:
                 player_stats['scoring_stats'][position] = {}
-            for stat in app['scoring_stats'][position]:
+            for stat in app['scoring_stats'][position].keys():
                 if stat not in player_stats['scoring_stats'][position]:
                     player_stats['scoring_stats'][position][stat] = 0
                 player_stats['scoring_stats'][position][stat] += app['scoring_stats'][position][stat]
+                if stat == 'send_offs':
+                    if 'send_off_deduction' not in player_stats['scoring_stats'][position]:
+                        player_stats['scoring_stats'][position]['send_off_deduction'] = 0
+                    if app['scoring_stats'][position][stat] != 0:
+                        minutes = 80 - app['scoring_stats'][position][stat]
+                        deduction = math.floor(minutes / 10) + 4
+                        player_stats['scoring_stats'][position]['send_off_deduction'] += deduction
+    for position in player_stats['scoring_stats'].keys():
+        if position == 'kicker':
+            player_stats['scoring_stats'][position]['points'] = player_stats['scoring_stats'][position]['goals'] * 2 + player_stats['scoring_stats'][position]['field_goals']
+        else:
+            player_stats['scoring_stats'][position]['points'] = player_stats['scoring_stats'][position]['tries'] * 4
+            player_stats['scoring_stats'][position]['points'] += player_stats['scoring_stats'][position]['involvement_try'] * 4
+            player_stats['scoring_stats'][position]['points'] += player_stats['scoring_stats'][position]['positional_try'] * 4
+            player_stats['scoring_stats'][position]['points'] -= player_stats['scoring_stats'][position]['mia'] * 4
+            player_stats['scoring_stats'][position]['points'] -= player_stats['scoring_stats'][position]['concede'] * 4
+            player_stats['scoring_stats'][position]['points'] -= player_stats['scoring_stats'][position]['sin_bins'] * 2
+            player_stats['scoring_stats'][position]['points'] -= player_stats['scoring_stats'][position]['send_off_deduction']
     print('Updating ' + player['player_name'])
     squads_table.update_item(
         Key={

@@ -22,6 +22,7 @@ export function DisplayPlayerInfo(player) {
     document.getElementById('playerXrlTeam').innerText = player.xrl_team;
     document.getElementById('playerPositions').innerText = player.position;
     if (player.position2) document.getElementById('playerPositions').innerText += ', ' + player.position2;
+    document.getElementById('playerXrlPoints').innerText = player.scoring_stats[player.position].points + player.scoring_stats.kicker.points;
     document.getElementById('playerTries').innerText = player.stats.Tries;
     document.getElementById('playerITs').innerText = player.scoring_stats[player.position].involvement_try;
     document.getElementById('playerPTs').innerText = player.scoring_stats[player.position].positional_try;
@@ -86,8 +87,12 @@ export function GetPlayerXrlScores(scoringPosition, appearance, scoreAsKicker=tr
             score += stats[position].tries * 4;
             //-2 points for a sin bin
             score -= stats[position].sin_bins * 2;
-            //-4 points for a red card
-            score -= stats[position].send_offs * 4;
+            //-4 points for a red card and -1 for every 10 mins off field
+            if (stats[position].send_offs != 0) {
+                let minutes = 80 - stats[position].send_offs;
+                let deduction = Math.floor(minutes / 10) + 4;
+                score -= deduction;
+            }
             //4 points for involvement and positional tries
             if (stats[position].involvement_try) score += 4;
             if (stats[position].positional_try > 0) score += 4;

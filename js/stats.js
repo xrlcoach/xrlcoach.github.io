@@ -1,7 +1,7 @@
 import { GetActiveUserInfo, GetAllPlayers, GetAllStats, GetAllUsers, GetCurrentRoundInfo, GetIdToken, GetRoundInfo } from "./ApiFetch.js";
 import { GetPlayerXrlScores } from "./Helpers.js";
 
-let roundToDisplay, allStats, allUsers, activeUser, allPlayersWithStats, playersTotalStats, statsToDisplay;
+let roundToDisplay, allPlayers, allStats, allUsers, activeUser, allPlayersWithStats, playersTotalStats, displayedStats;
 
 window.onload = async function() {
     roundToDisplay = await GetCurrentRoundInfo();
@@ -19,7 +19,7 @@ window.onload = async function() {
         document.getElementById('xrlTeamSelect').appendChild(option);
     }
     activeUser = await GetActiveUserInfo(GetIdToken());
-    let allPlayers = await GetAllPlayers();
+    allPlayers = await GetAllPlayers();
     allPlayersWithStats = allPlayers.filter(p => playerIdsWithStats.includes(p.player_id))
     for (let i in allStats) {
         let player = allPlayersWithStats.find(p => p.player_id == allStats[i].player_id);
@@ -28,67 +28,67 @@ window.onload = async function() {
         allStats[i].position = player.position;
         allStats[i].xrl_team = player.xrl_team ? player.xrl_team : 'None';
     }
-    playersTotalStats = allPlayersWithStats.map(function(p) {
-        let playerStats = allStats.filter(s => s.player_id == p.player_id);
-        // if (playerStats.length == 0) {
-        //     return;
-        // }
-        // let playerStatsWithScores = playerStats.map(a => {
-        //     a.score = GetPlayerXrlScores(p.position, a);
-        //     return a;
-        // });
-        p.stats = playerStats.reduce((totals, appearance) => {
-            let stats = appearance.stats;
-            for (let stat in stats) {
-                if (totals[stat] == undefined) {
-                    totals[stat] = 0;
-                }
-                totals[stat] += stats[stat];
-            }
-            return totals;
-        }, {});
-        p.scoring_stats = playerStats.reduce((totals, appearance) => {
-            let scoringStats = appearance.scoring_stats;
-            for (let position in scoringStats) {
-                if (totals[position] == undefined) {
-                    totals[position] = {};
-                }
-                let positionStats = scoringStats[position];
-                for (let stat in positionStats) {
-                    if (totals[position][stat] == undefined) {
-                        totals[position][stat] = 0;
-                    }
-                    if (stat == 'positional_try') {
-                        if (positionStats[stat] > 0) {
-                            totals[position][stat] += 1;
-                        }
-                        continue;
-                    }
-                    if (typeof(positionStats[stat]) == "boolean") {
-                        if (positionStats[stat]) {
-                            totals[position][stat] += 1;
-                        } 
-                    } else {
-                        totals[position][stat] += positionStats[stat];
-                    }
-                }
-            }
-            return totals;
-        }, {});
-        p.score = playerStats.reduce((total, appearance) => {
-            return total + appearance.score;
-        }, 0);
-        p.score_not_kicking = playerStats.reduce((total, appearance) => {
-            return total + appearance.score_not_kicking;
-        }, 0);
-        return p;
-    });
-    statsToDisplay = playersTotalStats;
-    populateStatsTable(statsToDisplay, sortByXrlXcore);
+    // playersTotalStats = allPlayersWithStats.map(function(p) {
+    //     let playerStats = allStats.filter(s => s.player_id == p.player_id);
+    //     // if (playerStats.length == 0) {
+    //     //     return;
+    //     // }
+    //     // let playerStatsWithScores = playerStats.map(a => {
+    //     //     a.score = GetPlayerXrlScores(p.position, a);
+    //     //     return a;
+    //     // });
+    //     p.stats = playerStats.reduce((totals, appearance) => {
+    //         let stats = appearance.stats;
+    //         for (let stat in stats) {
+    //             if (totals[stat] == undefined) {
+    //                 totals[stat] = 0;
+    //             }
+    //             totals[stat] += stats[stat];
+    //         }
+    //         return totals;
+    //     }, {});
+    //     p.scoring_stats = playerStats.reduce((totals, appearance) => {
+    //         let scoringStats = appearance.scoring_stats;
+    //         for (let position in scoringStats) {
+    //             if (totals[position] == undefined) {
+    //                 totals[position] = {};
+    //             }
+    //             let positionStats = scoringStats[position];
+    //             for (let stat in positionStats) {
+    //                 if (totals[position][stat] == undefined) {
+    //                     totals[position][stat] = 0;
+    //                 }
+    //                 if (stat == 'positional_try') {
+    //                     if (positionStats[stat] > 0) {
+    //                         totals[position][stat] += 1;
+    //                     }
+    //                     continue;
+    //                 }
+    //                 if (typeof(positionStats[stat]) == "boolean") {
+    //                     if (positionStats[stat]) {
+    //                         totals[position][stat] += 1;
+    //                     } 
+    //                 } else {
+    //                     totals[position][stat] += positionStats[stat];
+    //                 }
+    //             }
+    //         }
+    //         return totals;
+    //     }, {});
+    //     p.score = playerStats.reduce((total, appearance) => {
+    //         return total + appearance.score;
+    //     }, 0);
+    //     p.score_not_kicking = playerStats.reduce((total, appearance) => {
+    //         return total + appearance.score_not_kicking;
+    //     }, 0);
+    //     return p;
+    // });
+    // statsToDisplay = playersTotalStats;
+    populateStatsTable(allPlayers, sortByTotalXrlScore);
 }
 
 
-function populateStatsTable(stats, sortFunction) {
+function populateStatsTable(stats, sortFunction, scoreAsKicker=true, singleRound=false) {
     let sortedStats = stats.sort(sortFunction);
     let table = document.getElementById('statTableBody');
     table.innerHTML = '';
@@ -128,7 +128,19 @@ function populateStatsTable(stats, sortFunction) {
         mia.innerText = player.scoring_stats[player.position].mia;
         tr.appendChild(mia);
         let total = document.createElement('td');
-        total.innerText = player.score;
+        if (scoreAsKicker) {
+            if (singleRound) {
+                total.innerText = player.score;
+            } else {
+                total.innerText = player.scoring_stats[player.position].points + player.scoring_stats.kicker.points;
+            }
+        } else {
+            if (singleRound) {
+                total.innerText = player.score_not_kicking;
+            } else {
+                total.innerText = player.scoring_stats[player.position].points;
+            }
+        }
         tr.appendChild(total);
         table.appendChild(tr);
     }
@@ -141,14 +153,11 @@ function filterStats(event) {
     let xrlTeam = document.getElementById('xrlTeamSelect').value;
     let position = document.getElementById('positionSelect').value;
     let scoreAsKicker = document.getElementById('scoreKickerSelect').value == 'Yes' ? true : false;
-    statsToDisplay = roundNumber == 'ALL' ? playersTotalStats : allStats.filter(p => p.round_number == roundNumber);
+    let singleRound = roundNumber != 'ALL';
+    let statsToDisplay = !singleAppearance ? allPlayers : allStats.filter(p => p.round_number == roundNumber);
     if (nrlClub != 'ALL') statsToDisplay = statsToDisplay.filter(p => p.nrl_club == nrlClub);
     if (xrlTeam != 'ALL') statsToDisplay = statsToDisplay.filter(p => p.xrl_team == xrlTeam);
     if (position != 'ALL') statsToDisplay = statsToDisplay.filter(p => p.position == position);
-    if (!scoreAsKicker) statsToDisplay = statsToDisplay.map(function(p) {
-        p.score = p.score_not_kicking;
-        return p;
-    });
     
     // if (roundNumber == 'ALL' && nrlClub == 'ALL' && xrlTeam == 'ALL') {
     //     statsToDisplay = playersTotalStats;
@@ -167,10 +176,17 @@ function filterStats(event) {
     // } else {
     //     statsToDisplay = allStats.filter(p => p.nrl_club == nrlClub && p.xrl_team == xrlTeam && p.round_number == roundNumber);
     // }
-    populateStatsTable(statsToDisplay, sortByXrlXcore);
+
+    displayedStats = statsToDisplay;
+    let sortFunction = singleRound ? sortByXrlXcore : sortByTotalXrlScore;
+    populateStatsTable(statsToDisplay, sortFunction, scoreAsKicker, singleRound);
 }
 
 window.filterStats = filterStats;
+
+function sortByTotalXrlScore(p1, p2) {
+    return (p2.scoring_stats[p2.position].points + p2.scoring_stats.kicker.points) - (p1.scoring_stats[p1.position].points + p1.scoring_stats.kicker.points);
+}
 
 function sortByXrlXcore(p1, p2) {
     return p2.score - p1.score;
@@ -189,6 +205,6 @@ function sortPlayers(attribute) {
     } else {
         sortFunction = (p1, p2) => p1[attribute] > p2[attribute];
     }
-    populateStatsTable(statsToDisplay, sortFunction);
+    populateStatsTable(displayedStats, sortFunction);
 }
 window.sortPlayers = sortPlayers;

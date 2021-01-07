@@ -7,6 +7,7 @@ import stat
 from decimal import Decimal
 from botocore.errorfactory import ClientError
 from selenium import webdriver
+import math
 
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
@@ -470,7 +471,7 @@ def get_stats():
                         player_lineup_score -= player_scoring_stats['sin_bins'] * 2
                         if player_scoring_stats['send_offs'] != 0:
                             minutes = 80 - player_scoring_stats['send_offs']
-                            deduction = round(minutes / 10) + 4
+                            deduction = math.floor(minutes / 10) + 4
                             player_lineup_score -= deduction
                         if player_scoring_stats['involvement_try']: player_lineup_score += 4
                         if player_scoring_stats['positional_try'] > 0: player_lineup_score += 4

@@ -97,7 +97,15 @@ function populateStatsTable(stats, sortFunction, scoringAsKicker=true, isSingleR
     for (var player of sortedStats) {
         let tr = document.createElement('tr');
         let name = document.createElement('td');
-        name.innerText = player.player_name;
+        let nameLink = document.createElement('a');
+        nameLink.innerText = player.player_name;
+        nameLink.value = player.player_id;
+        if (!isSingleRound) {
+            nameLink.onclick = function() {
+                DisplayPlayerInfo(squad.find(p => p.player_id == this.value));
+            };
+        }
+        name.appendChild(nameLink);
         tr.appendChild(name);
         let nrlClub = document.createElement('td');
         nrlClub.innerText = player.nrl_club;

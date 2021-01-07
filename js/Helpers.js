@@ -63,6 +63,7 @@ export function DisplayPlayerInfo(player) {
         };
         document.getElementById('playerInfoPickButton').hidden = false;
     }
+    document.getElementById('allStatsContainer').innerHTML = '';
     for (let stat in player.stats) {
         let col = document.createElement('div');
         col.className = 'col-3';

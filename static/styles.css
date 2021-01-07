@@ -72,3 +72,9 @@ table
     max-width: 100%;
 }
 
+table a
+{
+    color: #2e944b;
+    text-decoration: none;
+}
+

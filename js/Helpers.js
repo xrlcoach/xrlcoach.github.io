@@ -24,10 +24,15 @@ export function DisplayPlayerInfo(player) {
     document.getElementById('playerNrlClub').innerText = player.nrl_club;
     document.getElementById('playerNrlLogo').src = '/static/' + player.nrl_club + '.svg';
     document.getElementById('playerXrlTeam').innerText = player.xrl_team ? player.xrl_team : 'None';
-    document.getElementById('playerXrlLogo').src = '/static/' + player.xrl_team + '.png';
+    if (!player.xrl_team || player.xrl_team == 'None') {
+        document.getElementById('playerXrlLogo').hidden = true;
+    } else {
+        document.getElementById('playerXrlLogo').src = '/static/' + player.xrl_team + '.png';
+    }
     document.getElementById('playerPositions').innerText = player.position;
     if (player.position2) document.getElementById('playerPositions').innerText += ', ' + player.position2;
     document.getElementById('playerXrlPoints').innerText = player.scoring_stats[player.position].points + player.scoring_stats.kicker.points;
+    document.getElementById('playerInfoAppearances').innerText = player.stats.appearances;
     document.getElementById('playerTries').innerText = player.stats.Tries;
     document.getElementById('playerITs').innerText = player.scoring_stats[player.position].involvement_try;
     document.getElementById('playerPTs').innerText = player.scoring_stats[player.position].positional_try;
@@ -55,7 +60,7 @@ export function DisplayPlayerInfo(player) {
             true, async function() {
                 let playerSquad = await GetPlayersFromXrlTeam(GetActiveUserTeamShort());
                 if (playerSquad.length > 17) {
-                    DisplayFeedback('Sorry!', 'Your squad already has 18 players.');
+                    DisplayFeedback('Sorry!', "Your squad already has 18 players. You'll need to drop someone first.");
                 } else {
                     await UpdatePlayerXrlTeam(GetActiveUserTeamShort(), player);
                     DisplayFeedback('Success', player.player_name + ' has been added to your squad.',

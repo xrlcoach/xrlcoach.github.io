@@ -2,6 +2,8 @@ import { GetActiveUserInfo, GetActiveUserTeamShort, GetAllPlayers, GetAllStats, 
 import { GetPlayerXrlScores, DisplayPlayerInfo, DisplayFeedback } from "./Helpers.js";
 
 let roundToDisplay, allPlayers, allStats, allUsers, activeUser, allPlayersWithStats, displayedStats, scoreAsKicker, singleRound;
+let sortAttribute = 'score';
+let sortOrder = 'Descending';
 
 window.onload = async function() {
     roundToDisplay = getCookie('round');
@@ -84,6 +86,7 @@ window.onload = async function() {
     //     return p;
     // });
     // statsToDisplay = playersTotalStats;
+    displayedStats = allPlayers;
     populateStatsTable(allPlayers, sortByTotalXrlScore);
     document.getElementById('loading').hidden = true;
     document.getElementById('mainContent').hidden = false;
@@ -205,7 +208,7 @@ async function filterStats(event) {
     // }
 
     displayedStats = statsToDisplay;
-    let sortFunction = singleRound ? scoreAsKicker ? sortByXrlXcore : sortByXrlXcoreNoKicking : scoreAsKicker ? sortByTotalXrlScore : sortByTotalXrlScoreNoKicking;
+    let sortFunction = singleRound ? scoreAsKicker ? sortByXrlScore : sortByXrlScoreNoKicking : scoreAsKicker ? sortByTotalXrlScore : sortByTotalXrlScoreNoKicking;
     populateStatsTable(statsToDisplay, sortFunction, scoreAsKicker, singleRound);
 }
 
@@ -214,34 +217,62 @@ window.filterStats = filterStats;
 function sortByTotalXrlScore(p1, p2) {
     return (p2.scoring_stats[p2.position].points + p2.scoring_stats.kicker.points) - (p1.scoring_stats[p1.position].points + p1.scoring_stats.kicker.points);
 }
-
+function sortByTotalXrlScoreAsc(p1, p2) {
+    return (p1.scoring_stats[p1.position].points + p1.scoring_stats.kicker.points) - (p2.scoring_stats[p2.position].points + p2.scoring_stats.kicker.points);
+}
 function sortByTotalXrlScoreNoKicking(p1, p2) {
     return p2.scoring_stats[p2.position].points - p1.scoring_stats[p1.position].points;
 }
-
-function sortByXrlXcore(p1, p2) {
+function sortByTotalXrlScoreNoKickingAsc(p1, p2) {
+    return p1.scoring_stats[p1.position].points - p2.scoring_stats[p2.position].points;
+}
+function sortByXrlScore(p1, p2) {
     return p2.score - p1.score;
 }
-
-function sortByXrlXcoreNoKicking(p1, p2) {
+function sortByXrlScoreAsc(p1, p2) {
+    return p1.score - p2.score;
+}
+function sortByXrlScoreNoKicking(p1, p2) {
     return p2.score_not_kicking - p1.score_not_kicking;
+}
+function sortByXrlScoreNoKickingAsc(p1, p2) {
+    return p1.score_not_kicking - p2.score_not_kicking;
 }
 
 function sortPlayers(attribute) {
     let sortFunction;
+    if (sortAttribute == attribute) {
+        if (sortOrder == 'Descending') {
+            sortOrder = 'Ascending';
+        } else {
+            sortOrder = 'Descending';
+        }
+    }
     if (['involvement_try', 'positional_try', 'concede', 'mia', 'tries'].includes(attribute)) {
-        sortFunction = (p1, p2) => p2.scoring_stats[p2.position][attribute] - p1.scoring_stats[p1.position][attribute];
+        if (sortOrder == 'Descending') sortFunction = (p1, p2) => p2.scoring_stats[p2.position][attribute] - p1.scoring_stats[p1.position][attribute];
+        else sortFunction = (p1, p2) => p1.scoring_stats[p1.position][attribute] - p2.scoring_stats[p2.position][attribute];
     } else if (['goals', 'field_goals'].includes(attribute)) {
-        sortFunction = (p1, p2) => p2.scoring_stats.kicker[attribute] - p1.scoring_stats.kicker[attribute];
+        if (sortOrder == 'Descending') sortFunction = (p1, p2) => p2.scoring_stats.kicker[attribute] - p1.scoring_stats.kicker[attribute];
+        else sortFunction = (p1, p2) => p1.scoring_stats.kicker[attribute] - p2.scoring_stats.kicker[attribute];
     } else if (attribute == 'player_name') {
-        sortFunction = (p1, p2) => p1.player_name.split(' ')[1] > p2.player_name.split(' ')[1];
+        if (sortOrder == 'Descending') sortFunction = (p1, p2) => p1.player_name.split(' ')[1] > p2.player_name.split(' ')[1];
+        else sortFunction = (p1, p2) => p1.player_name.split(' ')[1] < p2.player_name.split(' ')[1];
     } else if (attribute == 'score') {
-        sortFunction = singleRound ? scoreAsKicker ? sortByXrlXcore : sortByXrlXcoreNoKicking : scoreAsKicker ? sortByTotalXrlScore : sortByTotalXrlScoreNoKicking;;
+        if (sortOrder == 'Descending') sortFunction = singleRound ? scoreAsKicker ? sortByXrlScore : sortByXrlScoreNoKicking : scoreAsKicker ? sortByTotalXrlScore : sortByTotalXrlScoreNoKicking;
+        else sortFunction = singleRound ? scoreAsKicker ? sortByXrlScoreAsc : sortByXrlScoreNoKickingAsc : scoreAsKicker ? sortByTotalXrlScoreAsc : sortByTotalXrlScoreNoKickingAsc;
     } else {
-        sortFunction = function(p1, p2) {
-            if (p1[attribute] == undefined) p1[attribute] = 'None';
-            if (p2[attribute] == undefined) p2[attribute] = 'None';
-            return p1[attribute] > p2[attribute];
+        if (sortOrder == 'Descending') {
+            sortFunction = function(p1, p2) {
+                if (p1[attribute] == undefined) p1[attribute] = 'None';
+                if (p2[attribute] == undefined) p2[attribute] = 'None';
+                return p1[attribute] > p2[attribute];
+            }
+        } else {
+            sortFunction = function(p1, p2) {
+                if (p1[attribute] == undefined) p1[attribute] = 'None';
+                if (p2[attribute] == undefined) p2[attribute] = 'None';
+                return p1[attribute] < p2[attribute];
+            }
         }
     }
     populateStatsTable(displayedStats, sortFunction, scoreAsKicker, singleRound);

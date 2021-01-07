@@ -59,7 +59,7 @@ function DisplayNextMatch() {
     } else {
         document.getElementById('nextMatchScore').innerText = match.home_score + ' - ' + match.away_score; 
         document.getElementById('nextMatchScore').hidden = false; 
-        document.getElementById('nextMatchButton').href = `fixture.html?round=${lastRound.round_number}&fixture=${match.home}-v-${match.away}`;
+        document.getElementById('nextMatchButton').href = `fixture.html?round=${nextRound.round_number}&fixture=${match.home}-v-${match.away}`;
         document.getElementById('nextMatchButton').innerText = 'View';
     }
     if (nextRound.completed) {

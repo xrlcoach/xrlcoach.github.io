@@ -64,6 +64,8 @@ window.onload = async function() {
     }
     //Call table constructor
     PopulateFixtureTable(roundToDisplay);
+    document.getElementById('loading').hidden = true;
+    document.getElementById('mainContent').hidden = false;
 }
 /**
  * Populates the fixtures table body with the desired round's XRL matches.

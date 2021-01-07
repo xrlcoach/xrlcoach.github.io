@@ -44,6 +44,8 @@ window.onload = async function() {
     //Construct the lineup tables
     populateLineupTable('homeTableBody', homeLineup.sort((a, b) => a.position_number - b.position_number), match.home_score);
     populateLineupTable('awayTableBody', awayLineup.sort((a, b) => a.position_number - b.position_number), match.away_score);
+    document.getElementById('loading').hidden = true;
+    document.getElementById('mainContent').hidden = false;
 }
 /**
  * Fills specified table with provided lineup data. Colourises players to indicate whether they

@@ -79,6 +79,8 @@ window.onload = async () => {
     console.log('Playmakers: ' + playmakers[0]);
     //Call the table constructor
     PopulateLineup();
+    document.getElementById('loading').hidden = true;
+    document.getElementById('mainContent').hidden = false;
 }
 
 function togglePowerplay(event, button) {

@@ -166,6 +166,7 @@ function populateStatsTable(stats, sortFunction, scoringAsKicker=true, isSingleR
 
 async function filterStats(event) {
     event.preventDefault();
+    document.getElementById('filterLoading').hidden = false;
     let roundNumber = document.getElementById('roundSelect').value;
     let nrlClub = document.getElementById('nrlClubSelect').value;
     let xrlTeam = document.getElementById('xrlTeamSelect').value;
@@ -214,6 +215,7 @@ async function filterStats(event) {
     displayedStats = statsToDisplay;
     let sortFunction = singleRound ? scoreAsKicker ? sortByXrlScore : sortByXrlScoreNoKicking : scoreAsKicker ? sortByTotalXrlScore : sortByTotalXrlScoreNoKicking;
     populateStatsTable(statsToDisplay, sortFunction, scoreAsKicker, singleRound);
+    document.getElementById('filterLoading').hidden = true;
 }
 
 window.filterStats = filterStats;

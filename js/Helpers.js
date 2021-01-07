@@ -95,7 +95,7 @@ export async function DisplayAppearanceInfoFromLineup(appearance) {
     let appearanceInfo = new bootstrap.Modal(document.getElementById('appearanceInfo'));
     document.getElementById('appearanceInfoLoading').hidden = false;
     document.getElementById('appearanceInfoBody').hidden = true;
-    document.getElementById('appearanceInfoTitle').innerText = appearance.player_name;
+    document.getElementById('appearanceInfoTitle').innerText = appearance.player_name + ' - Round ' + appearance.round_number;
     appearanceInfo.show();
     let statsRecord = await GetPlayerAppearanceStats(appearance.player_id, appearance.round_number);
     if (statsRecord) {
@@ -234,7 +234,7 @@ export async function DisplayAppearanceInfoFromLineup(appearance) {
 
 export function DisplayAppearanceInfoFromStats(appearance) {
     let appearanceInfo = new bootstrap.Modal(document.getElementById('appearanceInfo'));
-    document.getElementById('appearanceInfoTitle').innerText = appearance.player_name;
+    document.getElementById('appearanceInfoTitle').innerText = appearance.player_name + ' - Round ' + appearance.round_number;
     document.getElementById('appearanceInfoNrlClub').innerText = appearance.nrl_club;
     document.getElementById('appearanceInfoNrlLogo').src = '/static/' + appearance.nrl_club + '.svg';
     let appearancePositions = Object.keys(appearance.scoring_stats);

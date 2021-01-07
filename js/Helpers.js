@@ -66,7 +66,9 @@ export function DisplayPlayerInfo(player) {
     for (let stat in player.stats) {
         let col = document.createElement('div');
         col.className = 'col-3';
-        col.innerHTML = '<p>' + stat + ': ' + player.stats[stat] + '</p>';
+        let p = document.createElement('p');
+        p.innerText = stat + ': ' + player.stats[stat];
+        col.appendChild(p);
         document.getElementById('allStatsContainer').appendChild(col);
     }
     playerInfo.show();

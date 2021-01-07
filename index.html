@@ -61,7 +61,7 @@
     <main class="container-lg" id="mainContent" hidden>
         <div class="row align-items-center mt-5">
             <div class="col-lg card border border-secondary" id="teamInfoCard">
-                <h2 class="card-header bg-primary bg-gradient text-white" id="teamNameDisplay"></h2>
+                <h2 class="card-header bg-dark bg-gradient text-white" id="teamNameDisplay"></h2>
                 <div class="card-body">
                     <div class="row">
                         <div class="col-4 p-2">
@@ -196,19 +196,19 @@
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="playerInfoTitle"></h5>
+                    <h2 class="modal-title bg-success bg-gradient text-white" id="playerInfoTitle"></h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body" id="playerInfoBody">
-                    <div class="row">
+                    <div class="row p-1">
                         <div class="col">
-                            <p>NRL Club: <span id="playerNrlClub"></span></p>
+                            <p class="h5">NRL Club: <span id="playerNrlClub"></span></p>
                         </div>
                         <div class="col">
-                            <p>XRL Team: <span id="playerXrlTeam"></span></p>
+                            <p class="h5">XRL Team: <span id="playerXrlTeam"></span></p>
                         </div>
                         <div class="col">
-                            <p>Positions: <span id="playerPositions"></span></p>
+                            <p class="h5">Positions: <span id="playerPositions"></span></p>
                         </div>
                     </div>
                     <div class="row">
@@ -216,7 +216,7 @@
                             <div class="card">
                                 <h4 class="card-header">Stats</h4>
                                 <div class="card-body">
-                                    <div class="row">
+                                    <div class="row mb-2">
                                         <div class="col">
                                             <p class="h5">XRL Points: <span id="playerXrlPoints" style="color: green;"></span></p>
                                         </div>
@@ -224,22 +224,25 @@
                                     <div class="row">
                                         <div class="col">
                                             <p>Tries: <span id="playerTries"></span></p>
+                                            <p>Goals: <span id="playerGoals"></span></p>
                                             <p>MIAs: <span id="playerMIAs"></span></p>
                                         </div>
                                         <div class="col">
                                             <p>Involvement Tries: <span id="playerITs"></span></p>
+                                            <p>Field Goals: <span id="playerFGs"></span></p>
                                             <p>Concedes: <span id="playerConcedes"></span></p>
                                         </div>
                                         <div class="col">
                                             <p>Positional Tries: <span id="playerPTs"></span></p>
+                                            <p></p>
                                             <p>Sin Bins: <span id="playerSinBins"></span></p>
                                         </div>
-                                        <div class="col">
-                                            <p>Goals: <span id="playerGoals"></span></p>
+                                        <div class="col"> 
+                                            <p></p>                                           
+                                            <p></p>
                                             <p>Send Offs: <span id="playerSendOffs"></span></p>
                                         </div>
                                         <div class="col">
-                                            <p>Field Goals: <span id="playerFGs"></span></p>
                                         </div>
                                     </div>
                                 </div>

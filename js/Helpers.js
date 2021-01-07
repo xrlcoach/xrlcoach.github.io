@@ -22,7 +22,7 @@ export function DisplayPlayerInfo(player) {
     let playerInfo = new bootstrap.Modal(document.getElementById('playerInfo'));
     document.getElementById('playerInfoTitle').innerText = player.player_name;
     document.getElementById('playerNrlClub').innerText = player.nrl_club;
-    document.getElementById('playerXrlTeam').innerText = player.xrl_team;
+    document.getElementById('playerXrlTeam').innerText = player.xrl_team ? player.xrl_team : 'None';
     document.getElementById('playerPositions').innerText = player.position;
     if (player.position2) document.getElementById('playerPositions').innerText += ', ' + player.position2;
     document.getElementById('playerXrlPoints').innerText = player.scoring_stats[player.position].points + player.scoring_stats.kicker.points;
@@ -46,7 +46,7 @@ export function DisplayPlayerInfo(player) {
             });
         };
         document.getElementById('playerInfoDropButton').hidden = false;
-    } else if (player.xrl_team == 'None') {
+    } else if (player.xrl_team == undefined || player.xrl_team == 'None') {
         document.getElementById('playerInfoFooter').hidden = false;
         document.getElementById('playerInfoPickButton').onclick = function () {
             DisplayFeedback('Confirm', 'Are you sure you want to pick ' + player.player_name + '?',

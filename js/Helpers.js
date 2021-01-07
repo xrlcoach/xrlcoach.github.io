@@ -1,9 +1,9 @@
-import { GetLineupByTeamAndRound } from "./ApiFetch.js"
+import { GetActiveUserTeamShort, GetLineupByTeamAndRound, GetPlayersFromXrlTeam, UpdatePlayerXrlTeam } from "./ApiFetch.js"
 /**
  * Displays feedback message in the feedback element on the top of each page
  * @param {String} feedback 
  */
-export function DisplayFeedback(title, message, confirm=false, onConfirmFunction=null) {
+export function DisplayFeedback(title, message, confirm=false, onConfirmFunction=null, event=null) {
     let feedback = new bootstrap.Modal(document.getElementById('feedback'));
     document.getElementById('feedbackTitle').innerText = title;
     document.getElementById('feedbackMessage').innerHTML = message;
@@ -32,6 +32,36 @@ export function DisplayPlayerInfo(player) {
     document.getElementById('playerConcedes').innerText = player.scoring_stats[player.position].concede;
     document.getElementById('playerSinBins').innerText = player.stats['Sin Bins'];
     document.getElementById('playerSendOffs').innerText = player.stats['Send Offs'];
+    if (player.xrl_team == GetActiveUserTeamShort()) {
+        document.getElementById('playerInfoFooter').hidden = false;
+        document.getElementById('playerInfoDropButton').onclick = DisplayFeedback('Confirm', 'Are you sure you want to drop ' + player.player_name + '?',
+        true, function() {
+            await UpdatePlayerXrlTeam(null, player);
+            DisplayFeedback('Success', player.player_name + ' has been dropped from your squad.');
+            playerInfo.hide();
+        });
+        document.getElementById('playerInfoDropButton').hidden = false;
+    } else if (player.xrl_team == 'None') {
+        document.getElementById('playerInfoFooter').hidden = false;
+        document.getElementById('playerInfoPickButton').onclick = DisplayFeedback('Confirm', 'Are you sure you want to pick ' + player.player_name + '?',
+        true, function() {
+            let playerSquad = await GetPlayersFromXrlTeam(GetActiveUserTeamShort());
+            if (playerSquad.length > 17) {
+                DisplayFeedback('Sorry!', 'Your squad already has 18 players.');
+            } else {
+                await UpdatePlayerXrlTeam(GetActiveUserTeamShort(), player);
+                DisplayFeedback('Success', player.player_name + ' has been added to your squad.')
+                playerInfo.hide();
+            }
+        });
+        document.getElementById('playerInfoPickButton').hidden = false;
+    }
+    for (let stat in player.stats) {
+        let col = document.createElement('div');
+        col.className = 'col-md-3';
+        col.innerHTML = '<p>' + stat + ': ' + player.stats[stat] + '</p>';
+        document.getElementById('allStatsContainer').appendChild(col);
+    }
     playerInfo.show();
 }
 export function DisplayPlayerLineupInfo(appearance) {

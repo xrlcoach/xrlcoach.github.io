@@ -1,7 +1,7 @@
 import { GetActiveUserInfo, GetAllPlayers, GetAllStats, GetAllUsers, GetCurrentRoundInfo, GetIdToken, GetRoundInfo } from "./ApiFetch.js";
 import { GetPlayerXrlScores } from "./Helpers.js";
 
-let roundToDisplay, allPlayers, allStats, allUsers, activeUser, allPlayersWithStats, playersTotalStats, displayedStats;
+let roundToDisplay, allPlayers, allStats, allUsers, allPlayersWithStats, displayedStats, scoreAsKicker, singleRound;
 
 window.onload = async function() {
     roundToDisplay = await GetCurrentRoundInfo();
@@ -90,7 +90,7 @@ window.onload = async function() {
 }
 
 
-function populateStatsTable(stats, sortFunction, scoreAsKicker=true, singleRound=false) {
+function populateStatsTable(stats, sortFunction, scoringAsKicker=true, isSingleRound=false) {
     let sortedStats = stats.sort(sortFunction);
     let table = document.getElementById('statTableBody');
     table.innerHTML = '';
@@ -130,14 +130,14 @@ function populateStatsTable(stats, sortFunction, scoreAsKicker=true, singleRound
         mia.innerText = player.scoring_stats[player.position].mia;
         tr.appendChild(mia);
         let total = document.createElement('td');
-        if (scoreAsKicker) {
+        if (scoringAsKicker) {
             if (singleRound) {
                 total.innerText = player.score;
             } else {
                 total.innerText = player.scoring_stats[player.position].points + player.scoring_stats.kicker.points;
             }
         } else {
-            if (singleRound) {
+            if (isSingleRound) {
                 total.innerText = player.score_not_kicking;
             } else {
                 total.innerText = player.scoring_stats[player.position].points;
@@ -154,8 +154,8 @@ function filterStats(event) {
     let nrlClub = document.getElementById('nrlClubSelect').value;
     let xrlTeam = document.getElementById('xrlTeamSelect').value;
     let position = document.getElementById('positionSelect').value;
-    let scoreAsKicker = document.getElementById('scoreKickerSelect').value == 'Yes' ? true : false;
-    let singleRound = roundNumber != 'ALL';
+    scoreAsKicker = document.getElementById('scoreKickerSelect').value == 'Yes' ? true : false;
+    singleRound = roundNumber != 'ALL';
     let statsToDisplay = !singleRound ? allPlayers : allStats.filter(p => p.round_number == roundNumber);
     if (nrlClub != 'ALL') statsToDisplay = statsToDisplay.filter(p => p.nrl_club == nrlClub);
     if (xrlTeam != 'ALL') {
@@ -214,10 +214,14 @@ function sortPlayers(attribute) {
     } else if (attribute == 'player_name') {
         sortFunction = (p1, p2) => p1.player_name.split(' ')[1] > p2.player_name.split(' ')[1];
     } else if (attribute == 'score') {
-        sortFunction = (p1, p2) => p2[attribute] - p1[attribute];
+        sortFunction = singleRound ? scoreAsKicker ? sortByXrlXcore : sortByXrlXcoreNoKicking : scoreAsKicker ? sortByTotalXrlScore : sortByTotalXrlScoreNoKicking;;
     } else {
-        sortFunction = (p1, p2) => p1[attribute] > p2[attribute];
+        sortFunction = function(p1, p2) {
+            if (p1[attribute] == undefined) p1[attribute] = 'None';
+            if (p2[attribute] == undefined) p2[attribute] = 'None';
+            return p1[attribute] > p2[attribute];
+        }
     }
-    populateStatsTable(displayedStats, sortFunction);
+    populateStatsTable(displayedStats, sortFunction, scoreAsKicker, singleRound);
 }
 window.sortPlayers = sortPlayers;

@@ -53,7 +53,7 @@
             <span class="text-white h4">Home</span>
         </div>
     </header>
-    <div id="loading" class="justify-content-centre align-items-center" style="height: 400px;">
+    <div id="loading" class="justify-content-centre align-items-center text-center" style="height: 400px;">
         <div class="spinner-border text-success" role="status">
             <span class="visually-hidden">Loading...</span>
         </div>
@@ -68,44 +68,44 @@
                             <img id="teamLogo" height="200px" />
                         </div>
                         <div class="col p-2 align-items-center">
-                            <table class="table table-dark my-1">
+                            <table class="table table-dark my-2 table-striped">
                                 <tr>
-                                    <th>Team Owner</th>
+                                    <th style="color: green;">Team Owner</th>
                                 </tr>
                                 <tr>
                                     <td id="teamOwner"></td>
                                 </tr>
                             </table>
-                            <table class="table table-dark my-1">
+                            <table class="table table-dark my-2 table-striped">
                                 <tr>
-                                    <th>Position</th>
+                                    <th style="color: green;">Position</th>
                                 </tr>
                                 <tr>
                                     <td id="teamPosition"></td>
                                 </tr>
                             </table>
-                            <table class="table table-dark my-1">
+                            <table class="table table-dark my-2 table-striped">
                                 <tr>
-                                    <th>Wins</th>
-                                    <th>Draws</th>
-                                    <th>Losses</th>
+                                    <th style="color: green;">Wins</th>
+                                    <th style="color: green;">Draws</th>
+                                    <th style="color: green;">Losses</th>
                                 </tr>
                                 <tr>
-                                    <td id="teamWins">
-                                    <td id="teamDraws">
-                                    <td id="teamLosses">
+                                    <td id="teamWins"></td>
+                                    <td id="teamDraws"></td>
+                                    <td id="teamLosses"></td>
                                 </tr>
                             </table>
-                            <table class="table table-dark my-1">
+                            <table class="table table-dark my-2 table-striped">
                                 <tr>
-                                    <th>For</th>
-                                    <th>Against</th>
-                                    <th>PD</th>
+                                    <th style="color: green;">For</th>
+                                    <th style="color: green;">Against</th>
+                                    <th style="color: green;">PD</th>
                                 </tr>
                                 <tr>
-                                    <td id="teamFor">
-                                    <td id="teamAgainst">
-                                    <td id="teamPD">
+                                    <td id="teamFor"></td>
+                                    <td id="teamAgainst"></td>
+                                    <td id="teamPD"></td>
                                 </tr>
                             </table>
                             <!-- <h4 class="m-1" id="teamOwner"></h4>
@@ -225,15 +225,28 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body" id="playerInfoBody">
-                    <div class="row p-1">
+                    <div class="row">
                         <div class="col">
-                            <p class="h5">NRL Club: <span id="playerNrlClub"></span></p>
-                        </div>
-                        <div class="col">
-                            <p class="h5">XRL Team: <span id="playerXrlTeam"></span></p>
-                        </div>
-                        <div class="col">
-                            <p class="h5">Positions: <span id="playerPositions"></span></p>
+                            <div class="table table-dark table-striped">
+                                <tr>
+                                    <th>
+                                        <p class="h5">NRL Club</p>
+                                    </th>
+                                    <th>
+                                        <p class="h5">XRL Team</p>
+                                    </th>
+                                    <th>
+                                        <p class="h5">Positions</span></p>
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <td><span id="playerNrlClub"></span><img class="ms-1" height="50px"
+                                            id="playerNrlLogo" /></td>
+                                    <td><span id="playerXrlTeam"></span><img class="ms-1" width="50px"
+                                            id="playerXrlLogo" /></td>
+                                    <td><span id="playerPositions"></span></td>
+                                </tr>
+                            </div>
                         </div>
                     </div>
                     <div class="row">
@@ -248,36 +261,36 @@
                                         </div>
                                     </div>
                                     <div class="row align-items-start">
-                                        <div class="col-md-2">
-                                            <p>Tries: <span id="playerTries"></span></p>
+                                        <div class="col-md-4">
+                                            <p>Tries: <span id="playerTries" style="color: green;"></span></p>
                                         </div>
                                         <div class="col-md-4">
-                                            <p>Involvement Tries: <span id="playerITs"></span></p>
+                                            <p>Involvement Tries: <span id="playerITs" style="color: green;"></span></p>
                                         </div>
                                         <div class="col-md-4">
-                                            <p>Positional Tries: <span id="playerPTs"></span></p>
+                                            <p>Positional Tries: <span id="playerPTs" style="color: green;"></span></p>
                                         </div>
                                     </div>
                                     <div class="row align-items-start">
-                                        <div class="col-md-2">
-                                            <p>Goals: <span id="playerGoals"></span></p>
+                                        <div class="col-md-4">
+                                            <p>Goals: <span id="playerGoals" style="color: green;"></span></p>
                                         </div>
                                         <div class="col-md-4">
-                                            <p>Field Goals: <span id="playerFGs"></span></p>
+                                            <p>Field Goals: <span id="playerFGs" style="color: green;"></span></p>
                                         </div>
                                     </div>
                                     <div class="row align-items-start">
-                                        <div class="col-md-2">
-                                            <p>MIAs: <span id="playerMIAs"></span></p>
+                                        <div class="col-md-4">
+                                            <p>MIAs: <span id="playerMIAs" style="color: #c94d38;"></span></p>
                                         </div>
                                         <div class="col-md-4">
-                                            <p>Concedes: <span id="playerConcedes"></span></p>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <p>Sin Bins: <span id="playerSinBins"></span></p>
+                                            <p>Concedes: <span id="playerConcedes" style="color: #c94d38;"></span></p>
                                         </div>
                                         <div class="col-md-2">
-                                            <p>Send Offs: <span id="playerSendOffs"></span></p>
+                                            <p>Sin Bins: <span id="playerSinBins" style="color: orange;"></span></p>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <p>Send Offs: <span id="playerSendOffs" style="color: #c94d38;"></span></p>
                                         </div>
                                     </div>
                                     <div class="row justify-content-start mt-2">
@@ -324,7 +337,7 @@
                     <button type="button" class="btn btn-danger" data-bs-dismiss="modal"
                         id="feedbackCancel">Cancel</button>
                     <button type="button" class="btn btn-success" data-bs-dismiss="modal"
-                        id="feedbackConfirm">Proceed</button>
+                        id="feedbackConfirm">Confirm</button>
                 </div>
             </div>
         </div>

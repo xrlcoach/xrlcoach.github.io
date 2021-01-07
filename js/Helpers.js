@@ -22,7 +22,9 @@ export function DisplayPlayerInfo(player) {
     let playerInfo = new bootstrap.Modal(document.getElementById('playerInfo'));
     document.getElementById('playerInfoTitle').innerText = player.player_name;
     document.getElementById('playerNrlClub').innerText = player.nrl_club;
+    document.getElementById('playerNrlLogo').src = '/static/' + player.nrl_club + '.png';
     document.getElementById('playerXrlTeam').innerText = player.xrl_team ? player.xrl_team : 'None';
+    document.getElementById('playerXrlLogo').src = '/static/' + player.xrl_team + '.png';
     document.getElementById('playerPositions').innerText = player.position;
     if (player.position2) document.getElementById('playerPositions').innerText += ', ' + player.position2;
     document.getElementById('playerXrlPoints').innerText = player.scoring_stats[player.position].points + player.scoring_stats.kicker.points;
@@ -42,7 +44,7 @@ export function DisplayPlayerInfo(player) {
             true, async function() {
                 await UpdatePlayerXrlTeam(null, player);
                 DisplayFeedback('Success', player.player_name + ' has been dropped from your squad.',
-                true, function() { location.href('index.html') }, false);
+                true, function() { location.href = 'index.html' }, false);
             });
         };
         document.getElementById('playerInfoDropButton').hidden = false;
@@ -57,16 +59,17 @@ export function DisplayPlayerInfo(player) {
                 } else {
                     await UpdatePlayerXrlTeam(GetActiveUserTeamShort(), player);
                     DisplayFeedback('Success', player.player_name + ' has been added to your squad.',
-                    true, function() { location.href('index.html') }, false);
+                    true, function() { location.href = 'index.html' }, false);
                 }
             });
         };
         document.getElementById('playerInfoPickButton').hidden = false;
     }
     document.getElementById('allStatsContainer').innerHTML = '';
-    for (let stat in player.stats) {
+    let sortedKeys = Object.keys(player.stats).sort();
+    for (let stat of sortedKeys) {
         let col = document.createElement('div');
-        col.className = 'col-3';
+        col.className = 'col-4';
         let p = document.createElement('p');
         p.innerText = stat + ': ' + player.stats[stat];
         col.appendChild(p);

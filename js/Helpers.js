@@ -58,7 +58,7 @@ export function DisplayPlayerInfo(player) {
     }
     for (let stat in player.stats) {
         let col = document.createElement('div');
-        col.className = 'col-md-3';
+        col.className = 'col-3';
         col.innerHTML = '<p>' + stat + ': ' + player.stats[stat] + '</p>';
         document.getElementById('allStatsContainer').appendChild(col);
     }

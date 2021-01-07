@@ -22,9 +22,8 @@
 </head>
 
 <body>
-
     <nav class="navbar navbar-expand-md navbar-dark" style="background-color: rgb(44, 48, 52);">
-        <a class="navbar-brand" href="/"><img src="static/xrl-logo.png" alt="XRL Badge" height="40"><span
+        <a class="navbar-brand ms-2" href="/"><img src="static/xrl-logo.png" alt="XRL Badge" height="40"><span
                 class="green">X</span><span class="yellow">R</span><span class="green">L</span></a>
         <button aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler"
             data-bs-target="#navbar" data-bs-toggle="collapse" type="button">
@@ -32,21 +31,18 @@
         </button>
         <div class="collapse navbar-collapse" id="navbar">
             <ul class="navbar-nav me-auto mt-2">
-                <li class="nav-item"><a class="nav-link" href="lineup.html">Lineup</a></li>
-                <li class="nav-item"><a class="nav-link" href="fixture.html">Match Centre</a></li>
-                <li class="nav-item"><a class="nav-link" href="draw.html">Draw</a></li>
-                <li class="nav-item"><a class="nav-link" href="comp.html">Ladder</a></li>
-                <li class="nav-item"><a class="nav-link" href="squads.html">Squads</a></li>
-                <li class="nav-item"><a class="nav-link" href="stats.html">Stats</a></li>
+                
             </ul>
-            <ul class="navbar-nav ms-auto mt-2">
+            <ul class="navbar-nav ms-auto me-2 mt-2">
                 <li class="nav-item"><a class="nav-link" href="signup.html">Register</a></li>
             </ul>
         </div>
-    </nav>
+    </nav>    
 
-    <header>
-
+    <header class="p-3 bg-success bg-gradient">
+        <div class="row text-center">
+            <span class="text-white h4">Login</span>
+        </div>
     </header>
 
     <main class="container-lg">
@@ -80,6 +76,22 @@
                 <div class="modal-footer" id="feedbackFooter" hidden>
                     <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
                     <button type="button" class="btn btn-success" id="feedbackConfirm">Proceed</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="feedback" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="feedbackTitle"></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="feedbackMessage"></div>
+                <div class="modal-footer" id="feedbackFooter" hidden>
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-success" id="feedbackConfirm">Confirm</button>
                 </div>
             </div>
         </div>

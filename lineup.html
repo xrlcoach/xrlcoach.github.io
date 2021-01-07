@@ -27,7 +27,7 @@
 <body>
 
     <nav class="navbar navbar-expand-md navbar-dark" style="background-color: rgb(44, 48, 52);">
-        <a class="navbar-brand" href="/"><img src="static/xrl-logo.png" alt="XRL Badge" height="40"><span
+        <a class="navbar-brand ms-2" href="/"><img src="static/xrl-logo.png" alt="XRL Badge" height="40"><span
                 class="green">X</span><span class="yellow">R</span><span class="green">L</span></a>
         <button aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler"
             data-bs-target="#navbar" data-bs-toggle="collapse" type="button">
@@ -39,16 +39,11 @@
                 <li class="nav-item"><a class="nav-link" href="fixture.html">Match Centre</a></li>
                 <li class="nav-item"><a class="nav-link" href="draw.html">Draw</a></li>
                 <li class="nav-item"><a class="nav-link" href="comp.html">Ladder</a></li>
-                <li class="nav-item"><a class="nav-link" href="squads.html">Squads</a></li>
-                <li class="nav-item"><a class="nav-link" href="stats.html">Stats</a></li>
+                <li class="nav-item"><a class="nav-link" href="players.html">Players</a></li>
             </ul>
-            <ul class="navbar-nav ms-auto mt-2">
+            <ul class="navbar-nav ms-auto me-2 mt-2">
                 <li class="nav-item"><a class="nav-link" href="#" onclick="logout()">Log Out</a></li>
             </ul>
-            <!-- <ul class="navbar-nav ms-auto mt-2">
-                <li class="nav-item"><a class="nav-link" href="/register">Register</a></li>
-                <li class="nav-item"><a class="nav-link" href="/login">Log In</a></li>
-            </ul> -->
         </div>
     </nav>
 
@@ -69,6 +64,7 @@
                 <table class="table table-dark table-striped">
                     <thead>
                         <tr>
+                            <th style="color: green;">Number</th>
                             <th style="color: green;">Position</th>
                             <th style="color: green;">Player</th>
                         </tr>
@@ -76,7 +72,8 @@
                     <tbody id="lineupTable">
                         <form onsubmit="submitLineup(event)">
                             <tr>
-                                <td style="white-space: nowrap;">1  Fullback</td>
+                                <td>1</td>
+                                <td style="white-space: nowrap;">Fullback</td>
                                 <td>
                                     <div class="form-group">
                                         <select class="form-select" name="player" id="fullback"
@@ -85,7 +82,8 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td style="white-space: nowrap;">2  Winger</td>
+                                <td>2</td>
+                                <td style="white-space: nowrap;">Winger</td>
                                 <td>
                                     <div class="form-group">
                                         <select class="form-select" name="player" id="winger1"
@@ -94,7 +92,8 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td style="white-space: nowrap;">3  Centre</td>
+                                <td>3</td>
+                                <td style="white-space: nowrap;">Centre</td>
                                 <td>
                                     <div class="form-group">
                                         <select class="form-select" name="player" id="centre1"
@@ -103,7 +102,8 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td style="white-space: nowrap;">4  Centre</td>
+                                <td>4</td>
+                                <td style="white-space: nowrap;">Centre</td>
                                 <td>
                                     <div class="form-group">
                                         <select class="form-select" name="player" id="centre2"
@@ -112,7 +112,8 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td style="white-space: nowrap;">5  Winger</td>
+                                <td>5</td>
+                                <td style="white-space: nowrap;">Winger</td>
                                 <td>
                                     <div class="form-group">
                                         <select class="form-select" name="player" id="winger2"
@@ -121,7 +122,8 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td style="white-space: nowrap;">6  Five-Eighth</td>
+                                <td>6</td>
+                                <td style="white-space: nowrap;">Five-Eighth</td>
                                 <td>
                                     <div class="form-group">
                                         <select class="form-select" name="player" id="five_eighth"
@@ -130,7 +132,8 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td style="white-space: nowrap;">7  Halfback</td>
+                                <td>7</td>
+                                <td style="white-space: nowrap;">Halfback</td>
                                 <td>
                                     <div class="form-group">
                                         <select class="form-select" name="player" id="halfback"
@@ -139,7 +142,8 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td style="white-space: nowrap;">8  Prop</td>
+                                <td>8</td>
+                                <td style="white-space: nowrap;">Prop</td>
                                 <td>
                                     <div class="form-group">
                                         <select class="form-select" name="player" id="prop1"
@@ -148,7 +152,8 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td style="white-space: nowrap;">0  Hooker</td>
+                                <td>9</td>
+                                <td style="white-space: nowrap;">Hooker</td>
                                 <td>
                                     <div class="form-group">
                                         <select class="form-select" name="player" id="hooker"
@@ -157,7 +162,8 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td style="white-space: nowrap;">10 Prop</td>
+                                <td>10</td>
+                                <td style="white-space: nowrap;">Prop</td>
                                 <td>
                                     <div class="form-group">
                                         <select class="form-select" name="player" id="prop2"
@@ -166,7 +172,8 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td style="white-space: nowrap;">11 2nd Row</td>
+                                <td>11</td>
+                                <td style="white-space: nowrap;">2nd Row</td>
                                 <td>
                                     <div class="form-group">
                                         <select class="form-select" name="player" id="row1"
@@ -175,7 +182,8 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td style="white-space: nowrap;">12 2nd Row</td>
+                                <td>12</td>
+                                <td style="white-space: nowrap;">2nd Row</td>
                                 <td>
                                     <div class="form-group">
                                         <select class="form-select" name="player" id="row2"
@@ -184,7 +192,8 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td style="white-space: nowrap;">13 Lock</td>
+                                <td>13</td>
+                                <td style="white-space: nowrap;">Lock</td>
                                 <td>
                                     <div class="form-group">
                                         <select class="form-select" name="player" id="lock"
@@ -193,9 +202,10 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td style="white-space: nowrap; text-align: center;" colspan="2">Interchange 1</td>
+                                <td style="white-space: nowrap; text-align: center;" colspan="3">Interchange 1</td>
                             </tr>
                             <tr>
+                                <td>14</td>
                                 <td>
                                     <div class="form-group">
                                         <select class="form-select" name="player" id="int1"
@@ -209,9 +219,10 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td style="white-space: nowrap; text-align: center;" colspan="2">Interchange 2</td>
+                                <td style="white-space: nowrap; text-align: center;" colspan="3">Interchange 2</td>
                             </tr>
                             <tr>
+                                <td>15</td>
                                 <td>
                                     <div class="form-group">
                                         <select class="form-select" name="player" id="int2"
@@ -225,9 +236,10 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td style="white-space: nowrap; text-align: center;" colspan="2">Interchange 3</td>
+                                <td style="white-space: nowrap; text-align: center;" colspan="3">Interchange 3</td>
                             </tr>
                             <tr>
+                                <td>16</td>
                                 <td>
                                     <div class="form-group">
                                         <select class="form-select" name="player" id="int3"
@@ -241,9 +253,10 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td style="white-space: nowrap; text-align: center;" colspan="2">Interchange 4</td>
+                                <td style="white-space: nowrap; text-align: center;" colspan="3">Interchange 4</td>
                             </tr>
                             <tr>
+                                <td>17</td>
                                 <td>
                                     <div class="form-group">
                                         <select class="form-select" name="player" id="int4"
@@ -257,6 +270,7 @@
                                 </td>
                             </tr>
                             <tr>
+                                <td></td>
                                 <td>
                                     Captain:
                                     <div class="form-group">
@@ -287,7 +301,7 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td colspan="2">
+                                <td colspan="3">
                                     <button type="submit" name="submit_lineup" class="btn btn-success">Submit
                                         Lineup</button>
                                 </td>

@@ -21,6 +21,8 @@ window.onload = async function() {
     });
     //Pass sorted array to table constructor
     PopulateLeagueTable(users);
+    document.getElementById('loading').hidden = true;
+    document.getElementById('mainContent').hidden = false;
 }
 /**
  * Populates the league table with each user's info and season stats

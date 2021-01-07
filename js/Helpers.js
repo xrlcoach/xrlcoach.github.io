@@ -89,13 +89,86 @@ export function DisplayPlayerInfo(player) {
     }
     playerInfo.show();
 }
-export function DisplayAppearanceInfoFromLineup(appearance) {
+export async function DisplayAppearanceInfoFromLineup(appearance) {
     let appearanceInfo = new bootstrap.Modal(document.getElementById('appearanceInfo'));
     document.getElementById('appearanceInfoLoading').hidden = false;
     document.getElementById('appearanceInfoBody').hidden = true;
     document.getElementById('appearanceInfoTitle').innerText = player.player_name;
     appearanceInfo.show();
     let statsRecord = await GetPlayerAppearanceStats(appearance.player_id, appearance.round_number)
+    document.getElementById('appearanceInfoNrlClub').innerText = player.nrl_club;
+    document.getElementById('appearanceInfoNrlLogo').src = '/static/' + player.nrl_club + '.svg';
+    document.getElementById('appearanceInfoXrlTeam').innerText = player.xrl_team ? player.xrl_team : 'None';
+    if (!player.xrl_team || player.xrl_team == 'None') {
+        document.getElementById('appearanceInfoXrlLogo').hidden = true;
+    } else {
+        document.getElementById('appearanceInfoXrlLogo').hidden = false;
+        document.getElementById('appearanceInfoXrlLogo').src = '/static/' + player.xrl_team + '.png';
+    }
+    document.getElementById('appearanceInfoPositions').innerText = player.position;
+    if (player.position2) document.getElementById('appearanceInfoPositions').innerText += ', ' + player.position2;
+    document.getElementById('appearanceInfoOpponent').innerText = statsRecord.opponent;
+    document.getElementById('appearanceInfoOpponentLogo').src = '/static/' + statsRecord.opponent + '.svg';
+    document.getElementById('appearanceInfoMinutes').innerText = statsRecord.stats['Mins Played'];
+    document.getElementById('appearanceInfoNrlPosition').innerText = statsRecord.stats['Position'];
+    if (appearance.played_xrl) {
+        document.getElementById('appearanceInfoPlayedXrl').style.color = 'green';
+        document.getElementById('appearanceInfoPlayedXrl').innerText = 'PLAYED';
+    } else {
+        document.getElementById('appearanceInfoPlayedXrl').style.color = '#c94d38';
+        document.getElementById('appearanceInfoPlayedXrl').innerText = 'DID NOT PLAY';
+    }
+    document.getElementById('appearanceInfoXrlPoints').innerText = appearance.score;
+    document.getElementById('appearanceInfoPositionSpecific').innerText = PositionNames[appearance.position_specific];
+    document.getElementById('appearanceInfoPositionGeneral').innerText = appearance.position_general;
+    if (appearance.captain || appearance.captain2 || appearance.vice || appearance.kicker || appearance.backup_kicker) {
+        document.getElementById('appearanceInfoRoles').hidden = false;
+    } else {
+        document.getElementById('appearanceInfoRoles').hidden = true;
+    }
+    if (appearance.captain || appearance.captain2 ) {
+        document.getElementById('appearanceInfoCaptain').hidden = false;
+        document.getElementById('appearanceInfoCaptain').innerText = 'Captain';
+    } else if (appearance.vice) {
+        document.getElementById('appearanceInfoCaptain').hidden = false;
+        document.getElementById('appearanceInfoCaptain').innerText = 'Vice-Captain';
+    } else {
+        document.getElementById('appearanceInfoCaptain').hidden = true;
+    }
+    if (appearance.kicker) {
+        document.getElementById('appearanceInfoKicker').hidden = false;
+        document.getElementById('appearanceInfoKicker').innerText = 'Kicker';
+    } else if (appearance.backup_kicker ) {
+        document.getElementById('appearanceInfoKicker').hidden = false;
+        document.getElementById('appearanceInfoKicker').innerText = 'Backup Kicker';
+    } else {
+        document.getElementById('appearanceInfoKicker').hidden = true;
+    }
+    document.getElementById('appearanceInfoTries').innerText = statsRecord.stats.Tries;
+    document.getElementById('appearanceInfoITs').innerText = statsRecord.scoring_stats[appearance.position_general].involvement_try;
+    document.getElementById('appearanceInfoPTs').innerText = statsRecord.scoring_stats[appearance.position_general].positional_try;
+    document.getElementById('appearanceInfoGoals').innerText = statsRecord.scoring_stats.kicker.goals;
+    document.getElementById('appearanceInfoFGs').innerText = statsRecord.scoring_stats.kicker.field_goals;
+    document.getElementById('appearanceInfoMIAs').innerText = statsRecord.scoring_stats[appearance.position_general].mia;
+    document.getElementById('appearanceInfoConcedes').innerText = statsRecord.scoring_stats[appearance.position_general].concede;
+    document.getElementById('appearanceInfoSinBins').innerText = statsRecord.stats['Sin Bins'];
+    document.getElementById('appearanceInfoSendOffs').innerText = statsRecord.stats['Send Offs'];
+    document.getElementById('appearanceInfoAllStatsContainer').innerHTML = '';
+    let sortedKeys = Object.keys(statsRecord.stats).sort();
+    for (let stat of sortedKeys) {
+        let col = document.createElement('div');
+        col.className = 'col-4';
+        let p = document.createElement('p');
+        p.innerText = stat + ': ' + statsRecord.stats[stat];
+        col.appendChild(p);
+        document.getElementById('appearanceInfoAllStatsContainer').appendChild(col);
+    }
+    document.getElementById('appearanceInfoLoading').hidden = true;
+    document.getElementById('appearanceInfoBody').hidden = false;
+}
+export function DisplayAppearanceInfoFromStats(appearance) {
+    let appearanceInfo = new bootstrap.Modal(document.getElementById('appearanceInfo'));
+    document.getElementById('appearanceInfoTitle').innerText = player.player_name;
     document.getElementById('appearanceInfoNrlClub').innerText = player.nrl_club;
     document.getElementById('appearanceInfoNrlLogo').src = '/static/' + player.nrl_club + '.svg';
     document.getElementById('appearanceInfoXrlTeam').innerText = player.xrl_team ? player.xrl_team : 'None';
@@ -156,8 +229,7 @@ export function DisplayAppearanceInfoFromLineup(appearance) {
         col.appendChild(p);
         document.getElementById('appearanceInfoAllStatsContainer').appendChild(col);
     }
-    document.getElementById('appearanceInfoLoading').hidden = true;
-    document.getElementById('appearanceInfoBody').hidden = false;
+    appearanceInfo.show();
 }
 /**
  * Tallies up the scores of all players in a lineup who played or subbed in

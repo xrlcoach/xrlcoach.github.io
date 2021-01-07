@@ -1,7 +1,7 @@
 /* Script controlling fixture.html, which displays XRL match stats */
 
 import { GetLineupByTeamAndRound, GetRoundInfo, getCookie, GetRoundInfoFromCookie, GetActiveUserInfo, GetIdToken, GetActiveUserTeamShort } from "./ApiFetch.js";
-import { GetLineupScore, GetTeamFixture, PositionNames } from "./Helpers.js";
+import { DisplayAppearanceInfoFromLineup, GetLineupScore, GetTeamFixture, PositionNames } from "./Helpers.js";
 
 let roundNumber, roundInfo, completed, match, homeTeam, awayTeam, homeLineup, awayLineup;
 
@@ -61,6 +61,10 @@ function populateLineupTable(tableId, lineup, score) {
     for (let player of starters) {
         //Create table row
         let tr = document.createElement('tr');
+        tr.href = '#';
+        tr.onclick = function() {
+            DisplayAppearanceInfoFromLineup(player);
+        }
         //Colour row green if the player played that week, red if not
         if (player['played_xrl']) tr.style.color = "green";
         if (!player['played_xrl'] && completed) tr.style.color = "#c94d38";
@@ -101,6 +105,10 @@ function populateLineupTable(tableId, lineup, score) {
     for (let player of bench) {
         //Create a new table row
         let tr = document.createElement('tr');
+        tr.href = '#';
+        tr.onclick = function() {
+            DisplayAppearanceInfoFromLineup(player);
+        }
         /*Colour row green if player played that week and was subbed on, red if not,
         and grey if they haven't been subbed on but the round isn't over*/
         if (player['played_xrl']) tr.style.color = "green";

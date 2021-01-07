@@ -20,7 +20,7 @@
     <script src="js/Session.js"></script>
     <script src="js/requireLogin.js"></script>
 
-    <title>XRL Home</title>
+    <title>XRL Players</title>
 
 </head>
 
@@ -52,9 +52,17 @@
         </div>
     </nav>
 
-    <header class="p-3 bg-success bg-gradient"></header>
-
-    <main class="container-lg">
+    <header class="p-3 bg-success bg-gradient">
+        <div class="row text-center">
+            <span class="text-white h4">Players</span>
+        </div>
+    </header>
+    <div id="loading" class="justify-content-centre align-items-center" style="height: 400px;">
+        <div class="spinner-border text-success" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+    <main id="mainContent" class="container-lg" hidden>
         <p>
         <h4>Select Filters</h4>
         </p>

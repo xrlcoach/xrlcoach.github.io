@@ -85,6 +85,8 @@ window.onload = async function() {
     // });
     // statsToDisplay = playersTotalStats;
     populateStatsTable(allPlayers, sortByTotalXrlScore);
+    document.getElementById('loading').hidden = true;
+    document.getElementById('mainContent').hidden = false;
 }
 
 

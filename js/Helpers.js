@@ -155,47 +155,47 @@ export async function DisplayAppearanceInfoFromLineup(appearance) {
         }
         document.getElementById('appearanceInfoTries').innerText = statsRecord.stats.Tries;
         if (statsRecord.stats.Tries > 0) document.getElementById('appearanceInfoTries').style.color = 'green';
-        else document.getElementById('appearanceInfoTries').style.color = 'white';
+        else document.getElementById('appearanceInfoTries').style.color = '';
         if (statsRecord.scoring_stats[appearance.position_general].involvement_try) {
             document.getElementById('appearanceInfoITs').innerText = 'Yes';
             document.getElementById('appearanceInfoITs').style.color = 'green';
         } else {
             document.getElementById('appearanceInfoITs').innerText = 'No';
-            document.getElementById('appearanceInfoITs').style.color = 'white';
+            document.getElementById('appearanceInfoITs').style.color = '';
         }
         if (statsRecord.scoring_stats[appearance.position_general].positional_try) {
             document.getElementById('appearanceInfoPTs').innerText = 'Yes';
             document.getElementById('appearanceInfoPTs').style.color = 'green';
         } else {
             document.getElementById('appearanceInfoPTs').innerText = 'No';
-            document.getElementById('appearanceInfoPTs').style.color = 'white';
+            document.getElementById('appearanceInfoPTs').style.color = '';
         }
         document.getElementById('appearanceInfoGoals').innerText = statsRecord.scoring_stats.kicker.goals;
         if (statsRecord.scoring_stats.kicker.goals > 0) document.getElementById('appearanceInfoGoals').style.color = 'green';
-        else document.getElementById('appearanceInfoGoals').style.color = 'white';
+        else document.getElementById('appearanceInfoGoals').style.color = '';
         document.getElementById('appearanceInfoFGs').innerText = statsRecord.scoring_stats.kicker.field_goals;
         if (statsRecord.scoring_stats.kicker.field_goals > 0) document.getElementById('appearanceInfoFGs').style.color = 'green';
-        else document.getElementById('appearanceInfoFGs').style.color = 'white';
+        else document.getElementById('appearanceInfoFGs').style.color = '';
         if (statsRecord.scoring_stats[appearance.position_general].mia) {
             document.getElementById('appearanceInfoMIAs').innerText = 'Yes';
             document.getElementById('appearanceInfoMIAs').style.color = '#c94d38';
         } else {
             document.getElementById('appearanceInfoMIAs').innerText = 'No';
-            document.getElementById('appearanceInfoMIAs').style.color = 'white';
+            document.getElementById('appearanceInfoMIAs').style.color = '';
         }
         if (statsRecord.scoring_stats[appearance.position_general].concede) {
             document.getElementById('appearanceInfoConcedes').innerText = 'Yes';
             document.getElementById('appearanceInfoConcedes').style.color = '#c94d38';
         } else {
             document.getElementById('appearanceInfoConcedes').innerText = 'No';
-            document.getElementById('appearanceInfoConcedes').style.color = 'white';
+            document.getElementById('appearanceInfoConcedes').style.color = '';
         }
         document.getElementById('appearanceInfoSinBins').innerText = statsRecord.stats['Sin Bins'];
         if (statsRecord.stats['Sin Bins'] > 0) document.getElementById('appearanceInfoSinBins').style.color = '#c94d38';
-        else document.getElementById('appearanceInfoSinBins').style.color = 'white';
+        else document.getElementById('appearanceInfoSinBins').style.color = '';
         if (statsRecord.stats['Send Offs'] == 0) {
             document.getElementById('appearanceInfoSendOffs').innerText = 'No';
-            document.getElementById('appearanceInfoSendOffs').style.color = 'white';
+            document.getElementById('appearanceInfoSendOffs').style.color = '';
         } else {
             document.getElementById('appearanceInfoSendOffs').innerText = 'Yes (' + appearance.stats['Send Offs'] + "')";
             document.getElementById('appearanceInfoSendOffs').style.color = '#c94d38';
@@ -247,19 +247,19 @@ export function DisplayAppearanceInfoFromStats(appearance) {
     document.getElementById('appearanceInfoNrlPosition').innerText = appearance.stats['Position'];
     document.getElementById('appearanceInfoTries').innerText = appearance.stats.Tries;
     if (appearance.stats.Tries > 0) document.getElementById('appearanceInfoTries').style.color = 'green';
-    else document.getElementById('appearanceInfoTries').style.color = 'white';
+    else document.getElementById('appearanceInfoTries').style.color = '';
     document.getElementById('appearanceInfoGoals').innerText = appearance.scoring_stats.kicker.goals;
     if (appearance.scoring_stats.kicker.goals > 0) document.getElementById('appearanceInfoGoals').style.color = 'green';
-    else document.getElementById('appearanceInfoGoals').style.color = 'white';
+    else document.getElementById('appearanceInfoGoals').style.color = '';
     document.getElementById('appearanceInfoFGs').innerText = appearance.scoring_stats.kicker.field_goals;
     if (appearance.scoring_stats.kicker.field_goals > 0) document.getElementById('appearanceInfoFGs').style.color = 'green';
-    else document.getElementById('appearanceInfoFGs').style.color = 'white';
+    else document.getElementById('appearanceInfoFGs').style.color = '';
     document.getElementById('appearanceInfoSinBins').innerText = appearance.stats['Sin Bins'];
     if (appearance.stats['Sin Bins'] > 0) document.getElementById('appearanceInfoSinBins').style.color = '#c94d38';
-    else document.getElementById('appearanceInfoSinBins').style.color = 'white';
+    else document.getElementById('appearanceInfoSinBins').style.color = '';
     if (appearance.stats['Send Offs'] == 0) {
         document.getElementById('appearanceInfoSendOffs').innerText = 'No';
-        document.getElementById('appearanceInfoSendOffs').style.color = 'white';
+        document.getElementById('appearanceInfoSendOffs').style.color = '';
     } else {
         document.getElementById('appearanceInfoSendOffs').innerText = 'Yes (' + appearance.stats['Send Offs'] + "')";
         document.getElementById('appearanceInfoSendOffs').style.color = '#c94d38';
@@ -270,28 +270,28 @@ export function DisplayAppearanceInfoFromStats(appearance) {
         document.getElementById('appearanceInfoITs').style.color = 'green';
     } else {
         document.getElementById('appearanceInfoITs').innerText = 'No';
-        document.getElementById('appearanceInfoITs').style.color = 'white';
+        document.getElementById('appearanceInfoITs').style.color = '';
     }
     if (appearance.scoring_stats[appearancePositions[0]].positional_try) {
         document.getElementById('appearanceInfoPTs').innerText = 'Yes';
         document.getElementById('appearanceInfoPTs').style.color = 'green';
     } else {
         document.getElementById('appearanceInfoPTs').innerText = 'No';
-        document.getElementById('appearanceInfoPTs').style.color = 'white';
+        document.getElementById('appearanceInfoPTs').style.color = '';
     }
     if (appearance.scoring_stats[appearancePositions[0]].mia) {
         document.getElementById('appearanceInfoMIAs').innerText = 'Yes';
         document.getElementById('appearanceInfoMIAs').style.color = '#c94d38';
     } else {
         document.getElementById('appearanceInfoMIAs').innerText = 'No';
-        document.getElementById('appearanceInfoMIAs').style.color = 'white';
+        document.getElementById('appearanceInfoMIAs').style.color = '';
     }
     if (appearance.scoring_stats[appearancePositions[0]].concede) {
         document.getElementById('appearanceInfoConcedes').innerText = 'Yes';
         document.getElementById('appearanceInfoConcedes').style.color = '#c94d38';
     } else {
         document.getElementById('appearanceInfoConcedes').innerText = 'No';
-        document.getElementById('appearanceInfoConcedes').style.color = 'white';
+        document.getElementById('appearanceInfoConcedes').style.color = '';
     }
     if (appearancePositions.length > 1) {
         document.getElementById('appearanceInfoPosition2').innerText = appearancePositions[1];
@@ -300,28 +300,28 @@ export function DisplayAppearanceInfoFromStats(appearance) {
             document.getElementById('appearanceInfoITs2').style.color = 'green';
         } else {
             document.getElementById('appearanceInfoITs2').innerText = 'No';
-            document.getElementById('appearanceInfoITs2').style.color = 'white';
+            document.getElementById('appearanceInfoITs2').style.color = '';
         }
         if (appearance.scoring_stats[appearancePositions[1]].positional_try) {
             document.getElementById('appearanceInfoPTs2').innerText = 'Yes';
             document.getElementById('appearanceInfoPTs2').style.color = 'green';
         } else {
             document.getElementById('appearanceInfoPTs2').innerText = 'No';
-            document.getElementById('appearanceInfoPTs2').style.color = 'white';
+            document.getElementById('appearanceInfoPTs2').style.color = '';
         }
         if (appearance.scoring_stats[appearancePositions[1]].mia) {
             document.getElementById('appearanceInfoMIAs2').innerText = 'Yes';
             document.getElementById('appearanceInfoMIAs2').style.color = '#c94d38';
         } else {
             document.getElementById('appearanceInfoMIAs2').innerText = 'No';
-            document.getElementById('appearanceInfoMIAs2').style.color = 'white';
+            document.getElementById('appearanceInfoMIAs2').style.color = '';
         }
         if (appearance.scoring_stats[appearancePositions[1]].concede) {
             document.getElementById('appearanceInfoConcedes2').innerText = 'Yes';
             document.getElementById('appearanceInfoConcedes2').style.color = '#c94d38';
         } else {
             document.getElementById('appearanceInfoConcedes2').innerText = 'No';
-            document.getElementById('appearanceInfoConcedes2').style.color = 'white';
+            document.getElementById('appearanceInfoConcedes2').style.color = '';
         }
         document.getElementById('appearanceInfoSecondPositionRow').hidden = false
     } else {

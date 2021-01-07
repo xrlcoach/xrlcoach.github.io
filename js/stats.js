@@ -154,7 +154,7 @@ function filterStats(event) {
     let position = document.getElementById('positionSelect').value;
     let scoreAsKicker = document.getElementById('scoreKickerSelect').value == 'Yes' ? true : false;
     let singleRound = roundNumber != 'ALL';
-    let statsToDisplay = !singleAppearance ? allPlayers : allStats.filter(p => p.round_number == roundNumber);
+    let statsToDisplay = !singleRound ? allPlayers : allStats.filter(p => p.round_number == roundNumber);
     if (nrlClub != 'ALL') statsToDisplay = statsToDisplay.filter(p => p.nrl_club == nrlClub);
     if (xrlTeam != 'ALL') statsToDisplay = statsToDisplay.filter(p => p.xrl_team == xrlTeam);
     if (position != 'ALL') statsToDisplay = statsToDisplay.filter(p => p.position == position);

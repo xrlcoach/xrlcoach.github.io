@@ -103,7 +103,7 @@ function populateStatsTable(stats, sortFunction, scoringAsKicker=true, isSingleR
         nameLink.value = player.player_id;
         if (!isSingleRound) {
             nameLink.onclick = function() {
-                DisplayPlayerInfo(squad.find(p => p.player_id == this.value));
+                DisplayPlayerInfo(allPlayers.find(p => p.player_id == this.value));
             };
         }
         name.appendChild(nameLink);

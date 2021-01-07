@@ -167,64 +167,48 @@ export async function DisplayAppearanceInfoFromLineup(appearance) {
 }
 export function DisplayAppearanceInfoFromStats(appearance) {
     let appearanceInfo = new bootstrap.Modal(document.getElementById('appearanceInfo'));
-    document.getElementById('appearanceInfoTitle').innerText = player.player_name;
-    document.getElementById('appearanceInfoNrlClub').innerText = player.nrl_club;
-    document.getElementById('appearanceInfoNrlLogo').src = '/static/' + player.nrl_club + '.svg';
-    document.getElementById('appearanceInfoXrlTeam').innerText = player.xrl_team ? player.xrl_team : 'None';
-    if (!player.xrl_team || player.xrl_team == 'None') {
-        document.getElementById('appearanceInfoXrlLogo').hidden = true;
+    document.getElementById('appearanceInfoTitle').innerText = appearance.player_name;
+    document.getElementById('appearanceInfoNrlClub').innerText = appearance.nrl_club;
+    document.getElementById('appearanceInfoNrlLogo').src = '/static/' + appearance.nrl_club + '.svg';
+    let appearancePositions = Object.keys(appearance.scoring_stats);
+    appearancePositions = appearancePositions.filter(p => p != 'kicker');
+    document.getElementById('appearanceInfoPositions').innerText = appearancePositions[0];
+    if (appearancePositions.length > 1) document.getElementById('appearanceInfoPositions').innerText += ', ' + appearancePositions[1];
+    document.getElementById('appearanceInfoOpponent').innerText = appearance.opponent;
+    document.getElementById('appearanceInfoOpponentLogo').src = '/static/' + appearance.opponent + '.svg';
+    document.getElementById('appearanceInfoMinutes').innerText = appearance.stats['Mins Played'];
+    document.getElementById('appearanceInfoNrlPosition').innerText = appearance.stats['Position'];
+    document.getElementById('appearanceInfoTries').innerText = appearance.stats.Tries;
+    document.getElementById('appearanceInfoGoals').innerText = appearance.scoring_stats.kicker.goals;
+    document.getElementById('appearanceInfoFGs').innerText = appearance.scoring_stats.kicker.field_goals;
+    document.getElementById('appearanceInfoSinBins').innerText = appearance.stats['Sin Bins'];
+    if (appearance.stats['Send Offs']) {
+        document.getElementById('appearanceInfoSendOffs').innerText = 'No';
     } else {
-        document.getElementById('appearanceInfoXrlLogo').hidden = false;
-        document.getElementById('appearanceInfoXrlLogo').src = '/static/' + player.xrl_team + '.png';
+        document.getElementById('appearanceInfoSendOffs').innerText = 'Yes (' + appearance.stats['Send Offs'] + "')";
     }
-    document.getElementById('appearanceInfoPositions').innerText = player.position;
-    if (player.position2) document.getElementById('appearanceInfoPositions').innerText += ', ' + player.position2;
-    document.getElementById('appearanceInfoOpponent').innerText = statsRecord.opponent;
-    document.getElementById('appearanceInfoOpponentLogo').src = '/static/' + statsRecord.opponent + '.svg';
-    document.getElementById('appearanceInfoMinutes').innerText = statsRecord.stats['Mins Played'];
-    document.getElementById('appearanceInfoNrlPosition').innerText = statsRecord.stats['Position'];
-    document.getElementById('appearanceInfoXrlPoints').innerText = appearance.score;
-    document.getElementById('appearanceInfoPositionSpecific').innerText = PositionNames[appearance.position_specific];
-    document.getElementById('appearanceInfoPositionGeneral').innerText = appearance.position_general;
-    if (appearance.captain || appearance.captain2 || appearance.vice || appearance.kicker || appearance.backup_kicker) {
-        document.getElementById('appearanceInfoRoles').hidden = false;
+    document.getElementById('appearanceInfoPosition1').innerText = appearancePositions[0];
+    document.getElementById('appearanceInfoITs').innerText = appearance.scoring_stats[appearancePositions[0]].involvement_try;
+    document.getElementById('appearanceInfoPTs').innerText = appearance.scoring_stats[appearancePositions[0]].positional_try;
+    document.getElementById('appearanceInfoMIAs').innerText = appearance.scoring_stats[appearancePositions[0]].mia;
+    document.getElementById('appearanceInfoConcedes').innerText = appearance.scoring_stats[appearancePositions[0]].concede;
+    if (appearancePositions.length > 1) {
+        document.getElementById('appearanceInfoPosition2').innerText = appearancePositions[1];
+        document.getElementById('appearanceInfoITs2').innerText = appearance.scoring_stats[appearancePositions[1]].involvement_try;
+        document.getElementById('appearanceInfoPTs2').innerText = appearance.scoring_stats[appearancePositions[1]].positional_try;
+        document.getElementById('appearanceInfoMIAs2').innerText = appearance.scoring_stats[appearancePositions[1]].mia;
+        document.getElementById('appearanceInfoConcedes2').innerText = appearance.scoring_stats[appearancePositions[1]].concede;
+        document.getElementById('appearanceInfoSecondPositionRow').hidden = false
     } else {
-        document.getElementById('appearanceInfoRoles').hidden = true;
+        document.getElementById('appearanceInfoSecondPositionRow').hidden = true
     }
-    if (appearance.captain || appearance.captain2 ) {
-        document.getElementById('appearanceInfoCaptain').hidden = false;
-        document.getElementById('appearanceInfoCaptain').innerText = 'Captain';
-    } else if (appearance.vice) {
-        document.getElementById('appearanceInfoCaptain').hidden = false;
-        document.getElementById('appearanceInfoCaptain').innerText = 'Vice-Captain';
-    } else {
-        document.getElementById('appearanceInfoCaptain').hidden = true;
-    }
-    if (appearance.kicker) {
-        document.getElementById('appearanceInfoKicker').hidden = false;
-        document.getElementById('appearanceInfoKicker').innerText = 'Kicker';
-    } else if (appearance.backup_kicker ) {
-        document.getElementById('appearanceInfoKicker').hidden = false;
-        document.getElementById('appearanceInfoKicker').innerText = 'Backup Kicker';
-    } else {
-        document.getElementById('appearanceInfoKicker').hidden = true;
-    }
-    document.getElementById('appearanceInfoTries').innerText = statsRecord.stats.Tries;
-    document.getElementById('appearanceInfoITs').innerText = statsRecord.scoring_stats[appearance.position_general].involvement_try;
-    document.getElementById('appearanceInfoPTs').innerText = statsRecord.scoring_stats[appearance.position_general].positional_try;
-    document.getElementById('appearanceInfoGoals').innerText = statsRecord.scoring_stats.kicker.goals;
-    document.getElementById('appearanceInfoFGs').innerText = statsRecord.scoring_stats.kicker.field_goals;
-    document.getElementById('appearanceInfoMIAs').innerText = statsRecord.scoring_stats[appearance.position_general].mia;
-    document.getElementById('appearanceInfoConcedes').innerText = statsRecord.scoring_stats[appearance.position_general].concede;
-    document.getElementById('appearanceInfoSinBins').innerText = statsRecord.stats['Sin Bins'];
-    document.getElementById('appearanceInfoSendOffs').innerText = statsRecord.stats['Send Offs'];
     document.getElementById('appearanceInfoAllStatsContainer').innerHTML = '';
-    let sortedKeys = Object.keys(statsRecord.stats).sort();
+    let sortedKeys = Object.keys(appearance.stats).sort();
     for (let stat of sortedKeys) {
         let col = document.createElement('div');
         col.className = 'col-4';
         let p = document.createElement('p');
-        p.innerText = stat + ': ' + statsRecord.stats[stat];
+        p.innerText = stat + ': ' + appearance.stats[stat];
         col.appendChild(p);
         document.getElementById('appearanceInfoAllStatsContainer').appendChild(col);
     }

@@ -1,5 +1,5 @@
 import { GetActiveUserInfo, GetActiveUserTeamShort, GetAllPlayers, GetAllStats, GetAllUsers, getCookie, GetCurrentRoundInfo, GetIdToken, GetRoundInfo, GetStatsByRound } from "./ApiFetch.js";
-import { GetPlayerXrlScores, DisplayPlayerInfo, DisplayFeedback } from "./Helpers.js";
+import { GetPlayerXrlScores, DisplayPlayerInfo, DisplayFeedback, DisplayAppearanceInfoFromStats } from "./Helpers.js";
 
 let roundToDisplay, allPlayers, allStats, allUsers, activeUser, allPlayersWithStats, displayedStats, scoreAsKicker, singleRound;
 let sortAttribute = 'score';
@@ -107,6 +107,10 @@ function populateStatsTable(stats, sortFunction, scoringAsKicker=true, isSingleR
         if (!isSingleRound) {
             nameLink.onclick = function() {
                 DisplayPlayerInfo(allPlayers.find(p => p.player_id == this.value));
+            };
+        } else {
+            nameLink.onclick = function() {
+                DisplayAppearanceInfoFromStats(displayedStats.find(p => p.player_id == this.value));
             };
         }
         name.appendChild(nameLink);

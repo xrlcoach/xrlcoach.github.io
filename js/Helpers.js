@@ -27,6 +27,7 @@ export function DisplayPlayerInfo(player) {
     if (!player.xrl_team || player.xrl_team == 'None') {
         document.getElementById('playerXrlLogo').hidden = true;
     } else {
+        document.getElementById('playerXrlLogo').hidden = false;
         document.getElementById('playerXrlLogo').src = '/static/' + player.xrl_team + '.png';
     }
     document.getElementById('playerPositions').innerText = player.position;
@@ -44,6 +45,7 @@ export function DisplayPlayerInfo(player) {
     document.getElementById('playerSendOffs').innerText = player.stats['Send Offs'];
     if (player.xrl_team == GetActiveUserTeamShort()) {
         document.getElementById('playerInfoFooter').hidden = false;
+        document.getElementById('playerInfoPickButton').hidden = true;
         document.getElementById('playerInfoDropButton').onclick = function() {
             DisplayFeedback('Confirm', 'Are you sure you want to drop ' + player.player_name + '?',
             true, async function() {
@@ -55,6 +57,7 @@ export function DisplayPlayerInfo(player) {
         document.getElementById('playerInfoDropButton').hidden = false;
     } else if (player.xrl_team == undefined || player.xrl_team == 'None') {
         document.getElementById('playerInfoFooter').hidden = false;
+        document.getElementById('playerInfoDropButton').hidden = true;
         document.getElementById('playerInfoPickButton').onclick = function () {
             DisplayFeedback('Confirm', 'Are you sure you want to pick ' + player.player_name + '?',
             true, async function() {
@@ -69,6 +72,10 @@ export function DisplayPlayerInfo(player) {
             });
         };
         document.getElementById('playerInfoPickButton').hidden = false;
+    } else {
+        document.getElementById('playerInfoFooter').hidden = true;
+        document.getElementById('playerInfoDropButton').hidden = true;
+        document.getElementById('playerInfoPickButton').hidden = true;
     }
     document.getElementById('allStatsContainer').innerHTML = '';
     let sortedKeys = Object.keys(player.stats).sort();

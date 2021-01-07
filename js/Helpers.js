@@ -34,26 +34,30 @@ export function DisplayPlayerInfo(player) {
     document.getElementById('playerSendOffs').innerText = player.stats['Send Offs'];
     if (player.xrl_team == GetActiveUserTeamShort()) {
         document.getElementById('playerInfoFooter').hidden = false;
-        document.getElementById('playerInfoDropButton').onclick = DisplayFeedback('Confirm', 'Are you sure you want to drop ' + player.player_name + '?',
-        true, async function() {
-            await UpdatePlayerXrlTeam(null, player);
-            DisplayFeedback('Success', player.player_name + ' has been dropped from your squad.');
-            playerInfo.hide();
-        });
+        document.getElementById('playerInfoDropButton').onclick = function() {
+            DisplayFeedback('Confirm', 'Are you sure you want to drop ' + player.player_name + '?',
+            true, async function() {
+                await UpdatePlayerXrlTeam(null, player);
+                DisplayFeedback('Success', player.player_name + ' has been dropped from your squad.');
+                playerInfo.hide();
+            });
+        };
         document.getElementById('playerInfoDropButton').hidden = false;
     } else if (player.xrl_team == 'None') {
         document.getElementById('playerInfoFooter').hidden = false;
-        document.getElementById('playerInfoPickButton').onclick = DisplayFeedback('Confirm', 'Are you sure you want to pick ' + player.player_name + '?',
-        true, async function() {
-            let playerSquad = await GetPlayersFromXrlTeam(GetActiveUserTeamShort());
-            if (playerSquad.length > 17) {
-                DisplayFeedback('Sorry!', 'Your squad already has 18 players.');
-            } else {
-                await UpdatePlayerXrlTeam(GetActiveUserTeamShort(), player);
-                DisplayFeedback('Success', player.player_name + ' has been added to your squad.')
-                playerInfo.hide();
-            }
-        });
+        document.getElementById('playerInfoPickButton').onclick = function () {
+            DisplayFeedback('Confirm', 'Are you sure you want to pick ' + player.player_name + '?',
+            true, async function() {
+                let playerSquad = await GetPlayersFromXrlTeam(GetActiveUserTeamShort());
+                if (playerSquad.length > 17) {
+                    DisplayFeedback('Sorry!', 'Your squad already has 18 players.');
+                } else {
+                    await UpdatePlayerXrlTeam(GetActiveUserTeamShort(), player);
+                    DisplayFeedback('Success', player.player_name + ' has been added to your squad.')
+                    playerInfo.hide();
+                }
+            });
+        };
         document.getElementById('playerInfoPickButton').hidden = false;
     }
     for (let stat in player.stats) {

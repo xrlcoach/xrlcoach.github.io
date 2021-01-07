@@ -1,11 +1,11 @@
-import { GetActiveUserInfo, GetAllPlayers, GetAllStats, GetAllUsers, GetCurrentRoundInfo, GetIdToken, GetRoundInfo } from "./ApiFetch.js";
+import { GetActiveUserInfo, GetActiveUserTeamShort, GetAllPlayers, GetAllStats, GetAllUsers, getCookie, GetCurrentRoundInfo, GetIdToken, GetRoundInfo } from "./ApiFetch.js";
 import { GetPlayerXrlScores } from "./Helpers.js";
 
-let roundToDisplay, allPlayers, allStats, allUsers, allPlayersWithStats, displayedStats, scoreAsKicker, singleRound;
+let roundToDisplay, allPlayers, allStats, allUsers, activeUser, allPlayersWithStats, displayedStats, scoreAsKicker, singleRound;
 
 window.onload = async function() {
-    roundToDisplay = await GetCurrentRoundInfo();
-    for (let i = roundToDisplay.round_number; i > 0; i--) {
+    roundToDisplay = getCookie('round');
+    for (let i = roundToDisplay; i > 0; i--) {
         let option = document.createElement('option');
         option.innerText = i;
         document.getElementById('roundSelect').appendChild(option);
@@ -18,7 +18,7 @@ window.onload = async function() {
         option.innerText = user.team_short;
         document.getElementById('xrlTeamSelect').appendChild(option);
     }
-    activeUser = await GetActiveUserInfo(GetIdToken());
+    activeUser = allUsers.find(u => u.team_short == GetActiveUserTeamShort());
     allPlayers = await GetAllPlayers();
     allPlayersWithStats = allPlayers.filter(p => playerIdsWithStats.includes(p.player_id))
     for (let i in allStats) {

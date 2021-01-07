@@ -57,9 +57,11 @@
             <span class="text-white h4">Players</span>
         </div>
     </header>
-    <div id="loading" class="justify-content-centre align-items-center" style="height: 400px;">
-        <div class="spinner-border text-success" role="status">
-            <span class="visually-hidden">Loading...</span>
+    <div id="loading" class="row justify-content-centre align-items-center" style="height: 400px;">
+        <div class="col align-items-center justify-content-center">
+            <div class="spinner-border text-success" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
         </div>
     </div>
     <main id="mainContent" class="container-lg" hidden>
@@ -78,8 +80,7 @@
                                 </div>
                                 <div class="col-4 m-2 align-items-center">
                                     <label class="me-2" for="nrl_club">NRL Club</label>
-                                    <select class="form-select" id="nrlClubSelect"
-                                        aria-placeholder="Choose a club">
+                                    <select class="form-select" id="nrlClubSelect" aria-placeholder="Choose a club">
                                         <option>ALL</option>
                                         <option>Broncos</option>
                                         <option>Bulldogs</option>
@@ -112,8 +113,7 @@
                                 </div>
                                 <div class="col-4 m-2 align-items-center">
                                     <label class="me-2" for="xrl_team">XRL Team</label>
-                                    <select class="form-select" id="xrlTeamSelect"
-                                        aria-placeholder="Choose a team">
+                                    <select class="form-select" id="xrlTeamSelect" aria-placeholder="Choose a team">
                                         <option>ALL</option>
                                         <option>Free Agents</option>
                                     </select>
@@ -162,7 +162,7 @@
             </div>
         </div>
     </main>
-    
+
     <footer class="small text-center text-muted">
         Data provided by <a href="https://www.nrl.com">NRL.com</a>. View <a
             href="https://www.nrl.com/terms-of-use">NRL’s Terms of Use</a>.

@@ -3,10 +3,13 @@ import { GetActiveUserTeamShort, GetLineupByTeamAndRound, GetPlayersFromXrlTeam,
  * Displays feedback message in the feedback element on the top of each page
  * @param {String} feedback 
  */
-export function DisplayFeedback(title, message, confirm=false, onConfirmFunction=null, event=null) {
+export function DisplayFeedback(title, message, confirm=false, onConfirmFunction=null, cancel=true) {
     let feedback = new bootstrap.Modal(document.getElementById('feedback'));
     document.getElementById('feedbackTitle').innerText = title;
     document.getElementById('feedbackMessage').innerHTML = message;
+    if (!cancel) {
+        document.getElementById('feedbackCancel').hidden = true;
+    }
     if (confirm) {
         document.getElementById('feedbackFooter').hidden = false;
         document.getElementById('feedbackConfirm').onclick = onConfirmFunction;
@@ -38,8 +41,8 @@ export function DisplayPlayerInfo(player) {
             DisplayFeedback('Confirm', 'Are you sure you want to drop ' + player.player_name + '?',
             true, async function() {
                 await UpdatePlayerXrlTeam(null, player);
-                DisplayFeedback('Success', player.player_name + ' has been dropped from your squad.');
-                playerInfo.hide();
+                DisplayFeedback('Success', player.player_name + ' has been dropped from your squad.',
+                true, function() { location.href('index.html') }, false);
             });
         };
         document.getElementById('playerInfoDropButton').hidden = false;
@@ -53,8 +56,8 @@ export function DisplayPlayerInfo(player) {
                     DisplayFeedback('Sorry!', 'Your squad already has 18 players.');
                 } else {
                     await UpdatePlayerXrlTeam(GetActiveUserTeamShort(), player);
-                    DisplayFeedback('Success', player.player_name + ' has been added to your squad.')
-                    playerInfo.hide();
+                    DisplayFeedback('Success', player.player_name + ' has been added to your squad.',
+                    true, function() { location.href('index.html') }, false);
                 }
             });
         };

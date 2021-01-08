@@ -9,7 +9,7 @@ window.onload = async function () {
     try {
         user = await GetActiveUserInfo(idToken);
         allPlayers = await GetAllPlayers();
-        squad = allPlayers.filter(p => p.xrl_team = user.team_short);
+        squad = allPlayers.filter(p => p.xrl_team == user.team_short);
         modifiedSquad = squad;
         DisplayPlayerCounts();
         document.getElementById('loading').hidden = true;
@@ -131,7 +131,7 @@ function searchPlayer(event) {
     event.preventDefault();
     document.getElementById('clubLogo').hidden = true;
     let player = document.getElementById('playerSearch').value;
-    document.getElementById('squadName').innerText = 'Search: ' + player;
+    document.getElementById('clubName').innerText = 'Search: ' + player;
     players = allPlayers.filter(p => p.search_name.toLowerCase().includes(player.toLowerCase()));
     PopulatePickPlayerTable(players, user.team_short, 'pickPlayerTable');
 }

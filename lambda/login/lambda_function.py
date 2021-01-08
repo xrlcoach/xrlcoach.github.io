@@ -68,7 +68,7 @@ def lambda_handler(event, context):
         print(data)
     
     else:
-        data = '{"error": ' + resp[1] + '}'   
+        data = {"error": resp[1]}   
     
     response = {
             'statusCode': 200,

@@ -1,4 +1,3 @@
-import { GetAllUsers } from "./ApiFetch.js";
 import { DisplayFeedback } from "./Helpers.js";
 
 function signUp(event) {
@@ -39,3 +38,5 @@ function signUp(event) {
         DisplayFeedback('Error', error);
     })
 }
+
+window.signUp = signUp;

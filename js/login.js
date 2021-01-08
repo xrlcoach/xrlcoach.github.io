@@ -7,7 +7,7 @@ async function login(event) {
     var password = document.getElementById('password').value;    
     let idToken = await Login(username, password);
     if (idToken.error) {
-        DisplayFeedback('Error', 'Username or password is incorrect');
+        DisplayFeedback('Error', idToken.error);
         return;
     }
     var expiry = new Date();

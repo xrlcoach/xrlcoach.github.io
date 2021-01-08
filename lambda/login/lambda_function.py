@@ -26,10 +26,12 @@ def initiate_auth(username, password):
         return None, "The username or password is incorrect"
     except client.exceptions.UserNotFoundException as e:
         return None, "The username or password is incorrect"
+    except client.exceptions.UserNotConfirmedException as e:
+        return None, "This account has not been confirmed yet. Contact XRL Admin to obtain authorisation."
     except Exception as e:
         print(e)
         return None, "Unknown error"
-    return resp
+    return resp, None
     
     
 def refresh_auth(username, refresh_token):

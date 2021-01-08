@@ -55,26 +55,42 @@ def lambda_handler(event, context):
             Username=username,
             Password=password)
     except client.exceptions.UsernameExistsException as e:
-        return {"error": False, 
-               "success": True, 
-               "message": "This username already exists", 
-               "data": None}    
-    except client.exceptions.InvalidPasswordException as e:        
-        return {"error": False, 
-               "success": True, 
-               "message": "Password should have Caps,\
-                          Special chars, Numbers", 
-               "data": None}    
+        return {'statusCode': 200,
+            'headers': {
+            'Access-Control-Allow-Headers': 'Content-Type',
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
+            },
+            'body': json.dumps({"error": "This username already exists"})
+        }   
+    except client.exceptions.InvalidPasswordException as e: 
+        return {'statusCode': 200,
+            'headers': {
+            'Access-Control-Allow-Headers': 'Content-Type',
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
+            },
+            'body': json.dumps({"error": "Password should have Caps,\
+                          Special chars, Numbers"})
+        }             
     except client.exceptions.UserLambdaValidationException as e:
-        return {"error": False, 
-               "success": True, 
-               "message": "Email already exists", 
-               "data": None}
+        return {'statusCode': 200,
+            'headers': {
+            'Access-Control-Allow-Headers': 'Content-Type',
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
+            },
+            'body': json.dumps({"error": "Email already exists"})
+        }   
     except Exception as e:
-        return {"error": False, 
-                "success": True, 
-                "message": str(e), 
-               "data": None}
+        return {'statusCode': 200,
+            'headers': {
+            'Access-Control-Allow-Headers': 'Content-Type',
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
+            },
+            'body': json.dumps({"error": str(e)})
+        }   
     try:
         with table.batch_writer() as batch:
             batch.put_item(Item={
@@ -93,11 +109,14 @@ def lambda_handler(event, context):
                 }
             })
     except Exception as e:
-        return {"error": False, 
-                "success": True, 
-                "message": str(e), 
-               "data": None}
-    
+        return {'statusCode': 200,
+            'headers': {
+            'Access-Control-Allow-Headers': 'Content-Type',
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
+            },
+            'body': json.dumps({"error": str(e)})
+        }       
     return {'statusCode': 200,
             'headers': {
             'Access-Control-Allow-Headers': 'Content-Type',

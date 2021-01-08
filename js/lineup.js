@@ -43,6 +43,11 @@ window.onload = async () => {
     //Retrieve and display info for the next round
     nextRound = await GetNextRoundInfo();
     let match = GetTeamFixture(user.team_short, nextRound);
+    if (match == undefined) {
+        document.getElementById('loading').hidden = true;
+        DisplayFeedback('WTF?', 'No match this week. Please check back later.');
+        return;
+    }
     let homeGame = match.home == user.team_short;
     let opponent = homeGame ? match.away : match.home;
     document.getElementById('lineupHeading').innerHTML = `Select ${user.team_short} lineup for Round ${nextRound.round_number} vs ${opponent} ${homeGame ? "AT HOME" : "AWAY"}`;

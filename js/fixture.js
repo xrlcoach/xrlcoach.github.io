@@ -22,10 +22,15 @@ window.onload = async function() {
                 match = GetTeamFixture(fixture.split('-v-')[0], roundInfo);
             }
         }
-    } else { //If now query, get user's current match
+    } else { //If no query, get user's current match
         roundInfo = await GetRoundInfoFromCookie();
         roundNumber = roundInfo.round_number;
         match = GetTeamFixture(GetActiveUserTeamShort(), roundInfo);
+    }
+    if (match == undefined) {
+        document.getElementById('loading').hidden = true;
+        DisplayFeedback('WTF?', 'No match to show yet. Please check back later.');
+        return;
     }
     homeTeam = match.home;
     awayTeam = match.away;

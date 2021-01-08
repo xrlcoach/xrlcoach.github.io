@@ -1,7 +1,7 @@
 /* Script controlling fixture.html, which displays XRL match stats */
 
 import { GetLineupByTeamAndRound, GetRoundInfo, getCookie, GetRoundInfoFromCookie, GetActiveUserInfo, GetIdToken, GetActiveUserTeamShort } from "./ApiFetch.js";
-import { DisplayAppearanceInfoFromLineup, GetLineupScore, GetTeamFixture, PositionNames } from "./Helpers.js";
+import { DisplayAppearanceInfoFromLineup, GetLineupScore, GetTeamFixture, PositionNames, DisplayFeedback } from "./Helpers.js";
 
 let roundNumber, roundInfo, completed, match, homeTeam, awayTeam, homeLineup, awayLineup;
 

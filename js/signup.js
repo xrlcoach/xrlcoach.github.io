@@ -1,3 +1,4 @@
+import { GetAllUsers } from "./ApiFetch.js";
 import { DisplayFeedback } from "./Helpers.js";
 
 function signUp(event) {
@@ -24,10 +25,15 @@ function signUp(event) {
     })
     .then((response) => {
         if (response.ok) {
-            window.location.replace('login.html');
+            console.log(response);
+            return response.json();
+            //window.location.replace('login.html');
         } else {
             DisplayFeedback('Error', 'Network response not ok');
         }        
+    })
+    .then((data) => {
+        console.log(data);
     })
     .catch((error) => {
         DisplayFeedback('Error', error);

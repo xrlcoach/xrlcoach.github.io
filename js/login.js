@@ -1,10 +1,15 @@
 import { GetActiveUserInfo, GetCurrentRoundInfo, Login } from "./ApiFetch.js";
+import { DisplayFeedback } from "./Helpers.js";
 
 async function login(event) {
     event.preventDefault();
     var username = document.getElementById('username').value;
     var password = document.getElementById('password').value;    
     let idToken = await Login(username, password);
+    if (idToken.error) {
+        DisplayFeedback('Error', 'Username or password is incorrect');
+        return;
+    }
     var expiry = new Date();
     expiry.setHours(expiry.getHours() + 6);
     document.cookie = `id=${idToken}; expiry=${expiry.toUTCString()}; Secure`;

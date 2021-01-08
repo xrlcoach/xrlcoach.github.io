@@ -63,9 +63,12 @@ def lambda_handler(event, context):
     username = data['username']    
     
     resp = initiate_auth(username, data['password'])
-    print(resp['AuthenticationResult']['IdToken'])
+    if resp[0] != None:
+        data = resp[0]['AuthenticationResult']['IdToken']
+        print(data)
     
-    cookie = f"id={resp['AuthenticationResult']['IdToken']}; Secure; Path=/"    
+    else:
+        data = '{"error": ' + resp[1] + '}'   
     
     response = {
             'statusCode': 200,
@@ -74,10 +77,8 @@ def lambda_handler(event, context):
             'Access-Control-Allow-Origin': 'https://xrlcoach.github.io',
             'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
             'Access-Control-Allow-Credentials': 'true',
-            'Access-Control-Expose-Headers': 'Set-Cookie',
-            'Set-Cookie': cookie,
             },
-            'body': json.dumps(f"{resp['AuthenticationResult']['IdToken']}")
+            'body': json.dumps(data)
         }    
             
     return response

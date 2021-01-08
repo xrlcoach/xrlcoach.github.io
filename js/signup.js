@@ -1,6 +1,6 @@
 import { DisplayFeedback } from "./Helpers.js";
 
-function signUp(event) {
+async function signUp(event) {
     event.preventDefault();
     var username = document.getElementById('username').value;
     if (username == '' || username.length < 3) {
@@ -45,34 +45,28 @@ function signUp(event) {
         return;
     }
 
-    fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/xrl-users/signup', {
-    method: 'POST',
-    headers: {
-        'Content-Type': 'application/json',        
-    },
-    body: JSON.stringify({
-        'username': username,
-        'password': password,
-        'team_name': teamName,
-        'team_short': teamShort,
-        'homeground': homeground
-    })
-    })
-    .then((response) => {
-        if (response.ok) {
-            console.log(response);
-            return response.json();
-            //window.location.replace('login.html');
-        } else {
-            DisplayFeedback('Error', 'Network response not ok');
-        }        
-    })
-    .then((data) => {
-        console.log(data);
-    })
-    .catch((error) => {
-        DisplayFeedback('Error', error);
-    })
+    const response = await fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/xrl-users/signup', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',        
+        },
+        body: JSON.stringify({
+            'username': username,
+            'password': password,
+            'team_name': teamName,
+            'team_short': teamShort,
+            'homeground': homeground
+        })
+    });
+    console.log(response);
+    const data = await response.json();
+    console.log(data);
+    if (data.error) {
+        DisplayFeedback('Error', data.error);
+        return;
+    } else {
+        location.replace('index.html');
+    }
 }
 
 window.signUp = signUp;

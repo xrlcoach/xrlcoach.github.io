@@ -21,6 +21,33 @@ def lambda_handler(event, context):
     team_name = data["team_name"]  
     team_short = data["team_short"]
     homeground = data["homeground"]
+    existing_users = table.scan()['Items']
+    print('Checking against existing users')
+    error = False
+    message = ''
+    for user in existing_users:
+        if user['username'] == username:
+            error = True
+            message += 'Username is already taken. '
+        if user['team_name'] == team_name:
+            error = True
+            message += 'Team name is already taken. '
+        if user['team_short'] == team_short:
+            error = True
+            message += 'Team acronym is already taken. '
+        if user['homeground'] == homeground:
+            error = True
+            message += 'Homeground name is already taken. '
+    if error:
+        print("Error: One or more names already taken")
+        return {'statusCode': 200,
+            'headers': {
+            'Access-Control-Allow-Headers': 'Content-Type',
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
+            },
+            'body': json.dumps({"error": message})
+        }
     client = boto3.client('cognito-idp')    
     try:
         resp = client.sign_up(
@@ -77,5 +104,5 @@ def lambda_handler(event, context):
             'Access-Control-Allow-Origin': '*',
             'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
             },
-            'body': json.dumps(f"{username} signed up successfully")
+            'body': json.dumps({"success": f"{username} signed up successfully"})
             }

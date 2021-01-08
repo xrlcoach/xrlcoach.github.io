@@ -29,6 +29,10 @@ window.onload = async function () {
 
 function DisplayLastMatch() {
     let match = GetTeamFixture(user.team_short, lastRound);
+    if (match == undefined) {
+        document.getElementById('lastMatchOpponent').innerText = 'None';
+        return;
+    }
     let homeGame = match.home == user.team_short;
     let opponent = homeGame ? match.away : match.home;
     let ground = homeGame ? user.homeground : allUsers.find(u => u.team_short == opponent).homeground;
@@ -42,6 +46,10 @@ function DisplayLastMatch() {
 
 function DisplayNextMatch() {
     let match = GetTeamFixture(user.team_short, nextRound);
+    if (match == undefined) {
+        document.getElementById('nextMatchOpponent').innerText = 'No game this week.';
+        return;
+    }
     let homeGame = match.home == user.team_short;
     let opponent = homeGame ? match.away : match.home;
     let ground = homeGame ? user.homeground : allUsers.find(u => u.team_short == opponent).homeground;

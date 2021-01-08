@@ -46,8 +46,14 @@
     <header class="p-3 text-center text-white bg-success bg-gradient">
         <h4>Select Players</h4>
     </header>
-
-    <main class="container-lg">
+    <div id="loading" class="row justify-content-centre align-items-center" style="height: 400px;">
+        <div class="col align-items-center justify-content-center text-center">
+            <div class="spinner-border text-success" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
+    </div>
+    <main class="container-lg" id="mainContent" hidden>
         <div class="container p-5">
             <div id="chosenPlayers" hidden>
                 <div class="row">
@@ -61,8 +67,47 @@
             <p id="playerCountMessage"></p>
             <ul id="playerCountBreakdown">
             </ul>
-            <h4 id="squadName"></h4>
-            <form onsubmit="selectNrlClub(event)">
+            <div class="row p-3">
+                <div class="dropdown col">
+                    <button class="btn btn-success dropdown-toggle" type="button" id="nrlSelectButton"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        Select NRL Club
+                    </button>
+                    <ul id="clubSelect" class="dropdown-menu dropdown-menu-dark" aria-labelledby="dropdownMenuButton">
+                        <li><a href="#" class="dropdown-item" value="Broncos" onclick="selectNrlClub('Broncos')">Broncos</a></li>
+                        <li><a href="#" class="dropdown-item" value="Bulldogs" onclick="selectNrlClub('Bulldogs')">Bulldogs</a></li>
+                        <li><a href="#" class="dropdown-item" value="Cowboys" onclick="selectNrlClub('Cowboys')">Cowboys</a></li>
+                        <li><a href="#" class="dropdown-item" value="Dragons" onclick="selectNrlClub('Dragons')">Dragons</a></li>
+                        <li><a href="#" class="dropdown-item" value="Eels" onclick="selectNrlClub('Eels')">Eels</a></li>
+                        <li><a href="#" class="dropdown-item" value="Knights" onclick="selectNrlClub('Knights')">Knights</a></li>
+                        <li><a href="#" class="dropdown-item" value="Panthers" onclick="selectNrlClub('Panthers')">Panthers</a></li>
+                        <li><a href="#" class="dropdown-item" value="Rabbitohs" onclick="selectNrlClub('Rabbitohs')">Rabbitohs</a></li>
+                        <li><a href="#" class="dropdown-item" value="Raiders" onclick="selectNrlClub('Raiders')">Raiders</a></li>
+                        <li><a href="#" class="dropdown-item" value="Roosters" onclick="selectNrlClub('Roosters')">Roosters</a></li>
+                        <li><a href="#" class="dropdown-item" value="Sea Eagles" onclick="selectNrlClub('Sea Eagles')">Sea Eagles</a></li>
+                        <li><a href="#" class="dropdown-item" value="Sharks" onclick="selectNrlClub('Sharks')">Sharks</a></li>
+                        <li><a href="#" class="dropdown-item" value="Storm" onclick="selectNrlClub('Storm')">Storm</a></li>
+                        <li><a href="#" class="dropdown-item" value="Titans" onclick="selectNrlClub('Titans')">Titans</a></li>
+                        <li><a href="#" class="dropdown-item" value="Warriors" onclick="selectNrlClub('Warriors')">Warriors</a></li>
+                        <li><a href="#" class="dropdown-item" value="Wests Tigers" onclick="selectNrlClub('Wests Tigers')">Wests Tigers</a></li>
+                    </ul>
+                </div>
+                <div class="form-group col">
+                    <div class="row">
+                        <form onsubmit="searchPlayer(event)">
+                            <div class="col">
+                                <input type="search" class="form-control col-auto" id="playerSearch" />
+                            </div>
+                            <div class="col">
+                                <button type="submit" class="btn btn-primary">Search</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <img id="clubLogo" class="me-2" height="50px" hidden />
+            <h4 id="clubName" style="display: inline-block;"></h4>
+            <!-- <form onsubmit="selectNrlClub(event)">
                 <div class="form-group">
                     <select class="form-select" id="nrlClubSelect" aria-placeholder="Choose a club">
                         <option>Broncos</option>
@@ -84,7 +129,7 @@
                     </select>
                     <button type="submit" class="btn btn-primary">View players</button>
                 </div>
-            </form>
+            </form> -->
             <div class="table-responsive">
                 <table class="table table-dark table-striped">
                     <thead>

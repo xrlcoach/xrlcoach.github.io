@@ -31,6 +31,7 @@ function DisplayLastMatch() {
     let match = GetTeamFixture(user.team_short, lastRound);
     if (match == undefined) {
         document.getElementById('lastMatchOpponent').innerText = 'None';
+        document.getElementById('lastMatchView').hidden = true;
         return;
     }
     let homeGame = match.home == user.team_short;
@@ -48,6 +49,7 @@ function DisplayNextMatch() {
     let match = GetTeamFixture(user.team_short, nextRound);
     if (match == undefined) {
         document.getElementById('nextMatchOpponent').innerText = 'No game this week.';
+        document.getElementById('nextMatchButton').hidden = true;
         return;
     }
     let homeGame = match.home == user.team_short;

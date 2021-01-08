@@ -98,7 +98,7 @@ def lambda_handler(event, context):
                 "team_name": team_name,
                 "team_short": team_short,
                 "homeground": homeground,
-                "powerplays": 2,
+                "powerplays": 3,
                 "stats": {
                     "wins": 0,
                     "draws": 0,

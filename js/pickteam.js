@@ -1,26 +1,21 @@
 import { GetAllPlayers, GetIdToken, GetPlayersFromNrlClub, GetPlayersFromXrlTeam, GetActiveUserInfo, UpdatePlayerXrlTeam, UpdateMultiplePlayerXrlTeams } from "./ApiFetch.js";
 import { DisplayFeedback } from "./Helpers.js";
 
-let user, squad, players, modifiedSquad;
+let user, squad, players, allPlayers, modifiedSquad;
 const pickedPlayers = [];
 const droppedPlayers = [];
 
 window.onload = async function () {
-    const idToken = GetIdToken();
-    if (!idToken) {
-        window.location.replace('login.html');
-    }
     try {
         user = await GetActiveUserInfo(idToken);
-        squad = await GetPlayersFromXrlTeam(user.team_short);
+        allPlayers = await GetAllPlayers();
+        squad = allPlayers.filter(p => p.xrl_team = user.team_short);
         modifiedSquad = squad;
         DisplayPlayerCounts();
-        var club = document.getElementById('nrlClubSelect').value;
-        document.getElementById('squadName').innerText = club;
-        players = await GetPlayersFromNrlClub(club);
-        PopulatePickPlayerTable(players, user.team_short, 'pickPlayerTable');
+        document.getElementById('loading').hidden = true;
+        document.getElementById('mainContent').hidden = false;
     } catch (error) {
-        DisplayFeedback('Error while loading', error);
+        DisplayFeedback(error, error.stack);
     }
 }
 
@@ -119,18 +114,28 @@ function PopulatePickPlayerTable(playerData, xrlTeam, tableId) {
     }
 }
 
-async function selectNrlClub(event) {
-    event.preventDefault();
-    var club = document.getElementById('nrlClubSelect').value;
-    document.getElementById('squadName').innerText = club;
+async function selectNrlClub(club) {
+    document.getElementById('clubLogo').hidden = false;
+    document.getElementById('clubLogo').src = '/static/' + club + '.svg';
+    document.getElementById('clubName').innerText = club;
     try {
-        players = await GetPlayersFromNrlClub(club);
+        players = allPlayers.filter(p => p.nrl_club == club);
         PopulatePickPlayerTable(players, user.team_short, 'pickPlayerTable');
     } catch (error) {
-        DisplayFeedback('Error while loading club', error);
+        DisplayFeedback(error, error.stack);
     }
 }
 window.selectNrlClub = selectNrlClub;
+
+function searchPlayer(event) {
+    event.preventDefault();
+    document.getElementById('clubLogo').hidden = true;
+    let player = document.getElementById('playerSearch').value;
+    document.getElementById('squadName').innerText = 'Search: ' + player;
+    players = allPlayers.filter(p => p.search_name.toLowerCase().includes(player.toLowerCase()));
+    PopulatePickPlayerTable(players, user.team_short, 'pickPlayerTable');
+}
+window.searchPlayer = searchPlayer;
 
 function PickDropPlayer(xrlTeam, form) {
     let player = players.find(p => p.player_id == form.elements[0].value);

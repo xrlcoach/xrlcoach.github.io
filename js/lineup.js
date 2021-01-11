@@ -293,7 +293,7 @@ async function submitLineup(event) {
                 message += `<li>${player.player_name} has been picked more than once.</li>`;
             }
         }
-        if (user.captain_counts && user.captain_counts[player.player_id] > 5) {
+        if ((player.captain || player.captain2 || player.vice) && user.captain_counts && user.captain_counts[player.player_id] > 5) {
             DisplayFeedback('Invalid Lineup', player.player_name + ' has already been captained 6 times.');
             return;
         }

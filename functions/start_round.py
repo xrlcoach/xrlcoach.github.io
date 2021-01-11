@@ -48,7 +48,34 @@ for user in users:
         if captain['player_id'] not in user['captain_counts'].keys():
             user['captain_counts'][captain['player_id']] = 1
         else:
-            user['captain_counts'][captain['player_id']] += 1
+            if user['captain_counts'][captain['player_id']] == 6:
+                print(f"ERROR - {user['team_name']} has already captained {captain['player_name']} six times. Removing as captain.")
+                lineups_table.update_item(
+                    Key={
+                        'name+nrl+xrl+round': captain['name+nrl+xrl+round']
+                    },
+                        UpdateExpression="set captain=:c, captain2=:c2",
+                        ExpressionAttributeValues={
+                            ':c': False,
+                            ':c2': False
+                    }
+                )
+            else:
+                user['captain_counts'][captain['player_id']] += 1
+    vice = [player for player in lineup if player['vice']]
+    if len(vice) > 0:
+        vice = vice[0]
+        if vice['player_id'] in user['captain_counts'].keys() and user['captain_counts'][vice['player_id']] == 6:
+            print(f"ERROR - {user['team_name']} has already captained {vice['player_name']} six times. Removing as vice-captain.")
+            lineups_table.update_item(
+                Key={
+                    'name+nrl+xrl+round': vice['name+nrl+xrl+round']
+                },
+                    UpdateExpression="set vice=:v",
+                    ExpressionAttributeValues={
+                        ':v': False
+                }
+            )
     if powerplay:
         print(f"{user['team_name']} used a powerplay. Updating database")
         users_table.update_item(

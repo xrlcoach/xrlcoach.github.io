@@ -94,7 +94,7 @@ for match in fixtures:
                         }
                     )
                 if player['vice'] and vice_plays:
-                    print(f"{player['player_name']} takes over captaincy duties. Adjusting score.")
+                    print(f"{player['player_name']} takes over captaincy duties. Adjusting lineup score and user's captain counts.")
                     resp = lineups_table.get_item(
                         Key={
                             'name+nrl+xrl+round': player['name+nrl+xrl+round']
@@ -109,6 +109,21 @@ for match in fixtures:
                         ExpressionAttributeValues={
                             ':v': current_score * 2
                         }                        
+                    )
+                    user = [u for u in users if u['team_short'] == match[team]][0]
+                    cc = user['captain_counts']
+                    if player['player_id'] not in cc.keys():
+                        cc[player['player_id']] = 1
+                    else:
+                        cc[player['player_id']] += 1
+                    users_table.update_item(
+                        Key={
+                            'username': user['username']
+                        },
+                        UpdateExpression="set captain_counts=:cc",
+                        ExpressionAttributeValues={
+                            ':cc': cc
+                        }
                     )
         freeSpots = {
             'Back': len([p for p in starters if p['position_general'] == 'Back' and not p['played_nrl']]),

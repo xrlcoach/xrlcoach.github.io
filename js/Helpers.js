@@ -1,25 +1,40 @@
 import { GetActiveUserTeamShort, GetLineupByTeamAndRound, GetPlayersFromXrlTeam, UpdatePlayerXrlTeam, GetPlayerAppearanceStats } from "./ApiFetch.js"
 /**
- * Displays feedback message in the feedback element on the top of each page
- * @param {String} feedback 
+ * Displays a feedback modal with an optional footer with cancel/confirm buttons and an onconfirm function.
+ * @param {String} title A title for the feedback display
+ * @param {String} message The main feedback message
+ * @param {Boolean} confirm Whether to display a confirm button
+ * @param {Function} onConfirmFunction A function to call when confirm button is clicked
+ * @param {Boolean} cancel Whether to display a cancel button
  */
 export function DisplayFeedback(title, message, confirm=false, onConfirmFunction=null, cancel=true) {
+    //Activate the element as a modal
     let feedback = new bootstrap.Modal(document.getElementById('feedback'));
+    //Display the title and message
     document.getElementById('feedbackTitle').innerText = title;
     document.getElementById('feedbackMessage').innerHTML = message;
+    //Hide the cancel button if desired
     if (!cancel) {
         document.getElementById('feedbackCancel').hidden = true;
     }
+    //Display the confirm button if desired and assign the onclick function
     if (confirm) {
         document.getElementById('feedbackFooter').hidden = false;
         document.getElementById('feedbackConfirm').onclick = onConfirmFunction;
     } else {
         document.getElementById('feedbackFooter').hidden = true;
     }
+    //Display the feedback modal
     feedback.show();
 }
+/**
+ * Displays a modal with player's basic info and cumulative stats
+ * @param {Object} player A player object from the players table
+ */
 export function DisplayPlayerInfo(player) {
+    //Activate the element as a modal
     let playerInfo = new bootstrap.Modal(document.getElementById('playerInfo'));
+    //Display basic player info (name, club, xrl team, positions)
     document.getElementById('playerInfoTitle').innerText = player.player_name;
     document.getElementById('playerNrlClub').innerText = player.nrl_club;
     document.getElementById('playerNrlLogo').src = '/static/' + player.nrl_club + '.svg';
@@ -32,6 +47,7 @@ export function DisplayPlayerInfo(player) {
     }
     document.getElementById('playerPositions').innerText = player.position;
     if (player.position2) document.getElementById('playerPositions').innerText += ', ' + player.position2;
+    //Populate the stats sections with XRL scoring stats
     document.getElementById('playerXrlPoints').innerText = player.scoring_stats[player.position].points + player.scoring_stats.kicker.points;
     document.getElementById('playerInfoAppearances').innerText = player.stats.appearances;
     document.getElementById('playerTries').innerText = player.stats.Tries;
@@ -43,9 +59,12 @@ export function DisplayPlayerInfo(player) {
     document.getElementById('playerConcedes').innerText = player.scoring_stats[player.position].concede;
     document.getElementById('playerSinBins').innerText = player.stats['Sin Bins'];
     document.getElementById('playerSendOffs').innerText = player.stats['Send Offs'];
+    //If the player is in the user's team, display a 'Drop' button
     if (player.xrl_team == GetActiveUserTeamShort()) {
-        document.getElementById('playerInfoFooter').hidden = false;
-        document.getElementById('playerInfoPickButton').hidden = true;
+        document.getElementById('playerInfoFooter').hidden = false; //Show the footer
+        document.getElementById('playerInfoPickButton').hidden = true; //Hide the 'Pick' button
+        /*The 'Drop' button displays a feedback modal asking for confirmation. That modal then contains the callback
+        function which drops the player, displays confirmation message, and redirects to homepage */
         document.getElementById('playerInfoDropButton').onclick = function() {
             DisplayFeedback('Confirm', 'Are you sure you want to drop ' + player.player_name + '?',
             true, async function() {
@@ -54,10 +73,13 @@ export function DisplayPlayerInfo(player) {
                 true, function() { location.href = 'index.html' }, false);
             });
         };
-        document.getElementById('playerInfoDropButton').hidden = false;
-    } else if (player.xrl_team == undefined || player.xrl_team == 'None') {
-        document.getElementById('playerInfoFooter').hidden = false;
-        document.getElementById('playerInfoDropButton').hidden = true;
+        document.getElementById('playerInfoDropButton').hidden = false; //Show the drop button
+    } //If player is a free agent, display a 'Pick' button
+    else if (player.xrl_team == undefined || player.xrl_team == 'None') {
+        document.getElementById('playerInfoFooter').hidden = false; //Show the footer
+        document.getElementById('playerInfoDropButton').hidden = true; //Hide the 'Drop' button
+        /*Like the 'Drop' button, the 'Pick' button displays a feedback modal asking for confirmation. That modal then contains the callback
+        function which adds the player to the user's team, displays confirmation message, and redirects to homepage */
         document.getElementById('playerInfoPickButton').onclick = function () {
             DisplayFeedback('Confirm', 'Are you sure you want to pick ' + player.player_name + '?',
             true, async function() {
@@ -71,14 +93,17 @@ export function DisplayPlayerInfo(player) {
                 }
             });
         };
-        document.getElementById('playerInfoPickButton').hidden = false;
-    } else {
+        document.getElementById('playerInfoPickButton').hidden = false; //Show the pick button
+    } else { //If player is in someone else's team, don't show any buttons
         document.getElementById('playerInfoFooter').hidden = true;
         document.getElementById('playerInfoDropButton').hidden = true;
         document.getElementById('playerInfoPickButton').hidden = true;
     }
+    //Clear the previous contents of the detailed stats section
     document.getElementById('allStatsContainer').innerHTML = '';
+    //Sort the player's detailed stats properties alphabetically
     let sortedKeys = Object.keys(player.stats).sort();
+    //Iterate through all the detailed stats and display them in the stats section
     for (let stat of sortedKeys) {
         let col = document.createElement('div');
         col.className = 'col-4';
@@ -87,39 +112,49 @@ export function DisplayPlayerInfo(player) {
         col.appendChild(p);
         document.getElementById('allStatsContainer').appendChild(col);
     }
+    //Show the player info modal
     playerInfo.show();
 }
-
-
+/**
+ * Display's a player appearance info modal with data from a player's XRL lineup entry.
+ * @param {Object} appearance A player entry in the lineups table
+ */
 export async function DisplayAppearanceInfoFromLineup(appearance) {
+    //Activate the element as a modal
     let appearanceInfo = new bootstrap.Modal(document.getElementById('appearanceInfo'));
+    //Show the loading icon
     document.getElementById('appearanceInfoLoading').hidden = false;
     document.getElementById('appearanceInfoBody').hidden = true;
+    //Display the player's name and round number in the title
     document.getElementById('appearanceInfoTitle').innerText = appearance.player_name + ' - Round ' + appearance.round_number;
+    //Populate and display NRL club and XRL team info
+    document.getElementById('appearanceInfoNrlClub').innerText = appearance.nrl_club;
+    document.getElementById('appearanceInfoNrlLogo').src = '/static/' + appearance.nrl_club + '.svg';
+    document.getElementById('appearanceInfoXrlTeam').innerText = appearance.xrl_team;       
+    document.getElementById('appearanceInfoXrlLogo').hidden = false;
+    document.getElementById('appearanceInfoXrlLogo').src = '/static/' + appearance.xrl_team + '.png';
+    //Show the modal
     appearanceInfo.show();
+    //Retrieve the player's appearance record for the round from the stats table
     let statsRecord = await GetPlayerAppearanceStats(appearance.player_id, appearance.round_number);
+    //If the player played ...
     if (statsRecord) {
+        //Hide the DidNotPlay display and show the stats displays
         document.getElementById('appearanceInfoDNPRow').hidden = true;
         document.getElementById('appearanceInfoNrlMatchRow').hidden = false;
         document.getElementById('appearanceInfoXrlMatchRow').hidden = false;
         document.getElementById('appearanceInfoStatsRow').hidden = false;
-        document.getElementById('appearanceInfoNrlClub').innerText = appearance.nrl_club;
-        document.getElementById('appearanceInfoNrlLogo').src = '/static/' + appearance.nrl_club + '.svg';
-        document.getElementById('appearanceInfoXrlTeam').innerText = appearance.xrl_team ? appearance.xrl_team : 'None';
-        if (!appearance.xrl_team || appearance.xrl_team == 'None') {
-            document.getElementById('appearanceInfoXrlLogo').hidden = true;
-        } else {
-            document.getElementById('appearanceInfoXrlLogo').hidden = false;
-            document.getElementById('appearanceInfoXrlLogo').src = '/static/' + appearance.xrl_team + '.png';
-        }
+        //Find out what positions the player was scored for in that round and display them
         let appearancePositions = Object.keys(statsRecord.scoring_stats);
         appearancePositions = appearancePositions.filter(p => p != 'kicker');
         document.getElementById('appearanceInfoPositions').innerText = appearancePositions[0];
         if (appearancePositions.length > 1) document.getElementById('appearanceInfoPositions').innerText += ', ' + appearancePositions[1];
+        //Display opponent, minutes played, and actual NRL position played in the match
         document.getElementById('appearanceInfoOpponent').innerText = statsRecord.opponent;
         document.getElementById('appearanceInfoOpponentLogo').src = '/static/' + statsRecord.opponent + '.svg';
         document.getElementById('appearanceInfoMinutes').innerText = statsRecord.stats['Mins Played'];
         document.getElementById('appearanceInfoNrlPosition').innerText = statsRecord.stats['Position'];
+        //Show whether the player 'played' in the XRL lineup for the round
         if (appearance.played_xrl) {
             document.getElementById('appearanceInfoPlayedXrl').style.color = 'green';
             document.getElementById('appearanceInfoPlayedXrl').innerText = 'PLAYED';
@@ -127,9 +162,11 @@ export async function DisplayAppearanceInfoFromLineup(appearance) {
             document.getElementById('appearanceInfoPlayedXrl').style.color = '#c94d38';
             document.getElementById('appearanceInfoPlayedXrl').innerText = 'DID NOT PLAY';
         }
+        //Display player's XRL points and XRL position info
         document.getElementById('appearanceInfoXrlPoints').innerText = appearance.score;
         document.getElementById('appearanceInfoPositionSpecific').innerText = PositionNames[appearance.position_specific];
         document.getElementById('appearanceInfoPositionGeneral').innerText = appearance.position_general;
+        //Display the player's captaincy/kicker roles if applicable, else hide the elements
         if (appearance.captain || appearance.captain2 || appearance.vice || appearance.kicker || appearance.backup_kicker) {
             document.getElementById('appearanceInfoRoles').hidden = false;
         } else {
@@ -153,6 +190,7 @@ export async function DisplayAppearanceInfoFromLineup(appearance) {
         } else {
             document.getElementById('appearanceInfoKicker').hidden = true;
         }
+        //Display the scoring stats for the round, with colourisation to indicate positive or negative result
         document.getElementById('appearanceInfoTries').innerText = statsRecord.stats.Tries;
         if (statsRecord.stats.Tries > 0) document.getElementById('appearanceInfoTries').style.color = 'green';
         else document.getElementById('appearanceInfoTries').style.color = '';
@@ -200,9 +238,11 @@ export async function DisplayAppearanceInfoFromLineup(appearance) {
             document.getElementById('appearanceInfoSendOffs').innerText = 'Yes (' + appearance.stats['Send Offs'] + "')";
             document.getElementById('appearanceInfoSendOffs').style.color = '#c94d38';
         }
-        
+        //Clear previous contents of detailed stats section
         document.getElementById('appearanceInfoAllStatsContainer').innerHTML = '';
+        //Sort stats properties alphabetically
         let sortedKeys = Object.keys(statsRecord.stats).sort();
+        //Iterate through stats and add to section
         for (let stat of sortedKeys) {
             let col = document.createElement('div');
             col.className = 'col-4';
@@ -211,29 +251,25 @@ export async function DisplayAppearanceInfoFromLineup(appearance) {
             col.appendChild(p);
             document.getElementById('appearanceInfoAllStatsContainer').appendChild(col);
         }
-    } else {
+    } else { //If the player didn't play NRL that week, display the DNP section and hide most others
         document.getElementById('appearanceInfoDNPRow').hidden = false;
         document.getElementById('appearanceInfoNrlMatchRow').hidden = true;
         document.getElementById('appearanceInfoXrlMatchRow').hidden = true;
         document.getElementById('appearanceInfoStatsRow').hidden = true;
-        document.getElementById('appearanceInfoNrlClub').innerText = appearance.nrl_club;
-        document.getElementById('appearanceInfoNrlLogo').src = '/static/' + appearance.nrl_club + '.svg';
-        document.getElementById('appearanceInfoXrlTeam').innerText = appearance.xrl_team ? appearance.xrl_team : 'None';
-        if (!appearance.xrl_team || appearance.xrl_team == 'None') {
-            document.getElementById('appearanceInfoXrlLogo').hidden = true;
-        } else {
-            document.getElementById('appearanceInfoXrlLogo').hidden = false;
-            document.getElementById('appearanceInfoXrlLogo').src = '/static/' + appearance.xrl_team + '.png';
-        }
         document.getElementById('appearanceInfoPositions').innerText = 'N/A';
     }
+    //Hide the loading icon and display the modal content
     document.getElementById('appearanceInfoLoading').hidden = true;
     document.getElementById('appearanceInfoBody').hidden = false;
 }
-
-
+/**
+ * Display's a player appearance info modal with data from a player's NRL round stat record.
+ * @param {Object} appearance An appearance record from the stats table
+ */
 export function DisplayAppearanceInfoFromStats(appearance) {
+    //Activate the element as a modal
     let appearanceInfo = new bootstrap.Modal(document.getElementById('appearanceInfo'));
+    //Display player's name, club and positions scored in round
     document.getElementById('appearanceInfoTitle').innerText = appearance.player_name + ' - Round ' + appearance.round_number;
     document.getElementById('appearanceInfoNrlClub').innerText = appearance.nrl_club;
     document.getElementById('appearanceInfoNrlLogo').src = '/static/' + appearance.nrl_club + '.svg';
@@ -241,10 +277,12 @@ export function DisplayAppearanceInfoFromStats(appearance) {
     appearancePositions = appearancePositions.filter(p => p != 'kicker');
     document.getElementById('appearanceInfoPositions').innerText = appearancePositions[0];
     if (appearancePositions.length > 1) document.getElementById('appearanceInfoPositions').innerText += ', ' + appearancePositions[1];
+    //Display opponent, minutes played, NRL position
     document.getElementById('appearanceInfoOpponent').innerText = appearance.opponent;
     document.getElementById('appearanceInfoOpponentLogo').src = '/static/' + appearance.opponent + '.svg';
     document.getElementById('appearanceInfoMinutes').innerText = appearance.stats['Mins Played'];
     document.getElementById('appearanceInfoNrlPosition').innerText = appearance.stats['Position'];
+    //Display and colourise tries, goals and sin bins/send offs
     document.getElementById('appearanceInfoTries').innerText = appearance.stats.Tries;
     if (appearance.stats.Tries > 0) document.getElementById('appearanceInfoTries').style.color = 'green';
     else document.getElementById('appearanceInfoTries').style.color = '';
@@ -264,6 +302,7 @@ export function DisplayAppearanceInfoFromStats(appearance) {
         document.getElementById('appearanceInfoSendOffs').innerText = 'Yes (' + appearance.stats['Send Offs'] + "')";
         document.getElementById('appearanceInfoSendOffs').style.color = '#c94d38';
     }
+    //Display XRL scoring stats for player's primary position
     document.getElementById('appearanceInfoPosition1').innerText = appearancePositions[0];
     if (appearance.scoring_stats[appearancePositions[0]].involvement_try) {
         document.getElementById('appearanceInfoITs').innerText = 'Yes';
@@ -293,6 +332,7 @@ export function DisplayAppearanceInfoFromStats(appearance) {
         document.getElementById('appearanceInfoConcedes').innerText = 'No';
         document.getElementById('appearanceInfoConcedes').style.color = '';
     }
+    //If player was scored for a secondary position in the match, display those stats as well
     if (appearancePositions.length > 1) {
         document.getElementById('appearanceInfoPosition2').innerText = appearancePositions[1];
         if (appearance.scoring_stats[appearancePositions[1]].involvement_try) {
@@ -327,6 +367,7 @@ export function DisplayAppearanceInfoFromStats(appearance) {
     } else {
         document.getElementById('appearanceInfoSecondPositionRow').hidden = true
     }
+    //Populate detailed stats section
     document.getElementById('appearanceInfoAllStatsContainer').innerHTML = '';
     let sortedKeys = Object.keys(appearance.stats).sort();
     for (let stat of sortedKeys) {
@@ -337,6 +378,7 @@ export function DisplayAppearanceInfoFromStats(appearance) {
         col.appendChild(p);
         document.getElementById('appearanceInfoAllStatsContainer').appendChild(col);
     }
+    //Show the modal
     appearanceInfo.show();
 }
 /**

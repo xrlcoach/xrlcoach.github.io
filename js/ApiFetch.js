@@ -305,6 +305,10 @@ export async function GetAllStats() {
     const data = await response.json();
     return data;
 }
+/**
+ * Retrieves a round's stats from the database
+ * @param {String} roundNumber 
+ */
 export async function GetStatsByRound(roundNumber) {
     const response = await fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/stats?round=' + roundNumber, {
         method: 'GET',
@@ -315,6 +319,11 @@ export async function GetStatsByRound(roundNumber) {
     const data = await response.json();
     return data;
 }
+/**
+ * Retrieves a single stat entry from the database
+ * @param {String} playerId 
+ * @param {String} roundNumber 
+ */
 export async function GetPlayerAppearanceStats(playerId, roundNumber) {
     try {
         const response = await fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/stats?playerId=' + playerId + '&round=' + roundNumber, {

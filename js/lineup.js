@@ -244,6 +244,7 @@ async function fillPositionOptions(select) {
 window.fillPositionOptions = fillPositionOptions;
 
 async function submitLineup(event) {
+    document.getElementById('submitLoading').hidden = false;
     event.preventDefault();
     let lineup = [];
     const players = document.getElementsByName('player');
@@ -327,6 +328,7 @@ async function submitLineup(event) {
     }
     
     await SetLineup(idToken, lineup);
+    document.getElementById('submitLoading').hidden = true;
     window.location.href = 'index.html';
 }
 window.submitLineup = submitLineup;

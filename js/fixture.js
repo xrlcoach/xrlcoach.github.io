@@ -27,6 +27,7 @@ window.onload = async function() {
         roundNumber = roundInfo.round_number;
         match = GetTeamFixture(GetActiveUserTeamShort(), roundInfo);
     }
+    //If there is no such match to display (draw not done, incorrect query), display message and stop loading
     if (match == undefined) {
         document.getElementById('loading').hidden = true;
         DisplayFeedback('WTF?', 'No match to show yet. Please check back later.');
@@ -49,6 +50,7 @@ window.onload = async function() {
     //Construct the lineup tables
     populateLineupTable('homeTableBody', homeLineup.sort((a, b) => a.position_number - b.position_number), match.home_score);
     populateLineupTable('awayTableBody', awayLineup.sort((a, b) => a.position_number - b.position_number), match.away_score);
+    //Display content
     document.getElementById('loading').hidden = true;
     document.getElementById('mainContent').hidden = false;
 }
@@ -68,17 +70,20 @@ function populateLineupTable(tableId, lineup, score) {
     for (let player of starters) {
         //Create table row
         let tr = document.createElement('tr');
-        tr.href = '#';
-        tr.onclick = function() {
-            DisplayAppearanceInfoFromLineup(player);
-        }
         //Colour row green if the player played that week, red if not
         if (player['played_xrl']) tr.style.color = "green";
         if (!player['played_xrl'] && completed) tr.style.color = "#c94d38";
         /*For each property to display, create a table cell, assign the data to the innerText property,
         and append it to the table row*/
         let name = document.createElement('td');
-        name.innerText = player['player_name'];
+        //Turn player name into a clickable element which displays the player lineup info modal
+        let nameLink = document.createElement('a');
+        nameLink.innerText = player['player_name'];
+        nameLink.href = '#';
+        nameLink.onclick = function() {
+            DisplayAppearanceInfoFromLineup(player);
+        };
+        name.appendChild(nameLink);
         tr.appendChild(name);
         let nrlClub = document.createElement('td');
         nrlClub.innerText = player['nrl_club'];
@@ -112,10 +117,6 @@ function populateLineupTable(tableId, lineup, score) {
     for (let player of bench) {
         //Create a new table row
         let tr = document.createElement('tr');
-        tr.href = '#';
-        tr.onclick = function() {
-            DisplayAppearanceInfoFromLineup(player);
-        }
         /*Colour row green if player played that week and was subbed on, red if not,
         and grey if they haven't been subbed on but the round isn't over*/
         if (player['played_xrl']) tr.style.color = "green";
@@ -124,7 +125,14 @@ function populateLineupTable(tableId, lineup, score) {
         /*Create the same table cells as for the starters, but no need to conditionally fill
         captain and kicker cells*/
         let name = document.createElement('td');
-        name.innerText = player['player_name'];
+        //Turn player name into a clickable element which displays the player lineup info modal
+        let nameLink = document.createElement('a');
+        nameLink.innerText = player['player_name'];
+        nameLink.href = '#';
+        nameLink.onclick = function() {
+            DisplayAppearanceInfoFromLineup(player);
+        };
+        name.appendChild(nameLink);
         tr.appendChild(name);
         let nrlClub = document.createElement('td');
         nrlClub.innerText = player['nrl_club'];

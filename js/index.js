@@ -5,43 +5,62 @@ let squad, allUsers, user, allRounds, lastRound, nextRound;
 
 window.onload = async function () {
     try {
+        //Fetch all users data
         allUsers = await GetAllUsers();
+        //Isolate active user from team cookie
         user = allUsers.find(u => u.team_short == GetActiveUserTeamShort());
+        //Get the active user's squad data
         squad = await GetPlayersFromXrlTeam(user.team_short);
+        //Get fixtures data
         allRounds = await GetAllFixtures();
+        //Isolate current active round
         nextRound = GetActiveRoundFromFixtures(allRounds);
+        //Isolate last round
         lastRound = allRounds.find(r => r.round_number == nextRound.round_number - 1);
+        //If current round is not 1st, display last match info
         if (lastRound) DisplayLastMatch();
+        //Display current/next match info
         DisplayNextMatch();
+        //Display team, squad and captaincy info
         DisplayTeamInfo();
         DisplaySquadInfo();
         DisplayCaptainInfo();
+        //Sort squad alphabetically by last name
         let sortedSquad = squad.sort(function(p1, p2) {
             return p1.player_name.split(' ')[1] > p2.player_name.split(' ')[1]
         });
+        //Populate the squad table
         PopulatePickPlayerTable(sortedSquad);
+        //Hide loading icon and display main content
         document.getElementById('loading').hidden = true;
         document.getElementById('mainContent').hidden = false;
     } catch (error) {
         DisplayFeedback(error, error.stack);
     }
 }
-
+/**
+ * Display's the active user's last XRL match (opponent, score, result)
+ */
 function DisplayLastMatch() {
+    //Get user's match from last round's fixtures
     let match = GetTeamFixture(user.team_short, lastRound);
-    if (match == undefined) {
+    if (match == undefined) { //If user didn't have a match in the last round, hide section and return
         document.getElementById('lastMatchOpponent').innerText = 'None';
         document.getElementById('lastMatchView').hidden = true;
         return;
     }
+    //Check if match was a homegame, find opponent and venue, display
     let homeGame = match.home == user.team_short;
     let opponent = homeGame ? match.away : match.home;
     let ground = homeGame ? user.homeground : allUsers.find(u => u.team_short == opponent).homeground;
     document.getElementById('lastMatchOpponent').innerText = opponent + ' @ ' + ground;
+    //Display score
     document.getElementById('lastMatchScore').innerText = match.home_score + ' - ' + match.away_score;
+    //Work out result based on score and whether user's team was home or away
     let result = match.home_score == match.away_score ? 'DRAW' : homeGame ? match.home_score > match.away_score ? 'WIN' : 'LOSS' : match.away_score > match.home_score ? 'WIN' : 'LOSS';
     document.getElementById('lastMatchResult').style.color = result == 'WIN' ? 'green' : result == 'LOSS' ? '#c94d38' : 'orange'; 
     document.getElementById('lastMatchResult').innerText = ' ' + result; 
+    //Give the 'View' button a href of fixture.html with query parameteres specifying round and match
     document.getElementById('lastMatchView').href = `fixture.html?round=${lastRound.round_number}&fixture=${match.home}-v-${match.away}`;
 }
 

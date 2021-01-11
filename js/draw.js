@@ -51,7 +51,7 @@ window.onload = async function() {
     //Populate XRL Team dropdown options
     for (let u of users) {
         let li = document.createElement('li');
-        let option = document.createElement('option');
+        let option = document.createElement('a');
         option.innerText = u.team_short;
         option.value = u.team_short;
         option.href = '#';
@@ -64,6 +64,7 @@ window.onload = async function() {
     }
     //Call table constructor
     PopulateFixtureTable(roundToDisplay);
+    //Display content
     document.getElementById('loading').hidden = true;
     document.getElementById('mainContent').hidden = false;
 }

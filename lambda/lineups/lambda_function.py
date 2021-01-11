@@ -137,16 +137,12 @@ def lambda_handler(event, context):
                 }
             print("Writing lineup to table")        
             for player in existing_lineup['Items']:
-                lineup_table.delete_item(
-                    Key={
-                        'name+nrl+xrl+round': player['player_name'] + ';' + player['nrl_club'] + ';' + team_short + ';' + str(round_number)
-                    }
-                )
-                lineup_table.delete_item(
-                    Key={
-                        'name+nrl+xrl+round': player['player_name'] + ';' + player['nrl_club'] + ';' + team_short + ';' + str(round_number + 1)
-                    }
-                )
+                for i in range(int(round_number), 22):
+                    lineup_table.delete_item(
+                        Key={
+                            'name+nrl+xrl+round': player['player_name'] + ';' + player['nrl_club'] + ';' + team_short + ';' + str(i)
+                        }
+                    )
             for player in lineup:
                 lineup_table.put_item(
                     Item={
@@ -171,15 +167,15 @@ def lambda_handler(event, context):
                     }
                 )
                 # Set same lineup for next round, removing powerplay if necessary
-                if round_number < 21:
+                for i in range(int(round_number) + 1, 22):
                     lineup_table.put_item(
                         Item={
-                            'name+nrl+xrl+round': player['player_name'] + ';' + player['nrl_club'] + ';' + team_short + ';' + str(round_number + 1),
+                            'name+nrl+xrl+round': player['player_name'] + ';' + player['nrl_club'] + ';' + team_short + ';' + str(i),
                             'player_id': player['player_id'],
                             'player_name': player['player_name'],
                             'nrl_club': player['nrl_club'],
                             'xrl_team': team_short,
-                            'round_number': str(round_number + 1),
+                            'round_number': str(i),
                             'position_specific': player['position'],
                             'position_general': player['position_general'],
                             'second_position': player['second_position'],

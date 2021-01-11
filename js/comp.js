@@ -10,7 +10,7 @@ let users;
 window.onload = async function() {
     //Retrieve users' data
     users = await GetAllUsers();
-    //Sort users first by points, then by wins, then by for/against
+    //Sort users first by points, point difference, then by points for
     users = users.sort(function(u1, u2) {
         if (u2.stats.points != u1.stats.points) {
             return u2.stats.points - u1.stats.points;
@@ -21,6 +21,7 @@ window.onload = async function() {
     });
     //Pass sorted array to table constructor
     PopulateLeagueTable(users);
+    //Display content
     document.getElementById('loading').hidden = true;
     document.getElementById('mainContent').hidden = false;
 }

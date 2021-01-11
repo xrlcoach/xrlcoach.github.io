@@ -102,7 +102,7 @@ export function DisplayPlayerInfo(player) {
     //Clear the previous contents of the detailed stats section
     document.getElementById('allStatsContainer').innerHTML = '';
     //Sort the player's detailed stats properties alphabetically
-    let sortedKeys = Object.keys(player.stats).sort();
+    let sortedKeys = Object.keys(player.stats).filter(s => XrlRelevantStats.includes(s)).sort();
     //Iterate through all the detailed stats and display them in the stats section
     for (let stat of sortedKeys) {
         let col = document.createElement('div');
@@ -240,8 +240,8 @@ export async function DisplayAppearanceInfoFromLineup(appearance) {
         }
         //Clear previous contents of detailed stats section
         document.getElementById('appearanceInfoAllStatsContainer').innerHTML = '';
-        //Sort stats properties alphabetically
-        let sortedKeys = Object.keys(statsRecord.stats).sort();
+        //Filter stats and sort properties alphabetically
+        let sortedKeys = Object.keys(statsRecord.stats).filter(s => XrlRelevantStats.includes(s)).sort();
         //Iterate through stats and add to section
         for (let stat of sortedKeys) {
             let col = document.createElement('div');
@@ -369,7 +369,7 @@ export function DisplayAppearanceInfoFromStats(appearance) {
     }
     //Populate detailed stats section
     document.getElementById('appearanceInfoAllStatsContainer').innerHTML = '';
-    let sortedKeys = Object.keys(appearance.stats).sort();
+    let sortedKeys = Object.keys(appearance.stats).filter(s => XrlRelevantStats.includes(s)).sort();
     for (let stat of sortedKeys) {
         let col = document.createElement('div');
         col.className = 'col-4';
@@ -506,3 +506,8 @@ export const PositionNames = {
     'int3': 'Interchange',
     'int4': 'Interchange',
 }
+/**
+ * List of NRL stats that are relevant for XRL scores
+ */
+export const XrlRelevantStats = ["All Runs", "Line Breaks", "Line Break Assists", "Try Assists", "Tackle Breaks",
+"Offloads", "Tackles Made", "Kicks", "40/20", "20/40", "All Runs", "All Run Metres", "Kicking Metres"]

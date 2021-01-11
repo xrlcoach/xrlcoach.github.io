@@ -93,6 +93,7 @@ function populateLineupTable(tableId, lineup, score) {
         tr.appendChild(position);
         let captain = document.createElement('td');
         if (player['captain']) captain.innerText = 'Captain';
+        if (player['captain2']) captain.innerText = 'Captain';
         if (player['vice']) captain.innerText = 'Vice-Captain';
         tr.appendChild(captain);
         let kicker = document.createElement('td');

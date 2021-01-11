@@ -59,3 +59,45 @@ First score map: {'Back': {'tries': 0, 'sin_bins': 0, 'send_offs': 0, 'involveme
 Stats update complete, scoring lineups
 Lineup scoring complete
 Execution took 0:03:20.751581
+Script executing at 2021-01-11 12:55:15.231030
+Script executing at 2021-01-11 12:55:33.234611
+Connecting to http://www.nrl.com/draw
+['Round', '1']
+[32mGetting player stats for Eels v Bulldogs[0m
+[32mGetting player stats for Raiders v Titans[0m
+[32mGetting player stats for Cowboys v Broncos[0m
+[32mGetting player stats for Knights v Warriors[0m
+[32mGetting player stats for Rabbitohs v Sharks[0m
+[32mGetting player stats for Panthers v Roosters[0m
+[32mGetting player stats for Sea Eagles v Storm[0m
+[32mGetting player stats for Dragons v Wests Tigers[0m
+Stat scraping complete. Calculating player scores...
+Josh Morris has moved to the Sharks. Updating his team in the database.
+Loading to dynamodb, table: stats2020
+round_number: 1
+First Player: {'player_name': 'Clinton Gutherson', 'nrl_club': 'Eels', 'opponent': 'Bulldogs', 'player_id': '100045'}
+First stat map: {'Number': 1, 'Position': 'Fullback', 'Mins Played': 80, 'Points': 0, 'Tries': 0, 'Conversions': 0, 'Conversion Attempts': 0, 'Penalty Goals': 0, 'Goal Conversion Rate': 0, 'Field Goals': 0, 'Total Points': 32, 'All Runs': 17, 'All Run Metres': 205, 'Kick Return Metres': 64, 'Post Contact Metres': 46, 'Line Breaks': 0, 'Line Break Assists': 0, 'Try Assists': 0, 'Line Engaged Runs': 0, 'Tackle Breaks': 2, 'Hit Ups': 1, 'Play The Ball': 11, 'Average Play The Ball Speed': Decimal('4.21'), 'Dummy Half Runs': 3, 'Dummy Half Run Metres': 31, 'One on One Steal': 0, 'Offloads': 0, 'Dummy Passes': 5, 'Passes': 17, 'Receipts': 36, 'Passes To Run Ratio': 1, 'Tackle Efficiency': Decimal('0.889'), 'Tackles Made': 8, 'Missed Tackles': 1, 'Ineffective Tackles': 0, 'Intercepts': 0, 'Kicks Defused': 2, 'Kicks': 2, 'Kicking Metres': 39, 'Forced Drop Outs': 0, 'Bomb Kicks': 2, 'Grubbers': 0, '40/20': 0, '20/40': 0, 'Cross Field Kicks': 0, 'Kicked Dead': 0, 'Errors': 4, 'Handling Errors': 4, 'One on One Lost': 0, 'Penalties': 0, 'Ruck Infringements': 0, 'On Report': 0, 'Sin Bins': 0, 'Send Offs': 0, 'Stint One': 80, 'Stint Two': 0}
+First score map: {'Back': {'tries': 0, 'sin_bins': 0, 'send_offs': 0, 'involvement_try': False, 'positional_try': True, 'mia': False, 'concede': True}, 'kicker': {'goals': 0, 'field_goals': 0}}
+Stats update complete, scoring lineups
+Lineup scoring complete
+Execution took 0:02:46.484632
+Script executing at 2021-01-11 13:12:24.761140
+Connecting to http://www.nrl.com/draw
+['Round', '1']
+[32mGetting player stats for Eels v Bulldogs[0m
+[32mGetting player stats for Raiders v Titans[0m
+[32mGetting player stats for Cowboys v Broncos[0m
+[32mGetting player stats for Knights v Warriors[0m
+[32mGetting player stats for Rabbitohs v Sharks[0m
+[32mGetting player stats for Panthers v Roosters[0m
+[32mGetting player stats for Sea Eagles v Storm[0m
+[32mGetting player stats for Dragons v Wests Tigers[0m
+Stat scraping complete. Calculating player scores...
+Loading to dynamodb, table: stats2020
+round_number: 1
+First Player: {'player_name': 'Clinton Gutherson', 'nrl_club': 'Eels', 'opponent': 'Bulldogs', 'player_id': '100045'}
+First stat map: {'Number': 1, 'Position': 'Fullback', 'Mins Played': 80, 'Points': 0, 'Tries': 0, 'Conversions': 0, 'Conversion Attempts': 0, 'Penalty Goals': 0, 'Goal Conversion Rate': 0, 'Field Goals': 0, 'Total Points': 32, 'All Runs': 17, 'All Run Metres': 205, 'Kick Return Metres': 64, 'Post Contact Metres': 46, 'Line Breaks': 0, 'Line Break Assists': 0, 'Try Assists': 0, 'Line Engaged Runs': 0, 'Tackle Breaks': 2, 'Hit Ups': 1, 'Play The Ball': 11, 'Average Play The Ball Speed': Decimal('4.21'), 'Dummy Half Runs': 3, 'Dummy Half Run Metres': 31, 'One on One Steal': 0, 'Offloads': 0, 'Dummy Passes': 5, 'Passes': 17, 'Receipts': 36, 'Passes To Run Ratio': 1, 'Tackle Efficiency': Decimal('0.889'), 'Tackles Made': 8, 'Missed Tackles': 1, 'Ineffective Tackles': 0, 'Intercepts': 0, 'Kicks Defused': 2, 'Kicks': 2, 'Kicking Metres': 39, 'Forced Drop Outs': 0, 'Bomb Kicks': 2, 'Grubbers': 0, '40/20': 0, '20/40': 0, 'Cross Field Kicks': 0, 'Kicked Dead': 0, 'Errors': 4, 'Handling Errors': 4, 'One on One Lost': 0, 'Penalties': 0, 'Ruck Infringements': 0, 'On Report': 0, 'Sin Bins': 0, 'Send Offs': 0, 'Stint One': 80, 'Stint Two': 0}
+First score map: {'Back': {'tries': 0, 'sin_bins': 0, 'send_offs': 0, 'involvement_try': False, 'positional_try': True, 'mia': False, 'concede': True}, 'kicker': {'goals': 0, 'field_goals': 0}}
+Stats update complete, scoring lineups
+Lineup scoring complete
+Execution took 0:02:51.962634

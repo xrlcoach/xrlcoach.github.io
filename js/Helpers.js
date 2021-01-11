@@ -173,22 +173,22 @@ export async function DisplayAppearanceInfoFromLineup(appearance) {
             document.getElementById('appearanceInfoRoles').hidden = true;
         }
         if (appearance.captain || appearance.captain2 ) {
-            document.getElementById('appearanceInfoCaptain').hidden = false;
+            document.getElementById('appearanceInfoCaptainDiv').hidden = false;
             document.getElementById('appearanceInfoCaptain').innerText = 'Captain';
         } else if (appearance.vice) {
-            document.getElementById('appearanceInfoCaptain').hidden = false;
+            document.getElementById('appearanceInfoCaptainDiv').hidden = false;
             document.getElementById('appearanceInfoCaptain').innerText = 'Vice-Captain';
         } else {
-            document.getElementById('appearanceInfoCaptain').hidden = true;
+            document.getElementById('appearanceInfoCaptainDiv').hidden = true;
         }
         if (appearance.kicker) {
-            document.getElementById('appearanceInfoKicker').hidden = false;
+            document.getElementById('appearanceInfoKickerDiv').hidden = false;
             document.getElementById('appearanceInfoKicker').innerText = 'Kicker';
         } else if (appearance.backup_kicker ) {
-            document.getElementById('appearanceInfoKicker').hidden = false;
+            document.getElementById('appearanceInfoKickerDiv').hidden = false;
             document.getElementById('appearanceInfoKicker').innerText = 'Backup Kicker';
         } else {
-            document.getElementById('appearanceInfoKicker').hidden = true;
+            document.getElementById('appearanceInfoKickerDiv').hidden = true;
         }
         //Display the scoring stats for the round, with colourisation to indicate positive or negative result
         document.getElementById('appearanceInfoTries').innerText = statsRecord.stats.Tries;

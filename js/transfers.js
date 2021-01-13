@@ -1,5 +1,5 @@
-import { GetActiveUserTeamShort, GetAllUsers, getCookie, GetPlayerById, GetPlayersFromXrlTeam, GetTransferHistory, UpdateUserWaiverPreferences } from "./ApiFetch";
-import { DisplayFeedback } from "./Helpers";
+import { GetActiveUserTeamShort, GetAllUsers, getCookie, GetPlayerById, GetPlayersFromXrlTeam, GetTransferHistory, UpdateUserWaiverPreferences } from "./ApiFetch.js";
+import { DisplayFeedback } from "./Helpers.js";
 
 let roundNumber, allUsers, user, squad, waiverPreferences = [], provisionalDrop, transferHistory;
 

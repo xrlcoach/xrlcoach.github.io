@@ -44,13 +44,18 @@ with table.batch_writer() as batch:
     for player in players:
         player_id += 1
         try:
-            table.put_item(
+            batch.put_item(
                 Item={
                     'player_id': str(player_id),
                     'player_name': player['player_name'],
+                    'search_name': player['player_name'].lower(),
                     'nrl_club': player['nrl_team'],
+                    'xrl_team': 'None',
                     'position': player['position'],
-                    'position2': player['position2']
+                    'position2': player['position2'],
+                    'scoring_stats': {},
+                    'stats': {},
+                    'new_position_appearances': {}
                 }
             )
         except Exception:

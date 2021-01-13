@@ -97,8 +97,9 @@ for player in players:
         Key={
             'player_id': player['player_id']
         },
-        UpdateExpression="REMOVE new_position_appearances, SET position2=:p2",
+        UpdateExpression="SET position2=:p2, new_position_appearances=:npa",
         ExpressionAttributeValues={
-            ':p2': None
+            ':p2': None,
+            ':npa': {}
         }
     )

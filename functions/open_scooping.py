@@ -11,6 +11,7 @@ dynamodb = boto3.resource('dynamodb', 'ap-southeast-2')
 rounds_table = dynamodb.Table('rounds2020')
 players_table = dynamodb.Table('players2020')
 
+print("Changing 'On Waivers' players to free agents")
 on_waivers = players_table.scan(
     FilterExpression=Attr('xrl_team').eq('On Waivers')
 )['Items']
@@ -20,7 +21,7 @@ for player in on_waivers:
         UpdateExpression="set xrl_team=:n",
         ExpressionAttributeValues={ ':n': 'None' }
     )
-
+print("Changing 'Pre-Waivers' players to 'On Waivers'")
 pre_waivers = players_table.scan(
     FilterExpression=Attr('xrl_team').eq('Pre-Waivers')
 )['Items']

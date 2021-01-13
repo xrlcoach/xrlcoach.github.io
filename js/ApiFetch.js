@@ -379,7 +379,7 @@ export async function UpdateUserWaiverPreferences(username, preferences, provisi
 }
 
 export async function GetTransferHistory(roundNumber) {
-    await fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/waivers', {
+    const response = await fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/waivers', {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'        

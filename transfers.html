@@ -73,27 +73,32 @@
                         <div class="col p-2 align-items-center">
                             <table class="table table-dark my-2 table-striped">
                                 <thead>
-                                <tr>
-                                    <th class="h5" style="color: green;" colspan="3">Waiver Preferences</th>
-                                </tr>
+                                    <tr>
+                                        <th class="h5" style="color: green;" colspan="3">Waiver Preferences</th>
+                                    </tr>
                                 </thead>
-                                <tbody id="waiverPreferencesTable"></tbody>                                
+                                <tbody id="waiverPreferencesTable"></tbody>
                             </table>
                             <table class="table table-dark my-2 table-striped">
                                 <thead>
-                                <tr>
-                                    <th class="h5" style="color: #c94d38;">Player To Drop</th>
-                                </tr>
+                                    <tr>
+                                        <th class="h5" style="color: #c94d38;">Player To Drop</th>
+                                    </tr>
                                 </thead>
                                 <tbody>
-                                    <tr><select id="provisionalDrop">
-                                        <option>None</option>
-                                    </select></tr>
-                                </tbody>                                
-                            </table>   
+                                    <tr>
+                                        <td>
+                                            <select id="provisionalDrop">
+                                                <option>None</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
                             <p class="text-center" id="confirmChanges" hidden>
-                                <button class="btn btn-success" onclick="submitWaiverPreferences()">Confirm Changes</button>
-                            </p>                
+                                <button class="btn btn-success" onclick="submitWaiverPreferences()">Confirm
+                                    Changes</button>
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -104,11 +109,11 @@
                 <h4 class="card-header bg-dark bg-gradient text-white">Latest Transfers</h4>
                 <div class="card-body">
                     <table class="table table-dark table-striped">
-                        <tbody id="transferHistoryTable"></tbody>                                
+                        <tbody id="transferHistoryTable"></tbody>
                     </table>
                 </div>
             </div>
-        </div>        
+        </div>
     </main>
 
     <footer class="small text-center text-muted m-2">

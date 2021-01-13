@@ -101,7 +101,7 @@ export function DisplayPlayerInfo(player, round) {
         document.getElementById('playerInfoDropButton').hidden = true;
         document.getElementById('playerInfoPickButton').hidden = true;
         document.getElementById('playerInfoWaiverButton').onclick = function () {
-            DisplayFeedback('Confirm', 'Are you sure you want to add ' + player.player_name + 'to your waiver preferences?',
+            DisplayFeedback('Confirm', 'Are you sure you want to add ' + player.player_name + ' to your waiver preferences?',
             true, async function() {
                     let user = await GetActiveUserInfo(GetIdToken());
                     user.waiver_preferences.push(player.player_id);

@@ -363,7 +363,7 @@ export async function GetPlayerAppearanceStats(playerId, roundNumber) {
 }
 
 export async function UpdateUserWaiverPreferences(username, preferences, provisionalDrop) {
-    await fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/waivers', {
+    const response = await fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/waivers', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'        

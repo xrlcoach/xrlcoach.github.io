@@ -120,10 +120,10 @@ async function DisplayTransferHistory(transfers) {
         name.appendChild(span);
         let logo = document.createElement('img');
         logo.src = '/static/' + player.nrl_club + '.svg';
-        logo.height = '50';
+        logo.height = '40';
         name.appendChild(logo);
         row.appendChild(name);
-        let description = document.createElement('tr');
+        let description = document.createElement('td');
         if (t.type == 'Scoop') description.innerText = 'on a free transfer.';
         if (t.type == 'Waiver') description.innerText = 'on a waiver.';
         if (t.type == 'Trade') description.innerText = 'from ' + t.seller;

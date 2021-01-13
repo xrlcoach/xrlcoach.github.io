@@ -7,7 +7,7 @@ let sortOrder = 'Descending';
 
 window.onload = async function() {
     roundToDisplay = getCookie('round');
-    currentRound = GetRoundInfoFromCookie();
+    currentRound = await GetRoundInfoFromCookie();
     for (let i = roundToDisplay; i > 0; i--) {
         let option = document.createElement('option');
         option.innerText = i;

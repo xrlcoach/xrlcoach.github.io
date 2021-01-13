@@ -78,7 +78,7 @@ for rank, user in enumerate(waiver_order, 1):
                             'datetime': datetime.now().strftime("%c"),
                             'type': 'Drop',
                             'round_number': round_number,
-                            'player_id': player
+                            'player_id': user['provisional_drop']
                         }
                     )
                     users_table.update_item(

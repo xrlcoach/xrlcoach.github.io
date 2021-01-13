@@ -96,7 +96,7 @@ export function DisplayPlayerInfo(player, round) {
             });
         };
         document.getElementById('playerInfoPickButton').hidden = false; //Show the pick button
-    } else if (player.xrl_team == undefined || player.xrl_team == 'None' || player.xrl_team == 'On Waivers') {
+    } else if (player.xrl_team == undefined || player.xrl_team == 'None' || player.xrl_team == 'On Waivers' || player.xrl_team == 'Pre-Waivers') {
         document.getElementById('playerInfoFooter').hidden = false; //Show the footer
         document.getElementById('playerInfoDropButton').hidden = true;
         document.getElementById('playerInfoPickButton').hidden = true;

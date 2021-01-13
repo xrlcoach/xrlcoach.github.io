@@ -103,3 +103,13 @@ for player in players:
             ':npa': {}
         }
     )
+
+transfers_table = dynamodb.Table('transfers2020')
+transfers = transfers_table.scan()['Items']
+with transfers_table.batch_writer() as batch:
+    for transfer in transfers:
+        batch.delete_item(
+            Key={
+                'transfer_id': transfer['transfer_id']
+            }
+        )

@@ -96,7 +96,7 @@ def lambda_handler(event, context):
                     transfers_table.put_item(
                         Item={
                             'transfer_id': active_user['username'] + '_' + str(datetime.now()),
-                            'username': active_user['username'],                        
+                            'user': active_user['username'],                        
                             'datetime': datetime.now().strftime("%c"),
                             'type': 'Scoop',
                             'round_number': round_number,
@@ -150,7 +150,7 @@ def lambda_handler(event, context):
                     transfers_table.put_item(
                         Item={
                             'transfer_id': active_user['username'] + '_' + str(datetime.now()),
-                            'username': active_user['username'],                        
+                            'user': active_user['username'],                        
                             'datetime': datetime.now().strftime("%c"),
                             'type': 'Drop',
                             'round_number': round_number,
@@ -175,7 +175,7 @@ def lambda_handler(event, context):
                 transfers_table.put_item(
                     Item={
                         'transfer_id': buyer['username'] + '_' + str(datetime.now()),
-                        'username': buyer['username'],                        
+                        'user': buyer['username'],                        
                         'datetime': datetime.now().strftime("%c"),
                         'type': 'Trade',
                         'seller': seller['username'],

@@ -22,16 +22,18 @@ round_number = max([r['round_number'] for r in resp['Items']])
 print(f"Current round: {round_number}.")
 
 users = users_table.scan()['Items']
+print(users)
 
 #Sort users by waiver rank
 waiver_order = sorted(users, key=lambda u: u['waiver_rank'])
+print(waiver_order)
 
 players_transferred = []
 users_who_picked = []
 
 print("Processing waivers")
 #Iterate through users
-for rank, user in enumerate(waiver_order):
+for rank, user in enumerate(waiver_order, 1):
     #If user has already picked up a player, skip them
     if user['players_picked'] > 0:
         print(f"{user['username']} already waivered one player this week")
@@ -131,7 +133,6 @@ for rank, user in enumerate(waiver_order):
     if gained_player:
         players_picked = 1
         users_who_picked.append(user)
-        waiver_order.pop(rank)
     else:
         players_picked = 0
         print(f"{user['username']} didn't get any of their preferences")
@@ -146,7 +147,7 @@ for rank, user in enumerate(waiver_order):
                     ':i': user['inbox']
                 }
             )
-waiver_order += users_who_picked.reverse()
+waiver_order = [u for u in waiver_order if u not in users_who_picked] + users_who_picked[::-1]
 
 print("New waiver order:")
 for rank, user in enumerate(waiver_order, 1):

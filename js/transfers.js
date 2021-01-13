@@ -68,7 +68,7 @@ function PopulateWaiverPreferencesTable() {
         downArrow.onclick = function () {
             changePlayerPreferenceRank(this.value, 1);
         }
-        if (Number(i) != waiverPreferences.length) arrows.appendChild(downArrow);
+        if (Number(i) != waiverPreferences.length - 1) arrows.appendChild(downArrow);
         let cancel = document.createElement('button');
         cancel.className = 'btn-close btn-close-white ms-2';
         cancel.value = player.player_id;
@@ -103,7 +103,7 @@ async function DisplayTransferHistory(transfers) {
         datetime.innerText = t.datetime;
         row.appendChild(datetime);
         let team = document.createElement('td');
-        team.innerText = allUsers.find(u => u.username == t.username).team_name;
+        team.innerText = allUsers.find(u => u.username == t.user).team_name;
         row.appendChild(team);
         let type = document.createElement('td');
         if (t.type == 'Drop') {
@@ -119,7 +119,7 @@ async function DisplayTransferHistory(transfers) {
         name.appendChild(span);
         let logo = document.createElement('img');
         logo.src = '/static/' + player.nrl_club + '.svg';
-        logo.height = '50px';
+        logo.height = '50';
         name.appendChild(logo);
         row.appendChild(name);
         let description = document.createElement('tr');
@@ -145,7 +145,7 @@ async function submitWaiverPreferences() {
     if (resp.error) {
         DisplayFeedback('Error', resp.error);
     } else {
-        DisplayFeedback('Success', 'Waiver preferences updated', true, function() {location.reload()});
+        DisplayFeedback('Success', 'Waiver preferences updated', true, function() {location.reload()}, false);
     }
 }
 window.submitWaiverPreferences = submitWaiverPreferences;

@@ -36,16 +36,17 @@ function PopulateWaiverPreferencesTable() {
         let player = waiverPreferences[i];
         let row = document.createElement('tr');
         let rank = document.createElement('td');
-        rank.innerText = i + 1;
+        rank.innerText = Number(i) + 1;
         row.appendChild(rank);
         let name = document.createElement('td');
+        let logo = document.createElement('img');
+        logo.src = '/static/' + player.nrl_club + '.svg';
+        logo.height = '40';
+        logo.className = 'me-1';
+        name.appendChild(logo);
         let span = document.createElement('span');
         span.innerText = player.player_name;
         name.appendChild(span);
-        let logo = document.createElement('img');
-        logo.src = '/static/' + player.nrl_club + '.svg';
-        logo.height = '50';
-        name.appendChild(logo);
         row.appendChild(name);
         let arrows = document.createElement('td');
         let upArrow = document.createElement('button');
@@ -55,21 +56,21 @@ function PopulateWaiverPreferencesTable() {
             </svg>`;
         upArrow.value = player.player_id;
         upArrow.onclick = function () {
-            changePlayerPreferenceRank(this.value, 1);
+            changePlayerPreferenceRank(this.value, -1);
         }
-        arrows.appendChild(upArrow);
+        if (Number(i) != 0) arrows.appendChild(upArrow);
         let downArrow = document.createElement('button');
-        downArrow.className = "btn btn-success m-1";
+        downArrow.className = "btn btn-success ms-2";
         downArrow.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down" viewBox="0 0 16 16">
             <path fill-rule="evenodd" d="M8 1a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 13.293V1.5A.5.5 0 0 1 8 1z"/>
             </svg>`;
         downArrow.value = player.player_id;
         downArrow.onclick = function () {
-            changePlayerPreferenceRank(this.value, -1);
+            changePlayerPreferenceRank(this.value, 1);
         }
-        arrows.appendChild(downArrow);
+        if (Number(i) != waiverPreferences.length) arrows.appendChild(downArrow);
         let cancel = document.createElement('button');
-        cancel.className = 'btn-close m-1';
+        cancel.className = 'btn-close btn-close-white ms-2';
         cancel.value = player.player_id;
         cancel.onclick = function() {
             changePlayerPreferenceRank(this.value, 0);
@@ -131,7 +132,7 @@ async function DisplayTransferHistory(transfers) {
 
 function changePlayerPreferenceRank(playerId, increment) {
     let playerIndex = waiverPreferences.findIndex(p => p.player_id == playerId);
-    let removedPlayer = waiverPreferences.splice(playerIndex, 1);
+    let removedPlayer = waiverPreferences.splice(playerIndex, 1)[0];
     if (increment != 0) waiverPreferences.splice(playerIndex + increment, 0, removedPlayer);
     PopulateWaiverPreferencesTable();
     document.getElementById('confirmChanges').hidden = false;

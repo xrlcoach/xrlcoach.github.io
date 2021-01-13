@@ -103,7 +103,8 @@ function populateStatsTable(stats, sortFunction, scoringAsKicker=true, isSingleR
         let name = document.createElement('td');
         let logo = document.createElement('img');
         logo.src = 'static/' + player.nrl_club + '.svg';
-        logo.height = '50';
+        logo.height = '40';
+        logo.className = 'me-1';
         name.appendChild(logo);
         let nameLink = document.createElement('a');
         nameLink.href = '#';

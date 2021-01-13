@@ -23,34 +23,35 @@ def lambda_handler(event, context):
             print('No params found, scanning table')
             resp = table.scan()['Items']
             print('Table scanned, returning json response')
-        #If query string attached to GET request, determine request parameters and query players table accordingly
-        print('Params detected')        
-        params = event["queryStringParameters"]
-        print(params)
-        if 'nrlClub' in params.keys():
-            nrlClub = params['nrlClub']
-            print(f'NrlClub param is {nrlClub}, querying table')
-            resp = table.scan(
-                FilterExpression=Attr('nrl_club').eq(nrlClub)
-            )['Items']
-        elif 'xrlTeam' in params.keys():
-            xrlTeam = params['xrlTeam']
-            print(f'XrlTeam param is {xrlTeam}, querying table')
-            resp = table.scan(
-                FilterExpression=Attr('xrl_team').eq(xrlTeam)
-            )['Items']
-        elif 'playerId' in params.keys():
-            player_id = params['playerId']
-            print(f'PlayerId param is {player_id}, querying table')
-            resp = table.get_item(
-                Key={
-                    'player_id': player_id
-                }
-            )['Item']
-        #If query parameters present but are not any of the above, send back error message
         else:
-            print("Couldn't recognise parameter")
-            resp = {"error": "GET request parameter not recognised"}
+            #If query string attached to GET request, determine request parameters and query players table accordingly
+            print('Params detected')        
+            params = event["queryStringParameters"]
+            print(params)
+            if 'nrlClub' in params.keys():
+                nrlClub = params['nrlClub']
+                print(f'NrlClub param is {nrlClub}, querying table')
+                resp = table.scan(
+                    FilterExpression=Attr('nrl_club').eq(nrlClub)
+                )['Items']
+            elif 'xrlTeam' in params.keys():
+                xrlTeam = params['xrlTeam']
+                print(f'XrlTeam param is {xrlTeam}, querying table')
+                resp = table.scan(
+                    FilterExpression=Attr('xrl_team').eq(xrlTeam)
+                )['Items']
+            elif 'playerId' in params.keys():
+                player_id = params['playerId']
+                print(f'PlayerId param is {player_id}, querying table')
+                resp = table.get_item(
+                    Key={
+                        'player_id': player_id
+                    }
+                )['Item']
+            #If query parameters present but are not any of the above, send back error message
+            else:
+                print("Couldn't recognise parameter")
+                resp = {"error": "GET request parameter not recognised"}
         print('Returning respnse')
         #Return response
         return {

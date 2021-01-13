@@ -104,10 +104,14 @@ export function DisplayPlayerInfo(player, round) {
             DisplayFeedback('Confirm', 'Are you sure you want to add ' + player.player_name + ' to your waiver preferences?',
             true, async function() {
                     let user = await GetActiveUserInfo(GetIdToken());
-                    user.waiver_preferences.push(player.player_id);
-                    await UpdateUserWaiverPreferences(user.username, user.waiver_preferences, user.provisional_drop);
-                    DisplayFeedback('Success', player.player_name + ' has been added to your waiver preferences. You can change the order of preferences in the Transfer Centre',
-                    true, function() { location.href = 'transfers.html' }, false);
+                    if (user.waiver_preferences.includes(player.player_id)) {
+                        DisplayFeedback('Error', player.player_name + ' is already listed in your waiver preferences.');
+                    } else {
+                        user.waiver_preferences.push(player.player_id);
+                        await UpdateUserWaiverPreferences(user.username, user.waiver_preferences, user.provisional_drop);
+                        DisplayFeedback('Success', player.player_name + ' has been added to your waiver preferences. You can change the order of preferences in the Transfer Centre',
+                        true, function() { location.href = 'transfers.html' }, false);
+                    }
             });
         };
         document.getElementById('playerInfoWaiverButton').hidden = false;

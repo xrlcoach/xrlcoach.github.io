@@ -44,7 +44,7 @@ function PopulateWaiverPreferencesTable() {
         name.appendChild(span);
         let logo = document.createElement('img');
         logo.src = '/static/' + player.nrl_club + '.svg';
-        logo.height = '50px';
+        logo.height = '50';
         name.appendChild(logo);
         row.appendChild(name);
         let arrows = document.createElement('td');
@@ -74,6 +74,7 @@ function PopulateWaiverPreferencesTable() {
         cancel.onclick = function() {
             changePlayerPreferenceRank(this.value, 0);
         }
+        arrows.appendChild('cancel');
         row.appendChild(arrows);
         table.appendChild(row);
     }

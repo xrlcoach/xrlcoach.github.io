@@ -7,7 +7,7 @@ window.onload = async () => {
     try {
         roundNumber = getCookie('round');
         allUsers = await GetAllUsers();
-        user = allUsers.find(u => u.team_short = GetActiveUserTeamShort());
+        user = allUsers.find(u => u.team_short == GetActiveUserTeamShort());
         squad = await GetPlayersFromXrlTeam(user.team_short);
         waiverPreferences = squad.filter(p => user.waiver_preferences.includes(p.player_id));
         provisionalDrop = user.provisional_drop;

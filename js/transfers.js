@@ -9,7 +9,9 @@ window.onload = async () => {
         allUsers = await GetAllUsers();
         user = allUsers.find(u => u.team_short == GetActiveUserTeamShort());
         squad = await GetPlayersFromXrlTeam(user.team_short);
-        waiverPreferences = squad.filter(p => user.waiver_preferences.includes(p.player_id));
+        for (let playerId of user.waiver_preferences) {
+            waiverPreferences.push(await GetPlayerById(playerId));
+        };
         provisionalDrop = user.provisional_drop;
         transferHistory = await GetTransferHistory();
         DisplayUserWaiverInfo();

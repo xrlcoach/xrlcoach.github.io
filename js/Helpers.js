@@ -69,7 +69,7 @@ export function DisplayPlayerInfo(player, round) {
         document.getElementById('playerInfoDropButton').onclick = function() {
             DisplayFeedback('Confirm', 'Are you sure you want to drop ' + player.player_name + '?',
             true, async function() {
-                await DropPlayers([player]);
+                await DropPlayers(GetActiveUserTeamShort(), [player]);
                 DisplayFeedback('Success', player.player_name + ' has been dropped from your squad.',
                 true, function() { location.href = 'index.html' }, false);
             });

@@ -204,7 +204,7 @@ export async function ScoopPlayers(xrlTeam, players) {
     return data;
 }
 
-export async function DropPlayers(players) {
+export async function DropPlayers(xrlTeam, players) {
     const response = await fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/players', {
         method: 'POST',
         headers: {
@@ -214,6 +214,7 @@ export async function DropPlayers(players) {
         body: JSON.stringify({
             "operation": "drop",
             "players": players,
+            "xrl_team": xrlTeam
         })
     });
     const data = await response.json();

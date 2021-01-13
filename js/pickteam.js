@@ -284,7 +284,7 @@ function displayChoices() {
 
 async function submitChoices() {
     if (droppedPlayers.length > 0) {
-        await DropPlayers(droppedPlayers);
+        await DropPlayers(user.team_short, droppedPlayers);
     }
     if (pickedPlayers.length > 0) {
         await ScoopPlayers(user.team_short, pickedPlayers);

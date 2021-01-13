@@ -113,6 +113,7 @@ async function DisplayTransferHistory(transfers) {
             type.innerText = 'SIGNED';
             type.style.color = 'green';
         } 
+        row.appendChild(type);
         let name = document.createElement('td');
         let span = document.createElement('span');
         span.innerText = player.player_name;
@@ -126,6 +127,7 @@ async function DisplayTransferHistory(transfers) {
         if (t.type == 'Scoop') description.innerText = 'on a free transfer.';
         if (t.type == 'Waiver') description.innerText = 'on a waiver.';
         if (t.type == 'Trade') description.innerText = 'from ' + t.seller;
+        row.appendChild(description);
         table.appendChild(row);
     }
 }

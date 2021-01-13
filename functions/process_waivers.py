@@ -52,7 +52,7 @@ for rank, user in enumerate(waiver_order):
         )['Item']
         pickable = False
         #If player not already picked and available to be picked
-        if player not in players_transferred and ('xrl_team' not in player_info.keys() or player_info['xrl_team'] == 'None' or player_info['xrl_team'] == 'On Waivers'):
+        if player not in players_transferred and ('xrl_team' not in player_info.keys() or player_info['xrl_team'] == 'None' or player_info['xrl_team'] == 'On Waivers' or player_info['xrl_team'] == 'Pre-Waivers'):
             if len(users_squad) == 18:
                 if user['provisional_drop'] == None:
                     print(f"{user['username']}'s squad already has 18 players and they haven't indicated a player to drop. Moving to next user.")
@@ -66,7 +66,7 @@ for rank, user in enumerate(waiver_order):
                         },
                         UpdateExpression="set xrl_team=:t",
                         ExpressionAttributeValues={
-                            ':t': 'On Waivers'
+                            ':t': 'Pre-Waivers'
                         }
                     )
                     transfers_table.put_item(

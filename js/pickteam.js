@@ -1,4 +1,4 @@
-import { GetAllPlayers, GetIdToken, GetPlayersFromNrlClub, GetPlayersFromXrlTeam, GetActiveUserInfo, UpdatePlayerXrlTeam, UpdateMultiplePlayerXrlTeams } from "./ApiFetch.js";
+import { GetAllPlayers, GetIdToken, GetPlayersFromNrlClub, GetPlayersFromXrlTeam, GetActiveUserInfo, UpdatePlayerXrlTeam, UpdateMultiplePlayerXrlTeams, DropPlayers, ScoopPlayers } from "./ApiFetch.js";
 import { DisplayFeedback } from "./Helpers.js";
 
 let user, squad, players, allPlayers, modifiedSquad;
@@ -284,10 +284,10 @@ function displayChoices() {
 
 async function submitChoices() {
     if (droppedPlayers.length > 0) {
-        await UpdateMultiplePlayerXrlTeams(null, droppedPlayers);
+        await DropPlayers(droppedPlayers);
     }
     if (pickedPlayers.length > 0) {
-        await UpdateMultiplePlayerXrlTeams(user.team_short, pickedPlayers);
+        await ScoopPlayers(user.team_short, pickedPlayers);
     }
     location.reload();
 }

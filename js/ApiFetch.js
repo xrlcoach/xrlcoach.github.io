@@ -105,7 +105,20 @@ export async function GetPlayersFromXrlTeam(team) {
     const data = await response.json();
     return data;   
 }
- 
+/**
+ * Retrieves a single player's data from players table
+ * @param {String} playerId 
+ */
+export async function GetPlayerById(playerId) {
+    const response = await fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/players?playerId=' + playerId, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'        
+        }
+    });
+    const data = await response.json();
+    return data; 
+}
 /**
  * Used to pick or drop a single player. Sends POST request to Players lambda with player id and new team acronym.
 To drop a player, call with xrlTeam as null, which updates team to 'None' and then sends POST request to GetSetLineup
@@ -152,8 +165,7 @@ export async function UpdatePlayerXrlTeam(xrlTeam, player) {
  * @param {String} xrlTeam XRL team acronym
  * @param {Array} players An array of player objects
  */
-export async function UpdateMultiplePlayerXrlTeams(xrlTeam, players) {
-    var newTeam = xrlTeam == null ? 'None' : xrlTeam;
+export async function ScoopPlayers(xrlTeam, players) {
     const response = await fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/players', {
         method: 'POST',
         headers: {
@@ -161,30 +173,41 @@ export async function UpdateMultiplePlayerXrlTeams(xrlTeam, players) {
             'Content-Type': 'application/json'        
         },
         body: JSON.stringify({
-            "operation": "pick_drop_multiple",
+            "operation": "scoop",
             "players": players,
-            "xrl_team": newTeam
+            "xrl_team": xrlTeam
         })
     });
-    if (response.ok) {
-        const data = await response.json();
-    } else {
-        DisplayFeedback('Error', 'Network response not ok');
-    }
-    if (newTeam == 'None') {
-        const response2 = await fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/lineup', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': GetIdToken()         
-            },
-            body: JSON.stringify({
-                'operation': 'remove_multiple',
-                'players': JSON.stringify(players)
-            })
-        });
-        const data = await response2.json();
-    }
+    const data = await response.json();
+    return data;
+}
+
+export async function DropPlayers(players) {
+    const response = await fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/players', {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'        
+        },
+        body: JSON.stringify({
+            "operation": "drop",
+            "players": players,
+        })
+    });
+    const data = await response.json();
+    const response2 = await fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/lineup', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': GetIdToken()         
+        },
+        body: JSON.stringify({
+            'operation': 'remove_multiple',
+            'players': players
+        })
+    });
+    const data2 = await response2.json();    
+    return [data, data2];
 }
 /**
  * Retrieves the active user's lineup for the next round (i.e. not the round in progress)
@@ -338,6 +361,34 @@ export async function GetPlayerAppearanceStats(playerId, roundNumber) {
         return undefined;
     }
 }
+
+export async function UpdateUserWaiverPreferences(username, preferences, provisionalDrop) {
+    await fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/waivers', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'        
+        },
+        body: JSON.stringify({
+            'operation': 'update_preferences',
+            'preferences': preferences,
+            'provisional_drop': provisionalDrop
+        })
+    });
+    const data = await response.json();
+    return data;
+}
+
+export async function GetTransferHistory(roundNumber) {
+    await fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/waivers', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'        
+        }
+    });
+    const data = await response.json();
+    return data;
+}
+
 /**
  * Isolates the desired cookie from the browser cookie string
  * @param {String} cname 

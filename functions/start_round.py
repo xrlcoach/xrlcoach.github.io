@@ -16,15 +16,16 @@ resp = rounds_table.scan(
     FilterExpression=Attr('in_progress').eq(False)
 )
 round_number = min([r['round_number'] for r in resp['Items']])
-print(f"Active Round: {round_number}. Setting to 'in progress'")
+print(f"Active Round: {round_number}. Setting to 'in progress' and closing player scooping")
 
 rounds_table.update_item(
     Key={
         'round_number': round_number
     },
-    UpdateExpression="set in_progress=:t",
+    UpdateExpression="set in_progress=:t, scooping=:s",
     ExpressionAttributeValues={
-        ':t': True
+        ':t': True,
+        ':s': False
     }
 )
 print(f"Round {round_number} now in progress.")
@@ -98,4 +99,22 @@ for user in users:
                     ':cc': user['captain_counts']
                 }
             )
+
+print("Calculating new waiver order")
+waiver_order = sorted(users, key=lambda u: u['waiver_rank'])
+new_waiver_order = sorted(waiver_order, key=lambda u: u['players_picked'])
+print("New order: ")
+for rank, user in enumerate(new_waiver_order, 1):
+    print(f"{rank}: {user['username']}")
+    users_table.update_item(
+                Key={
+                    'username': user['username']
+                },
+                UpdateExpression="set waiver_rank=:wr, players_picked=:pp",
+                ExpressionAttributeValues={
+                    ':wr': rank,
+                    ':pp': 0
+                }
+            )
+print("Process complete")
     

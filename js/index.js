@@ -177,7 +177,7 @@ function PopulatePickPlayerTable(playerData) {
         form.appendChild(button);
         form.onsubmit = function(event) {
             event.preventDefault();
-            DisplayPlayerInfo(squad.find(p => p.player_id == this.firstChild.value));
+            DisplayPlayerInfo(squad.find(p => p.player_id == this.firstChild.value), nextRound);
         }
         // form.onsubmit = async function (event) {
         //     event.preventDefault();

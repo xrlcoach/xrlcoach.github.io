@@ -1,4 +1,4 @@
-import { GetActiveUserTeamShort, GetLineupByTeamAndRound, GetPlayersFromXrlTeam, UpdatePlayerXrlTeam, GetPlayerAppearanceStats } from "./ApiFetch.js"
+import { GetActiveUserTeamShort, GetLineupByTeamAndRound, GetPlayersFromXrlTeam, UpdatePlayerXrlTeam, GetPlayerAppearanceStats, DropPlayers, ScoopPlayers, GetActiveUserInfo, GetIdToken, UpdateUserWaiverPreferences } from "./ApiFetch.js"
 /**
  * Displays a feedback modal with an optional footer with cancel/confirm buttons and an onconfirm function.
  * @param {String} title A title for the feedback display
@@ -31,7 +31,7 @@ export function DisplayFeedback(title, message, confirm=false, onConfirmFunction
  * Displays a modal with player's basic info and cumulative stats
  * @param {Object} player A player object from the players table
  */
-export function DisplayPlayerInfo(player) {
+export function DisplayPlayerInfo(player, round) {
     //Activate the element as a modal
     let playerInfo = new bootstrap.Modal(document.getElementById('playerInfo'));
     //Display basic player info (name, club, xrl team, positions)
@@ -63,41 +63,59 @@ export function DisplayPlayerInfo(player) {
     if (player.xrl_team == GetActiveUserTeamShort()) {
         document.getElementById('playerInfoFooter').hidden = false; //Show the footer
         document.getElementById('playerInfoPickButton').hidden = true; //Hide the 'Pick' button
+        document.getElementById('playerInfoWaiverButton').hidden = true;
         /*The 'Drop' button displays a feedback modal asking for confirmation. That modal then contains the callback
         function which drops the player, displays confirmation message, and redirects to homepage */
         document.getElementById('playerInfoDropButton').onclick = function() {
             DisplayFeedback('Confirm', 'Are you sure you want to drop ' + player.player_name + '?',
             true, async function() {
-                await UpdatePlayerXrlTeam(null, player);
+                await DropPlayers([player]);
                 DisplayFeedback('Success', player.player_name + ' has been dropped from your squad.',
                 true, function() { location.href = 'index.html' }, false);
             });
         };
         document.getElementById('playerInfoDropButton').hidden = false; //Show the drop button
-    } //If player is a free agent, display a 'Pick' button
-    else if (player.xrl_team == undefined || player.xrl_team == 'None') {
+    } //If player is a free agent and scooping is open, display a 'Scoop' button
+    else if ((player.xrl_team == undefined || player.xrl_team == 'None') && round.scooping) {
         document.getElementById('playerInfoFooter').hidden = false; //Show the footer
         document.getElementById('playerInfoDropButton').hidden = true; //Hide the 'Drop' button
+        document.getElementById('playerInfoWaiverButton').hidden = true;
         /*Like the 'Drop' button, the 'Pick' button displays a feedback modal asking for confirmation. That modal then contains the callback
         function which adds the player to the user's team, displays confirmation message, and redirects to homepage */
         document.getElementById('playerInfoPickButton').onclick = function () {
-            DisplayFeedback('Confirm', 'Are you sure you want to pick ' + player.player_name + '?',
+            DisplayFeedback('Confirm', 'Are you sure you want to scoop ' + player.player_name + '?',
             true, async function() {
                 let playerSquad = await GetPlayersFromXrlTeam(GetActiveUserTeamShort());
                 if (playerSquad.length > 17) {
                     DisplayFeedback('Sorry!', "Your squad already has 18 players. You'll need to drop someone first.");
                 } else {
-                    await UpdatePlayerXrlTeam(GetActiveUserTeamShort(), player);
+                    await ScoopPlayers(GetActiveUserTeamShort(), [player]);
                     DisplayFeedback('Success', player.player_name + ' has been added to your squad.',
                     true, function() { location.href = 'index.html' }, false);
                 }
             });
         };
         document.getElementById('playerInfoPickButton').hidden = false; //Show the pick button
+    } else if (player.xrl_team == undefined || player.xrl_team == 'None' || player.xrl_team == 'On Waivers') {
+        document.getElementById('playerInfoFooter').hidden = false; //Show the footer
+        document.getElementById('playerInfoDropButton').hidden = true;
+        document.getElementById('playerInfoPickButton').hidden = true;
+        document.getElementById('playerInfoWaiverButton').onclick = function () {
+            DisplayFeedback('Confirm', 'Are you sure you want to add ' + player.player_name + 'to your waiver preferences?',
+            true, async function() {
+                    let user = await GetActiveUserInfo(GetIdToken());
+                    user.waiver_preferences.push(player.player_id);
+                    await UpdateUserWaiverPreferences(user.username, player.player_id, user.provisional_drop);
+                    DisplayFeedback('Success', player.player_name + ' has been added to your waiver preferences. You can change the order of preferences in the Transfer Centre',
+                    true, function() { location.href = 'transfers.html' }, false);
+            });
+        };
+        document.getElementById('playerInfoWaiverButton').hidden = false;
     } else { //If player is in someone else's team, don't show any buttons
         document.getElementById('playerInfoFooter').hidden = true;
         document.getElementById('playerInfoDropButton').hidden = true;
         document.getElementById('playerInfoPickButton').hidden = true;
+        document.getElementById('playerInfoWaiverButton').hidden = true;
     }
     //Clear the previous contents of the detailed stats section
     document.getElementById('allStatsContainer').innerHTML = '';

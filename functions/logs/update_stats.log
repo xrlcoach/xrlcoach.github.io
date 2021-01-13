@@ -164,3 +164,24 @@ First score map: {'Back': {'tries': 0, 'sin_bins': 0, 'send_offs': 0, 'involveme
 Stats update complete, scoring lineups
 Lineup scoring complete
 Execution took 0:02:50.338375
+Script executing at 2021-01-11 15:29:47.580471
+Connecting to http://www.nrl.com/draw
+['Round', '5']
+[32mGetting player stats for Sea Eagles v Broncos[0m
+[32mGetting player stats for Warriors v Cowboys[0m
+[32mGetting player stats for Eels v Panthers[0m
+[32mGetting player stats for Rabbitohs v Titans[0m
+[32mGetting player stats for Knights v Storm[0m
+[32mGetting player stats for Wests Tigers v Raiders[0m
+[32mGetting player stats for Dragons v Sharks[0m
+[32mGetting player stats for Bulldogs v Roosters[0m
+Stat scraping complete. Calculating player scores...
+Morgan Harper has moved to the Bulldogs. Updating his team in the database.
+Loading to dynamodb, table: stats2020
+round_number: 5
+First Player: {'player_name': 'Tom Trbojevic', 'nrl_club': 'Sea Eagles', 'opponent': 'Broncos', 'player_id': '100165'}
+First stat map: {'Number': 1, 'Position': 'Fullback', 'Mins Played': 80, 'Points': 0, 'Tries': 0, 'Conversions': 0, 'Conversion Attempts': 0, 'Penalty Goals': 0, 'Goal Conversion Rate': 0, 'Field Goals': 0, 'Total Points': 35, 'All Runs': 18, 'All Run Metres': 167, 'Kick Return Metres': 34, 'Post Contact Metres': 52, 'Line Breaks': 0, 'Line Break Assists': 2, 'Try Assists': 2, 'Line Engaged Runs': 0, 'Tackle Breaks': 0, 'Hit Ups': 0, 'Play The Ball': 13, 'Average Play The Ball Speed': Decimal('3.72'), 'Dummy Half Runs': 1, 'Dummy Half Run Metres': 3, 'One on One Steal': 0, 'Offloads': 0, 'Dummy Passes': 0, 'Passes': 14, 'Receipts': 29, 'Passes To Run Ratio': Decimal('0.78'), 'Tackle Efficiency': Decimal('0.7'), 'Tackles Made': 7, 'Missed Tackles': 1, 'Ineffective Tackles': 2, 'Intercepts': 0, 'Kicks Defused': 2, 'Kicks': 1, 'Kicking Metres': 0, 'Forced Drop Outs': 0, 'Bomb Kicks': 0, 'Grubbers': 1, '40/20': 0, '20/40': 0, 'Cross Field Kicks': 0, 'Kicked Dead': 0, 'Errors': 1, 'Handling Errors': 1, 'One on One Lost': 0, 'Penalties': 0, 'Ruck Infringements': 0, 'On Report': 0, 'Sin Bins': 0, 'Send Offs': 0, 'Stint One': 80, 'Stint Two': 0}
+First score map: {'Back': {'tries': 0, 'sin_bins': 0, 'send_offs': 0, 'involvement_try': False, 'positional_try': True, 'mia': False, 'concede': False}, 'kicker': {'goals': 0, 'field_goals': 0}}
+Stats update complete, scoring lineups
+Lineup scoring complete
+Execution took 0:03:30.147571

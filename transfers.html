@@ -1,3 +1,7 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
 <head>
 
     <!-- Required meta tags -->
@@ -16,7 +20,7 @@
     <script src="js/Session.js"></script>
     <script src="js/requireLogin.js"></script>
 
-    <title>XRL Home</title>
+    <title>XRL Transfer Centre</title>
 
 </head>
 
@@ -44,8 +48,10 @@
         </div>
     </nav>
 
-    <header class="p-3 text-center text-white bg-success bg-gradient">
-        <h4>Select Players</h4>
+    <header class="p-3 bg-success bg-gradient">
+        <div class="row text-center">
+            <span class="text-white h4">Transfer Centre</span>
+        </div>
     </header>
     <div id="loading" class="row justify-content-centre align-items-center" style="height: 400px;">
         <div class="col align-items-center justify-content-center text-center">
@@ -54,124 +60,58 @@
             </div>
         </div>
     </div>
-    <main class="container-lg min-vh-100" id="mainContent" hidden>
-        <div class="row align-items-center justify-content-center">
-            <div class="col m-3">
-                <div class="card">
-                    <h4 class="card-header">Your Squad</h4>
-                    <div class="card-body">
-                        <p id="playerCountMessage"></p>
-                        <ul id="playerCountBreakdown"></ul>
-                    </div>
-                </div>
-            </div>
-            <div class="col m-3">
-                <div class="card" id="chosenPlayers" hidden>
-                    <h4 class="card-header">Your Picks</h4>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col text-success" id="picked" hidden>Picked: <ul id="pickedList"></ul>
-                            </div>
-                            <div class="col text-danger" id="dropped" hidden>Dropped: <ul id="droppedList"></ul>
-                            </div>
+    <main class="container-lg" id="mainContent" hidden>
+        <div class="row align-items-center mt-5">
+            <div class="col-lg card border border-secondary" id="teamWaiversCard">
+                <h2 class="card-header bg-dark bg-gradient text-white" id="teamWaiversHeader">Waivers</h2>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-4 p-2">
+                            <h5>Waiver Rank</h5>
+                            <p class="h2 text-success" id="teamWaiverRank"></p>
                         </div>
-                        <button class="btn btn-success" onclick="submitChoices()">Submit</button>
+                        <div class="col p-2 align-items-center">
+                            <table class="table table-dark my-2 table-striped">
+                                <thead>
+                                <tr>
+                                    <th class="h5" style="color: green;" colspan="3">Waiver Preferences</th>
+                                </tr>
+                                </thead>
+                                <tbody id="waiverPreferencesTable"></tbody>                                
+                            </table>
+                            <table class="table table-dark my-2 table-striped">
+                                <thead>
+                                <tr>
+                                    <th class="h5" style="color: #c94d38;">Player To Drop</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                    <tr><select id="provisionalDrop">
+                                        <option>None</option>
+                                    </select></tr>
+                                </tbody>                                
+                            </table>   
+                            <p class="text-center" id="confirmChanges" hidden>
+                                <button class="btn btn-success" onclick="submitWaiverPreferences()">Confirm Changes</button>
+                            </p>                
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-
-        <div class="row p-3 align-items-center justify-content-center">
-            <div class="dropdown col">
-                <button class="btn btn-success dropdown-toggle" type="button" id="nrlSelectButton"
-                    data-bs-toggle="dropdown" aria-expanded="false">
-                    Select NRL Club
-                </button>
-                <ul id="clubSelect" class="dropdown-menu dropdown-menu-dark" aria-labelledby="dropdownMenuButton">
-                    <li><a href="#" class="dropdown-item" value="Broncos" onclick="selectNrlClub('Broncos')">Broncos</a>
-                    </li>
-                    <li><a href="#" class="dropdown-item" value="Bulldogs"
-                            onclick="selectNrlClub('Bulldogs')">Bulldogs</a></li>
-                    <li><a href="#" class="dropdown-item" value="Cowboys" onclick="selectNrlClub('Cowboys')">Cowboys</a>
-                    </li>
-                    <li><a href="#" class="dropdown-item" value="Dragons" onclick="selectNrlClub('Dragons')">Dragons</a>
-                    </li>
-                    <li><a href="#" class="dropdown-item" value="Eels" onclick="selectNrlClub('Eels')">Eels</a></li>
-                    <li><a href="#" class="dropdown-item" value="Knights" onclick="selectNrlClub('Knights')">Knights</a>
-                    </li>
-                    <li><a href="#" class="dropdown-item" value="Panthers"
-                            onclick="selectNrlClub('Panthers')">Panthers</a></li>
-                    <li><a href="#" class="dropdown-item" value="Rabbitohs"
-                            onclick="selectNrlClub('Rabbitohs')">Rabbitohs</a></li>
-                    <li><a href="#" class="dropdown-item" value="Raiders" onclick="selectNrlClub('Raiders')">Raiders</a>
-                    </li>
-                    <li><a href="#" class="dropdown-item" value="Roosters"
-                            onclick="selectNrlClub('Roosters')">Roosters</a></li>
-                    <li><a href="#" class="dropdown-item" value="Sea Eagles" onclick="selectNrlClub('Sea Eagles')">Sea
-                            Eagles</a></li>
-                    <li><a href="#" class="dropdown-item" value="Sharks" onclick="selectNrlClub('Sharks')">Sharks</a>
-                    </li>
-                    <li><a href="#" class="dropdown-item" value="Storm" onclick="selectNrlClub('Storm')">Storm</a></li>
-                    <li><a href="#" class="dropdown-item" value="Titans" onclick="selectNrlClub('Titans')">Titans</a>
-                    </li>
-                    <li><a href="#" class="dropdown-item" value="Warriors"
-                            onclick="selectNrlClub('Warriors')">Warriors</a></li>
-                    <li><a href="#" class="dropdown-item" value="Wests Tigers"
-                            onclick="selectNrlClub('Wests Tigers')">Wests Tigers</a></li>
-                </ul>
-            </div>
-            <div class="col input-group">
-                <form onsubmit="searchPlayer(event)">
-                    <input type="search" class="form-control" id="playerSearch" />
-                    <button type="submit" class="btn btn-success">Search</button>
-                </form>
-            </div>
-        </div>
-        <img id="clubLogo" class="me-2" height="50px" hidden />
-        <h4 id="clubName" style="display: inline-block;"></h4>
-        <!-- <form onsubmit="selectNrlClub(event)">
-                <div class="form-group">
-                    <select class="form-select" id="nrlClubSelect" aria-placeholder="Choose a club">
-                        <option>Broncos</option>
-                        <option>Bulldogs</option>
-                        <option>Cowboys</option>
-                        <option>Dragons</option>
-                        <option>Eels</option>
-                        <option>Knights</option>
-                        <option>Panthers</option>
-                        <option>Rabbitohs</option>
-                        <option>Raiders</option>
-                        <option>Roosters</option>
-                        <option>Sea Eagles</option>
-                        <option>Sharks</option>
-                        <option>Storm</option>
-                        <option>Titans</option>
-                        <option>Warriors</option>
-                        <option>Wests Tigers</option>
-                    </select>
-                    <button type="submit" class="btn btn-primary">View players</button>
+        <div class="row mt-5">
+            <div class="col-lg card border border-secondary" id="transferHistory">
+                <h4 class="card-header bg-dark bg-gradient text-white">Latest Transfers</h4>
+                <div class="card-body">
+                    <table class="table table-dark table-striped">
+                        <tbody id="transferHistoryTable"></tbody>                                
+                    </table>
                 </div>
-            </form> -->
-        <div class="table-responsive">
-            <table class="table table-dark table-striped">
-                <thead>
-                    <tr>
-                        <th>Player</th>
-                        <th>Position</th>
-                        <th>Position 2</th>
-                        <th>NRL Club</th>
-                        <th>XRL Team</th>
-                    </tr>
-                </thead>
-                <tbody id="pickPlayerTable">
-                </tbody>
-
-            </table>
-        </div>
-        </div>
+            </div>
+        </div>        
     </main>
 
-    <footer class="small text-center text-muted">
+    <footer class="small text-center text-muted m-2">
         Data provided by <a href="https://www.nrl.com">NRL.com</a>. View <a
             href="https://www.nrl.com/terms-of-use">NRL’s Terms of Use</a>.
     </footer>
@@ -308,7 +248,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW"
         crossorigin="anonymous"></script>
-    <script type="module" src="js/pickteam.js"></script>
+    <script type="module" src="js/index.js"></script>
 </body>
 
 </html>

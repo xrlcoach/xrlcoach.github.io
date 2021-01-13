@@ -1,12 +1,13 @@
-import { GetActiveUserInfo, GetActiveUserTeamShort, GetAllPlayers, GetAllStats, GetAllUsers, getCookie, GetCurrentRoundInfo, GetIdToken, GetRoundInfo, GetStatsByRound } from "./ApiFetch.js";
+import { GetActiveUserInfo, GetActiveUserTeamShort, GetAllPlayers, GetAllStats, GetAllUsers, getCookie, GetCurrentRoundInfo, GetIdToken, GetRoundInfo, GetRoundInfoFromCookie, GetStatsByRound } from "./ApiFetch.js";
 import { GetPlayerXrlScores, DisplayPlayerInfo, DisplayFeedback, DisplayAppearanceInfoFromStats } from "./Helpers.js";
 
-let roundToDisplay, allPlayers, allStats, allUsers, activeUser, allPlayersWithStats, displayedStats, scoreAsKicker, singleRound;
+let roundToDisplay, currentRound, allPlayers, allStats, allUsers, activeUser, allPlayersWithStats, displayedStats, scoreAsKicker, singleRound;
 let sortAttribute = 'score';
 let sortOrder = 'Descending';
 
 window.onload = async function() {
     roundToDisplay = getCookie('round');
+    currentRound = GetRoundInfoFromCookie();
     for (let i = roundToDisplay; i > 0; i--) {
         let option = document.createElement('option');
         option.innerText = i;
@@ -106,7 +107,7 @@ function populateStatsTable(stats, sortFunction, scoringAsKicker=true, isSingleR
         nameLink.value = player.player_id;
         if (!isSingleRound) {
             nameLink.onclick = function() {
-                DisplayPlayerInfo(allPlayers.find(p => p.player_id == this.value));
+                DisplayPlayerInfo(allPlayers.find(p => p.player_id == this.value), currentRound);
             };
         } else {
             nameLink.onclick = function() {

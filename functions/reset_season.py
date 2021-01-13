@@ -20,11 +20,16 @@ for user in users:
         Key={
             'username': user['username']
         },
-        UpdateExpression="set powerplays=:p, stats=:s, captain_counts=:cc",
+        UpdateExpression="set powerplays=:p, stats=:s, captain_counts=:cc, waiver_rank=:wr, waiver_preferences=:wp, inbox=:i, players_picked=:pp, provisional_drop=:pd",
         ExpressionAttributeValues={
             ':p': 3,
             ':s': clean_stats,
-            ':cc': {}
+            ':cc': {},
+            ':wr': 0,
+            ':wp': [],
+            ':i': [],
+            ':pp': 0,
+            ':pd': None
         }
     )
 
@@ -41,12 +46,13 @@ for r in all_rounds:
             Key={
                 'round_number': r['round_number']
             },
-            UpdateExpression="set active=:a, in_progress=:ip, completed=:c, fixtures=:f",
+            UpdateExpression="set active=:a, in_progress=:ip, completed=:c, fixtures=:f, scooping=:s",
             ExpressionAttributeValues={
                 ':a': True,
                 ':ip': False,
                 ':c': False,
-                ':f': fixtures
+                ':f': fixtures,
+                ':s': False
             }
         )
     else:
@@ -90,5 +96,8 @@ for player in players:
         Key={
             'player_id': player['player_id']
         },
-        UpdateExpression="REMOVE new_position_appearances, position2"
+        UpdateExpression="REMOVE new_position_appearances, SET position2=:p2",
+        ExpressionAttributeValues={
+            ':p2': None
+        }
     )

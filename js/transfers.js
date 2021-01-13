@@ -74,7 +74,7 @@ function PopulateWaiverPreferencesTable() {
         cancel.onclick = function() {
             changePlayerPreferenceRank(this.value, 0);
         }
-        arrows.appendChild('cancel');
+        arrows.appendChild(cancel);
         row.appendChild(arrows);
         table.appendChild(row);
     }

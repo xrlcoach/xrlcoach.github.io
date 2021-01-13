@@ -14,6 +14,8 @@ window.onload = async () => {
         transferHistory = await GetTransferHistory();
         DisplayUserWaiverInfo();
         DisplayTransferHistory(transferHistory.filter(t => t.round_number == roundNumber));
+        document.getElementById('loading').hidden = true;
+        document.getElementById('mainContent').hidden = false;
     } catch (err) {
         DisplayFeedback(err, err.stack);
     }

@@ -24,7 +24,7 @@ def lambda_handler(event, context):
                     'Access-Control-Allow-Origin': '*',
                     'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
                     },
-                    'body': json.dumps(replace_decimals(resp['Item']))
+                    'body': json.dumps(replace_decimals(resp['Items']))
                 }
         except Exception as e:
             print("ERROR: " + str(e))

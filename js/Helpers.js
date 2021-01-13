@@ -105,7 +105,7 @@ export function DisplayPlayerInfo(player, round) {
             true, async function() {
                     let user = await GetActiveUserInfo(GetIdToken());
                     user.waiver_preferences.push(player.player_id);
-                    await UpdateUserWaiverPreferences(user.username, player.player_id, user.provisional_drop);
+                    await UpdateUserWaiverPreferences(user.username, user.waiver_preferences, user.provisional_drop);
                     DisplayFeedback('Success', player.player_name + ' has been added to your waiver preferences. You can change the order of preferences in the Transfer Centre',
                     true, function() { location.href = 'transfers.html' }, false);
             });

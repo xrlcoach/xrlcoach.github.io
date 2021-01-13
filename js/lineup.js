@@ -329,6 +329,7 @@ async function submitLineup(event) {
     
     await SetLineup(idToken, lineup);
     document.getElementById('submitLoading').hidden = true;
+    DisplayFeedback('Success!', 'Lineup set successfully.', true, function() { location.href = 'index.html' }, false);
     window.location.href = 'index.html';
 }
 window.submitLineup = submitLineup;

@@ -95,9 +95,23 @@ async function PopulateFixtureTable(round) {
         let awayUser = users.find(u => u.team_short == match.away);
         //Create table cells for each team and fill with team names
         let home = document.createElement('td');
-        home.innerText = homeUser.team_name;
+        let homeLogo =  document.createElement('img');
+        homeLogo.src = '/static/' + homeUser.team_short + '.png';
+        homeLogo.height = '50';
+        homeLogo.className = 'me-1';
+        home.appendChild(homeLogo);
+        let homeName = document.createElement('span');
+        homeName.innerText = homeUser.team_name;
+        home.appendChild(homeName);
         let away = document.createElement('td');
-        away.innerText = awayUser.team_name;
+        let awayName = document.createElement('span');
+        awayName.innerText = awayUser.team_name;
+        away.appendChild(awayName);
+        let awayLogo =  document.createElement('img');
+        awayLogo.src = '/static/' + awayUser.team_short + '.png';
+        awayLogo.height = '50';
+        awayLogo.className = 'ms-1';
+        away.appendChild(awayLogo);
         //If the round is ongoing or finished, get the team scores and display them alongside the team name
         if (round.completed || round.in_progress) {
             //let homeScore = await GetLineupScoreByTeamAndRound(round.round_number, homeUser.team_short);

@@ -99,7 +99,7 @@ for player in players:
         },
         UpdateExpression="SET position2=:p2, new_position_appearances=:npa",
         ExpressionAttributeValues={
-            ':p2': None,
+            ':p2': '',
             ':npa': {}
         }
     )

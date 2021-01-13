@@ -1,4 +1,4 @@
-import { GetAllPlayers, GetIdToken, GetPlayersFromNrlClub, GetPlayersFromXrlTeam, GetActiveUserInfo, UpdatePlayerXrlTeam, UpdateMultiplePlayerXrlTeams, DropPlayers, ScoopPlayers } from "./ApiFetch.js";
+import { GetAllPlayers, GetActiveUserInfo, DropPlayers, ScoopPlayers } from "./ApiFetch.js";
 import { DisplayFeedback } from "./Helpers.js";
 
 let user, squad, players, allPlayers, modifiedSquad;
@@ -92,7 +92,7 @@ function PopulatePickPlayerTable(playerData, xrlTeam, tableId) {
                 button.innerText = 'Cancel';
                 form.onsubmit = function (event) {
                     event.preventDefault();
-                    removeFromDroppedList(this, xrlTeam);
+                    removeFromDroppedList(this);
                 };
             } else {
                 button.className = 'btn btn-success';
@@ -146,7 +146,7 @@ function PickDropPlayer(xrlTeam, form) {
         modifiedSquad.splice(modifiedSquad.findIndex(p => p.player_id == player.player_id), 1);
         form.onsubmit = function (event) {
             event.preventDefault();
-            removeFromDroppedList(this, xrlTeam);
+            removeFromDroppedList(this);
         };
         form.lastChild.className = 'btn btn-warning';
         form.lastChild.innerText = 'Cancel';
@@ -241,7 +241,7 @@ function removeFromPickedList(form, xrlTeam) {
     DisplayPlayerCounts();
 }
 
-function removeFromDroppedList(form, xrlTeam) {
+function removeFromDroppedList(form) {
     modifiedSquad.push(droppedPlayers.find(p => p.player_id == form.firstChild.value));
     droppedPlayers.splice(droppedPlayers.findIndex(p => p.player_id == form.firstChild.value), 1);
     form.onsubmit = async function (event) {

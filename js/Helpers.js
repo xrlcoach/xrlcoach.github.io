@@ -13,10 +13,6 @@ export function DisplayFeedback(title, message, confirm=false, onConfirmFunction
     //Display the title and message
     document.getElementById('feedbackTitle').innerText = title;
     document.getElementById('feedbackMessage').innerHTML = message;
-    //Hide the cancel button if desired
-    if (!cancel) {
-        document.getElementById('feedbackCancel').hidden = true;
-    }
     //Display the confirm button if desired and assign the onclick function
     if (confirm) {
         document.getElementById('feedbackFooter').hidden = false;
@@ -24,6 +20,10 @@ export function DisplayFeedback(title, message, confirm=false, onConfirmFunction
     } else {
         document.getElementById('feedbackFooter').hidden = true;
     }
+    //Display the cancel button if desired
+    if (cancel) {
+        document.getElementById('feedbackCancel').hidden = false;
+    } else document.getElementById('feedbackCancel').hidden = true;
     //Display the feedback modal
     feedback.show();
 }
@@ -49,7 +49,7 @@ export function DisplayPlayerInfo(player, round) {
     if (player.position2) document.getElementById('playerPositions').innerText += ', ' + player.position2;
     //Populate the stats sections with XRL scoring stats
     document.getElementById('playerXrlPoints').innerText = player.scoring_stats[player.position].points + player.scoring_stats.kicker.points;
-    document.getElementById('playerInfoAppearances').innerText = player.stats.appearances;
+    document.getElementById('playerInfoAppearances').innerText = player.stats.appearances ? player.stats.appearances : '0';
     document.getElementById('playerTries').innerText = player.stats.Tries;
     document.getElementById('playerITs').innerText = player.scoring_stats[player.position].involvement_try;
     document.getElementById('playerPTs').innerText = player.scoring_stats[player.position].positional_try;

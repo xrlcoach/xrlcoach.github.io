@@ -15,7 +15,9 @@ window.onload = async () => {
         provisionalDrop = user.provisional_drop;
         transferHistory = await GetTransferHistory();
         DisplayUserWaiverInfo();
-        DisplayTransferHistory(transferHistory.filter(t => t.round_number == roundNumber));
+        DisplayTransferHistory(transferHistory.filter(t => t.round_number == roundNumber).sort((t1, t2) => {
+            return new Date(t2.datetime) - new Date(t1.datetime);
+        }));
         document.getElementById('loading').hidden = true;
         document.getElementById('mainContent').hidden = false;
     } catch (err) {

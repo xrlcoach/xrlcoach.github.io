@@ -19,9 +19,10 @@ export async function Login(username, password) {
             "password": password,        
         })
     });
-    console.log(response);
     const data = await response.json();
-    console.log(data);
+    if (data.error) {
+        DisplayFeedback('Error', data.error);
+    }
     return data;
 }
 /**
@@ -47,6 +48,9 @@ export async function GetAllUsers() {
         }
     });
     const data = await response.json();
+    if (data.error) {
+        DisplayFeedback('Error', data.error);
+    }
     return data;
 }
 /**
@@ -62,6 +66,9 @@ export async function GetActiveUserInfo(idToken) {
         }
     });
     const data = await response.json();
+    if (data.error) {
+        DisplayFeedback('Error', data.error);
+    }
     return data;        
 }
 /**
@@ -75,6 +82,9 @@ export async function GetAllPlayers() {
         }
     });
     const data = await response.json();
+    if (data.error) {
+        DisplayFeedback('Error', data.error);
+    }
     return data;
 }
 /**
@@ -89,6 +99,9 @@ export async function GetPlayersFromNrlClub(club) {
         }
     });
     const data = await response.json();
+    if (data.error) {
+        DisplayFeedback('Error', data.error);
+    }
     return data;
 }
 /**
@@ -103,6 +116,9 @@ export async function GetPlayersFromXrlTeam(team) {
         }
     });
     const data = await response.json();
+    if (data.error) {
+        DisplayFeedback('Error', data.error);
+    }
     return data;   
 }
 /**
@@ -117,6 +133,9 @@ export async function GetPlayerById(playerId) {
         }
     });
     const data = await response.json();
+    if (data.error) {
+        DisplayFeedback('Error', data.error);
+    }
     return data; 
 }
 /**
@@ -179,6 +198,9 @@ export async function ScoopPlayers(xrlTeam, players) {
         })
     });
     const data = await response.json();
+    if (data.error) {
+        DisplayFeedback('Error', data.error);
+    }
     return data;
 }
 
@@ -195,6 +217,9 @@ export async function DropPlayers(players) {
         })
     });
     const data = await response.json();
+    if (data.error) {
+        DisplayFeedback('Error', data.error);
+    }
     const response2 = await fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/lineup', {
         method: 'POST',
         headers: {
@@ -206,7 +231,10 @@ export async function DropPlayers(players) {
             'players': players
         })
     });
-    const data2 = await response2.json();    
+    const data2 = await response2.json();  
+    if (data2.error) {
+        DisplayFeedback('Error', data.error);
+    }  
     return [data, data2];
 }
 /**
@@ -222,6 +250,9 @@ export async function GetLineup(idToken) {
         }
     });
     const data = await response.json();
+    if (data.error) {
+        DisplayFeedback('Error', data.error);
+    }
     return data;
 }
 /**
@@ -237,6 +268,9 @@ export async function GetLineupByTeamAndRound(roundNumber, xrlTeam) {
         }
     });
     const data = await response.json();
+    if (data.error) {
+        DisplayFeedback('Error', data.error);
+    }
     return data;
 }
 /**
@@ -257,6 +291,9 @@ export async function SetLineup(idToken, players) {
         })
     });
     const data = await response.json();
+    if (data.error) {
+        DisplayFeedback('Error', data.error);
+    }
     return data;
 }
 /**
@@ -270,6 +307,9 @@ export async function GetAllFixtures() {
         }
     });
     const data = await response.json();
+    if (data.error) {
+        DisplayFeedback('Error', data.error);
+    }
     return data;
 }
 /**
@@ -284,6 +324,9 @@ export async function GetRoundInfo(roundNumber) {
         }
     });
     const data = await response.json();
+    if (data.error) {
+        DisplayFeedback('Error', data.error);
+    }
     return data;
 }
 /**
@@ -326,6 +369,9 @@ export async function GetAllStats() {
         }
     });
     const data = await response.json();
+    if (data.error) {
+        DisplayFeedback('Error', data.error);
+    }
     return data;
 }
 /**
@@ -340,6 +386,9 @@ export async function GetStatsByRound(roundNumber) {
         }
     });
     const data = await response.json();
+    if (data.error) {
+        DisplayFeedback('Error', data.error);
+    }
     return data;
 }
 /**
@@ -356,6 +405,9 @@ export async function GetPlayerAppearanceStats(playerId, roundNumber) {
             }
         });
         const data = await response.json();
+        if (data.error) {
+            DisplayFeedback('Error', data.error);
+        }
         return data;
     } catch (err) {
         return undefined;
@@ -370,11 +422,15 @@ export async function UpdateUserWaiverPreferences(username, preferences, provisi
         },
         body: JSON.stringify({
             'operation': 'update_preferences',
+            'username': username,
             'preferences': preferences,
             'provisional_drop': provisionalDrop
         })
     });
     const data = await response.json();
+    if (data.error) {
+        DisplayFeedback('Error', data.error);
+    }
     return data;
 }
 
@@ -386,6 +442,9 @@ export async function GetTransferHistory(roundNumber) {
         }
     });
     const data = await response.json();
+    if (data.error) {
+        DisplayFeedback('Error', data.error);
+    }
     return data;
 }
 

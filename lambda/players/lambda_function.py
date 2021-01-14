@@ -21,8 +21,10 @@ def lambda_handler(event, context):
         #If there is no query added to fetch GET request, scan the whole players table
         if not event["queryStringParameters"]:
             print('No params found, scanning table')
+            start = datetime.now()
             resp = table.scan()['Items']
-            print('Table scanned, returning json response')
+            finish = datetime.now()
+            print(f'Table scan copmlete in {finish - start}. Returning json response')
         else:
             #If query string attached to GET request, determine request parameters and query players table accordingly
             print('Params detected')        

@@ -6,8 +6,10 @@ let sortAttribute = 'score';
 let sortOrder = 'Descending';
 
 window.onload = async function() {
+    console.log("Page load start at " + new Date());
     roundToDisplay = getCookie('round');
     currentRound = await GetRoundInfoFromCookie();
+    console.log("Round data loaded at " + new Date());
     for (let i = roundToDisplay; i > 0; i--) {
         let option = document.createElement('option');
         option.innerText = i;
@@ -16,6 +18,7 @@ window.onload = async function() {
     // allStats = await GetAllStats();
     // let playerIdsWithStats = allStats.map(p => p.player_id);
     allUsers = await GetAllUsers();
+    console.log("User data loaded at " + new Date());
     for (let user of allUsers) {
         let option = document.createElement('option');
         option.innerText = user.team_short;
@@ -23,6 +26,7 @@ window.onload = async function() {
     }
     activeUser = allUsers.find(u => u.team_short == GetActiveUserTeamShort());
     allPlayers = await GetAllPlayers();
+    console.log("Player data loaded at " + new Date());
     // allPlayersWithStats = allPlayers.filter(p => playerIdsWithStats.includes(p.player_id))
     // for (let i in allStats) {
     //     let player = allPlayersWithStats.find(p => p.player_id == allStats[i].player_id);
@@ -91,6 +95,7 @@ window.onload = async function() {
     populateStatsTable(allPlayers, sortByTotalXrlScore);
     document.getElementById('loading').hidden = true;
     document.getElementById('mainContent').hidden = false;
+    console.log("Page load finished at " + new Date());
 }
 
 

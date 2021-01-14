@@ -127,7 +127,7 @@ function DisplayInbox() {
             deleteMessage(this.value);
         };
         alert.appendChild(deleteButton);
-        inbox.appendChild(alert);
+        inboxBody.appendChild(alert);
     }
 }
 

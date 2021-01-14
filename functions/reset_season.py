@@ -52,7 +52,7 @@ for r in all_rounds:
                 ':ip': False,
                 ':c': False,
                 ':f': fixtures,
-                ':s': False
+                ':s': True
             }
         )
     else:
@@ -74,18 +74,13 @@ for r in all_rounds:
 lineups_table = dynamodb.Table('lineups2020')
 resp = lineups_table.scan()
 lineups = resp['Items']
-for player in lineups:
-    lineups_table.update_item(
-        Key={
-            'name+nrl+xrl+round': player['name+nrl+xrl+round']
-        },
-        UpdateExpression="set score=:v, played_nrl=:n, played_xrl=:x",
-        ExpressionAttributeValues={
-            ':v': 0,
-            ':n': False,
-            ':x': False
-        }
-    )
+with lineups_table.batch_writer() as batch:
+    for player in lineups:
+        lineups_table.delete_item(
+            Key={
+                'name+nrl+xrl+round': player['name+nrl+xrl+round']
+            }
+        )
 
 #Reset any accumulated 2nd position appearances and awarded second position
 players_table = dynamodb.Table('players2020')

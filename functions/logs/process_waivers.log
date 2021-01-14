@@ -1,0 +1,38 @@
+Script executing at 14/01/21
+Current round: 1.
+[{'stats': {'wins': Decimal('0'), 'for': Decimal('0'), 'draws': Decimal('0'), 'losses': Decimal('0'), 'against': Decimal('0'), 'points': Decimal('0')}, 'team_name': 'TestTeam1', 'waiver_preferences': [], 'powerplays': Decimal('3'), 'captain_counts': {}, 'provisional_drop': None, 'waiver_rank': Decimal('0'), 'inbox': [], 'username': 'testuser1', 'homeground': 'Test Park 1', 'team_short': 'TT1', 'players_picked': Decimal('0')}, {'stats': {'wins': Decimal('0'), 'for': Decimal('0'), 'draws': Decimal('0'), 'losses': Decimal('0'), 'against': Decimal('0'), 'points': Decimal('0')}, 'team_name': 'The IT Crowd', 'waiver_preferences': ['100063'], 'powerplays': Decimal('3'), 'captain_counts': {}, 'provisional_drop': None, 'waiver_rank': Decimal('0'), 'inbox': [], 'username': 'admin', 'homeground': 'The Basement', 'team_short': 'ITC', 'players_picked': Decimal('0')}, {'stats': {'wins': Decimal('0'), 'for': Decimal('0'), 'draws': Decimal('0'), 'losses': Decimal('0'), 'against': Decimal('0'), 'points': Decimal('0')}, 'team_name': 'Test Team 3', 'waiver_preferences': [], 'powerplays': Decimal('3'), 'captain_counts': {}, 'provisional_drop': None, 'waiver_rank': Decimal('0'), 'inbox': [], 'username': 'testuser3', 'homeground': 'Test Park 3', 'team_short': 'TT3', 'players_picked': Decimal('0')}, {'stats': {'wins': Decimal('0'), 'for': Decimal('0'), 'draws': Decimal('0'), 'losses': Decimal('0'), 'against': Decimal('0'), 'points': Decimal('0')}, 'team_name': 'Test Team 2', 'waiver_preferences': [], 'powerplays': Decimal('3'), 'captain_counts': {}, 'provisional_drop': None, 'waiver_rank': Decimal('0'), 'inbox': [], 'username': 'testuser2', 'homeground': 'Test Park 2', 'team_short': 'TT2', 'players_picked': Decimal('0')}]
+[{'stats': {'wins': Decimal('0'), 'for': Decimal('0'), 'draws': Decimal('0'), 'losses': Decimal('0'), 'against': Decimal('0'), 'points': Decimal('0')}, 'team_name': 'TestTeam1', 'waiver_preferences': [], 'powerplays': Decimal('3'), 'captain_counts': {}, 'provisional_drop': None, 'waiver_rank': Decimal('0'), 'inbox': [], 'username': 'testuser1', 'homeground': 'Test Park 1', 'team_short': 'TT1', 'players_picked': Decimal('0')}, {'stats': {'wins': Decimal('0'), 'for': Decimal('0'), 'draws': Decimal('0'), 'losses': Decimal('0'), 'against': Decimal('0'), 'points': Decimal('0')}, 'team_name': 'The IT Crowd', 'waiver_preferences': ['100063'], 'powerplays': Decimal('3'), 'captain_counts': {}, 'provisional_drop': None, 'waiver_rank': Decimal('0'), 'inbox': [], 'username': 'admin', 'homeground': 'The Basement', 'team_short': 'ITC', 'players_picked': Decimal('0')}, {'stats': {'wins': Decimal('0'), 'for': Decimal('0'), 'draws': Decimal('0'), 'losses': Decimal('0'), 'against': Decimal('0'), 'points': Decimal('0')}, 'team_name': 'Test Team 3', 'waiver_preferences': [], 'powerplays': Decimal('3'), 'captain_counts': {}, 'provisional_drop': None, 'waiver_rank': Decimal('0'), 'inbox': [], 'username': 'testuser3', 'homeground': 'Test Park 3', 'team_short': 'TT3', 'players_picked': Decimal('0')}, {'stats': {'wins': Decimal('0'), 'for': Decimal('0'), 'draws': Decimal('0'), 'losses': Decimal('0'), 'against': Decimal('0'), 'points': Decimal('0')}, 'team_name': 'Test Team 2', 'waiver_preferences': [], 'powerplays': Decimal('3'), 'captain_counts': {}, 'provisional_drop': None, 'waiver_rank': Decimal('0'), 'inbox': [], 'username': 'testuser2', 'homeground': 'Test Park 2', 'team_short': 'TT2', 'players_picked': Decimal('0')}]
+Processing waivers
+User 1 - testuser1
+testuser1 didn't get any of their preferences
+User 2 - admin
+admin picked up Jamayne ISAAKO
+User 3 - testuser3
+testuser3 didn't get any of their preferences
+User 4 - testuser2
+testuser2 didn't get any of their preferences
+New waiver order:
+1. testuser1
+2. testuser3
+3. testuser2
+4. admin
+Script executing at Thu Jan 14 11:03:13 2021
+Current round: 1.
+Current waiver order:
+1. TestTeam1
+2. Test Team 3
+3. Test Team 2
+4. The IT Crowd
+Processing waivers
+User 1 - TestTeam1
+TestTeam1 chose not to waiver this week.
+User 2 - Test Team 3
+Test Team 3 chose not to waiver this week.
+User 3 - Test Team 2
+Test Team 2 chose not to waiver this week.
+The IT Crowd already waivered one player this week
+New waiver order:
+1. testuser1
+2. testuser3
+3. testuser2
+4. admin

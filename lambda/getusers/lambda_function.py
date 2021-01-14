@@ -1,5 +1,6 @@
 import json
 import boto3
+from boto3.dynamodb.conditions import Key, Attr
 import decimal
 import hashlib
 import base64
@@ -8,44 +9,79 @@ dynamodb = boto3.resource('dynamodb', 'ap-southeast-2')
 table = dynamodb.Table('users2020')
 
 def lambda_handler(event, context):
-    method = event["httpMethod"]
-    if method == 'GET':
-        resp = table.scan()
-        return {
-            'statusCode': 200,
-            'headers': {
-            'Access-Control-Allow-Headers': 'Content-Type',
-            'Access-Control-Allow-Origin': '*',
-            'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
-            'Access-Control-Allow-Credentials': True,
-            'Set-Cookie': 'testCookie=ThisIsATestCookie'
-            },
-            'body': json.dumps(replace_decimals(resp['Items']))
-        }
-    if method == 'POST':
-        id_token = event['headers']['Authorization']
-        print(id_token)        
-        payload = id_token.split('.')[1]
-        print(payload)
-        decoded = base64.b64decode(payload + '=======')
-        print(decoded)
-        user = json.loads(decoded)['cognito:username']
-        print(user)
-        
-        try:
-            response = table.get_item(Key={'username': user})
-            print(response['Item'])        
+    try:
+        method = event["httpMethod"]
+        print("Method is " + method)
+        if method == 'GET':
+            resp = table.scan()
+            print("Return users data")
             return {
                 'statusCode': 200,
                 'headers': {
                 'Access-Control-Allow-Headers': 'Content-Type',
                 'Access-Control-Allow-Origin': '*',
                 'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
+                'Access-Control-Allow-Credentials': True,
+                'Set-Cookie': 'testCookie=ThisIsATestCookie'
                 },
-                'body': json.dumps(replace_decimals(response['Item']))
+                'body': json.dumps(replace_decimals(resp['Items']))
             }
-        except Exception as e:
-            print(e)      
+        if method == 'POST':
+            body = json.loads(event['body'])
+            operation = body['operation']
+            print("Operation is " + operation)
+            if operation == 'get_user':
+                id_token = event['headers']['Authorization']
+                print(id_token)        
+                payload = id_token.split('.')[1]
+                print(payload)
+                decoded = base64.b64decode(payload + '=======')
+                print(decoded)
+                user = json.loads(decoded)['cognito:username']
+                print(user)            
+                response = table.get_item(Key={'username': user})
+                print(response['Item'])        
+                return {
+                    'statusCode': 200,
+                    'headers': {
+                    'Access-Control-Allow-Headers': 'Content-Type',
+                    'Access-Control-Allow-Origin': '*',
+                    'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
+                    },
+                    'body': json.dumps(replace_decimals(response['Item']))
+                }
+            if operation == 'update_inbox':
+                print("Updating user inbox")
+                table.update_item(
+                    Key={
+                        'username': body['username']
+                    },
+                    UpdateExpression="set inbox=:i",
+                    ExpressionAttributeValues={
+                        ':i': body['inbox']
+                    }
+                )
+                print("Update complete")
+                return {
+                    'statusCode': 200,
+                    'headers': {
+                    'Access-Control-Allow-Headers': 'Content-Type',
+                    'Access-Control-Allow-Origin': '*',
+                    'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
+                    },
+                    'body': json.dumps({"success": "User inbox updated"})
+                }
+    except Exception as e:
+        return {
+            'statusCode': 200,
+            'headers': {
+            'Access-Control-Allow-Headers': 'Content-Type',
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
+            },
+            'body': json.dumps({"error": e})
+        }
+               
 
 def replace_decimals(obj):
     if isinstance(obj, list):

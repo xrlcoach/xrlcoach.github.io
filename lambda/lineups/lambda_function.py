@@ -13,66 +13,88 @@ round_table = dynamodbResource.Table('rounds2020')
 
 
 def lambda_handler(event, context):
-    method = event["httpMethod"]
-    print(f"Method is {method}")
-    id_token = ''
-    if 'Authorization' in event['headers'].keys():
-        id_token = event['headers']['Authorization']
-        payload = id_token.split('.')[1]
-        decoded = base64.b64decode(payload + '=======')
-        username = json.loads(decoded)['cognito:username']
-        print(f"User: {username}")
-        resp = user_table.get_item(Key={'username': username})
-        user = resp['Item']
-        team_short = user['team_short']
-        print(f"XRL Team: {team_short}")
-        resp = round_table.scan(
-            FilterExpression=Attr('in_progress').eq(False)
-        )
-        round_number = min([r['round_number'] for r in resp['Items']])
-        print(f"Round Number: {round_number}")
-        existing_lineup = lineup_table.scan(
-                FilterExpression=Attr('xrl_team').eq(team_short) & Attr('round_number').eq(str(round_number))
-                )
-    if method == 'GET':
-        if id_token != '':
-            if len(existing_lineup['Items']) > 0:
-                print("Existing lineup found. Returning player list.")
+    try:
+        method = event["httpMethod"]
+        print(f"Method is {method}")
+        id_token = ''
+        if 'Authorization' in event['headers'].keys():
+            id_token = event['headers']['Authorization']
+            payload = id_token.split('.')[1]
+            decoded = base64.b64decode(payload + '=======')
+            username = json.loads(decoded)['cognito:username']
+            print(f"User: {username}")
+            resp = user_table.get_item(Key={'username': username})
+            user = resp['Item']
+            team_short = user['team_short']
+            print(f"XRL Team: {team_short}")
+            resp = round_table.scan(
+                FilterExpression=Attr('in_progress').eq(False)
+            )
+            round_number = min([r['round_number'] for r in resp['Items']])
+            print(f"Round Number: {round_number}")
+            existing_lineup = lineup_table.scan(
+                    FilterExpression=Attr('xrl_team').eq(team_short) & Attr('round_number').eq(str(round_number))
+                    )
+        if method == 'GET':
+            if id_token != '':
+                if len(existing_lineup['Items']) > 0:
+                    print("Existing lineup found. Returning player list.")
+                else:
+                    print("No lineup found")
+                return {
+                            'statusCode': 200,
+                            'headers': {
+                            'Access-Control-Allow-Headers': 'Content-Type',
+                            'Access-Control-Allow-Origin': '*',
+                            'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
+                            },
+                            'body': json.dumps(replace_decimals(existing_lineup['Items']))
+                }
             else:
-                print("No lineup found")
-            return {
+                params = event["queryStringParameters"]
+                print(params)
+                team = params['team']
+                round_number = params['round']
+                print(f'Specific lineup requested is {team}, Round {round_number}. Querying table..')
+                resp = lineup_table.scan(
+                    FilterExpression=Attr('xrl_team').eq(team) & Attr('round_number').eq(round_number)
+                )
+                return {
                         'statusCode': 200,
                         'headers': {
                         'Access-Control-Allow-Headers': 'Content-Type',
                         'Access-Control-Allow-Origin': '*',
                         'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
                         },
-                        'body': json.dumps(replace_decimals(existing_lineup['Items']))
-            }
-        else:
-            params = event["queryStringParameters"]
-            print(params)
-            team = params['team']
-            round_number = params['round']
-            print(f'Specific lineup requested is {team}, Round {round_number}. Querying table..')
-            resp = lineup_table.scan(
-                FilterExpression=Attr('xrl_team').eq(team) & Attr('round_number').eq(round_number)
-            )
-            return {
-                    'statusCode': 200,
-                    'headers': {
-                    'Access-Control-Allow-Headers': 'Content-Type',
-                    'Access-Control-Allow-Origin': '*',
-                    'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
-                    },
-                    'body': json.dumps(replace_decimals(resp['Items']))
-            }
-    if method == 'POST':
-        body = json.loads(event['body'])
-        operation = body['operation']
-        print("Operation is " + operation)
-        if operation == 'remove_multiple':
-            for player in body['players']:
+                        'body': json.dumps(replace_decimals(resp['Items']))
+                }
+        if method == 'POST':
+            body = json.loads(event['body'])
+            operation = body['operation']
+            print("Operation is " + operation)
+            if operation == 'remove_multiple':
+                for player in body['players']:
+                    lineup_table.delete_item(
+                        Key={
+                            'name+nrl+xrl+round': player['player_name'] + ';' + player['nrl_club'] + ';' + team_short + ';' + str(round_number)
+                        }
+                    )
+                    lineup_table.delete_item(
+                        Key={
+                            'name+nrl+xrl+round': player['player_name'] + ';' + player['nrl_club'] + ';' + team_short + ';' + str(round_number + 1)
+                        }
+                    )
+                    return {
+                        'statusCode': 200,
+                        'headers': {
+                        'Access-Control-Allow-Headers': 'Content-Type',
+                        'Access-Control-Allow-Origin': '*',
+                        'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
+                        },
+                        'body': json.dumps({"message": "Player removed from lineup"})
+                    }
+            if operation == 'remove':
+                player = json.loads(body['player'])
                 lineup_table.delete_item(
                     Key={
                         'name+nrl+xrl+round': player['player_name'] + ';' + player['nrl_club'] + ';' + team_short + ';' + str(round_number)
@@ -84,105 +106,60 @@ def lambda_handler(event, context):
                     }
                 )
                 return {
-                    'statusCode': 200,
-                    'headers': {
-                    'Access-Control-Allow-Headers': 'Content-Type',
-                    'Access-Control-Allow-Origin': '*',
-                    'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
-                    },
-                    'body': json.dumps({"message": "Player removed from lineup"})
-                }
-        if operation == 'remove':
-            player = json.loads(body['player'])
-            lineup_table.delete_item(
-                Key={
-                    'name+nrl+xrl+round': player['player_name'] + ';' + player['nrl_club'] + ';' + team_short + ';' + str(round_number)
-                }
-            )
-            lineup_table.delete_item(
-                Key={
-                    'name+nrl+xrl+round': player['player_name'] + ';' + player['nrl_club'] + ';' + team_short + ';' + str(round_number + 1)
-                }
-            )
-            return {
-                    'statusCode': 200,
-                    'headers': {
-                    'Access-Control-Allow-Headers': 'Content-Type',
-                    'Access-Control-Allow-Origin': '*',
-                    'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
-                    },
-                    'body': json.dumps({"message": "Players removed from lineup"})
-                }
-        if operation == 'set':
-            lineup = json.loads(body['players'])
-            print("Lineup: " + str(lineup))
-            position_numbers = {
-                "fullback": 1,
-                "winger1": 2,
-                "centre1": 3,
-                "centre2": 4,
-                "winger2": 5,
-                "five_eighth": 6,
-                "halfback": 7,
-                "prop1": 8,
-                "hooker": 9,
-                "prop2": 10,
-                "row1": 11,
-                "row2": 12,
-                "lock": 13,
-                "int1": 14,
-                "int2": 15,
-                "int3": 16,
-                "int4": 17,
-                }
-            print("Writing lineup to table")        
-            for player in existing_lineup['Items']:
-                for i in range(int(round_number), 22):
-                    lineup_table.delete_item(
-                        Key={
-                            'name+nrl+xrl+round': player['player_name'] + ';' + player['nrl_club'] + ';' + team_short + ';' + str(i)
-                        }
-                    )
-            for player in lineup:
-                lineup_table.put_item(
-                    Item={
-                        'name+nrl+xrl+round': player['player_name'] + ';' + player['nrl_club'] + ';' + team_short + ';' + str(round_number),
-                        'player_id': player['player_id'],
-                        'player_name': player['player_name'],
-                        'nrl_club': player['nrl_club'],
-                        'xrl_team': team_short,
-                        'round_number': str(round_number),
-                        'position_specific': player['position'],
-                        'position_general': player['position_general'],
-                        'second_position': player['second_position'],
-                        'position_number': position_numbers[player['position']],
-                        'captain': player['captain'],
-                        'captain2': player['captain2'],
-                        'vice': player['vice'],
-                        'kicker': player['kicker'],
-                        'backup_kicker': player['backup_kicker'],
-                        'played_nrl': False,
-                        'played_xrl': False,
-                        'score': 0
+                        'statusCode': 200,
+                        'headers': {
+                        'Access-Control-Allow-Headers': 'Content-Type',
+                        'Access-Control-Allow-Origin': '*',
+                        'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
+                        },
+                        'body': json.dumps({"message": "Players removed from lineup"})
                     }
-                )
-                # Set same lineup for next round, removing powerplay if necessary
-                for i in range(int(round_number) + 1, 22):
+            if operation == 'set':
+                lineup = json.loads(body['players'])
+                print("Lineup: " + str(lineup))
+                position_numbers = {
+                    "fullback": 1,
+                    "winger1": 2,
+                    "centre1": 3,
+                    "centre2": 4,
+                    "winger2": 5,
+                    "five_eighth": 6,
+                    "halfback": 7,
+                    "prop1": 8,
+                    "hooker": 9,
+                    "prop2": 10,
+                    "row1": 11,
+                    "row2": 12,
+                    "lock": 13,
+                    "int1": 14,
+                    "int2": 15,
+                    "int3": 16,
+                    "int4": 17,
+                    }
+                print("Writing lineup to table")        
+                for player in existing_lineup['Items']:
+                    for i in range(int(round_number), 22):
+                        lineup_table.delete_item(
+                            Key={
+                                'name+nrl+xrl+round': player['player_name'] + ';' + player['nrl_club'] + ';' + team_short + ';' + str(i)
+                            }
+                        )
+                for player in lineup:
                     lineup_table.put_item(
                         Item={
-                            'name+nrl+xrl+round': player['player_name'] + ';' + player['nrl_club'] + ';' + team_short + ';' + str(i),
+                            'name+nrl+xrl+round': player['player_name'] + ';' + player['nrl_club'] + ';' + team_short + ';' + str(round_number),
                             'player_id': player['player_id'],
                             'player_name': player['player_name'],
                             'nrl_club': player['nrl_club'],
                             'xrl_team': team_short,
-                            'round_number': str(i),
+                            'round_number': str(round_number),
                             'position_specific': player['position'],
                             'position_general': player['position_general'],
                             'second_position': player['second_position'],
                             'position_number': position_numbers[player['position']],
                             'captain': player['captain'],
-                            'captain2': False,
-                            'vice': player['vice'] or player['captain2'],
+                            'captain2': player['captain2'],
+                            'vice': player['vice'],
                             'kicker': player['kicker'],
                             'backup_kicker': player['backup_kicker'],
                             'played_nrl': False,
@@ -190,16 +167,50 @@ def lambda_handler(event, context):
                             'score': 0
                         }
                     )
-            print("DB write complete")
-            return {
-                    'statusCode': 200,
-                    'headers': {
-                    'Access-Control-Allow-Headers': 'Content-Type',
-                    'Access-Control-Allow-Origin': '*',
-                    'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
-                    },
-                    'body': json.dumps({"message": "Lineup saved successfully"})
-                }
+                    # Set same lineup for next round, removing powerplay if necessary
+                    for i in range(int(round_number) + 1, 22):
+                        lineup_table.put_item(
+                            Item={
+                                'name+nrl+xrl+round': player['player_name'] + ';' + player['nrl_club'] + ';' + team_short + ';' + str(i),
+                                'player_id': player['player_id'],
+                                'player_name': player['player_name'],
+                                'nrl_club': player['nrl_club'],
+                                'xrl_team': team_short,
+                                'round_number': str(i),
+                                'position_specific': player['position'],
+                                'position_general': player['position_general'],
+                                'second_position': player['second_position'],
+                                'position_number': position_numbers[player['position']],
+                                'captain': player['captain'],
+                                'captain2': False,
+                                'vice': player['vice'] or player['captain2'],
+                                'kicker': player['kicker'],
+                                'backup_kicker': player['backup_kicker'],
+                                'played_nrl': False,
+                                'played_xrl': False,
+                                'score': 0
+                            }
+                        )
+                print("DB write complete")
+                return {
+                        'statusCode': 200,
+                        'headers': {
+                        'Access-Control-Allow-Headers': 'Content-Type',
+                        'Access-Control-Allow-Origin': '*',
+                        'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
+                        },
+                        'body': json.dumps({"message": "Lineup saved successfully"})
+                    }
+    except Exception as e:
+        return {
+            'statusCode': 200,
+            'headers': {
+            'Access-Control-Allow-Headers': 'Content-Type',
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
+            },
+            'body': json.dumps({"error": e})
+        }
 
 def replace_decimals(obj):
     if isinstance(obj, list):

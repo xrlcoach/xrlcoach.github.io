@@ -1,4 +1,4 @@
-import { GetPlayersFromXrlTeam, GetActiveUserInfo, UpdatePlayerXrlTeam, GetAllUsers, GetActiveUserTeamShort, GetAllFixtures } from './ApiFetch.js';
+import { GetPlayersFromXrlTeam, GetActiveUserInfo, UpdatePlayerXrlTeam, GetAllUsers, GetActiveUserTeamShort, GetAllFixtures, UpdateUserInbox } from './ApiFetch.js';
 import { DisplayFeedback, DisplayPlayerInfo, GetActiveRoundFromFixtures, GetOrdinal, GetTeamFixture } from './Helpers.js';
 
 let squad, allUsers, user, allRounds, lastRound, nextRound;
@@ -23,6 +23,7 @@ window.onload = async function () {
         DisplayNextMatch();
         //Display team, squad and captaincy info
         DisplayTeamInfo();
+        DisplayInbox();
         DisplaySquadInfo();
         DisplayCaptainInfo();
         //Sort squad alphabetically by last name
@@ -96,6 +97,43 @@ function DisplayNextMatch() {
         document.getElementById('nextMatchResult').style.color = result == 'WIN' ? 'green' : result == 'LOSS' ? '#c94d38' : 'orange'; 
         document.getElementById('nextMatchResult').innerText = ' ' + result;
     } 
+}
+
+function DisplayInbox() {
+    let inboxBody = document.getElementById('inboxBody');
+    for (let message of user.inbox) {
+        let alert = document.createElement('div');
+        alert.className = 'alert alert-secondary alert-dismissible fade show m-1';
+        alert.setAttribute('role', 'alert');
+        let subject = document.createElement('h5');
+        subject.innerText = message.subject;
+        alert.appendChild(subject);
+        let sender = document.createElement('strong');
+        sender.className = 'me-3';
+        sender.innerText = message.sender;
+        alert.appendChild('sender');
+        let time = document.createElement('span');
+        time.innerText = message.datetime;
+        alert.appendChild('time');
+        let body = document.createElement('p');
+        body.innerText = message.message;
+        alert.appendChild('body');
+        let deleteButton = document.createElement('button');
+        deleteButton.className = 'btn btn-danger';
+        deleteButton.setAttribute('data-bs-dismiss', 'alert');
+        deleteButton.innerText = 'Delete';
+        deleteButton.value = message.message;
+        deleteButton.onclick = function() {
+            deleteMessage(this.value);
+        };
+        alert.appendChild(deleteButton);
+    }
+}
+
+function deleteMessage(messageBody) {
+    let messageIndex = user.inbox.findIndex(m => m.message == messageBody);
+    user.inbox.splice(messageIndex, 1);
+    UpdateUserInbox(user.username, user.inbox);
 }
 
 function DisplayCaptainInfo() {

@@ -63,7 +63,10 @@ export async function GetActiveUserInfo(idToken) {
         headers: {
             'Content-Type': 'application/json',
             'Authorization': idToken
-        }
+        },
+        body: JSON.stringify({
+            'operation': 'get_user'
+        })
     });
     const data = await response.json();
     if (data.error) {
@@ -441,6 +444,25 @@ export async function GetTransferHistory(roundNumber) {
         headers: {
             'Content-Type': 'application/json'        
         }
+    });
+    const data = await response.json();
+    if (data.error) {
+        DisplayFeedback('Error', data.error);
+    }
+    return data;
+}
+
+export async function UpdateUserInbox(username, inbox) {
+    const response = await fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/xrl-users', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'        
+        },
+        body: JSON.stringify({
+            'operation': 'update_inbox',
+            'username': username,
+            'inbox': inbox
+        })
     });
     const data = await response.json();
     if (data.error) {

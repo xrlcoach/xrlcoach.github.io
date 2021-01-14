@@ -7,7 +7,7 @@ import sys
 
 log = open('logs/process_waivers.log', 'a')
 sys.stdout = log
-print(f"Script executing at {date.today().strftime('%d/%m/%y')}")
+print(f"Script executing at {datetime.now().strftime('%c')}")
 
 dynamodbResource = boto3.resource('dynamodb', 'ap-southeast-2')
 squads_table = dynamodbResource.Table('players2020')
@@ -22,11 +22,12 @@ round_number = max([r['round_number'] for r in resp['Items']])
 print(f"Current round: {round_number}.")
 
 users = users_table.scan()['Items']
-print(users)
 
 #Sort users by waiver rank
 waiver_order = sorted(users, key=lambda u: u['waiver_rank'])
-print(waiver_order)
+print("Current waiver order:")
+for rank, user in enumerate(waiver_order, 1):
+    print(f"{rank}. {user['team_name']}")
 
 players_transferred = []
 users_who_picked = []
@@ -36,15 +37,18 @@ print("Processing waivers")
 for rank, user in enumerate(waiver_order, 1):
     #If user has already picked up a player, skip them
     if user['players_picked'] > 0:
-        print(f"{user['username']} already waivered one player this week")
+        print(f"{user['team_name']} already waivered one player this week")
         continue
     users_squad = squads_table.scan(
         FilterExpression=Attr('xrl_team').eq(user['team_short'])
     )['Items']
-    print(f"User {rank} - {user['username']}")
+    print(f"User {rank} - {user['team_name']}")
     preferences = user['waiver_preferences']
     gained_player = False
-
+    #If user didn't list any preferences, continue
+    if len(preferences) == 0:
+        print(f"{user['team_name']} chose not to waiver this week.")
+        continue
     #Iterate through user's waiver preferences
     for number, player in enumerate(preferences):
         player_info = squads_table.get_item(
@@ -53,8 +57,10 @@ for rank, user in enumerate(waiver_order, 1):
             }
         )['Item']
         pickable = False
+        print(f"{user['team_name']} want to sign {player_info['player_name']}.")
         #If player not already picked and available to be picked
         if player not in players_transferred and ('xrl_team' not in player_info.keys() or player_info['xrl_team'] == 'None' or player_info['xrl_team'] == 'On Waivers' or player_info['xrl_team'] == 'Pre-Waivers'):
+            print(f"{player_info['player_name']} is available.")
             if len(users_squad) == 18:
                 if user['provisional_drop'] == None:
                     print(f"{user['username']}'s squad already has 18 players and they haven't indicated a player to drop. Moving to next user.")
@@ -93,6 +99,8 @@ for rank, user in enumerate(waiver_order, 1):
                     pickable = True
             else:
                 pickable = True
+        else:
+            print(f"{player_info['player_name']} is not available.")
         if pickable:
             squads_table.update_item(
                 Key={
@@ -113,22 +121,16 @@ for rank, user in enumerate(waiver_order, 1):
                         'player_id': player
                     }
                 )
-            preferences.pop(number)
-            picked_player = squads_table.get_item(
-                Key={
-                    'player_id': player
-                }
-            )['Item']
             message = {
                 "sender": "XRL Admin",
                 "datetime": datetime.now().strftime("%c"),
                 "subject": "New Player",
-                "message": f"Congratulations! You picked up {picked_player['player_name']} in this week's waivers."
+                "message": f"Congratulations! You picked up {player_info['player_name']} in this week's waivers."
             }
             user['inbox'].append(message)
             gained_player = True
             players_transferred.append(player)
-            print(f"{user['username']} picked up {picked_player['player_name']}")
+            print(f"{user['username']} signed {player_info['player_name']}")
             break
     if gained_player:
         players_picked = 1

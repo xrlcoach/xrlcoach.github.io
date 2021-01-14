@@ -141,8 +141,18 @@
         <div class="row mt-5">
             <div class="col-lg card border border-secondary" id="inboxCard">
                 <h4 class="card-header bg-dark bg-gradient text-white">Inbox</h4>
-                <div class="card-body" id="inboxBody">
-                    
+                <div class="card-body">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Sent</th>
+                                <th>From</th>
+                                <th>Subject</th>
+                                <th colspan="2">Message</th>
+                            </tr>
+                        </thead>
+                        <tbody id="inboxBody"></tbody>
+                    </table>
                 </div>
             </div>
         </div>

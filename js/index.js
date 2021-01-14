@@ -101,32 +101,31 @@ function DisplayNextMatch() {
 
 function DisplayInbox() {
     let inboxBody = document.getElementById('inboxBody');
+    inboxBody.innerHTML = '';
     for (let message of user.inbox) {
-        let alert = document.createElement('div');
-        alert.className = 'alert alert-secondary alert-dismissible fade show m-1';
-        alert.setAttribute('role', 'alert');
-        let subject = document.createElement('h5');
-        subject.innerText = message.subject;
-        alert.appendChild(subject);
-        let sender = document.createElement('strong');
-        sender.className = 'me-3';
-        sender.innerText = message.sender;
-        alert.appendChild(sender);
-        let time = document.createElement('span');
+        let alert = document.createElement('tr');
+        let time = document.createElement('td');
         time.innerText = message.datetime;
         alert.appendChild(time);
-        let body = document.createElement('p');
+        let sender = document.createElement('td');
+        sender.innerText = message.sender;
+        alert.appendChild(sender);
+        let subject = document.createElement('td');
+        subject.innerText = message.subject;
+        alert.appendChild(subject);
+        let body = document.createElement('td');
         body.innerText = message.message;
         alert.appendChild(body);
+        let deleteCell = document.createElement('td');
         let deleteButton = document.createElement('button');
         deleteButton.className = 'btn btn-danger';
-        deleteButton.setAttribute('data-bs-dismiss', 'alert');
         deleteButton.innerText = 'Delete';
         deleteButton.value = message.message;
         deleteButton.onclick = function() {
             deleteMessage(this.value);
         };
-        alert.appendChild(deleteButton);
+        deleteCell.appendChild(deleteButton);
+        alert.appendChild(deleteCell);
         inboxBody.appendChild(alert);
     }
 }
@@ -135,6 +134,7 @@ function deleteMessage(messageBody) {
     let messageIndex = user.inbox.findIndex(m => m.message == messageBody);
     user.inbox.splice(messageIndex, 1);
     UpdateUserInbox(user.username, user.inbox);
+    DisplayInbox();
 }
 
 function DisplayCaptainInfo() {

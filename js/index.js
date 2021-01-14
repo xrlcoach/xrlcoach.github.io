@@ -111,13 +111,13 @@ function DisplayInbox() {
         let sender = document.createElement('strong');
         sender.className = 'me-3';
         sender.innerText = message.sender;
-        alert.appendChild('sender');
+        alert.appendChild(sender);
         let time = document.createElement('span');
         time.innerText = message.datetime;
-        alert.appendChild('time');
+        alert.appendChild(time);
         let body = document.createElement('p');
         body.innerText = message.message;
-        alert.appendChild('body');
+        alert.appendChild(body);
         let deleteButton = document.createElement('button');
         deleteButton.className = 'btn btn-danger';
         deleteButton.setAttribute('data-bs-dismiss', 'alert');

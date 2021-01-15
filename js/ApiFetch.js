@@ -513,6 +513,24 @@ export async function ProcessTradeOffer(offerId, accepted = false) {
     return data;
 }
 
+export async function WithdrawTradeOffer(offerId) {
+    const response = await fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/transfers', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'        
+        },
+        body: JSON.stringify({
+            'operation': 'withdraw_trade',
+            'offer_id': offerId
+        })
+    });
+    const data = await response.json();
+    if (data.error) {
+        DisplayFeedback('Error', data.error);
+    }
+    return data;
+}
+
 export async function UpdateUserInbox(username, inbox) {
     const response = await fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/xrl-users', {
         method: 'POST',

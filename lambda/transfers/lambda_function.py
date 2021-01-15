@@ -158,7 +158,35 @@ def lambda_handler(event, context):
                         },
                         'body': json.dumps({"error": str(e)})
                     }
-        if body['operation'] == 'process_trade':
+        if operation == 'withdraw_trade':
+            try:
+                trades_table.update_item(
+                    Key={'offer_id': body['offer_id']},
+                    UpdateExpression="set offer_status=:w",
+                    ExpressionAttributeValues={':w': 'Withdrawn'}
+                )
+                return {
+                        'statusCode': 200,
+                        'headers': {
+                        'Access-Control-Allow-Headers': 'Content-Type',
+                        'Access-Control-Allow-Origin': '*',
+                        'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
+                        },
+                        'body': json.dumps({"success": "Trade withdrawn"})
+                    }
+            except Exception as e:
+                print("ERROR: " + str(e))
+                return {
+                        'statusCode': 200,
+                        'headers': {
+                        'Access-Control-Allow-Headers': 'Content-Type',
+                        'Access-Control-Allow-Origin': '*',
+                        'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
+                        },
+                        'body': json.dumps({"error": str(e)})
+                    }
+
+        if operation == 'process_trade':
             try:
                 rounds = rounds_table.scan(
                     FilterExpression=Attr('active').eq(True)
@@ -166,6 +194,8 @@ def lambda_handler(event, context):
                 round_number = max([r['round_number'] for r in rounds])
                 outcome = body['outcome']
                 offer = trades_table.get_item(Key={'offer_id': body['offer_id']})['Item']
+                if offer['offer_status'] != 'Pending':
+                    raise Exception("Trade has already been processed/withdrawn.")
                 user_offered_by = users_table.get_item(Key={'username': offer['offered_by']})["Item"]
                 user_offered_to = users_table.get_item(Key={'username': offer['offered_to']})['Item']
                 if outcome == 'Accepted':
@@ -181,7 +211,12 @@ def lambda_handler(event, context):
                     if len(user_offered_to_squad) - len(offer['players_wanted']) + len(offer['players_offered']) > 18:
                         raise Exception(f"The trade would result in {user_offered_to['team_name']} having too many players.")
                     print("Squad sizes ok. Transferring players.")
+                    pending_trades = trades_table.scan(
+                        FilterExpression=Attr('offer_status').eq('Pending')
+                    )['Items']
+                    pending_trades = [t for t in pending_trades if t['offer_id'] != offer['offer_id']]
                     for player_id in offer['players_offered']:
+                        pending_trades = [t for t in pending_trades if t['offer_status'] == 'Pending']
                         players_table.update_item(
                                     Key={
                                         'player_id': player_id,
@@ -190,6 +225,34 @@ def lambda_handler(event, context):
                                     ExpressionAttributeValues={
                                         ':x': user_offered_to['team_short']
                                     }
+                                )
+                        for trade in pending_trades:
+                            if player_id in trade['players_offered'] or player_id in trade['players_wanted']:
+                                print(f"Player with ID {player_id} was part of offer with ID {trade['offer_id']}. Withdrawing that trade offer.")
+                                trade['offer_status'] = 'Withdrawn'
+                                trades_table.update_item(
+                                    Key={
+                                        'offer_id': trade['offer_id']
+                                    },
+                                    UpdateExpression="set offer_status=:c",
+                                    ExpressionAttributeValues={':c': 'Withdrawn'}
+                                )
+                                withdrawn_offer_user = users_table.get_item(
+                                    Key={'username': trade['offered_by']}
+                                )['Item']
+                                withdrawn_offer_target = users_table.get_item(
+                                    Key={'username': trade['offered_to']}
+                                )['Item']
+                                withdrawn_offer_user['inbox'].append({
+                                    "sender": 'XRL Admin',
+                                    "datetime": datetime.now().strftime("%c"),
+                                    "subject": "Trade Offer Withdrawn",
+                                    "message": f"Your trade offer to {withdrawn_offer_target['team_name']} was withdrawn because one of the players signed for another club."
+                                })
+                                users_table.update_item(
+                                    Key={'username': withdrawn_offer_user['username']},
+                                    UpdateExpression="set inbox=:i",
+                                    ExpressionAttributeValues={':i': withdrawn_offer_user['inbox']}
                                 )
                         transfers_table.put_item(
                             Item={
@@ -203,6 +266,7 @@ def lambda_handler(event, context):
                             }
                         )
                     for player_id in offer['players_wanted']:
+                        pending_trades = [t for t in pending_trades if t['offer_status'] == 'Pending']
                         players_table.update_item(
                                     Key={
                                         'player_id': player_id,
@@ -211,6 +275,34 @@ def lambda_handler(event, context):
                                     ExpressionAttributeValues={
                                         ':x': user_offered_by['team_short']
                                     }
+                                )
+                        for trade in pending_trades:
+                            if player_id in trade['players_offered'] or player_id in trade['players_wanted']:
+                                print(f"Player with ID {player_id} was part of offer with ID {trade['offer_id']}. Withdrawing that trade offer.")
+                                trade['offer_status'] = 'Withdrawn'
+                                trades_table.update_item(
+                                    Key={
+                                        'offer_id': trade['offer_id']
+                                    },
+                                    UpdateExpression="set offer_status=:c",
+                                    ExpressionAttributeValues={':c': 'Withdrawn'}
+                                )
+                                withdrawn_offer_user = users_table.get_item(
+                                    Key={'username': trade['offered_by']}
+                                )['Item']
+                                withdrawn_offer_target = users_table.get_item(
+                                    Key={'username': trade['offered_to']}
+                                )['Item']
+                                withdrawn_offer_user['inbox'].append({
+                                    "sender": 'XRL Admin',
+                                    "datetime": datetime.now().strftime("%c"),
+                                    "subject": "Trade Offer Withdrawn",
+                                    "message": f"Your trade offer to {withdrawn_offer_target['team_name']} was withdrawn because one of the players signed for another club."
+                                })
+                                users_table.update_item(
+                                    Key={'username': withdrawn_offer_user['username']},
+                                    UpdateExpression="set inbox=:i",
+                                    ExpressionAttributeValues={':i': withdrawn_offer_user['inbox']}
                                 )
                         transfers_table.put_item(
                             Item={

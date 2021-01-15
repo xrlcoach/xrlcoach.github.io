@@ -1,4 +1,4 @@
-import { GetActiveUserTeamShort, GetAllUsers, getCookie, GetPlayerById, GetPlayersFromXrlTeam, GetTransferHistory, GetUserTradeOffers, ProcessTradeOffer, SendTradeOffer, UpdateUserWaiverPreferences } from "./ApiFetch.js";
+import { GetActiveUserTeamShort, GetAllUsers, getCookie, GetPlayerById, GetPlayersFromXrlTeam, GetTransferHistory, GetUserTradeOffers, ProcessTradeOffer, SendTradeOffer, UpdateUserWaiverPreferences, WithdrawTradeOffer } from "./ApiFetch.js";
 import { DisplayFeedback } from "./Helpers.js";
 
 let roundNumber, allUsers, user, squad, waiverPreferences = [], provisionalDrop, tradeOffers, tradeOffersToDisplay, transferHistory;
@@ -79,6 +79,14 @@ function DisplayTradeOffers() {
                 offerText.innerText = offeredTo.team_name + ' rejected your generous trade offer.';
             } else {
                 offerText.innerText = 'You rejected an insulting trade offer from ' + offeredBy.team_name + '.';
+            }
+        }
+        else if (offer.offer_status == 'Withdrawn') {
+            offerDisplay.className = 'alert alert-danger';
+            if (offer.offered_by == user.username) {
+                offerText.innerText = 'Your trade offer to ' + offeredTo.team_name + ' has been withdrawn.';
+            } else {
+                offerText.innerText = 'The trade offer from ' + offeredBy.team_name + ' has been withdrawn.';
             }
         }
         offerContent.appendChild(offerText);
@@ -248,28 +256,49 @@ async function DisplayOfferDetails(offerId) {
     }
     document.getElementById('tradeInfoOfferedPowerplays').innerText = offer.powerplays_offered;
     document.getElementById('tradeInfoWantedPowerplays').innerText = offer.powerplays_wanted;
-    if (offer.offer_status == 'Pending' && user.username == offeredTo.username) {
-        document.getElementById('tradeInfoFooter').hidden = false;
+    if (offer.offer_status == 'Pending') {
         let rejectButton = document.getElementById('tradeInfoRejectButton');
-        rejectButton.onclick = async function() {
-            let data = await ProcessTradeOffer(offer.offer_id, false);
-            if (data.error) {
-                DisplayFeedback('Error', data.error);
-                return;
-            }
-            DisplayFeedback('Rejected', 'Trade offer rejected.', true, function() {location.reload()}, false);
-        }
         let acceptButton = document.getElementById('tradeInfoAcceptButton');
-        acceptButton.onclick = function() {
-            DisplayFeedback('Confirm', 'Are you sure you want to accept this trade offer?', true, async function() {
-                let data = await ProcessTradeOffer(offer.offer_id, true);
+        let withdrawButton = document.getElementById('tradeInfoWithdrawButton');
+        if (user.username == offeredTo.username) {
+            withdrawButton.hidden = true;
+            document.getElementById('tradeInfoFooter').hidden = false;
+            rejectButton.onclick = async function() {
+                let data = await ProcessTradeOffer(offer.offer_id, false);
                 if (data.error) {
                     DisplayFeedback('Error', data.error);
                     return;
                 }
-                DisplayFeedback('Success', 'Trade completed!', true, function() {location.reload()}, false);
-            });
-        };
+                DisplayFeedback('Rejected', 'Trade offer rejected.', true, function() {location.reload()}, false);
+            }
+            rejectButton.hidden = false;
+            acceptButton.onclick = function() {
+                DisplayFeedback('Confirm', 'Are you sure you want to accept this trade offer?', true, async function() {
+                    let data = await ProcessTradeOffer(offer.offer_id, true);
+                    if (data.error) {
+                        DisplayFeedback('Error', data.error);
+                        return;
+                    }
+                    DisplayFeedback('Success', 'Trade completed!', true, function() {location.reload()}, false);
+                });
+            };
+            acceptButton.hidden = false;
+        }
+        else if (user.username == offeredBy.username) {
+            document.getElementById('tradeInfoFooter').hidden = false;
+            rejectButton.hidden = true;
+            acceptButton.hidden = true;
+            withdrawButton.onclick = function() {
+                DisplayFeedback('Confirm', 'Are you sure you want to withdraw this trade offer?', true, async function() {
+                    let data = await WithdrawTradeOffer(offer.offer_id);
+                    if (data.error) {
+                        DisplayFeedback('Error', data.error);
+                        return;
+                    }
+                    DisplayFeedback('Success', 'Trade offer withdrawn.', true, function() {location.reload()}, false);
+                });
+            }
+        }
     } else {
         document.getElementById('tradeInfoFooter').hidden = true;
     }

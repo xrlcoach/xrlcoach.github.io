@@ -242,13 +242,13 @@ async function DisplayOfferDetails(offerId) {
     if (offer.status == 'Pending') {
         document.getElementById('tradeInfoFooter').hidden = false;
         let reject = document.getElementById('tradeInfoRejectButton');
-        acceptButton.onclick = function() {
+        acceptButton.onclick = async function() {
             await ProcessTradeOffer(offer.offer_id, false);
             DisplayFeedback('Rejected', 'Trade offer rejected.', true, function() {location.reload()});
         }
         let acceptButton = document.getElementById('tradeInfoAcceptButton');
         acceptButton.onclick = function() {
-            DisplayFeedback('Confirm', 'Are you sure you want to accept this trade offer?', true, function() {
+            DisplayFeedback('Confirm', 'Are you sure you want to accept this trade offer?', true, async function() {
                 await ProcessTradeOffer(offer.offer_id, true);
                 DisplayFeedback('Success', 'Trade completed!', true, function() {location.reload()});
             }, true);
@@ -259,7 +259,7 @@ async function DisplayOfferDetails(offerId) {
     tradeInfoModal.show();
 }
 
-async function DisplayTradeForm() {
+function DisplayTradeForm() {
     let tradeForm = new bootstrap.Modal(document.getElementById('tradeForm'));
     allUsers.forEach(u => {
         let li = document.createElement('li');
@@ -267,7 +267,7 @@ async function DisplayTradeForm() {
         option.className = 'dropdown-item';
         option.href = '#';
         option.value = u.team_short;
-        option.onclick = function() {
+        option.onclick = async function() {
             tradeTarget = u;
             await populatePlayerRequestOptions(this.value);
         }
@@ -369,9 +369,9 @@ function removePowerplaysRequested() {
 }
 window.removePowerplaysRequested = removePowerplaysRequested;
 
-async function SubmitTradeOffer() {
+function SubmitTradeOffer() {
     DisplayFeedback('Confirm', 'Are you sure you want to send this trade ofer to ' + tradeTarget.team_name + '?',
-    true, function() {
+    true, async function() {
         await SendTradeOffer(user.username, tradeTarget.username,
             playersOffered.map(p => p.player_id), playersRequested.map(p => p.player_id),
             powerplaysOffered, powerplaysWanted);

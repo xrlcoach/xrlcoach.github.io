@@ -242,7 +242,7 @@ async function DisplayOfferDetails(offerId) {
     }
     document.getElementById('tradeInfoOfferedPowerplays').innerText = offer.powerplays_offered;
     document.getElementById('tradeInfoWantedPowerplays').innerText = offer.powerplays_wanted;
-    if (offer.status == 'Pending') {
+    if (offer.status == 'Pending' && user.username == offeredTo.username) {
         document.getElementById('tradeInfoFooter').hidden = false;
         let reject = document.getElementById('tradeInfoRejectButton');
         acceptButton.onclick = async function() {

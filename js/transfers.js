@@ -247,8 +247,8 @@ async function DisplayOfferDetails(offerId) {
     document.getElementById('tradeInfoWantedPowerplays').innerText = offer.powerplays_wanted;
     if (offer.status == 'Pending' && user.username == offeredTo.username) {
         document.getElementById('tradeInfoFooter').hidden = false;
-        let reject = document.getElementById('tradeInfoRejectButton');
-        acceptButton.onclick = async function() {
+        let rejectButton = document.getElementById('tradeInfoRejectButton');
+        rejectButton.onclick = async function() {
             await ProcessTradeOffer(offer.offer_id, false);
             DisplayFeedback('Rejected', 'Trade offer rejected.', true, function() {location.reload()});
         }

@@ -268,7 +268,7 @@ async function DisplayOfferDetails(offerId) {
                     return;
                 }
                 DisplayFeedback('Success', 'Trade completed!', true, function() {location.reload()});
-            }, false);
+            });
         };
     } else {
         document.getElementById('tradeInfoFooter').hidden = true;

@@ -94,7 +94,7 @@ def lambda_handler(event, context):
                         'players_wanted': body['players_wanted'],
                         'powerplays_offered': body['powerplays_offered'],
                         'powerplays_wanted': body['powerplays_wanted'],
-                        'status': 'Pending'
+                        'offer_status': 'Pending'
                     }
                 )
                 print('Sending message to user')
@@ -104,7 +104,7 @@ def lambda_handler(event, context):
                     'sender': user_offered_by['team_name'],
                     'datetime': datetime.now().strftime('%c'),
                     'subject': 'Trade Offer',
-                    'message': user_offered_by['team_name'] + " has offered you a trade."
+                    'message': user_offered_by['team_name'] + " has offered you a trade. You can view the offer in the Transfer Centre."
                 })
                 users_table.update_item(
                     Key={'username': user_offered_to['username']},
@@ -225,9 +225,15 @@ def lambda_handler(event, context):
                         )
                     print("Players transferred. Updating powerplays.")
                     users_table.update_item(Key={'username': user_offered_by['username']},
-                        UpdateExpression="set powerplays=powerplays+:pw", ExpressionAttributeValues={':pw': offer['powerplays_wanted']})
+                        UpdateExpression="set powerplays=powerplays+:pw-:po", ExpressionAttributeValues={
+                            ':pw': offer['powerplays_wanted'],
+                            ':po': offer['powerplays_offered']
+                            })
                     users_table.update_item(Key={'username': user_offered_to['username']},
-                        UpdateExpression="set powerplays=powerplays+:pw", ExpressionAttributeValues={':pw': offer['powerplays_offered']})                 
+                        UpdateExpression="set powerplays=powerplays+:po-:pw", ExpressionAttributeValues={
+                            ':pw': offer['powerplays_wanted'],
+                            ':po': offer['powerplays_offered']
+                            })                 
                     user_offered_by_message = {
                         "sender": user_offered_to['team_name'],
                         "datetime": datetime.now().strftime("%c"),
@@ -242,11 +248,11 @@ def lambda_handler(event, context):
                         "subject": "Trade Rejected",
                         "message": "Tell him he's dreaming."
                     }
-                print('Updating offer record in transfers table')
+                print('Updating offer status to ' + outcome)
                 trades_table.update_item(
                         Key={'offer_id': offer['offer_id']},
-                        UpdateExpression="set status=:s",
-                        ExpressionAttributeValues={':s': body['outcome']}
+                        UpdateExpression="set offer_status=:s",
+                        ExpressionAttributeValues={':s': outcome}
                     )
                 print('Sending message to offering user.')
                 user_offered_by['inbox'].append(user_offered_by_message)

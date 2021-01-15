@@ -51,7 +51,7 @@ function DisplayTradeOffers() {
         offerContent.appendChild(offerTime);
         let offerText = document.createElement('span');
         offerText.className = 'mx-2 ';
-        if (offer.status == 'Pending') {
+        if (offer.offer_status == 'Pending') {
             offerDisplay.className = 'alert alert-warning';
             if (offer.offered_by == user.username) {
                 if (offer.players_offered.length > 1 || offer.players_wanted.length > 1) {
@@ -62,7 +62,7 @@ function DisplayTradeOffers() {
                 offerText.innerText = offeredBy.team_name + ' offered you a trade.';
             }
         }
-        else if (offer.status == 'Accepted') {
+        else if (offer.offer_status == 'Accepted') {
             offerDisplay.className = 'alert alert-success';
             if (offer.offered_by == user.username) {
                 offerText.innerText = offeredTo.team_name + ' accepted your trade offer.';
@@ -70,7 +70,7 @@ function DisplayTradeOffers() {
                 offerText.innerText = 'You accepted a trade offer from ' + offeredBy.team_name + '.';
             }
         }
-        else if (offer.status == 'Rejected') {
+        else if (offer.offer_status == 'Rejected') {
             offerDisplay.className = 'alert alert-danger';
             if (offer.offered_by == user.username) {
                 offerText.innerText = offeredTo.team_name + ' rejected your generous trade offer.';
@@ -81,7 +81,7 @@ function DisplayTradeOffers() {
         offerContent.appendChild(offerText);
         let offerStatus = document.createElement('span');
         offerStatus.className = 'mx-2';
-        offerStatus.innerText = 'Status: ' + offer.status;
+        offerStatus.innerText = 'Status: ' + offer.offer_status;
         offerContent.appendChild(offerStatus);
         let viewButton = document.createElement('button');
         viewButton.className = 'btn btn-success mx-2';
@@ -227,8 +227,8 @@ async function DisplayOfferDetails(offerId) {
     let offeredTo = allUsers.find(u => u.username == offer.offered_to);
     let userOffer = offeredBy.username == user.username;
     document.getElementById('tradeInfoOfferedBy').innerText = offeredBy.team_name;
-    document.getElementById('tradeInfoStatus').innerText = offer.status;
-    document.getElementById('tradeInfoStatus').style.color = offer.status == 'Accepted' ? 'green' : offer.status == 'Rejected' ? '#c94d38' : '';
+    document.getElementById('tradeInfoStatus').innerText = offer.offer_status;
+    document.getElementById('tradeInfoStatus').style.color = offer.offer_status == 'Accepted' ? 'green' : offer.offer_status == 'Rejected' ? '#c94d38' : '';
     // document.getElementById('tradeInfoOfferedByShort').innerText = offeredBy.team_short;
     // document.getElementById('tradeInfoOfferedToShort').innerText = offeredTo.team_short;
     for (let id of offer.players_offered) {
@@ -245,7 +245,7 @@ async function DisplayOfferDetails(offerId) {
     }
     document.getElementById('tradeInfoOfferedPowerplays').innerText = offer.powerplays_offered;
     document.getElementById('tradeInfoWantedPowerplays').innerText = offer.powerplays_wanted;
-    if (offer.status == 'Pending' && user.username == offeredTo.username) {
+    if (offer.offer_status == 'Pending' && user.username == offeredTo.username) {
         document.getElementById('tradeInfoFooter').hidden = false;
         let rejectButton = document.getElementById('tradeInfoRejectButton');
         rejectButton.onclick = async function() {

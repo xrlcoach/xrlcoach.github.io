@@ -105,6 +105,14 @@
             </div>
         </div>
         <div class="row mt-5">
+            <div class="col-lg card border border-secondary" id="tradeOffers">
+                <h4 class="card-header bg-dark bg-gradient text-white">Trade Offers</h4>
+                <div class="card-body" id="tradeOffersBody">
+                </div>
+                <button class="btn btn-success" onclick="DisplayTradeForm()">Offer New Trade</button>
+            </div>
+        </div>
+        <div class="row mt-5">
             <div class="col-lg card border border-secondary" id="transferHistory">
                 <h4 class="card-header bg-dark bg-gradient text-white">Latest Transfers</h4>
                 <div class="card-body">
@@ -120,14 +128,122 @@
         Data provided by <a href="https://www.nrl.com">NRL.com</a>. View <a
             href="https://www.nrl.com/terms-of-use">NRL’s Terms of Use</a>.
     </footer>
+    <div class="modal fade" id="tradeInfo" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-info bg-gradient text-white">
+                    <h2 class="modal-title" id="tradeInfoTitle">Trade Offer</h2>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="tradeInfoBody">
+                    <div class="row">
+                        <div class="col">
+                            <h5>Trade Offered By: <span id="tradeInfoOfferedBy"></span></h5>
+                            <h5>Status: <span id="tradeInfoStatus"></span></h5>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <h5 id="tradeInfoOfferedByShort"></h5>
+                        </div>
+                        <div class="col">
+                            <h5 id="tradeInfoOfferedToShort"></h5>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <h6>Players:</h6>
+                            <ul id="trafeInfoOfferedPlayers"></ul>
+                            <h6>Powerplays: <span id="tradeInfoOfferedPowerplays"></span></h6>
+                        </div>
+                        <div class="col">
+                            <h6>Players:</h6>
+                            <ul id="trafeInfoWantedPlayers"></ul>
+                            <h6>Powerplays: <span id="tradeInfoWantedPowerplays"></span></h6>
+                        </div>
+                    </div>
+                    <div class="modal-footer" id="tradeInfoFooter" hidden>
+                        <button type="button" class="btn btn-danger" id="tradeInfoRejectButton">Reject</button>
+                        <button type="button" class="btn btn-success" id="tradeInfoAcceptButton">Accept</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="tradeForm" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-info bg-gradient text-white">
+                    <h2 class="modal-title" id="tradeFormTitle">New Trade Offer</h2>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="tradeFormBody">
+                    <div class="row">
+                        <div class="col">
+                            <h5>Offer Trade To:</h5>
+                        </div>
+                        <div class="col">
+                            <div class="dropdown">
+                                <button class="btn btn-success dropdown-toggle" type="button" id="xrlTeamSelectButton"
+                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                    Select XRL Team
+                                </button>
+                                <ul id="xrlTeamSelect" class="dropdown-menu dropdown-menu-dark" aria-labelledby="dropdownMenuButton"></ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <h5>Offer</h5>
+                        </div>
+                        <div class="col">
+                            <h5>For</h5>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <select id="tradeFormOfferPlayersSelect"></select>
+                            <button id="tradeFormOfferPlayerButton" onclick="addPlayerToPlayersOffered()">Add Player</button>
+                            <br />
+                            <button id="tradeFormOfferPowerplayButton" onclick="addPowerplayToOffer()">Add Powerplay</button>
+                        </div>
+                        <div class="col">
+                            <select id="tradeFormRequestPlayersSelect"></select>
+                            <button id="tradeFormRequestPlayerButton" onclick="addPlayerToPlayersRequested()">Add Player</button>
+                            <br />
+                            <button id="tradeFormRequestPowerplayButton" onclick="addPowerplayToRequest()">Add Powerplay</button>
+                        </div>
+                    </div>
+                    <div class="row border">
+                        <div class="col">
+                            <h6>Players:</h6>
+                            <ul id="trafeFormOfferedPlayers"></ul>
+                            <h6>Powerplays: <span id="tradeFormOfferedPowerplays"></span><button class="btn btn-close mx-1" onclick="removePowerplaysOffered()"></button></h6>
+                        </div>
+                        <div class="col">
+                            <h6>Players:</h6>
+                            <ul id="trafeFormWantedPlayers"></ul>
+                            <h6>Powerplays: <span id="tradeFormWantedPowerplays"></span><button class="btn btn-close mx-1" onclick="removePowerplaysRequested()"></button></h6>
+                        </div>
+                    </div>
+                    <div class="modal-footer" id="tradeFormFooter" hidden>
+                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal" id="tradeFormCancelButton">Cancel</button>
+                        <button type="button" class="btn btn-success" id="tradeFormSubmitButton" onclick="SubmitTradeOffer()">Send Offer</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="modal fade" id="playerInfo" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
         aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
                 <div class="modal-header bg-success bg-gradient text-white">
                     <h2 class="modal-title" id="playerInfoTitle">
-                        </h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </h2>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body" id="playerInfoBody">
                     <div class="row">
@@ -173,10 +289,12 @@
                                             <p>Tries: <span id="playerTries" style="color: green;"></span></p>
                                         </div>
                                         <div class="col-md-4">
-                                            <p>Involvement Tries: <span id="playerITs" style="color: green;"></span></p>
+                                            <p>Involvement Tries: <span id="playerITs" style="color: green;"></span>
+                                            </p>
                                         </div>
                                         <div class="col-md-4">
-                                            <p>Positional Tries: <span id="playerPTs" style="color: green;"></span></p>
+                                            <p>Positional Tries: <span id="playerPTs" style="color: green;"></span>
+                                            </p>
                                         </div>
                                     </div>
                                     <div class="row align-items-start">
@@ -192,13 +310,15 @@
                                             <p>MIAs: <span id="playerMIAs" style="color: #c94d38;"></span></p>
                                         </div>
                                         <div class="col-md-4">
-                                            <p>Concedes: <span id="playerConcedes" style="color: #c94d38;"></span></p>
+                                            <p>Concedes: <span id="playerConcedes" style="color: #c94d38;"></span>
+                                            </p>
                                         </div>
                                         <div class="col-md-2">
                                             <p>Sin Bins: <span id="playerSinBins" style="color: orange;"></span></p>
                                         </div>
                                         <div class="col-md-2">
-                                            <p>Send Offs: <span id="playerSendOffs" style="color: #c94d38;"></span></p>
+                                            <p>Send Offs: <span id="playerSendOffs" style="color: #c94d38;"></span>
+                                            </p>
                                         </div>
                                     </div>
                                     <div class="row justify-content-start mt-2">
@@ -206,7 +326,8 @@
                                             <p>
                                                 <button class="btn btn-success" type="button" data-bs-toggle="collapse"
                                                     data-bs-target="#playerAllStatsDisplay" aria-expanded="false"
-                                                    aria-controls="playerAllStatsDisplay" id="allStatsToggle">Show All
+                                                    aria-controls="playerAllStatsDisplay" id="allStatsToggle">Show
+                                                    All
                                                     Stats</button>
                                             </p>
                                         </div>

@@ -1,7 +1,8 @@
-import { GetActiveUserTeamShort, GetAllUsers, getCookie, GetPlayerById, GetPlayersFromXrlTeam, GetTransferHistory, UpdateUserWaiverPreferences } from "./ApiFetch.js";
+import { GetActiveUserTeamShort, GetAllUsers, getCookie, GetPlayerById, GetPlayersFromXrlTeam, GetTransferHistory, GetUserTradeOffers, ProcessTradeOffer, SendTradeOffer, UpdateUserWaiverPreferences } from "./ApiFetch.js";
 import { DisplayFeedback } from "./Helpers.js";
 
-let roundNumber, allUsers, user, squad, waiverPreferences = [], provisionalDrop, transferHistory;
+let roundNumber, allUsers, user, squad, waiverPreferences = [], provisionalDrop, tradeOffers, transferHistory;
+let tradeTarget, targetPlayers, playersOffered = [], playersRequested = [], powerplaysOffered = 0, powerplaysWanted = 0;
 
 window.onload = async () => {
     try {
@@ -13,8 +14,10 @@ window.onload = async () => {
             waiverPreferences.push(await GetPlayerById(playerId));
         };
         provisionalDrop = user.provisional_drop;
+        tradeOffers = await GetUserTradeOffers(user.username);
         transferHistory = await GetTransferHistory();
         DisplayUserWaiverInfo();
+        DisplayTradeOffers();
         DisplayTransferHistory(transferHistory.filter(t => t.round_number == roundNumber).sort((t1, t2) => {
             return new Date(t2.datetime) - new Date(t1.datetime);
         }));
@@ -29,6 +32,63 @@ function DisplayUserWaiverInfo() {
     document.getElementById('teamWaiverRank').innerText = user.waiver_rank;
     PopulateWaiverPreferencesTable();
     PopulateProvisionalDropOptions();
+}
+
+function DisplayTradeOffers() {
+    let tradeBody = document.getElementById('tradeOffersBody');
+    if (tradeOffers.length == 0) {
+        tradeBody.innerText = 'No active trade offers.';
+        return;
+    }
+    for (let offer of tradeOffers) {
+        let offeredBy = allUsers.find(u => u.username == offer.offered_by);
+        let offeredTo = allUsers.find(u => u.username == offer.offered_to);
+        let offerDisplay = document.createElement('div');
+        let offerContent = document.createElement('p');
+        let offerTime = document.createElement('span');
+        offerTime.className = 'mx-2';
+        offerTime.innerText = 'Date: ' + new Date(offer.datetime).toLocaleDateString();
+        offerContent.appendChild(offerTime);
+        let offerStatus = document.createElement('span');
+        offerStatus.className = 'mx-2';
+        offerStatus.innerText = 'Status: ' + offer.status;
+        offerContent.appendChild(offerStatus);
+        let offerText = document.createElement('span');
+        offerText.className = 'mx-2';
+        if (offer.status == 'Pending') {
+            offerDisplay.className = 'alert alert-warning';
+            if (offer.offered_by == user.username) {
+                offerText.innerText = 'Waiting on a response from ' + offeredTo.team_name + '.';
+            } else {
+                offerText.innerText = offeredBy.team_name + ' offered you a trade.';
+            }
+        }
+        else if (offer.status == 'Accepted') {
+            offerDisplay.className = 'alert alert-success';
+            if (offer.offered_by == user.username) {
+                offerText.innerText = offeredTo.team_name + ' accepted your trade offer.';
+            } else {
+                offerText.innerText = 'You accepted a trade offer from ' + offeredBy.team_name + '.';
+            }
+        }
+        else if (offer.status == 'Rejected') {
+            offerDisplay.className = 'alert alert-danger';
+            if (offer.offered_by == user.username) {
+                offerText.innerText = offeredTo.team_name + ' rejected your generous trade offer.';
+            } else {
+                offerText.innerText = 'You rejected an insulting trade offer from ' + offeredBy.team_name + '.';
+            }
+        }
+        offerContent.appendChild(offerText);
+        let viewButton = document.createElement('button');
+        viewButton.className = 'btn btn-success mx-2';
+        viewButton.value = offer.offer_id;
+        viewButton.innerText = 'View';
+        viewButton.onclick = function() {
+            DisplayOfferDetails(this.value);
+        }
+    }
+
 }
 
 function PopulateWaiverPreferencesTable() {
@@ -153,3 +213,169 @@ async function submitWaiverPreferences() {
     }
 }
 window.submitWaiverPreferences = submitWaiverPreferences;
+
+async function DisplayOfferDetails(offerId) {
+    let tradeInfoModal = new bootstrap.Modal(document.getElementById('tradeInfo'));
+    let offer = tradeOffers.find(t => t.offer_id == offerId);
+    let offeredBy = allUsers.find(u => u.username == offer.offered_by);
+    let offeredTo = allUsers.find(u => u.username == offer.offered_to);
+    let userOffer = offeredBy.username == user.username;
+    document.getElementById('tradeInfoOfferedBy').innerText = offered_by.team_name;
+    document.getElementById('tradeInfoStatus').innerText = offer.status;
+    document.getElementById('tradeInfoStatus').style.color = offer.status == 'Accepted' ? 'green' : offer.status == 'Rejected' ? '#c94d38' : '';
+    document.getElementById('tradeInfoOfferedByShort').innerText = offeredBy.team_short;
+    document.getElementById('tradeInfoOfferedToShort').innerText = offeredTo.team_short;
+    offer.players_offered.forEach(id => {
+        let player = userOffer ? squad.find(p => p.player_id == id) : await GetPlayerById(id);
+        let li = document.createElement('li');
+        li.innerText = player.player_name;
+        document.getElementById('trafeInfoOfferedPlayers').appendChild(li);
+    })
+    offer.players_wanted.forEach(id => {
+        let player = userOffer ? await GetPlayerById(id) : squad.find(p => p.player_id == id);
+        let li = document.createElement('li');
+        li.innerText = player.player_name;
+        document.getElementById('trafeInfoWantedPlayers').appendChild(li);
+    })
+    document.getElementById('tradeInfoOfferedPowerplays').innerText = offer.powerplays_offered;
+    document.getElementById('tradeInfoWantedPowerplays').innerText = offer.powerplays_wanted;
+    if (offer.status == 'Pending') {
+        document.getElementById('tradeInfoFooter').hidden = false;
+        let reject = document.getElementById('tradeInfoRejectButton');
+        acceptButton.onclick = function() {
+            await ProcessTradeOffer(offer.offer_id, false);
+            DisplayFeedback('Rejected', 'Trade offer rejected.', true, function() {location.reload()});
+        }
+        let acceptButton = document.getElementById('tradeInfoAcceptButton');
+        acceptButton.onclick = function() {
+            DisplayFeedback('Confirm', 'Are you sure you want to accept this trade offer?', true, function() {
+                await ProcessTradeOffer(offer.offer_id, true);
+                DisplayFeedback('Success', 'Trade completed!', true, function() {location.reload()});
+            }, true);
+        };
+    } else {
+        document.getElementById('tradeInfoFooter').hidden = true;
+    }
+    tradeInfoModal.show();
+}
+
+async function DisplayTradeForm() {
+    let tradeForm = new bootstrap.Modal(document.getElementById('tradeForm'));
+    allUsers.forEach(u => {
+        let li = document.createElement('li');
+        let option = document.createElement('a');
+        option.className = 'dropdown-item';
+        option.href = '#';
+        option.value = u.team_short;
+        option.onclick = function() {
+            tradeTarget = u;
+            await populatePlayerRequestOptions(this.value);
+        }
+        li.appendChild(option);
+        document.getElementById('xrlTeamSelect').appendChild(li);
+    });
+    squad.forEach(p => {
+        let option = document.createElement('option');
+        option.value = p.player_id;
+        option.innerText = p.player_name;
+        document.getElementById('tradeFormOfferPlayersSelect').appendChild(option);
+    });
+    populateOfferFields();
+}
+window.DisplayTradeForm = DisplayTradeForm;
+
+async function populatePlayerRequestOptions(team_short) {
+    targetPlayers = await GetPlayersFromXrlTeam(team_short);
+    document.getElementById('tradeFormRequestPlayersSelect').innerHTML = '';
+    playersToRequest.forEach(p => {
+        let option = document.createElement('option');
+        option.value = p.player_id;
+        option.innerText = p.player_name;
+        document.getElementById('tradeFormRequestPlayersSelect').appendChild(option);
+    });
+}
+
+function populateOfferFields() {
+    playersOffered.forEach((p, i) => {
+        let li = document.createElement('li');
+        let name = document.createElement('span');
+        name.innerText = p.player_name;
+        li.appendChild(name);
+        let remove = document.createElement('button');
+        remove.className = 'btn btn-close mx-1';
+        remove.value = i;
+        remove.onclick = function() {
+            playersOffered.splice(this.value, 1);
+            populateOfferFields();
+        }
+        li.appendChild(remove);
+        document.getElementById('trafeFormOfferedPlayers').appendChild(li);
+    });
+    playersRequested.forEach((p, i) => {
+        let li = document.createElement('li');
+        let name = document.createElement('span');
+        name.innerText = p.player_name;
+        li.appendChild(name);
+        let remove = document.createElement('button');
+        remove.className = 'btn btn-close mx-1';
+        remove.value = i;
+        remove.onclick = function() {
+            playersRequested.splice(this.value, 1);
+            populateOfferFields();
+        }
+        li.appendChild(remove);
+        document.getElementById('trafeFormWantedPlayers').appendChild(li);
+    });
+    document.getElementById('tradeFormOfferedPowerplays').innerText = powerplaysOffered;
+    document.getElementById('tradeFormWantedPowerplays').innerText = powerplaysWanted;
+}
+
+function addPlayerToPlayersOffered() {
+    playersOffered.push(squad.find(p => p.player_id == document.getElementById('tradeFormOfferPlayersSelect').value));
+    populateOfferFields();
+}
+window.addPlayerToPlayersOffered = addPlayerToPlayersOffered;
+function addPlayerToPlayersRequested() {
+    playersRequested.push(targetPlayers.find(p => p.player_id == document.getElementById('tradeFormRequestPlayersSelect').value));
+    populateOfferFields();
+}
+window.addPlayerToPlayersRequested = addPlayerToPlayersRequested;
+function addPowerplayToOffer() {
+    if (powerplaysOffered == user.powerplays) {
+        DisplayFeedback('Sorry', "You don't have any more powerplays to offer.");
+        return;
+    }
+    powerplaysOffered += 1;
+    populateOfferFields();
+}
+window.addPowerplayToOffer = addPowerplayToOffer;
+function addPowerplayToRequest() {
+    if (powerplaysWanted == tradeTarget.powerplays) {
+        DisplayFeedback('Sorry', tradeTarget.team_name + " doesn't have any more powerplays to offer.");
+        return;
+    }
+    powerplaysWanted += 1;
+    populateOfferFields();
+}
+window.addPowerplayToRequest = addPowerplayToRequest;
+function removePowerplaysOffered() {
+    powerplaysOffered = 0;
+    populateOfferFields();
+}
+window.removePowerplaysOffered = removePowerplaysOffered;
+function removePowerplaysRequested() {
+    powerplaysWanted = 0;
+    populateOfferFields();
+}
+window.removePowerplaysRequested = removePowerplaysRequested;
+
+async function SubmitTradeOffer() {
+    DisplayFeedback('Confirm', 'Are you sure you want to send this trade ofer to ' + tradeTarget.team_name + '?',
+    true, function() {
+        await SendTradeOffer(user.username, tradeTarget.username,
+            playersOffered.map(p => p.player_id), playersRequested.map(p => p.player_id),
+            powerplaysOffered, powerplaysWanted);
+        DisplayFeedback('Success', 'Trade offer sent.', true, null, false);
+    })
+}
+window.SubmitTradeOffer = SubmitTradeOffer;

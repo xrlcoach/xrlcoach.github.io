@@ -160,49 +160,6 @@ def lambda_handler(event, context):
                         }
                     )
                     print(f"{player['player_name']} put on waivers")
-            if body['operation'] == 'trade':
-                trade = body['trade']
-                seller = [u for u in users if u['team_short'] == trade['seller']][0]
-                buyer = [u for u in users if u['team_short'] == trade['buyer']][0]
-                print(f"{seller['username']} is trading {trade['player_name']} to {buyer['username']}. Updating player's XRL team")
-                table.update_item(
-                            Key={
-                                'player_id': trade['player_id'],
-                            },
-                            UpdateExpression="set xrl_team=:x",
-                            ExpressionAttributeValues={
-                                ':x': buyer['team_short']
-                            }
-                        )
-                transfers_table.put_item(
-                    Item={
-                        'transfer_id': buyer['username'] + '_' + str(datetime.now()),
-                        'user': buyer['username'],                        
-                        'datetime': datetime.now().strftime("%c"),
-                        'type': 'Trade',
-                        'seller': seller['username'],
-                        'round_number': round_number,
-                        'player_id': trade['player_id']
-                    }
-                )
-                buyer_message = {
-                    "sender": "XRL Admin",
-                    "datetime": datetime.now().strftime("%c"),
-                    "subject": "Player Trade",
-                    "message": f"Congratulations! {seller['username']} traded you {trade['player_name']}."
-                }
-                buyer['inbox'].append(buyer_message)
-                users_table.update_item(Key={'username': buyer['username']},
-                    UpdateExpression="set inbox=:i", ExpressionAttributeValues={':i': buyer['inbox']})
-                seller_message = {
-                    "sender": "XRL Admin",
-                    "datetime": datetime.now().strftime("%c"),
-                    "subject": "Player Trade",
-                    "message": f"You traded {trade['player_name']} to {buyer['username']} ."
-                }
-                seller['inbox'].append(seller_message)
-                users_table.update_item(Key={'username': seller['username']},
-                    UpdateExpression="set inbox=:i", ExpressionAttributeValues={':i': seller['inbox']})
             return {
                     'statusCode': 200,
                     'headers': {

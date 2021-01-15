@@ -419,7 +419,7 @@ export async function GetPlayerAppearanceStats(playerId, roundNumber) {
 }
 
 export async function UpdateUserWaiverPreferences(username, preferences, provisionalDrop) {
-    const response = await fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/waivers', {
+    const response = await fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/transfers', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'        
@@ -439,11 +439,72 @@ export async function UpdateUserWaiverPreferences(username, preferences, provisi
 }
 
 export async function GetTransferHistory(roundNumber) {
-    const response = await fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/waivers', {
+    const response = await fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/transfers', {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'        
         }
+    });
+    const data = await response.json();
+    if (data.error) {
+        DisplayFeedback('Error', data.error);
+    }
+    return data;
+}
+
+export async function SendTradeOffer(sendingUsername, targetUsername, playersOffered, playersWanted, powerplaysOffered = 0, powerplaysWanted = 0) {
+    const response = await fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/transfers', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'        
+        },
+        body: JSON.stringify({
+            'operation': 'trade_offer',
+            'offered_by': sendingUsername,
+            'offered_to': targetUsername,
+            'players_offered': playersOffered,
+            'players_wanted': playersWanted,
+            'powerplays_offered': powerplaysOffered,
+            'powerplays_wanted': powerplaysWanted
+        })
+    });
+    const data = await response.json();
+    if (data.error) {
+        DisplayFeedback('Error', data.error);
+    }
+    return data; 
+}
+
+export async function GetUserTradeOffers(username) {
+    const response = await fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/transfers', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'        
+        },
+        body: JSON.stringify({
+            'operation': 'get_user_offers',
+            'username': username
+        })
+    });
+    const data = await response.json();
+    if (data.error) {
+        DisplayFeedback('Error', data.error);
+    }
+    return data;
+}
+
+export async function ProcessTradeOffer(offerId, accepted = false) {
+    let outcome = accepted ? 'Accepted': 'Rejected';
+    const response = await fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/transfers', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'        
+        },
+        body: JSON.stringify({
+            'operation': 'process_trade',
+            'offer_id': offerId,
+            'outcome': outcome
+        })
     });
     const data = await response.json();
     if (data.error) {

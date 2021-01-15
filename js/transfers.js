@@ -399,10 +399,14 @@ window.removePowerplaysRequested = removePowerplaysRequested;
 function SubmitTradeOffer() {
     DisplayFeedback('Confirm', 'Are you sure you want to send this trade ofer to ' + tradeTarget.team_name + '?',
     true, async function() {
-        await SendTradeOffer(user.username, tradeTarget.username,
+        let data = await SendTradeOffer(user.username, tradeTarget.username,
             playersOffered.map(p => p.player_id), playersRequested.map(p => p.player_id),
             powerplaysOffered, powerplaysWanted);
-        DisplayFeedback('Success', 'Trade offer sent.', true, function() {location.reload()}, false);
+        if (data.error) {
+            DisplayFeedback('Error', data.error);
+        } else {
+            DisplayFeedback('Success', 'Trade offer sent.', true, function() {location.reload()}, false);
+        }
     })
 }
 window.SubmitTradeOffer = SubmitTradeOffer;

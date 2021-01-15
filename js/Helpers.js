@@ -532,4 +532,4 @@ export const PositionNames = {
  * List of NRL stats that are relevant for XRL scores
  */
 export const XrlRelevantStats = ["All Runs", "Line Breaks", "Line Break Assists", "Try Assists", "Tackle Breaks",
-"Offloads", "Tackles Made", "Kicks", "40/20", "20/40", "All Runs", "All Run Metres", "Kicking Metres"]
+"Offloads", "Tackles Made", "Kicks", "40/20", "20/40", "All Runs", "All Run Metres", "Kicking Metres", "One on One Steal", "Conversions", "Penalty Goals"]

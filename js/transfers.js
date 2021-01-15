@@ -225,18 +225,18 @@ async function DisplayOfferDetails(offerId) {
     document.getElementById('tradeInfoStatus').style.color = offer.status == 'Accepted' ? 'green' : offer.status == 'Rejected' ? '#c94d38' : '';
     document.getElementById('tradeInfoOfferedByShort').innerText = offeredBy.team_short;
     document.getElementById('tradeInfoOfferedToShort').innerText = offeredTo.team_short;
-    offer.players_offered.forEach(id => {
+    for (let id of offer.players_offered) {
         let player = userOffer ? squad.find(p => p.player_id == id) : await GetPlayerById(id);
         let li = document.createElement('li');
         li.innerText = player.player_name;
         document.getElementById('trafeInfoOfferedPlayers').appendChild(li);
-    })
-    offer.players_wanted.forEach(id => {
+    }
+    for (let id of offer.players_wanted) {
         let player = userOffer ? await GetPlayerById(id) : squad.find(p => p.player_id == id);
         let li = document.createElement('li');
         li.innerText = player.player_name;
         document.getElementById('trafeInfoWantedPlayers').appendChild(li);
-    })
+    }
     document.getElementById('tradeInfoOfferedPowerplays').innerText = offer.powerplays_offered;
     document.getElementById('tradeInfoWantedPowerplays').innerText = offer.powerplays_wanted;
     if (offer.status == 'Pending') {

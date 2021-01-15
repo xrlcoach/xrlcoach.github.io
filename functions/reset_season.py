@@ -15,7 +15,7 @@ clean_stats = {
     'against': 0,
     'points': 0
 }
-for user in users:
+for rank, user in enumerate(users, 1):
     users_table.update_item(
         Key={
             'username': user['username']
@@ -25,7 +25,7 @@ for user in users:
             ':p': 3,
             ':s': clean_stats,
             ':cc': {},
-            ':wr': 0,
+            ':wr': rank,
             ':wp': [],
             ':i': [],
             ':pp': 0,

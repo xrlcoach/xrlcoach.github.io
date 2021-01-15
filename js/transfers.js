@@ -252,15 +252,23 @@ async function DisplayOfferDetails(offerId) {
         document.getElementById('tradeInfoFooter').hidden = false;
         let rejectButton = document.getElementById('tradeInfoRejectButton');
         rejectButton.onclick = async function() {
-            await ProcessTradeOffer(offer.offer_id, false);
-            DisplayFeedback('Rejected', 'Trade offer rejected.', true, function() {location.reload()});
+            let data = await ProcessTradeOffer(offer.offer_id, false);
+            if (data.error) {
+                DisplayFeedback('Error', data.error);
+                return;
+            }
+            DisplayFeedback('Rejected', 'Trade offer rejected.', true, function() {location.reload()}, false);
         }
         let acceptButton = document.getElementById('tradeInfoAcceptButton');
         acceptButton.onclick = function() {
             DisplayFeedback('Confirm', 'Are you sure you want to accept this trade offer?', true, async function() {
-                await ProcessTradeOffer(offer.offer_id, true);
+                let data = await ProcessTradeOffer(offer.offer_id, true);
+                if (data.error) {
+                    DisplayFeedback('Error', data.error);
+                    return;
+                }
                 DisplayFeedback('Success', 'Trade completed!', true, function() {location.reload()});
-            }, true);
+            }, false);
         };
     } else {
         document.getElementById('tradeInfoFooter').hidden = true;

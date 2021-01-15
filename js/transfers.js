@@ -286,7 +286,8 @@ function DisplayTradeForm() {
         option.value = u.team_short;
         option.innerText = u.team_name;
         option.onclick = async function() {
-            tradeTarget = u;
+            tradeTarget = allUsers.find(u1 => u1.team_short == this.value);
+            document.getElementById('tradeFormTargetTeam').innerText = tradeTarget.team_name;
             await populatePlayerRequestOptions(this.value);
         }
         li.appendChild(option);
@@ -366,7 +367,7 @@ function addPlayerToPlayersOffered() {
 }
 window.addPlayerToPlayersOffered = addPlayerToPlayersOffered;
 function addPlayerToPlayersRequested() {
-    let player = squad.find(p => p.player_id == document.getElementById('tradeFormRequestPlayersSelect').value);
+    let player = targetPlayers.find(p => p.player_id == document.getElementById('tradeFormRequestPlayersSelect').value);
     if (playersRequested.includes(player)) {
         DisplayFeedback('Error', 'The deal already includes ' + player.player_name);
         return;

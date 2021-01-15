@@ -54,7 +54,7 @@ function DisplayLastMatch() {
         document.getElementById('lastMatchView').hidden = true;
         return;
     }
-    document.getElementById('lastMatchView').hidden = true;
+    document.getElementById('lastMatchView').hidden = false;
     //Check if match was a homegame, find opponent and venue, display
     let homeGame = match.home == user.team_short;
     let opponent = homeGame ? match.away : match.home;

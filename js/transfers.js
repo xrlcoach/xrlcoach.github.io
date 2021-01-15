@@ -18,7 +18,7 @@ window.onload = async () => {
         let today = new Date();
         tradeOffersToDisplay = tradeOffers.filter(t => {
             let transferDate = new Date(t.datetime);
-            let dayDiff = (today.getTime() - transferDate.getTime) / (1000 * 3600 * 24);
+            let dayDiff = (today.getTime() - transferDate.getTime()) / (1000 * 3600 * 24);
             return dayDiff < 14;
         }).sort((t1, t2) => new Date(t2.datetime) - new Date(t1.datetime));
         transferHistory = await GetTransferHistory();
@@ -348,12 +348,22 @@ function populateOfferFields() {
 }
 
 function addPlayerToPlayersOffered() {
-    playersOffered.push(squad.find(p => p.player_id == document.getElementById('tradeFormOfferPlayersSelect').value));
+    let player = squad.find(p => p.player_id == document.getElementById('tradeFormOfferPlayersSelect').value);
+    if (playersOffered.includes(player)) {
+        DisplayFeedback('Error', 'The deal already includes ' + player.player_name);
+        return;
+    }
+    playersOffered.push(player);
     populateOfferFields();
 }
 window.addPlayerToPlayersOffered = addPlayerToPlayersOffered;
 function addPlayerToPlayersRequested() {
-    playersRequested.push(targetPlayers.find(p => p.player_id == document.getElementById('tradeFormRequestPlayersSelect').value));
+    let player = squad.find(p => p.player_id == document.getElementById('tradeFormRequestPlayersSelect').value);
+    if (playersRequested.includes(player)) {
+        DisplayFeedback('Error', 'The deal already includes ' + player.player_name);
+        return;
+    }
+    playersRequested.push(player);
     populateOfferFields();
 }
 window.addPlayerToPlayersRequested = addPlayerToPlayersRequested;

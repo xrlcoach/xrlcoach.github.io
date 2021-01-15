@@ -232,13 +232,13 @@ async function DisplayOfferDetails(offerId) {
     // document.getElementById('tradeInfoOfferedByShort').innerText = offeredBy.team_short;
     // document.getElementById('tradeInfoOfferedToShort').innerText = offeredTo.team_short;
     for (let id of offer.players_offered) {
-        let player = userOffer ? squad.find(p => p.player_id == id) : await GetPlayerById(id);
+        let player = await GetPlayerById(id);
         let li = document.createElement('li');
         li.innerText = player.player_name;
         document.getElementById('trafeInfoOfferedPlayers').appendChild(li);
     }
     for (let id of offer.players_wanted) {
-        let player = userOffer ? await GetPlayerById(id) : squad.find(p => p.player_id == id);
+        let player = await GetPlayerById(id);
         let li = document.createElement('li');
         li.innerText = player.player_name;
         document.getElementById('trafeInfoWantedPlayers').appendChild(li);

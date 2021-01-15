@@ -281,6 +281,7 @@ function DisplayTradeForm() {
         document.getElementById('tradeFormOfferPlayersSelect').appendChild(option);
     });
     populateOfferFields();
+    tradeForm.show();
 }
 window.DisplayTradeForm = DisplayTradeForm;
 

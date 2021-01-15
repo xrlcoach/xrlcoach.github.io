@@ -267,7 +267,7 @@ async function DisplayOfferDetails(offerId) {
                     DisplayFeedback('Error', data.error);
                     return;
                 }
-                DisplayFeedback('Success', 'Trade completed!', true, function() {location.reload()});
+                DisplayFeedback('Success', 'Trade completed!', true, function() {location.reload()}, false);
             });
         };
     } else {
@@ -406,7 +406,7 @@ function removePowerplaysRequested() {
 window.removePowerplaysRequested = removePowerplaysRequested;
 
 function SubmitTradeOffer() {
-    DisplayFeedback('Confirm', 'Are you sure you want to send this trade ofer to ' + tradeTarget.team_name + '?',
+    DisplayFeedback('Confirm', 'Are you sure you want to send this trade offer to ' + tradeTarget.team_name + '?',
     true, async function() {
         let data = await SendTradeOffer(user.username, tradeTarget.username,
             playersOffered.map(p => p.player_id), playersRequested.map(p => p.player_id),

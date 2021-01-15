@@ -15,12 +15,13 @@ for r in all_rounds:
             Key={
                 'round_number': r['round_number']
             },
-            UpdateExpression="set active=:a, in_progress=:ip, completed=:c, fixtures=:f",
+            UpdateExpression="set active=:a, in_progress=:ip, completed=:c, fixtures=:f, scooping=:s",
             ExpressionAttributeValues={
                 ':a': True,
                 ':ip': False,
                 ':c': False,
-                ':f': fixtures
+                ':f': fixtures,
+                ':s': True
             }
         )
     else:
@@ -28,11 +29,12 @@ for r in all_rounds:
             Key={
                 'round_number': r['round_number']
             },
-            UpdateExpression="set active=:a, in_progress=:ip, completed=:c, fixtures=:f",
+            UpdateExpression="set active=:a, in_progress=:ip, completed=:c, fixtures=:f, scooping=:s",
             ExpressionAttributeValues={
                 ':a': False,
                 ':ip': False,
                 ':c': False,
-                ':f': fixtures
+                ':f': fixtures,
+                ':s': False
             }
         )

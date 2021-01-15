@@ -106,7 +106,13 @@ def lambda_handler(event, context):
                     "for": 0,
                     "against": 0,
                     "points": 0
-                }
+                },
+                "captain_counts": {},
+                "inbox": [],
+                "players_picked": 0,
+                "provisional_drop": '',
+                "waiver_preferences": [],
+                "waiver_rank": 0
             })
     except Exception as e:
         return {'statusCode': 200,

@@ -163,7 +163,7 @@ async function PopulateLineup() {
             }
             createOption(null, positions_playmakers[i]);
         }
-        fillInterchangeOptions();
+        fillInterchangeOptions(true);
         for (let i = 0; i < roles.length; i++) {
             if (roles[i] == 'captain2' && !powerplay) continue;
             if (roles[i] == 'vice' && powerplay) continue;
@@ -333,24 +333,26 @@ async function submitLineup(event) {
 }
 window.submitLineup = submitLineup;
 
-function fillInterchangeOptions() {
+function fillInterchangeOptions(onload = false) {
+    //Get full team selections
     let playerSelections = document.getElementsByName('player');
     let selectedPlayers = [];
     for (let i = 0; i < playerSelections.length; i++) {
+        //If element id is e.g. int1, int2, continue
         if (interchange.includes(playerSelections[i].id)) continue;
+        //If element is a starting position, push the player_id to selectedPlayers array
         selectedPlayers.push(playerSelections[i].value);
     }
+    //Available bench players is everyone not in selectedPlayers array
     let benchPlayers = squad.filter(p => !selectedPlayers.includes(p.player_id));
     for (var i = 0; i < interchange.length; i++) {
-        let player = lineup.find(p => p.position_specific == interchange[i]);
-        if (player == undefined || selectedPlayers.includes(document.getElementById(interchange[i]).value)) {
-            document.getElementById(interchange[i]).innerHTML = '';
-            createOption(null, interchange[i]);
-            for (var j = 0; j < benchPlayers.length; j++) {
-                createOption(benchPlayers[j], interchange[i]);
-            }
-            fillPositionOptions(document.getElementById(interchange[i]));
+        let player = undefined;
+        if (onload) {
+            player = lineup.find(p => p.position_specific == interchange[i]);
         } else {
+            player = squad.find(p => p.player_id == document.getElementById(interchange[i]).value)
+        }
+        if (player != undefined && !selectedPlayers.includes(player.player_id)) {
             document.getElementById(interchange[i]).innerHTML = '';
             createOption(player, interchange[i]);
             let restOfBench = benchPlayers.filter(p => p.player_id != player.player_id);
@@ -359,7 +361,14 @@ function fillInterchangeOptions() {
             }
             fillPositionOptions(document.getElementById(interchange[i]));
             createOption(null, interchange[i]);
-        }
+        } else {
+            document.getElementById(interchange[i]).innerHTML = '';
+            createOption(null, interchange[i]);
+            for (var j = 0; j < benchPlayers.length; j++) {
+                createOption(benchPlayers[j], interchange[i]);
+            }
+            fillPositionOptions(document.getElementById(interchange[i]));
+        } 
     }
 }
 window.fillInterchangeOptions = fillInterchangeOptions;

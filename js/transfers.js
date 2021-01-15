@@ -298,6 +298,7 @@ async function populatePlayerRequestOptions(team_short) {
 }
 
 function populateOfferFields() {
+    document.getElementById('trafeFormOfferedPlayers').innerHTML = '';
     playersOffered.forEach((p, i) => {
         let li = document.createElement('li');
         let name = document.createElement('span');
@@ -313,6 +314,7 @@ function populateOfferFields() {
         li.appendChild(remove);
         document.getElementById('trafeFormOfferedPlayers').appendChild(li);
     });
+    document.getElementById('trafeFormWantedPlayers').innerHTML = '';
     playersRequested.forEach((p, i) => {
         let li = document.createElement('li');
         let name = document.createElement('span');

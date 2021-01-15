@@ -223,7 +223,11 @@ def lambda_handler(event, context):
                                 'player_id': player_id
                             }
                         )
-                    print("Players transferred.")                    
+                    print("Players transferred. Updating powerplays.")
+                    users_table.update_item(Key={'username': user_offered_by['username']},
+                        UpdateExpression="set powerplays=powerplays+:pw", ExpressionAttributeValues={':pw': offer['powerplays_wanted']})
+                    users_table.update_item(Key={'username': user_offered_to['username']},
+                        UpdateExpression="set powerplays=powerplays+:pw", ExpressionAttributeValues={':pw': offer['powerplays_offered']})                 
                     user_offered_by_message = {
                         "sender": user_offered_to['team_name'],
                         "datetime": datetime.now().strftime("%c"),

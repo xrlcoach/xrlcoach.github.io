@@ -32,7 +32,7 @@ window.onload = async function () {
             if (p1.position == p2.position) {
                 return p1.player_name.split(' ')[1] > p2.player_name.split(' ')[1] ? 1 : -1;
             }
-            return positionOrder.findIndex(p1.position) - positionOrder.findIndex(p2.position);
+            return positionOrder.indexOf(p1.position) - positionOrder.indexOf(p2.position);
         });
         //Populate the squad table
         PopulatePickPlayerTable(sortedSquad);
@@ -267,7 +267,7 @@ function sortByPosition() {
         if (p1.position == p2.position) {
             return p1.player_name.split(' ')[1] > p2.player_name.split(' ')[1] ? 1 : -1;
         }
-        return p1.position > p2.position ? 1 : -1;
+        return positionOrder.indexOf(p1.position) > positionOrder.indexOf(p2.position) ? 1 : -1;
     });
     document.getElementById('sortByPositionButton').onclick = sortByPositionDesc;
     PopulatePickPlayerTable(sortedSquad);
@@ -278,7 +278,7 @@ function sortByPositionDesc() {
         if (p1.position == p2.position) {
             return p1.player_name.split(' ')[1] > p2.player_name.split(' ')[1] ? 1 : -1;
         }
-        return p1.position < p2.position ? 1 : -1;
+        return positionOrder.indexOf(p1.position) < positionOrder.indexOf(p2.position) ? 1 : -1;
     });
     document.getElementById('sortByPositionButton').onclick = sortByPosition;
     PopulatePickPlayerTable(sortedSquad);
@@ -289,7 +289,7 @@ function sortByPosition2() {
         if (p1.position2 == p2.position2) {
             return p1.player_name.split(' ')[1] > p2.player_name.split(' ')[1] ? 1 : -1;
         }
-        return p1.position2 > p2.position2 ? 1 : -1;
+        return positionOrder.indexOf(p1.position2) > positionOrder.indexOf(p2.position2) ? 1 : -1;
     });
     document.getElementById('sortByPosition2Button').onclick = sortByPosition2Desc;
     PopulatePickPlayerTable(sortedSquad);
@@ -300,7 +300,7 @@ function sortByPosition2Desc() {
         if (p1.position2 == p2.position2) {
             return p1.player_name.split(' ')[1] > p2.player_name.split(' ')[1] ? 1 : -1;
         }
-        return p1.position2 < p2.position2 ? 1 : -1;
+        return positionOrder.indexOf(p1.position2) < positionOrder.indexOf(p2.position2) ? 1 : -1;
     });
     document.getElementById('sortByPosition2Button').onclick = sortByPosition2;
     PopulatePickPlayerTable(sortedSquad);

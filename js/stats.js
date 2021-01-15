@@ -272,8 +272,8 @@ function sortPlayers(attribute) {
         if (sortOrder == 'Descending') sortFunction = (p1, p2) => p2.scoring_stats.kicker[attribute] - p1.scoring_stats.kicker[attribute];
         else sortFunction = (p1, p2) => p1.scoring_stats.kicker[attribute] - p2.scoring_stats.kicker[attribute];
     } else if (attribute == 'player_name') {
-        if (sortOrder == 'Descending') sortFunction = (p1, p2) => p1.player_name.split(' ')[1] > p2.player_name.split(' ')[1];
-        else sortFunction = (p1, p2) => p1.player_name.split(' ')[1] < p2.player_name.split(' ')[1];
+        if (sortOrder == 'Descending') sortFunction = (p1, p2) => p1.player_name.split(' ')[1] > p2.player_name.split(' ')[1] ? 1 : -1;
+        else sortFunction = (p1, p2) => p1.player_name.split(' ')[1] < p2.player_name.split(' ')[1] ? 1 : -1;
     } else if (attribute == 'score') {
         if (sortOrder == 'Descending') sortFunction = singleRound ? scoreAsKicker ? sortByXrlScore : sortByXrlScoreNoKicking : scoreAsKicker ? sortByTotalXrlScore : sortByTotalXrlScoreNoKicking;
         else sortFunction = singleRound ? scoreAsKicker ? sortByXrlScoreAsc : sortByXrlScoreNoKickingAsc : scoreAsKicker ? sortByTotalXrlScoreAsc : sortByTotalXrlScoreNoKickingAsc;
@@ -282,13 +282,13 @@ function sortPlayers(attribute) {
             sortFunction = function(p1, p2) {
                 if (p1[attribute] == undefined) p1[attribute] = 'None';
                 if (p2[attribute] == undefined) p2[attribute] = 'None';
-                return p1[attribute] > p2[attribute];
+                return p1[attribute] > p2[attribute] ? 1 : -1;
             }
         } else {
             sortFunction = function(p1, p2) {
                 if (p1[attribute] == undefined) p1[attribute] = 'None';
                 if (p2[attribute] == undefined) p2[attribute] = 'None';
-                return p1[attribute] < p2[attribute];
+                return p1[attribute] < p2[attribute] ? 1 : -1;
             }
         }
     }

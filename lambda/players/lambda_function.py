@@ -85,6 +85,15 @@ def lambda_handler(event, context):
                     raise Exception("Scooping is not permitted at this time")
                 #Iterate through all players being scooped
                 for player in body['players']:
+                    #Check if player is available to be scooped
+                    player_record = table.get_item(
+                        Key={
+                            'player_id': player['player_id']
+                        }
+                    )['Item']
+                    if 'xrl_team' in player_record.keys() and player_record['xrl_team'] != 'None':
+                        raise Exception(f"{player['player_name']} has already signed for another XRL team.")
+                for player in body['players']:
                     #Update player's XRL team
                     table.update_item(
                         Key={

@@ -102,7 +102,7 @@ function DisplayNextMatch() {
 function DisplayInbox() {
     let inboxBody = document.getElementById('inboxBody');
     inboxBody.innerHTML = '';
-    for (let message of user.inbox) {
+    for (let message of user.inbox.sort((m1, m2) => new Date(m2.datetime) - new Date(m1.datetime))) {
         let alert = document.createElement('tr');
         let time = document.createElement('td');
         time.innerText = message.datetime;

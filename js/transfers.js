@@ -1,7 +1,7 @@
 import { GetActiveUserTeamShort, GetAllUsers, getCookie, GetPlayerById, GetPlayersFromXrlTeam, GetTransferHistory, GetUserTradeOffers, ProcessTradeOffer, SendTradeOffer, UpdateUserWaiverPreferences } from "./ApiFetch.js";
 import { DisplayFeedback } from "./Helpers.js";
 
-let roundNumber, allUsers, user, squad, waiverPreferences = [], provisionalDrop, tradeOffers, transferHistory;
+let roundNumber, allUsers, user, squad, waiverPreferences = [], provisionalDrop, tradeOffers, tradeOffersToDisplay, transferHistory;
 let tradeTarget, targetPlayers, playersOffered = [], playersRequested = [], powerplaysOffered = 0, powerplaysWanted = 0;
 
 window.onload = async () => {
@@ -15,6 +15,12 @@ window.onload = async () => {
         };
         provisionalDrop = user.provisional_drop;
         tradeOffers = await GetUserTradeOffers(user.username);
+        let today = new Date();
+        tradeOffersToDisplay = tradeOffers.filter(t => {
+            let transferDate = new Date(t.datetime);
+            let dayDiff = (today.getTime() - transferDate.getTime) / (1000 * 3600 * 24);
+            return dayDiff < 14;
+        }).sort((t1, t2) => new Date(t2.datetime) - new Date(t1.datetime));
         transferHistory = await GetTransferHistory();
         DisplayUserWaiverInfo();
         DisplayTradeOffers();
@@ -40,7 +46,7 @@ function DisplayTradeOffers() {
         tradeBody.innerText = 'No active trade offers.';
         return;
     }
-    for (let offer of tradeOffers) {
+    for (let offer of tradeOffersToDisplay) {
         let offeredBy = allUsers.find(u => u.username == offer.offered_by);
         let offeredTo = allUsers.find(u => u.username == offer.offered_to);
         let offerDisplay = document.createElement('div');
@@ -54,10 +60,7 @@ function DisplayTradeOffers() {
         if (offer.offer_status == 'Pending') {
             offerDisplay.className = 'alert alert-warning';
             if (offer.offered_by == user.username) {
-                if (offer.players_offered.length > 1 || offer.players_wanted.length > 1) {
-                    offerText.innerText = 'You offered a multi-player trade to ' + offeredTo.team_name + '.';
-                }
-                offerText.innerText = 'Waiting on a response from ' + offeredTo.team_name + '.';
+                offerText.innerText = 'You offered a trade to ' + offeredTo.team_name + '.';
             } else {
                 offerText.innerText = offeredBy.team_name + ' offered you a trade.';
             }
@@ -194,7 +197,7 @@ async function DisplayTransferHistory(transfers) {
         let description = document.createElement('td');
         if (t.type == 'Scoop') description.innerText = 'on a free transfer.';
         if (t.type == 'Waiver') description.innerText = 'on a waiver.';
-        if (t.type == 'Trade') description.innerText = 'from ' + t.seller;
+        if (t.type == 'Trade') description.innerText = 'from ' + allUsers.find(u => u.username == t.seller).team_name;
         row.appendChild(description);
         table.appendChild(row);
     }
@@ -389,7 +392,7 @@ function SubmitTradeOffer() {
         await SendTradeOffer(user.username, tradeTarget.username,
             playersOffered.map(p => p.player_id), playersRequested.map(p => p.player_id),
             powerplaysOffered, powerplaysWanted);
-        DisplayFeedback('Success', 'Trade offer sent.', true, null, false);
+        DisplayFeedback('Success', 'Trade offer sent.', true, function() {location.reload()}, false);
     })
 }
 window.SubmitTradeOffer = SubmitTradeOffer;

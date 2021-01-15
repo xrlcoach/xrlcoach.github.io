@@ -225,14 +225,12 @@ def lambda_handler(event, context):
                         )
                     print("Players transferred. Updating powerplays.")
                     users_table.update_item(Key={'username': user_offered_by['username']},
-                        UpdateExpression="set powerplays=powerplays+:pw-:po", ExpressionAttributeValues={
-                            ':pw': offer['powerplays_wanted'],
-                            ':po': offer['powerplays_offered']
+                        UpdateExpression="set powerplays=powerplays+:pp", ExpressionAttributeValues={
+                            ':pp': offer['powerplays_wanted'] - offer['powerplays_offered']                           
                             })
                     users_table.update_item(Key={'username': user_offered_to['username']},
-                        UpdateExpression="set powerplays=powerplays+:po-:pw", ExpressionAttributeValues={
-                            ':pw': offer['powerplays_wanted'],
-                            ':po': offer['powerplays_offered']
+                        UpdateExpression="set powerplays=powerplays+:pp", ExpressionAttributeValues={
+                            ':pp': offer['powerplays_offered'] - offer['powerplays_wanted']
                             })                 
                     user_offered_by_message = {
                         "sender": user_offered_to['team_name'],

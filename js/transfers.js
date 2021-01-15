@@ -87,6 +87,9 @@ function DisplayTradeOffers() {
         viewButton.onclick = function() {
             DisplayOfferDetails(this.value);
         }
+        offerContent.appendChild(viewButton);
+        offerDisplay.appendChild(offerContent)
+        tradeBody.appendChild(offerDisplay);
     }
 
 }

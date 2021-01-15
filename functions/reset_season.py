@@ -108,3 +108,13 @@ with transfers_table.batch_writer() as batch:
                 'transfer_id': transfer['transfer_id']
             }
         )
+
+trades_table = dynamodb.Table('trades2020')
+trades = trades_table.scan()['Items']
+with trades_table.batch_writer() as batch:
+    for trade in trades:
+        batch.delete_item(
+            Key={
+                'offer_id': trade['offer_id']
+            }
+        )

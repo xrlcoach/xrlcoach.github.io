@@ -51,7 +51,7 @@ for r in all_rounds:
                 ':a': True,
                 ':ip': False,
                 ':c': False,
-                ':f': fixtures,
+                ':f': [],
                 ':s': True
             }
         )
@@ -65,7 +65,7 @@ for r in all_rounds:
                 ':a': False,
                 ':ip': False,
                 ':c': False,
-                ':f': fixtures,
+                ':f': [],
                 ':s': False
             }
         )
@@ -96,6 +96,20 @@ for player in players:
         ExpressionAttributeValues={
             ':p2': '',
             ':npa': {}
+        }
+    )
+
+players = players_table.scan(
+    FilterExpression=Attr('xrl_team').exists() & Attr('xrl_team').ne('')
+)['Items']
+for player in players:
+    players_table.update_item(
+        Key={
+            'player_id': player['player_id']
+        },
+        UpdateExpression="SET xrl_team=:n",
+        ExpressionAttributeValues={
+            ':n': 'None'
         }
     )
 

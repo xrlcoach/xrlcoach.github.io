@@ -256,7 +256,8 @@ function sortByXrlScoreNoKickingAsc(p1, p2) {
     return p1.score_not_kicking - p2.score_not_kicking;
 }
 
-function sortPlayers(attribute) {
+function sortPlayers(e, attribute) {
+    e.preventDefault();
     let sortFunction;
     if (sortAttribute == attribute) {
         if (sortOrder == 'Descending') {

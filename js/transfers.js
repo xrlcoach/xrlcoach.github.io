@@ -223,7 +223,7 @@ async function DisplayOfferDetails(offerId) {
     let offeredBy = allUsers.find(u => u.username == offer.offered_by);
     let offeredTo = allUsers.find(u => u.username == offer.offered_to);
     let userOffer = offeredBy.username == user.username;
-    document.getElementById('tradeInfoOfferedBy').innerText = offered_by.team_name;
+    document.getElementById('tradeInfoOfferedBy').innerText = offeredBy.team_name;
     document.getElementById('tradeInfoStatus').innerText = offer.status;
     document.getElementById('tradeInfoStatus').style.color = offer.status == 'Accepted' ? 'green' : offer.status == 'Rejected' ? '#c94d38' : '';
     document.getElementById('tradeInfoOfferedByShort').innerText = offeredBy.team_short;

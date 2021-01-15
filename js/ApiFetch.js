@@ -410,7 +410,9 @@ export async function GetPlayerAppearanceStats(playerId, roundNumber) {
         });
         const data = await response.json();
         if (data.error) {
-            DisplayFeedback('Error', data.error);
+            if (data.error = "'Item'") {
+                return undefined;
+            }
         }
         return data;
     } catch (err) {

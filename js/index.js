@@ -163,7 +163,7 @@ function DisplaySquadInfo() {
         document.getElementById('positionCounts').innerHTML += `<br />Includes ${duals.length} dual-position player`;
     else if (duals.length > 1)
         document.getElementById('positionCounts').innerHTML += `<br />Includes ${duals.length} dual-position players`;
-    if (squad.length < 18) {
+    if (squad.length < 18 && nextRound.round_number == 1) {
         document.getElementById('pickPlayersLink').hidden = false;
     }
 }

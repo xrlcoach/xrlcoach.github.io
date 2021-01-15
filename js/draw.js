@@ -125,13 +125,13 @@ async function PopulateFixtureTable(round) {
         tr.appendChild(home);
         tr.appendChild(away);
         let view = document.createElement('td');
-        //If round is ongoing or finished, add a link to the fixture page, using the match data to construct a query parameter
-        if (round.completed || round.in_progress) {
-            let link = document.createElement('a');
-            link.innerText = 'View';
-            link.href = `fixture.html?round=${round.round_number}&fixture=${match.home}-v-${match.away}`;
-            view.appendChild(link);
-        }
+        //A link to the fixture page, using the match data to construct a query parameter
+        
+        let link = document.createElement('a');
+        link.innerText = 'View';
+        link.href = `fixture.html?round=${round.round_number}&fixture=${match.home}-v-${match.away}`;
+        view.appendChild(link);
+        
         tr.appendChild(view);
         //Append the row to the table
         table.appendChild(tr);

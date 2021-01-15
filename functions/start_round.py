@@ -40,6 +40,11 @@ lineups = resp["Items"]
 
 for user in users:
     lineup = [player for player in lineups if player['xrl_team'] == user['team_short']]
+    if len(lineup) == 0:
+        print(f"{user['team_name']} didn't set a lineup this week. Reverting to last week's lineup.")
+        previous_lineup = lineups_table.scan(
+            FilterExpression=Attr('round_number').eq(str(round_number - 1)) & Attr('xrl_team').eq(user['team_short'])
+        )["Items"]
     captains = [player for player in lineup if player['captain'] or player['captain2']]
     powerplay = len(captains) > 1
     for captain in captains:

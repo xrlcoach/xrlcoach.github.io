@@ -75,13 +75,12 @@ def lambda_handler(event, context):
             if operation == 'remove_multiple':
                 with lineup_table.batch_writer() as batch:
                     for player in body['players']:
-                        print("Removing " + player['player_name'] + ' from all set lineups')
-                        for i in range(int(round_number), 22):
-                            batch.delete_item(
-                                Key={
-                                    'name+nrl+xrl+round': player['player_name'] + ';' + player['nrl_club'] + ';' + team_short + ';' + str(i)
-                                }
-                            )
+                        print("Removing " + player['player_name'] + ' from set lineup')                        
+                        batch.delete_item(
+                            Key={
+                                'name+nrl+xrl+round': player['player_name'] + ';' + player['nrl_club'] + ';' + team_short + ';' + str(round_number)
+                            }
+                        )
                         print(player['player_name'] + ' removed.')
                 return {
                     'statusCode': 200,
@@ -137,13 +136,12 @@ def lambda_handler(event, context):
                     }
                 print("Removing old lineup")     
                 with lineup_table.batch_writer() as batch:   
-                    for player in existing_lineup['Items']:
-                        for i in range(int(round_number), 22):
-                            batch.delete_item(
-                                Key={
-                                    'name+nrl+xrl+round': player['player_name'] + ';' + player['nrl_club'] + ';' + team_short + ';' + str(i)
-                                }
-                            )
+                    for player in existing_lineup['Items']:                        
+                        batch.delete_item(
+                            Key={
+                                'name+nrl+xrl+round': player['player_name'] + ';' + player['nrl_club'] + ';' + team_short + ';' + str(round_number)
+                            }
+                        )
                 print("Writing new lineup")
                 with lineup_table.batch_writer() as batch:
                     for player in lineup:
@@ -170,29 +168,29 @@ def lambda_handler(event, context):
                             }
                         )
                         # Set same lineup for next round, removing powerplay if necessary
-                        for i in range(int(round_number) + 1, 22):
-                            batch.put_item(
-                                Item={
-                                    'name+nrl+xrl+round': player['player_name'] + ';' + player['nrl_club'] + ';' + team_short + ';' + str(i),
-                                    'player_id': player['player_id'],
-                                    'player_name': player['player_name'],
-                                    'nrl_club': player['nrl_club'],
-                                    'xrl_team': team_short,
-                                    'round_number': str(i),
-                                    'position_specific': player['position'],
-                                    'position_general': player['position_general'],
-                                    'second_position': player['second_position'],
-                                    'position_number': position_numbers[player['position']],
-                                    'captain': player['captain'],
-                                    'captain2': False,
-                                    'vice': player['vice'] or player['captain2'],
-                                    'kicker': player['kicker'],
-                                    'backup_kicker': player['backup_kicker'],
-                                    'played_nrl': False,
-                                    'played_xrl': False,
-                                    'score': 0
-                                }
-                            )
+                        # for i in range(int(round_number) + 1, 22):
+                        #     batch.put_item(
+                        #         Item={
+                        #             'name+nrl+xrl+round': player['player_name'] + ';' + player['nrl_club'] + ';' + team_short + ';' + str(i),
+                        #             'player_id': player['player_id'],
+                        #             'player_name': player['player_name'],
+                        #             'nrl_club': player['nrl_club'],
+                        #             'xrl_team': team_short,
+                        #             'round_number': str(i),
+                        #             'position_specific': player['position'],
+                        #             'position_general': player['position_general'],
+                        #             'second_position': player['second_position'],
+                        #             'position_number': position_numbers[player['position']],
+                        #             'captain': player['captain'],
+                        #             'captain2': False,
+                        #             'vice': player['vice'] or player['captain2'],
+                        #             'kicker': player['kicker'],
+                        #             'backup_kicker': player['backup_kicker'],
+                        #             'played_nrl': False,
+                        #             'played_xrl': False,
+                        #             'score': 0
+                        #         }
+                        #     )
                 print("DB write complete")
                 return {
                         'statusCode': 200,

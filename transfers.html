@@ -179,14 +179,14 @@
         aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
-                <div class="modal-header bg-info bg-gradient text-white">
+                <div class="modal-header bg-success bg-gradient text-white">
                     <h2 class="modal-title" id="tradeFormTitle">New Trade Offer</h2>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body" id="tradeFormBody">
-                    <div class="row">
+                <div class="modal-body p-1" id="tradeFormBody">
+                    <div class="row mt-2 mb-4">
                         <div class="col">
-                            <h5>Offer Trade To:</h5>
+                            <h3>Offer Trade To:</h5>
                         </div>
                         <div class="col">
                             <div class="dropdown">
@@ -198,38 +198,38 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="row my-2">
                         <div class="col">
-                            <h5>Offer</h5>
+                            <h4>Offer</h5>
                         </div>
                         <div class="col">
-                            <h5>For</h5>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col">
-                            <select id="tradeFormOfferPlayersSelect"></select>
-                            <button id="tradeFormOfferPlayerButton" onclick="addPlayerToPlayersOffered()">Add Player</button>
-                            <br />
-                            <button id="tradeFormOfferPowerplayButton" onclick="addPowerplayToOffer()">Add Powerplay</button>
-                        </div>
-                        <div class="col">
-                            <select id="tradeFormRequestPlayersSelect"></select>
-                            <button id="tradeFormRequestPlayerButton" onclick="addPlayerToPlayersRequested()">Add Player</button>
-                            <br />
-                            <button id="tradeFormRequestPowerplayButton" onclick="addPowerplayToRequest()">Add Powerplay</button>
+                            <h4>For</h5>
                         </div>
                     </div>
-                    <div class="row border">
+                    <div class="row my-2">
                         <div class="col">
-                            <h6>Players:</h6>
+                            <select class="form-select" id="tradeFormOfferPlayersSelect"></select>
+                            <button class="btn btn-success" id="tradeFormOfferPlayerButton" onclick="addPlayerToPlayersOffered()">Add Player</button>
+                            <br />
+                            <button class="btn btn-success my-2" id="tradeFormOfferPowerplayButton" onclick="addPowerplayToOffer()">Add Powerplay</button>
+                        </div>
+                        <div class="col">
+                            <select class="form-select" id="tradeFormRequestPlayersSelect"></select>
+                            <button class="btn btn-success" id="tradeFormRequestPlayerButton" onclick="addPlayerToPlayersRequested()">Add Player</button>
+                            <br />
+                            <button class="btn btn-success my-2" id="tradeFormRequestPowerplayButton" onclick="addPowerplayToRequest()">Add Powerplay</button>
+                        </div>
+                    </div>
+                    <div class="row border border-2 rounded m-1 p-2">
+                        <div class="col">
+                            <h5>Players:</h6>
                             <ul id="trafeFormOfferedPlayers"></ul>
-                            <h6>Powerplays: <span id="tradeFormOfferedPowerplays"></span><button class="btn btn-close mx-1" onclick="removePowerplaysOffered()"></button></h6>
+                            <h5>Powerplays: <span id="tradeFormOfferedPowerplays"></span><button class="btn btn-close mx-1" onclick="removePowerplaysOffered()" id="cancelPowerplaysOffered" hidden></button></h6>
                         </div>
                         <div class="col">
-                            <h6>Players:</h6>
+                            <h5>Players:</h6>
                             <ul id="trafeFormWantedPlayers"></ul>
-                            <h6>Powerplays: <span id="tradeFormWantedPowerplays"></span><button class="btn btn-close mx-1" onclick="removePowerplaysRequested()"></button></h6>
+                            <h5>Powerplays: <span id="tradeFormWantedPowerplays"></span><button class="btn btn-close mx-1" onclick="removePowerplaysRequested()" id="cancelPowerplaysWanted" hidden></button></h6>
                         </div>
                     </div>
                     <div class="modal-footer" id="tradeFormFooter" hidden>

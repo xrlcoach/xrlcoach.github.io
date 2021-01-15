@@ -261,12 +261,13 @@ async function DisplayOfferDetails(offerId) {
 
 function DisplayTradeForm() {
     let tradeForm = new bootstrap.Modal(document.getElementById('tradeForm'));
-    allUsers.forEach(u => {
+    allUsers.filter(u => u.username != user.username).forEach(u => {
         let li = document.createElement('li');
         let option = document.createElement('a');
         option.className = 'dropdown-item';
         option.href = '#';
         option.value = u.team_short;
+        option.innerText = u.team_name;
         option.onclick = async function() {
             tradeTarget = u;
             await populatePlayerRequestOptions(this.value);
@@ -288,7 +289,7 @@ window.DisplayTradeForm = DisplayTradeForm;
 async function populatePlayerRequestOptions(team_short) {
     targetPlayers = await GetPlayersFromXrlTeam(team_short);
     document.getElementById('tradeFormRequestPlayersSelect').innerHTML = '';
-    playersToRequest.forEach(p => {
+    targetPlayers.forEach(p => {
         let option = document.createElement('option');
         option.value = p.player_id;
         option.innerText = p.player_name;
@@ -328,7 +329,11 @@ function populateOfferFields() {
         document.getElementById('trafeFormWantedPlayers').appendChild(li);
     });
     document.getElementById('tradeFormOfferedPowerplays').innerText = powerplaysOffered;
+    if (powerplaysOffered > 0) document.getElementById('cancelPowerplaysOffered').hidden = false;
+    else document.getElementById('cancelPowerplaysOffered').hidden = true;
     document.getElementById('tradeFormWantedPowerplays').innerText = powerplaysWanted;
+    if (powerplaysWanted > 0) document.getElementById('cancelPowerplaysWanted').hidden = false;
+    else document.getElementById('cancelPowerplaysWanted').hidden = true;
 }
 
 function addPlayerToPlayersOffered() {

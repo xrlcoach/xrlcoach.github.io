@@ -39,6 +39,7 @@ for match in fixtures:
     print(f"Finalising {match['home']} v {match['away']}")
     for team in ['home', 'away']:
         print(f"Finalising {match[team]} lineup")
+        user = [u for u in users if u['team_short'] == match[team]][0]
         lineup = [player for player in lineups if player['xrl_team'] == match[team]]
         # captain_count = len([player for player in lineup if player['captain'] or player['captain2']])
         # powerplay = captain_count > 1
@@ -66,6 +67,16 @@ for match in fixtures:
             if not player['played_nrl']:
                 if player['captain'] or player['captain2']:
                     print(f"Captain {player['player_name']} did not play.")
+                    user['captain_counts'][player['player_id']] -= 1
+                    users_table.update_item(
+                        Key={
+                            'username': user['username']
+                        },
+                        UpdateExpression="set captain_counts=:cc",
+                        ExpressionAttributeValues={
+                            ':cc': user['captain_counts']
+                        }
+                    )
                     vice_plays = True
                 if player['kicker']:
                     print(f"Kicker {player['player_name']} did not play.")
@@ -110,7 +121,6 @@ for match in fixtures:
                             ':v': current_score * 2
                         }                        
                     )
-                    user = [u for u in users if u['team_short'] == match[team]][0]
                     cc = user['captain_counts']
                     if player['player_id'] not in cc.keys():
                         cc[player['player_id']] = 1

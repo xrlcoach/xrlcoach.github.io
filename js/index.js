@@ -248,8 +248,7 @@ async function dropPlayer(form) {
     location.reload();
 }
 
-function sortByName(e) {
-    e.preventDefault();
+function sortByName() {
     let sortedSquad = squad.sort(function(p1, p2) {
         return p1.player_name.split(' ')[1] > p2.player_name.split(' ')[1] ? 1 : -1;
     });
@@ -257,8 +256,7 @@ function sortByName(e) {
     PopulatePickPlayerTable(sortedSquad);
 }
 window.sortByName = sortByName;
-function sortByNameDesc(e) {
-    e.preventDefault();
+function sortByNameDesc() {
     let sortedSquad = squad.sort(function(p1, p2) {
         return p1.player_name.split(' ')[1] < p2.player_name.split(' ')[1] ? 1 : -1;
     });
@@ -266,8 +264,7 @@ function sortByNameDesc(e) {
     PopulatePickPlayerTable(sortedSquad);
 }
 window.sortByNameDesc = sortByNameDesc;
-function sortByPosition(e) {
-    e.preventDefault();
+function sortByPosition() {
     let sortedSquad = squad.sort(function(p1, p2) {
         if (p1.position == p2.position) {
             return p1.player_name.split(' ')[1] > p2.player_name.split(' ')[1] ? 1 : -1;
@@ -278,8 +275,7 @@ function sortByPosition(e) {
     PopulatePickPlayerTable(sortedSquad);
 }
 window.sortByPosition = sortByPosition;
-function sortByPositionDesc(e) {
-    e.preventDefault();
+function sortByPositionDesc() {
     let sortedSquad = squad.sort(function(p1, p2) {
         if (p1.position == p2.position) {
             return p1.player_name.split(' ')[1] > p2.player_name.split(' ')[1] ? 1 : -1;
@@ -290,8 +286,7 @@ function sortByPositionDesc(e) {
     PopulatePickPlayerTable(sortedSquad);
 }
 window.sortByPositionDesc = sortByPositionDesc;
-function sortByPosition2(e) {
-    e.preventDefault();
+function sortByPosition2() {
     let sortedSquad = squad.sort(function(p1, p2) {
         if (p1.position2 == p2.position2) {
             return p1.player_name.split(' ')[1] > p2.player_name.split(' ')[1] ? 1 : -1;
@@ -302,8 +297,7 @@ function sortByPosition2(e) {
     PopulatePickPlayerTable(sortedSquad);
 }
 window.sortByPosition2 = sortByPosition2;
-function sortByPosition2Desc(e) {
-    e.preventDefault();
+function sortByPosition2Desc() {
     let sortedSquad = squad.sort(function(p1, p2) {
         if (p1.position2 == p2.position2) {
             return p1.player_name.split(' ')[1] > p2.player_name.split(' ')[1] ? 1 : -1;
@@ -314,8 +308,7 @@ function sortByPosition2Desc(e) {
     PopulatePickPlayerTable(sortedSquad);
 }
 window.sortByPosition2Desc = sortByPosition2Desc;
-function sortByClub(e) {
-    e.preventDefault();
+function sortByClub() {
     let sortedSquad = squad.sort(function(p1, p2) {
         if (p1.nrl_club == p2.nrl_club) {
             return p1.player_name.split(' ')[1] > p2.player_name.split(' ')[1] ? 1 : -1;
@@ -326,8 +319,7 @@ function sortByClub(e) {
     PopulatePickPlayerTable(sortedSquad);
 }
 window.sortByClub = sortByClub;
-function sortByClubDesc(e) {
-    e.preventDefault();
+function sortByClubDesc() {
     let sortedSquad = squad.sort(function(p1, p2) {
         if (p1.nrl_club == p2.nrl_club) {
             return p1.player_name.split(' ')[1] > p2.player_name.split(' ')[1] ? 1 : -1;

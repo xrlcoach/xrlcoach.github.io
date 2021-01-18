@@ -2,7 +2,6 @@ import { GetPlayersFromXrlTeam, GetActiveUserInfo, UpdatePlayerXrlTeam, GetAllUs
 import { DisplayFeedback, DisplayPlayerInfo, GetActiveRoundFromFixtures, GetOrdinal, GetTeamFixture, DefaultPlayerSort, SortByPosition2, DefaultPlayerSortDesc, SortByPosition2Desc, SortByNrlClub, SortByNrlClubDesc, SortByPlayerName, SortByPlayerNameDesc } from './Helpers.js';
 
 let squad, allUsers, user, allRounds, lastRound, nextRound;
-const positionOrder = ['Back', 'Playmaker', 'Forward'];
 
 window.onload = async function () {
     try {

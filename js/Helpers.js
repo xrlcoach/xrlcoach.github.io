@@ -1,4 +1,33 @@
 import { GetActiveUserTeamShort, GetLineupByTeamAndRound, GetPlayersFromXrlTeam, UpdatePlayerXrlTeam, GetPlayerAppearanceStats, DropPlayers, ScoopPlayers, GetActiveUserInfo, GetIdToken, UpdateUserWaiverPreferences } from "./ApiFetch.js"
+
+export const PositionOrder = ['Back', 'Playmaker', 'Forward'];
+/**
+ * Dictionary for converting position element ids into position display names
+ */
+export const PositionNames = {
+    'fullback': 'Fullback',
+    'winger1': 'Winger',
+    'winger2': 'Winger',
+    'centre1': 'Centre',
+    'centre2': 'Centre',
+    'five_eighth': 'Five-Eighth',
+    'halfback': 'Halfback',
+    'hooker': 'Hooker',
+    'prop1': 'Prop',
+    'prop2': 'Prop',
+    'row1': '2nd Row',
+    'row2': '2nd Row',
+    'lock': 'Lock',
+    'int1': 'Interchange', 
+    'int2': 'Interchange',
+    'int3': 'Interchange',
+    'int4': 'Interchange',
+}
+/**
+ * List of NRL stats that are relevant for XRL scores
+ */
+export const XrlRelevantStats = ["All Runs", "Line Breaks", "Line Break Assists", "Try Assists", "Tackle Breaks",
+"Offloads", "Tackles Made", "Kicks", "40/20", "20/40", "All Runs", "All Run Metres", "Kicking Metres", "One on One Steal", "Conversions", "Penalty Goals"]
 /**
  * Displays a feedback modal with an optional footer with cancel/confirm buttons and an onconfirm function.
  * @param {String} title A title for the feedback display
@@ -511,28 +540,28 @@ export function DefaultPlayerSort(p1, p2) {
     if (p1.position == p2.position) {
         return p1.player_name.split(' ')[1] > p2.player_name.split(' ')[1] ? 1 : -1;
     }
-    return positionOrder.indexOf(p1.position) - positionOrder.indexOf(p2.position);
+    return PositionOrder.indexOf(p1.position) - PositionOrder.indexOf(p2.position);
 }
 
 export function DefaultPlayerSortDesc(p1, p2) {
     if (p1.position == p2.position) {
         return p1.player_name.split(' ')[1] > p2.player_name.split(' ')[1] ? 1 : -1;
     }
-    return positionOrder.indexOf(p1.position) < positionOrder.indexOf(p2.position) ? 1 : -1;
+    return PositionOrder.indexOf(p1.position) < PositionOrder.indexOf(p2.position) ? 1 : -1;
 }
 
 export function SortByPosition2(p1, p2) {
     if (p1.position2 == p2.position2) {
         return p1.player_name.split(' ')[1] > p2.player_name.split(' ')[1] ? 1 : -1;
     }
-    return positionOrder.indexOf(p1.position2) > positionOrder.indexOf(p2.position2) ? 1 : -1;
+    return PositionOrder.indexOf(p1.position2) > PositionOrder.indexOf(p2.position2) ? 1 : -1;
 }
 
 export function SortByPosition2Desc(p1, p2) {
     if (p1.position2 == p2.position2) {
         return p1.player_name.split(' ')[1] > p2.player_name.split(' ')[1] ? 1 : -1;
     }
-    return positionOrder.indexOf(p1.position2) < positionOrder.indexOf(p2.position2) ? 1 : -1;
+    return PositionOrder.indexOf(p1.position2) < PositionOrder.indexOf(p2.position2) ? 1 : -1;
 }
 
 export function SortByNrlClub(p1, p2) {
@@ -556,30 +585,4 @@ export function SortByPlayerName(p1, p2) {
 export function SortByPlayerNameDesc(p1, p2) {
     return p1.player_name.split(' ')[1] < p2.player_name.split(' ')[1] ? 1 : -1;
 }
-/**
- * Dictionary for converting position element ids into position display names
- */
-export const PositionNames = {
-    'fullback': 'Fullback',
-    'winger1': 'Winger',
-    'winger2': 'Winger',
-    'centre1': 'Centre',
-    'centre2': 'Centre',
-    'five_eighth': 'Five-Eighth',
-    'halfback': 'Halfback',
-    'hooker': 'Hooker',
-    'prop1': 'Prop',
-    'prop2': 'Prop',
-    'row1': '2nd Row',
-    'row2': '2nd Row',
-    'lock': 'Lock',
-    'int1': 'Interchange', 
-    'int2': 'Interchange',
-    'int3': 'Interchange',
-    'int4': 'Interchange',
-}
-/**
- * List of NRL stats that are relevant for XRL scores
- */
-export const XrlRelevantStats = ["All Runs", "Line Breaks", "Line Break Assists", "Try Assists", "Tackle Breaks",
-"Offloads", "Tackles Made", "Kicks", "40/20", "20/40", "All Runs", "All Run Metres", "Kicking Metres", "One on One Steal", "Conversions", "Penalty Goals"]
+

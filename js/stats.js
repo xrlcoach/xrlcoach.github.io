@@ -1,5 +1,5 @@
 import { GetActiveUserInfo, GetActiveUserTeamShort, GetAllPlayers, GetAllStats, GetAllUsers, getCookie, GetCurrentRoundInfo, GetIdToken, GetRoundInfo, GetRoundInfoFromCookie, GetStatsByRound } from "./ApiFetch.js";
-import { GetPlayerXrlScores, DisplayPlayerInfo, DisplayFeedback, DisplayAppearanceInfoFromStats } from "./Helpers.js";
+import { GetPlayerXrlScores, DisplayPlayerInfo, DisplayFeedback, DisplayAppearanceInfoFromStats, SortByPlayerName, SortByPlayerNameDesc, DefaultPlayerSort, DefaultPlayerSortDesc } from "./Helpers.js";
 
 let roundToDisplay, currentRound, allPlayers, allStats, allUsers, activeUser, allPlayersWithStats, displayedStats, scoreAsKicker, singleRound;
 let sortAttribute = 'score';
@@ -272,11 +272,14 @@ function sortPlayers(attribute) {
         if (sortOrder == 'Descending') sortFunction = (p1, p2) => p2.scoring_stats.kicker[attribute] - p1.scoring_stats.kicker[attribute];
         else sortFunction = (p1, p2) => p1.scoring_stats.kicker[attribute] - p2.scoring_stats.kicker[attribute];
     } else if (attribute == 'player_name') {
-        if (sortOrder == 'Descending') sortFunction = (p1, p2) => p1.player_name.split(' ')[1] > p2.player_name.split(' ')[1] ? 1 : -1;
-        else sortFunction = (p1, p2) => p1.player_name.split(' ')[1] < p2.player_name.split(' ')[1] ? 1 : -1;
+        if (sortOrder == 'Descending') sortFunction = SortByPlayerName;
+        else sortFunction = SortByPlayerNameDesc;
     } else if (attribute == 'score') {
         if (sortOrder == 'Descending') sortFunction = singleRound ? scoreAsKicker ? sortByXrlScore : sortByXrlScoreNoKicking : scoreAsKicker ? sortByTotalXrlScore : sortByTotalXrlScoreNoKicking;
         else sortFunction = singleRound ? scoreAsKicker ? sortByXrlScoreAsc : sortByXrlScoreNoKickingAsc : scoreAsKicker ? sortByTotalXrlScoreAsc : sortByTotalXrlScoreNoKickingAsc;
+    } else if (attribute == 'position') { 
+        if (sortOrder == 'Descending') sortFunction = DefaultPlayerSort;
+        else sortFunction = DefaultPlayerSortDesc;
     } else {
         if (sortOrder == 'Descending') {
             sortFunction = function(p1, p2) {

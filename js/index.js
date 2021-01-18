@@ -1,4 +1,4 @@
-import { GetPlayersFromXrlTeam, GetActiveUserInfo, UpdatePlayerXrlTeam, GetAllUsers, GetActiveUserTeamShort, GetAllFixtures, UpdateUserInbox } from './ApiFetch.js';
+import { GetPlayersFromXrlTeam, GetActiveUserInfo, UpdatePlayerXrlTeam, GetAllUsers, GetActiveUserTeamShort, GetAllFixtures, UpdateUserInbox, GetPlayerById } from './ApiFetch.js';
 import { DisplayFeedback, DisplayPlayerInfo, GetActiveRoundFromFixtures, GetOrdinal, GetTeamFixture } from './Helpers.js';
 
 let squad, allUsers, user, allRounds, lastRound, nextRound;
@@ -145,7 +145,9 @@ function deleteMessage(messageBody) {
 function DisplayCaptainInfo() {
     document.getElementById('powerplayCount').innerText = user.powerplays;
     for (let player in user.captain_counts) {
-        let name = squad.find(p => p.player_id == player).player_name;
+        let playerInfo = squad.find(p => p.player_id == player);
+        if (!playerInfo) playerInfo = GetPlayerById(player);
+        let name = playerInfo.player_name;
         document.getElementById('captainCountList').innerHTML += `<li>${name}: ${user.captain_counts[player]}</li>`;
     }
 }

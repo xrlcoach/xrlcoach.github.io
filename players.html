@@ -132,6 +132,16 @@
                                 </div>
                             </div>
                         </form>
+                        <div class="row form-group">
+                            <form onsubmit="searchPlayer(event)">
+                                <div class="col">
+                                    <input type="search" class="form-control col-auto" id="playerSearch" />
+                                </div>
+                                <div class="col">
+                                    <button type="submit" class="btn btn-primary">Search</button>
+                                </div>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -142,18 +152,18 @@
                     <table class="table table-dark table-striped">
                         <thead style="color: green;">
                             <tr>
-                                <th><a id="" href="#" onclick="sortPlayers(e, 'player_name')">Player</a></th>
-                                <th><a id="" href="#" onclick="sortPlayers(e, 'nrl_club')">Club</a></th>
-                                <th><a id="" href="#" onclick="sortPlayers(e, 'xrl_team')">XRL Team</a></th>
-                                <th><a id="" href="#" onclick="sortPlayers(e, 'position')">Position</a></th>
-                                <th><a id="" href="#" onclick="sortPlayers(e, 'tries')">Tries</a></th>
-                                <th><a id="" href="#" onclick="sortPlayers(e, 'goals')">Goals</a></th>
-                                <th><a id="" href="#" onclick="sortPlayers(e, 'field_goals')">Field Goals</a></th>
-                                <th><a id="" href="#" onclick="sortPlayers(e, 'involvement_try')">Involvement</a></th>
-                                <th><a id="" href="#" onclick="sortPlayers(e, 'positional_try')">Positional</a></th>
-                                <th><a id="" href="#" onclick="sortPlayers(e, 'concede')">Concedes</a></th>
-                                <th><a id="" href="#" onclick="sortPlayers(e, 'mia')">MIA</a></th>
-                                <th><a id="" href="#" onclick="sortPlayers(e, 'score')">XRL Score</a></th>
+                                <th><a id="" href="#/" onclick="sortPlayers('player_name')">Player</a></th>
+                                <th><a id="" href="#/" onclick="sortPlayers('nrl_club')">Club</a></th>
+                                <th><a id="" href="#/" onclick="sortPlayers('xrl_team')">XRL Team</a></th>
+                                <th><a id="" href="#/" onclick="sortPlayers('position')">Position</a></th>
+                                <th><a id="" href="#/" onclick="sortPlayers('tries')">Tries</a></th>
+                                <th><a id="" href="#/" onclick="sortPlayers('goals')">Goals</a></th>
+                                <th><a id="" href="#/" onclick="sortPlayers('field_goals')">Field Goals</a></th>
+                                <th><a id="" href="#/" onclick="sortPlayers('involvement_try')">Involvement</a></th>
+                                <th><a id="" href="#/" onclick="sortPlayers('positional_try')">Positional</a></th>
+                                <th><a id="" href="#/" onclick="sortPlayers('concede')">Concedes</a></th>
+                                <th><a id="" href="#/" onclick="sortPlayers('mia')">MIA</a></th>
+                                <th><a id="" href="#/" onclick="sortPlayers('score')">XRL Score</a></th>
                             </tr>
                         </thead>
                         <tbody id="statTableBody"></tbody>

@@ -45,7 +45,8 @@ function PopulateLeagueTable(users) {
         teamLogo.height = '50';
         teamLogo.className = 'me-1';
         xrlTeam.appendChild(teamLogo);
-        let teamName = document.createElement('span');
+        let teamName = document.createElement('a');
+        teamName.href = 'squads.html?xrlTeam=' + user.team_short;
         teamName.innerText = user.team_name;
         xrlTeam.appendChild(teamName);
         tr.appendChild(xrlTeam);

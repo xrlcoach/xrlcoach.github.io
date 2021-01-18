@@ -1,5 +1,5 @@
 import { GetPlayersFromXrlTeam, GetActiveUserInfo, UpdatePlayerXrlTeam, GetAllUsers, GetActiveUserTeamShort, GetAllFixtures, UpdateUserInbox, GetPlayerById } from './ApiFetch.js';
-import { DisplayFeedback, DisplayPlayerInfo, GetActiveRoundFromFixtures, GetOrdinal, GetTeamFixture } from './Helpers.js';
+import { DisplayFeedback, DisplayPlayerInfo, GetActiveRoundFromFixtures, GetOrdinal, GetTeamFixture, DefaultPlayerSort, SortByPosition2, DefaultPlayerSortDesc, SortByPosition2Desc, SortByNrlClub, SortByNrlClubDesc, SortByPlayerName, SortByPlayerNameDesc } from './Helpers.js';
 
 let squad, allUsers, user, allRounds, lastRound, nextRound;
 const positionOrder = ['Back', 'Playmaker', 'Forward'];
@@ -28,12 +28,7 @@ window.onload = async function () {
         DisplaySquadInfo();
         DisplayCaptainInfo();
         //Sort squad alphabetically by last name
-        let sortedSquad = squad.sort(function(p1, p2) {
-            if (p1.position == p2.position) {
-                return p1.player_name.split(' ')[1] > p2.player_name.split(' ')[1] ? 1 : -1;
-            }
-            return positionOrder.indexOf(p1.position) - positionOrder.indexOf(p2.position);
-        });
+        let sortedSquad = squad.sort(DefaultPlayerSort);
         //Populate the squad table
         PopulatePickPlayerTable(sortedSquad);
         //Hide loading icon and display main content
@@ -249,83 +244,49 @@ async function dropPlayer(form) {
 }
 
 function sortByName() {
-    let sortedSquad = squad.sort(function(p1, p2) {
-        return p1.player_name.split(' ')[1] > p2.player_name.split(' ')[1] ? 1 : -1;
-    });
+    let sortedSquad = squad.sort(SortByPlayerName);
     document.getElementById('sortByNameButton').onclick = sortByNameDesc;
     PopulatePickPlayerTable(sortedSquad);
 }
 window.sortByName = sortByName;
 function sortByNameDesc() {
-    let sortedSquad = squad.sort(function(p1, p2) {
-        return p1.player_name.split(' ')[1] < p2.player_name.split(' ')[1] ? 1 : -1;
-    });
+    let sortedSquad = squad.sort(SortByPlayerNameDesc);
     document.getElementById('sortByNameButton').onclick = sortByName;
     PopulatePickPlayerTable(sortedSquad);
 }
 window.sortByNameDesc = sortByNameDesc;
 function sortByPosition() {
-    let sortedSquad = squad.sort(function(p1, p2) {
-        if (p1.position == p2.position) {
-            return p1.player_name.split(' ')[1] > p2.player_name.split(' ')[1] ? 1 : -1;
-        }
-        return positionOrder.indexOf(p1.position) > positionOrder.indexOf(p2.position) ? 1 : -1;
-    });
+    let sortedSquad = squad.sort(DefaultPlayerSort);
     document.getElementById('sortByPositionButton').onclick = sortByPositionDesc;
     PopulatePickPlayerTable(sortedSquad);
 }
 window.sortByPosition = sortByPosition;
 function sortByPositionDesc() {
-    let sortedSquad = squad.sort(function(p1, p2) {
-        if (p1.position == p2.position) {
-            return p1.player_name.split(' ')[1] > p2.player_name.split(' ')[1] ? 1 : -1;
-        }
-        return positionOrder.indexOf(p1.position) < positionOrder.indexOf(p2.position) ? 1 : -1;
-    });
+    let sortedSquad = squad.sort(DefaultPlayerSortDesc);
     document.getElementById('sortByPositionButton').onclick = sortByPosition;
     PopulatePickPlayerTable(sortedSquad);
 }
 window.sortByPositionDesc = sortByPositionDesc;
 function sortByPosition2() {
-    let sortedSquad = squad.sort(function(p1, p2) {
-        if (p1.position2 == p2.position2) {
-            return p1.player_name.split(' ')[1] > p2.player_name.split(' ')[1] ? 1 : -1;
-        }
-        return positionOrder.indexOf(p1.position2) > positionOrder.indexOf(p2.position2) ? 1 : -1;
-    });
+    let sortedSquad = squad.sort(SortByPosition2);
     document.getElementById('sortByPosition2Button').onclick = sortByPosition2Desc;
     PopulatePickPlayerTable(sortedSquad);
 }
 window.sortByPosition2 = sortByPosition2;
 function sortByPosition2Desc() {
-    let sortedSquad = squad.sort(function(p1, p2) {
-        if (p1.position2 == p2.position2) {
-            return p1.player_name.split(' ')[1] > p2.player_name.split(' ')[1] ? 1 : -1;
-        }
-        return positionOrder.indexOf(p1.position2) < positionOrder.indexOf(p2.position2) ? 1 : -1;
-    });
+    let sortedSquad = squad.sort(SortByPosition2Desc);
     document.getElementById('sortByPosition2Button').onclick = sortByPosition2;
     PopulatePickPlayerTable(sortedSquad);
 }
 window.sortByPosition2Desc = sortByPosition2Desc;
 function sortByClub() {
-    let sortedSquad = squad.sort(function(p1, p2) {
-        if (p1.nrl_club == p2.nrl_club) {
-            return p1.player_name.split(' ')[1] > p2.player_name.split(' ')[1] ? 1 : -1;
-        }
-        return p1.nrl_club > p2.nrl_club ? 1 : -1;
-    });
+    let sortedSquad = squad.sort(SortByNrlClub);
     document.getElementById('sortByClubButton').onclick = sortByClubDesc;
     PopulatePickPlayerTable(sortedSquad);
 }
 window.sortByClub = sortByClub;
 function sortByClubDesc() {
-    let sortedSquad = squad.sort(function(p1, p2) {
-        if (p1.nrl_club == p2.nrl_club) {
-            return p1.player_name.split(' ')[1] > p2.player_name.split(' ')[1] ? 1 : -1;
-        }
-        return p1.nrl_club < p2.nrl_club ? 1 : -1;
-    });
+    let sortedSquad = squad.sort(SortByNrlClubDesc);
     document.getElementById('sortByClubButton').onclick = sortByClub;
     PopulatePickPlayerTable(sortedSquad);
 }

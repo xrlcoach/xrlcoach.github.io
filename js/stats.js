@@ -256,8 +256,7 @@ function sortByXrlScoreNoKickingAsc(p1, p2) {
     return p1.score_not_kicking - p2.score_not_kicking;
 }
 
-function sortPlayers(e, attribute) {
-    e.preventDefault();
+function sortPlayers(attribute) {
     let sortFunction;
     if (sortAttribute == attribute) {
         if (sortOrder == 'Descending') {
@@ -296,3 +295,13 @@ function sortPlayers(e, attribute) {
     populateStatsTable(displayedStats, sortFunction, scoreAsKicker, singleRound);
 }
 window.sortPlayers = sortPlayers;
+
+function searchPlayer(event) {
+    event.preventDefault();
+    let player = document.getElementById('playerSearch').value.toLowerCase();
+    displayedStats = allPlayers.filter(p => p.search_name.toLowerCase().includes(player));
+    populateStatsTable(displayedStats, function(p1, p2) {
+        return p1.player_name.split(' ')[1] > p2.player_name.split(' ')[1] ? 1 : -1;
+    });
+}
+window.searchPlayer = searchPlayer;

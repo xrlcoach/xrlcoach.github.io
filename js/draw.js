@@ -100,11 +100,13 @@ async function PopulateFixtureTable(round) {
         homeLogo.height = '50';
         homeLogo.className = 'me-1';
         home.appendChild(homeLogo);
-        let homeName = document.createElement('span');
+        let homeName = document.createElement('a');
+        homeName.href = 'squads.html?xrlTeam=' + homeUser.team_short;
         homeName.innerText = homeUser.team_name;
         home.appendChild(homeName);
         let away = document.createElement('td');
-        let awayName = document.createElement('span');
+        let awayName = document.createElement('a');
+        awayName.href = 'squads.html?xrlTeam=' + awayUser.team_short;
         awayName.innerText = awayUser.team_name;
         away.appendChild(awayName);
         let awayLogo =  document.createElement('img');

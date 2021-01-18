@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- documentation at http://getbootstrap.com/docs/4.1/, alternative themes at https://bootswatch.com/ -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+
+    <!-- https://favicon.io/emoji-favicons/money-mouth-face/ -->
+    <link href="/static/xrl-logo.png" rel="icon">
+
+    <link href="/static/styles.css" rel="stylesheet">
+
+    <script src="js/Session.js"></script>
+    <script src="js/requireLogin.js"></script>
+
+    <title>XRL Home</title>
+
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-md navbar-dark" style="background-color: rgb(44, 48, 52);">
+        <a class="navbar-brand" href="/"><img src="static/xrl-logo.png" alt="XRL Badge" height="40"><span
+                class="green">X</span><span class="yellow">R</span><span class="green">L</span></a>
+        <button aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler"
+            data-bs-target="#navbar" data-bs-toggle="collapse" type="button">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbar">
+            <ul class="navbar-nav me-auto mt-2">
+                <li class="nav-item"><a class="nav-link" href="lineup.html">Lineup</a></li>
+                <li class="nav-item"><a class="nav-link" href="fixture.html">Match Centre</a></li>
+                <li class="nav-item"><a class="nav-link" href="draw.html">Draw</a></li>
+                <li class="nav-item"><a class="nav-link" href="comp.html">Ladder</a></li>
+                <li class="nav-item"><a class="nav-link" href="squads.html">Squads</a></li>
+                <li class="nav-item"><a class="nav-link" href="stats.html">Stats</a></li>
+            </ul>
+            <ul class="navbar-nav ms-auto mt-2">
+                <li class="nav-item"><a class="nav-link" href="#" onclick="logout()">Log Out</a></li>
+            </ul>
+            <!-- <ul class="navbar-nav ms-auto mt-2">
+                <li class="nav-item"><a class="nav-link" href="/register">Register</a></li>
+                <li class="nav-item"><a class="nav-link" href="/login">Log In</a></li>
+            </ul> -->
+        </div>
+    </nav>
+
+    <header class="p-3 bg-success bg-gradient text-center text-white">
+        <h4>2020 Squads</h4>
+    </header>
+
+    <main class="container-lg">
+        <div class="container">
+            <div class="row p-3">
+                <div class="dropdown col">
+                    <button class="btn btn-success dropdown-toggle" type="button" id="nrlSelectButton"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        Select NRL Club
+                    </button>
+                    <ul id="clubSelect" class="dropdown-menu dropdown-menu-dark" aria-labelledby="dropdownMenuButton">
+                        <li><a href="#" class="dropdown-item" value="Broncos" onclick="selectNrlClub('Broncos')">Broncos</a></li>
+                        <li><a href="#" class="dropdown-item" value="Bulldogs" onclick="selectNrlClub('Bulldogs')">Bulldogs</a></li>
+                        <li><a href="#" class="dropdown-item" value="Cowboys" onclick="selectNrlClub('Cowboys')">Cowboys</a></li>
+                        <li><a href="#" class="dropdown-item" value="Dragons" onclick="selectNrlClub('Dragons')">Dragons</a></li>
+                        <li><a href="#" class="dropdown-item" value="Eels" onclick="selectNrlClub('Eels')">Eels</a></li>
+                        <li><a href="#" class="dropdown-item" value="Knights" onclick="selectNrlClub('Knights')">Knights</a></li>
+                        <li><a href="#" class="dropdown-item" value="Panthers" onclick="selectNrlClub('Panthers')">Panthers</a></li>
+                        <li><a href="#" class="dropdown-item" value="Rabbitohs" onclick="selectNrlClub('Rabbitohs')">Rabbitohs</a></li>
+                        <li><a href="#" class="dropdown-item" value="Raiders" onclick="selectNrlClub('Raiders')">Raiders</a></li>
+                        <li><a href="#" class="dropdown-item" value="Roosters" onclick="selectNrlClub('Roosters')">Roosters</a></li>
+                        <li><a href="#" class="dropdown-item" value="Sea Eagles" onclick="selectNrlClub('Sea Eagles')">Sea Eagles</a></li>
+                        <li><a href="#" class="dropdown-item" value="Sharks" onclick="selectNrlClub('Sharks')">Sharks</a></li>
+                        <li><a href="#" class="dropdown-item" value="Storm" onclick="selectNrlClub('Storm')">Storm</a></li>
+                        <li><a href="#" class="dropdown-item" value="Titans" onclick="selectNrlClub('Titans')">Titans</a></li>
+                        <li><a href="#" class="dropdown-item" value="Warriors" onclick="selectNrlClub('Warriors')">Warriors</a></li>
+                        <li><a href="#" class="dropdown-item" value="Wests Tigers" onclick="selectNrlClub('Wests Tigers')">Wests Tigers</a></li>
+                    </ul>
+                </div>
+                <div class="dropdown col">
+                    <button class="btn btn-success dropdown-toggle" type="button" id="xrlSelectButton"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        Select XRL Team
+                    </button>
+                    <ul id="xrlTeamSelect" class="dropdown-menu dropdown-menu-dark" aria-labelledby="dropdownMenuButton">
+                    </ul>
+                </div>
+            </div>
+            <h4 id="squadName"></h4>
+
+            <!-- <img src="static/{{ user['team_logo'] }}" alt="{{ user['team_short'] }}" height="80" style="padding: 10px;"><h4>{{ user['team_name'] }} Squad</h4> -->
+
+            <div class="table-responsive">
+                <table class="table table-dark table-striped">
+                    <thead>
+                        <tr>
+                            <th><a id="sortByNameButton" href="#/" onclick="sortByNameDesc()">Player</a></th>
+                            <th><a id="sortByPositionButton" href="#/" onclick="sortByPosition()">Position</a></th>
+                            <th><a id="sortByPosition2Button" href="#/" onclick="sortByPosition2()">Position 2</a></th>
+                            <th><a id="sortByClubButton" href="#/" onclick="sortByClub()">NRL Club</a></th>
+                        </tr>
+                    </thead>
+                    <tbody id="squadTable">
+
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <footer class="small text-center text-muted">
+        Data provided by <a href="https://www.nrl.com">NRL.com</a>. View <a
+            href="https://www.nrl.com/terms-of-use">NRL’s Terms of Use</a>.
+    </footer>
+    <div class="modal fade" id="playerInfo" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-success bg-gradient text-white">
+                    <h2 class="modal-title" id="playerInfoTitle">
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="playerInfoBody">
+                    <div class="row">
+                        <div class="col">
+                            <table class="table table-dark table-striped">
+                                <tr>
+                                    <th>
+                                        <p class="h5">NRL Club</p>
+                                    </th>
+                                    <th>
+                                        <p class="h5">XRL Team</p>
+                                    </th>
+                                    <th>
+                                        <p class="h5">Positions</span></p>
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <td><span id="playerNrlClub"></span><img class="ms-2" height="50px"
+                                            id="playerNrlLogo" /></td>
+                                    <td><span id="playerXrlTeam"></span><img class="ms-2" height="50px"
+                                            id="playerXrlLogo" /></td>
+                                    <td><span id="playerPositions"></span></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <div class="card">
+                                <h4 class="card-header">Stats</h4>
+                                <div class="card-body">
+                                    <div class="row mb-2">
+                                        <div class="col">
+                                            <p class="h5">XRL Points: <span id="playerXrlPoints"
+                                                    style="color: green;"></span></p>
+                                        </div>
+                                        <div class="col">
+                                            <p class="h5">Appearances: <span id="playerInfoAppearances"></span></p>
+                                        </div>
+                                    </div>
+                                    <div class="row align-items-start">
+                                        <div class="col-md-4">
+                                            <p>Tries: <span id="playerTries" style="color: green;"></span></p>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <p>Involvement Tries: <span id="playerITs" style="color: green;"></span></p>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <p>Positional Tries: <span id="playerPTs" style="color: green;"></span></p>
+                                        </div>
+                                    </div>
+                                    <div class="row align-items-start">
+                                        <div class="col-md-4">
+                                            <p>Goals: <span id="playerGoals" style="color: green;"></span></p>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <p>Field Goals: <span id="playerFGs" style="color: green;"></span></p>
+                                        </div>
+                                    </div>
+                                    <div class="row align-items-start">
+                                        <div class="col-md-4">
+                                            <p>MIAs: <span id="playerMIAs" style="color: #c94d38;"></span></p>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <p>Concedes: <span id="playerConcedes" style="color: #c94d38;"></span></p>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <p>Sin Bins: <span id="playerSinBins" style="color: orange;"></span></p>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <p>Send Offs: <span id="playerSendOffs" style="color: #c94d38;"></span></p>
+                                        </div>
+                                    </div>
+                                    <div class="row justify-content-start mt-2">
+                                        <div class="col-3">
+                                            <p>
+                                                <button class="btn btn-success" type="button" data-bs-toggle="collapse"
+                                                    data-bs-target="#playerAllStatsDisplay" aria-expanded="false"
+                                                    aria-controls="playerAllStatsDisplay" id="allStatsToggle">Show All
+                                                    Stats</button>
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="collapse" id="playerAllStatsDisplay">
+                                                <div class="card card-body">
+                                                    <div class="row" id="allStatsContainer"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer" id="playerInfoFooter" hidden>
+                    <button type="button" class="btn btn-danger" id="playerInfoDropButton" hidden>Drop</button>
+                    <button type="button" class="btn btn-success" id="playerInfoPickButton" hidden>Pick</button>
+                    <button type="button" class="btn btn-warning" id="playerInfoWaiverButton" hidden>Add To Waivers</button>
+                    <button type="button" class="btn btn-info" id="playerInfoTradeButton" hidden>Offer Trade</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="feedback" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="feedbackTitle"></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="feedbackMessage"></div>
+                <div class="modal-footer" id="feedbackFooter" hidden>
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal"
+                        id="feedbackCancel">Cancel</button>
+                    <button type="button" class="btn btn-success" data-bs-dismiss="modal"
+                        id="feedbackConfirm">Confirm</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW"
+        crossorigin="anonymous"></script>
+    <script type="module" src="js/squads.js"></script>
+</body>
+
+</html>

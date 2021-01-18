@@ -506,6 +506,56 @@ export function GetActiveRoundFromFixtures(rounds) {
     let currentRound = rounds.find(r => r.round_number == currentRoundNumber);
     return currentRound;
 }
+
+export function DefaultPlayerSort(p1, p2) {
+    if (p1.position == p2.position) {
+        return p1.player_name.split(' ')[1] > p2.player_name.split(' ')[1] ? 1 : -1;
+    }
+    return positionOrder.indexOf(p1.position) - positionOrder.indexOf(p2.position);
+}
+
+export function DefaultPlayerSortDesc(p1, p2) {
+    if (p1.position == p2.position) {
+        return p1.player_name.split(' ')[1] > p2.player_name.split(' ')[1] ? 1 : -1;
+    }
+    return positionOrder.indexOf(p1.position) < positionOrder.indexOf(p2.position) ? 1 : -1;
+}
+
+export function SortByPosition2(p1, p2) {
+    if (p1.position2 == p2.position2) {
+        return p1.player_name.split(' ')[1] > p2.player_name.split(' ')[1] ? 1 : -1;
+    }
+    return positionOrder.indexOf(p1.position2) > positionOrder.indexOf(p2.position2) ? 1 : -1;
+}
+
+export function SortByPosition2Desc(p1, p2) {
+    if (p1.position2 == p2.position2) {
+        return p1.player_name.split(' ')[1] > p2.player_name.split(' ')[1] ? 1 : -1;
+    }
+    return positionOrder.indexOf(p1.position2) < positionOrder.indexOf(p2.position2) ? 1 : -1;
+}
+
+export function SortByNrlClub(p1, p2) {
+    if (p1.nrl_club == p2.nrl_club) {
+        return p1.player_name.split(' ')[1] > p2.player_name.split(' ')[1] ? 1 : -1;
+    }
+    return p1.nrl_club > p2.nrl_club ? 1 : -1;
+}
+
+export function SortByNrlClubDesc(p1, p2) {
+    if (p1.nrl_club == p2.nrl_club) {
+        return p1.player_name.split(' ')[1] > p2.player_name.split(' ')[1] ? 1 : -1;
+    }
+    return p1.nrl_club < p2.nrl_club ? 1 : -1;
+}
+
+export function SortByPlayerName(p1, p2) {
+    return p1.player_name.split(' ')[1] > p2.player_name.split(' ')[1] ? 1 : -1;
+}
+
+export function SortByPlayerNameDesc(p1, p2) {
+    return p1.player_name.split(' ')[1] < p2.player_name.split(' ')[1] ? 1 : -1;
+}
 /**
  * Dictionary for converting position element ids into position display names
  */

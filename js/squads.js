@@ -1,12 +1,12 @@
-import { GetActiveUserTeamShort, GetAllPlayers, GetAllUsers, GetPlayersFromNrlClub, GetPlayersFromXrlTeam } from "./ApiFetch.js";
+import { GetActiveUserTeamShort, GetAllPlayers, GetAllUsers, GetCurrentRoundInfo, GetPlayersFromNrlClub, GetPlayersFromXrlTeam } from "./ApiFetch.js";
 import { DefaultPlayerSort, DefaultPlayerSortDesc, DisplayFeedback, SortByNrlClub, SortByNrlClubDesc, SortByPlayerName, SortByPlayerNameDesc, SortByPosition2, SortByPosition2Desc } from "./Helpers.js";
-import { PopulatePlayerTable } from './Tables.js';
 
-let users, players, filteredPlayers, xrlTeam, nrlClub;
+let users, players, filteredPlayers, xrlTeam, nrlClub, round;
 
 window.onload = async function () {
     try {
         users = await GetAllUsers();
+        round = await GetCurrentRoundInfo();
         let query = window.location.href.split('?')[1];
         var select = document.getElementById('xrlTeamSelect');
         for (var i = 0; i < users.length; i++) {
@@ -50,6 +50,40 @@ window.onload = async function () {
     // .catch((error) => {
     //     document.getElementById('feedback').innerText += error;
     // });
+}
+
+function PopulatePlayerTable(playerData, tableId) {
+    var tableBody = document.getElementById(tableId);
+    tableBody.innerHTML = '';
+    for (var i = 0; i < playerData.length; i++) {
+        var player = playerData[i];
+        var tr = document.createElement('tr');
+        let name = document.createElement('td');
+        let logo = document.createElement('img');
+        logo.src = 'static/' + player.nrl_club + '.svg';
+        logo.height = '40';
+        logo.className = 'me-1';
+        name.appendChild(logo);
+        let nameLink = document.createElement('a');
+        nameLink.href = '#';
+        nameLink.innerText = player.player_name;
+        nameLink.value = player.player_id;
+        nameLink.onclick = function() {
+            DisplayPlayerInfo(players.find(p => p.player_id == this.value, round));
+        };
+        name.appendChild(nameLink);
+        tr.appendChild(name);
+        var pos1 = document.createElement('td');
+        pos1.textContent = player.position;
+        tr.appendChild(pos1);
+        var pos2 = document.createElement('td');
+        pos2.textContent = player.position2;
+        tr.appendChild(pos2);
+        var team = document.createElement('td');
+        team.textContent = player.nrl_club;
+        tr.appendChild(team);
+        tableBody.appendChild(tr);
+    }
 }
 
 function selectNrlClub(club) {

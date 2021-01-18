@@ -1,5 +1,5 @@
 import { GetActiveUserTeamShort, GetAllPlayers, GetAllUsers, GetCurrentRoundInfo, GetPlayersFromNrlClub, GetPlayersFromXrlTeam } from "./ApiFetch.js";
-import { DefaultPlayerSort, DefaultPlayerSortDesc, DisplayFeedback, SortByNrlClub, SortByNrlClubDesc, SortByPlayerName, SortByPlayerNameDesc, SortByPosition2, SortByPosition2Desc } from "./Helpers.js";
+import { DefaultPlayerSort, DefaultPlayerSortDesc, DisplayFeedback, SortByNrlClub, SortByNrlClubDesc, SortByPlayerName, SortByPlayerNameDesc, SortByPosition2, SortByPosition2Desc, DisplayPlayerInfo } from "./Helpers.js";
 
 let users, players, filteredPlayers, xrlTeam, nrlClub, round;
 

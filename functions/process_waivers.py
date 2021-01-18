@@ -35,6 +35,7 @@ users_who_picked = []
 print("Processing waivers")
 #Iterate through users
 for rank, user in enumerate(waiver_order, 1):
+    print(f"User {rank} - {user['team_name']}")
     #If user has already picked up a player, skip them
     if user['players_picked'] > 0:
         print(f"{user['team_name']} already waivered one player this week")
@@ -42,7 +43,6 @@ for rank, user in enumerate(waiver_order, 1):
     users_squad = squads_table.scan(
         FilterExpression=Attr('xrl_team').eq(user['team_short'])
     )['Items']
-    print(f"User {rank} - {user['team_name']}")
     preferences = user['waiver_preferences']
     gained_player = False
     #If user didn't list any preferences, continue

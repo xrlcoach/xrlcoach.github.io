@@ -92,7 +92,7 @@ function DisplayNextMatch() {
         document.getElementById('nextMatchButton').href = `lineup.html`;
         document.getElementById('nextMatchButton').innerText = 'Set Lineup';
     } else {
-        document.getElementById('nextMatchScore').innerText = match.home_score + ' - ' + match.away_score; 
+        document.getElementById('nextMatchScore').innerText = match.home_team + ' ' + match.home + ' - ' + match.away_score + ' ' + match.away; 
         document.getElementById('nextMatchScore').hidden = false; 
         document.getElementById('nextMatchButton').href = `fixture.html?round=${nextRound.round_number}&fixture=${match.home}-v-${match.away}`;
         document.getElementById('nextMatchButton').innerText = 'View';

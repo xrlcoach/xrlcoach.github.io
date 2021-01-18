@@ -71,22 +71,28 @@
                             <img id="teamLogo" height="200px" />
                         </div>
                         <div class="col p-2 align-items-center">
-                            <table class="table table-dark my-2 table-striped">
-                                <tr>
-                                    <th style="color: green;">Team Owner</th>
-                                </tr>
-                                <tr>
-                                    <td id="teamOwner"></td>
-                                </tr>
-                            </table>
-                            <table class="table table-dark my-2 table-striped">
-                                <tr>
-                                    <th style="color: green;">Position</th>
-                                </tr>
-                                <tr>
-                                    <td id="teamPosition"></td>
-                                </tr>
-                            </table>
+                            <div class="row">
+                                <div class="col-lg">
+                                    <table class="table table-dark my-2 table-striped">
+                                        <tr>
+                                            <th style="color: green;">Team Owner</th>
+                                        </tr>
+                                        <tr>
+                                            <td id="teamOwner"></td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <div class="col-lg">
+                                    <table class="table table-dark my-2 table-striped">
+                                        <tr>
+                                            <th style="color: green;">Position</th>
+                                        </tr>
+                                        <tr>
+                                            <td id="teamPosition"></td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
                             <table class="table table-dark my-2 table-striped">
                                 <tr>
                                     <th style="color: green;">Wins</th>
@@ -344,7 +350,8 @@
                 <div class="modal-footer" id="playerInfoFooter" hidden>
                     <button type="button" class="btn btn-danger" id="playerInfoDropButton" hidden>Drop</button>
                     <button type="button" class="btn btn-success" id="playerInfoPickButton" hidden>Pick</button>
-                    <button type="button" class="btn btn-warning" id="playerInfoWaiverButton" hidden>Add To Waivers</button>
+                    <button type="button" class="btn btn-warning" id="playerInfoWaiverButton" hidden>Add To
+                        Waivers</button>
                     <button type="button" class="btn btn-info" id="playerInfoTradeButton" hidden>Offer Trade</button>
                 </div>
             </div>

@@ -88,15 +88,15 @@ function PopulatePlayerTable(playerData, tableId) {
 
 function selectNrlClub(club) {
     document.getElementById('squadName').innerText = club;
-    filteredPlayers = players.filter(p => p.nrl_club == club);
-    PopulatePlayerTable(filteredPlayers.sort(DefaultPlayerSort), 'squadTable');
+    players = await GetPlayersFromNrlClub(club);
+    PopulatePlayerTable(players.sort(DefaultPlayerSort), 'squadTable');
 }
 window.selectNrlClub = selectNrlClub;
 
 function selectXrlTeam(team) {
     document.getElementById('squadName').innerText = team;
-    filteredPlayers = players.filter(p => p.xrl_team == team);
-    PopulatePlayerTable(filteredPlayers.sort(DefaultPlayerSort), 'squadTable');
+    players = await GetPlayersFromXrlTeam(team);
+    PopulatePlayerTable(players.sort(DefaultPlayerSort), 'squadTable');
 }
 window.selectXrlTeam = selectXrlTeam;
 

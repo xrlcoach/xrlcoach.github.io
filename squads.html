@@ -20,14 +20,14 @@
     <script src="js/Session.js"></script>
     <script src="js/requireLogin.js"></script>
 
-    <title>XRL Home</title>
+    <title>XRL Player Centre</title>
 
 </head>
 
 <body>
 
     <nav class="navbar navbar-expand-md navbar-dark" style="background-color: rgb(44, 48, 52);">
-        <a class="navbar-brand" href="/"><img src="static/xrl-logo.png" alt="XRL Badge" height="40"><span
+        <a class="navbar-brand ms-2" href="/"><img src="static/xrl-logo.png" alt="XRL Badge" height="40"><span
                 class="green">X</span><span class="yellow">R</span><span class="green">L</span></a>
         <button aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler"
             data-bs-target="#navbar" data-bs-toggle="collapse" type="button">
@@ -35,28 +35,33 @@
         </button>
         <div class="collapse navbar-collapse" id="navbar">
             <ul class="navbar-nav me-auto mt-2">
+                <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
                 <li class="nav-item"><a class="nav-link" href="lineup.html">Lineup</a></li>
                 <li class="nav-item"><a class="nav-link" href="fixture.html">Match Centre</a></li>
                 <li class="nav-item"><a class="nav-link" href="draw.html">Draw</a></li>
                 <li class="nav-item"><a class="nav-link" href="comp.html">Ladder</a></li>
-                <li class="nav-item"><a class="nav-link" href="squads.html">Squads</a></li>
-                <li class="nav-item"><a class="nav-link" href="stats.html">Stats</a></li>
+                <li class="nav-item"><a class="nav-link" href="players.html">Players</a></li>
+                <li class="nav-item"><a class="nav-link" href="transfers.html">Transfer Centre</a></li>
             </ul>
-            <ul class="navbar-nav ms-auto mt-2">
+            <ul class="navbar-nav ms-auto me-2 mt-2">
                 <li class="nav-item"><a class="nav-link" href="#" onclick="logout()">Log Out</a></li>
             </ul>
-            <!-- <ul class="navbar-nav ms-auto mt-2">
-                <li class="nav-item"><a class="nav-link" href="/register">Register</a></li>
-                <li class="nav-item"><a class="nav-link" href="/login">Log In</a></li>
-            </ul> -->
         </div>
     </nav>
 
-    <header class="p-3 bg-success bg-gradient text-center text-white">
-        <h4>2020 Squads</h4>
+    <header class="p-3 bg-success bg-gradient">
+        <div class="row text-center">
+            <span class="text-white h4" id="squadTitle"></span>
+        </div>
     </header>
-
-    <main class="container-lg">
+    <div id="loading" class="row justify-content-centre align-items-center" style="height: 400px;">
+        <div class="col align-items-center justify-content-center text-center">
+            <div class="spinner-border text-success" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
+    </div>
+    <main class="container-lg" id="mainContent" hidden>
         <div class="container">
             <div class="row p-3">
                 <div class="dropdown col">
@@ -65,22 +70,37 @@
                         Select NRL Club
                     </button>
                     <ul id="clubSelect" class="dropdown-menu dropdown-menu-dark" aria-labelledby="dropdownMenuButton">
-                        <li><a href="#" class="dropdown-item" value="Broncos" onclick="selectNrlClub('Broncos')">Broncos</a></li>
-                        <li><a href="#" class="dropdown-item" value="Bulldogs" onclick="selectNrlClub('Bulldogs')">Bulldogs</a></li>
-                        <li><a href="#" class="dropdown-item" value="Cowboys" onclick="selectNrlClub('Cowboys')">Cowboys</a></li>
-                        <li><a href="#" class="dropdown-item" value="Dragons" onclick="selectNrlClub('Dragons')">Dragons</a></li>
+                        <li><a href="#" class="dropdown-item" value="Broncos"
+                                onclick="selectNrlClub('Broncos')">Broncos</a></li>
+                        <li><a href="#" class="dropdown-item" value="Bulldogs"
+                                onclick="selectNrlClub('Bulldogs')">Bulldogs</a></li>
+                        <li><a href="#" class="dropdown-item" value="Cowboys"
+                                onclick="selectNrlClub('Cowboys')">Cowboys</a></li>
+                        <li><a href="#" class="dropdown-item" value="Dragons"
+                                onclick="selectNrlClub('Dragons')">Dragons</a></li>
                         <li><a href="#" class="dropdown-item" value="Eels" onclick="selectNrlClub('Eels')">Eels</a></li>
-                        <li><a href="#" class="dropdown-item" value="Knights" onclick="selectNrlClub('Knights')">Knights</a></li>
-                        <li><a href="#" class="dropdown-item" value="Panthers" onclick="selectNrlClub('Panthers')">Panthers</a></li>
-                        <li><a href="#" class="dropdown-item" value="Rabbitohs" onclick="selectNrlClub('Rabbitohs')">Rabbitohs</a></li>
-                        <li><a href="#" class="dropdown-item" value="Raiders" onclick="selectNrlClub('Raiders')">Raiders</a></li>
-                        <li><a href="#" class="dropdown-item" value="Roosters" onclick="selectNrlClub('Roosters')">Roosters</a></li>
-                        <li><a href="#" class="dropdown-item" value="Sea Eagles" onclick="selectNrlClub('Sea Eagles')">Sea Eagles</a></li>
-                        <li><a href="#" class="dropdown-item" value="Sharks" onclick="selectNrlClub('Sharks')">Sharks</a></li>
-                        <li><a href="#" class="dropdown-item" value="Storm" onclick="selectNrlClub('Storm')">Storm</a></li>
-                        <li><a href="#" class="dropdown-item" value="Titans" onclick="selectNrlClub('Titans')">Titans</a></li>
-                        <li><a href="#" class="dropdown-item" value="Warriors" onclick="selectNrlClub('Warriors')">Warriors</a></li>
-                        <li><a href="#" class="dropdown-item" value="Wests Tigers" onclick="selectNrlClub('Wests Tigers')">Wests Tigers</a></li>
+                        <li><a href="#" class="dropdown-item" value="Knights"
+                                onclick="selectNrlClub('Knights')">Knights</a></li>
+                        <li><a href="#" class="dropdown-item" value="Panthers"
+                                onclick="selectNrlClub('Panthers')">Panthers</a></li>
+                        <li><a href="#" class="dropdown-item" value="Rabbitohs"
+                                onclick="selectNrlClub('Rabbitohs')">Rabbitohs</a></li>
+                        <li><a href="#" class="dropdown-item" value="Raiders"
+                                onclick="selectNrlClub('Raiders')">Raiders</a></li>
+                        <li><a href="#" class="dropdown-item" value="Roosters"
+                                onclick="selectNrlClub('Roosters')">Roosters</a></li>
+                        <li><a href="#" class="dropdown-item" value="Sea Eagles"
+                                onclick="selectNrlClub('Sea Eagles')">Sea Eagles</a></li>
+                        <li><a href="#" class="dropdown-item" value="Sharks"
+                                onclick="selectNrlClub('Sharks')">Sharks</a></li>
+                        <li><a href="#" class="dropdown-item" value="Storm" onclick="selectNrlClub('Storm')">Storm</a>
+                        </li>
+                        <li><a href="#" class="dropdown-item" value="Titans"
+                                onclick="selectNrlClub('Titans')">Titans</a></li>
+                        <li><a href="#" class="dropdown-item" value="Warriors"
+                                onclick="selectNrlClub('Warriors')">Warriors</a></li>
+                        <li><a href="#" class="dropdown-item" value="Wests Tigers"
+                                onclick="selectNrlClub('Wests Tigers')">Wests Tigers</a></li>
                     </ul>
                 </div>
                 <div class="dropdown col">
@@ -88,7 +108,8 @@
                         data-bs-toggle="dropdown" aria-expanded="false">
                         Select XRL Team
                     </button>
-                    <ul id="xrlTeamSelect" class="dropdown-menu dropdown-menu-dark" aria-labelledby="dropdownMenuButton">
+                    <ul id="xrlTeamSelect" class="dropdown-menu dropdown-menu-dark"
+                        aria-labelledby="dropdownMenuButton">
                     </ul>
                 </div>
             </div>
@@ -227,7 +248,8 @@
                 <div class="modal-footer" id="playerInfoFooter" hidden>
                     <button type="button" class="btn btn-danger" id="playerInfoDropButton" hidden>Drop</button>
                     <button type="button" class="btn btn-success" id="playerInfoPickButton" hidden>Pick</button>
-                    <button type="button" class="btn btn-warning" id="playerInfoWaiverButton" hidden>Add To Waivers</button>
+                    <button type="button" class="btn btn-warning" id="playerInfoWaiverButton" hidden>Add To
+                        Waivers</button>
                     <button type="button" class="btn btn-info" id="playerInfoTradeButton" hidden>Offer Trade</button>
                 </div>
             </div>

@@ -40,6 +40,8 @@ window.onload = async function () {
             players = GetPlayersFromXrlTeam(GetActiveUserTeamShort());
         }
         PopulatePlayerTable(players.sort(DefaultPlayerSort), 'squadTable');
+        document.getElementById('loading').hidden = true;
+        document.getElementById('mainContent').hidden = false;
     } catch (error) {
         DisplayFeedback('Error', error.stack);
     }
@@ -86,14 +88,14 @@ function PopulatePlayerTable(playerData, tableId) {
     }
 }
 
-function selectNrlClub(club) {
+async function selectNrlClub(club) {
     document.getElementById('squadName').innerText = club;
     players = await GetPlayersFromNrlClub(club);
     PopulatePlayerTable(players.sort(DefaultPlayerSort), 'squadTable');
 }
 window.selectNrlClub = selectNrlClub;
 
-function selectXrlTeam(team) {
+async function selectXrlTeam(team) {
     document.getElementById('squadName').innerText = team;
     players = await GetPlayersFromXrlTeam(team);
     PopulatePlayerTable(players.sort(DefaultPlayerSort), 'squadTable');

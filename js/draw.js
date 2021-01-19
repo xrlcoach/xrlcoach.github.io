@@ -179,20 +179,22 @@ async function PopulateTeamFixtureTable(team) {
         //Create table cells for each team and fill with team names
         let home = document.createElement('td');
         home.innerText = homeUser.team_name;
+        tr.appendChild(home);
+        let homeScore = document.createElement('td');
+        tr.appendChild(homeScore);
+        let awayScore = document.createElement('td');
+        tr.appendChild(awayScore);
         let away = document.createElement('td');
         away.innerText = awayUser.team_name;
+        tr.appendChild(away);
         //If the round is ongoing or finished, get the team scores and display them alongside the team name
         if (round.completed || round.in_progress) {
             //let homeScore = await GetLineupScoreByTeamAndRound(round.round_number, homeUser.team_short);
-            let homeScore = match.home_score;
-            home.innerText += " " + homeScore;
+            homeScore.innerText = match.home_score;
             //let awayScore = await GetLineupScoreByTeamAndRound(round.round_number, awayUser.team_short);
-            let awayScore = match.away_score;
-            away.innerText += " " + awayScore;
+            awayScore.innerText = match.away_score;
         }
         //Append cells to row
-        tr.appendChild(home);
-        tr.appendChild(away);
         let view = document.createElement('td');
         //If round is ongoing or finished, add a link to the fixture page, using the match data to construct a query parameter
         if (round.completed || round.in_progress) {

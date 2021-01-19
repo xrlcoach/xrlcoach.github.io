@@ -64,7 +64,13 @@
     <main class="container-lg" id="mainContent" hidden>
         <div class="row mt-5">
             <div class="col">
+                <a class="btn btn-success" href="#" aria-label="Previous" id="previousMatchLink" hidden>
+                    <span aria-hidden="true">&laquo;</span>
+                  </a>
                 <h4 id="fixtureHeading"></h4>
+                <a class="btn btn-success" href="#" aria-label="Next" id="nextMatchLink" hidden>
+                    <span aria-hidden="true">&raquo;</span>
+                  </a>
             </div>
         </div>
         <div id="fixtureContainer" class="row mt-5">
@@ -79,11 +85,15 @@
                             </th>
                         </tr>
                         <tr>
-                            <th style="color: green;">Player</th>
-                            <th style="color: green;">NRL Team</th>
-                            <th style="color: green;">Position</th>
-                            <th style="color: green;"></th>
-                            <th style="color: green;"></th>
+                            <th style="color: green;" colspan="3">Player</th>
+                            <th style="color: green;">T</th>
+                            <th style="color: green;">G</th>
+                            <th style="color: green;">FG</th>
+                            <th style="color: green;">IT</th>
+                            <th style="color: green;">PT</th>
+                            <th style="color: green;">MIA</th>
+                            <th style="color: green;">C</th>
+                            <th style="color: green;">Roles</th>
                             <th style="color: green;">Score</th>
                         </tr>
                     </thead>

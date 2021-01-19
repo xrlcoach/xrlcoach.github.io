@@ -26,6 +26,16 @@ window.onload = async function() {
         roundInfo = await GetRoundInfoFromCookie();
         roundNumber = roundInfo.round_number;
         match = GetTeamFixture(GetActiveUserTeamShort(), roundInfo);
+        if (roundNumber > 1) {
+            let lastMatch = GetTeamFixture(GetActiveUserTeamShort(), GetRoundInfo(Number(roundNumber) - 1));
+            document.getElementById('previousMatchLink').href = `fixture.html?round=${Number(roundNumber) - 1}&fixture=${lastMatch.home}-v-${lastMatch.away}`;
+            document.getElementById('previousMatchLink').hidden = false;
+        }
+        if (roundNumber < 21) {
+            let nextMatch = GetTeamFixture(GetActiveUserTeamShort(), GetRoundInfo(Number(roundNumber) + 1));
+            document.getElementById('nextMatchLink').href = `fixture.html?round=${Number(roundNumber) + 1}&fixture=${nextMatch.home}-v-${nextMatch.away}`;
+            document.getElementById('nextMatchLink').hidden = false;
+        }
     }
     //If there is no such match to display (draw not done, incorrect query), display message and stop loading
     if (match == undefined) {
@@ -60,7 +70,7 @@ window.onload = async function() {
  * @param {String} tableId The id of the table body element to construct
  * @param {Array} lineup An array of player lineup entries
  */
-function populateLineupTable(tableId, lineup, score) {
+async function populateLineupTable(tableId, lineup, score) {
     //Locate table body element
     let table = document.getElementById(tableId);
     //Separate the starting lineup from the interchange players
@@ -68,6 +78,7 @@ function populateLineupTable(tableId, lineup, score) {
     let bench = lineup.filter(p => p.position_number >= 14);
     //Iterate through starting lineup
     for (let player of starters) {
+        let statsRecord = await GetPlayerAppearanceStats(player.player_id, player.round_number);
         //Create table row
         let tr = document.createElement('tr');
         //Colour row green if the player played that week, red if not
@@ -75,7 +86,10 @@ function populateLineupTable(tableId, lineup, score) {
         if (!player['played_xrl'] && completed) tr.style.color = "#c94d38";
         /*For each property to display, create a table cell, assign the data to the innerText property,
         and append it to the table row*/
+        let shirtNumber = document.createElement('td');
+        shirtNumber.innerText = player.position_number;
         let name = document.createElement('td');
+        tr.appendChild(shirtNumber);
         //Turn player name into a clickable element which displays the player lineup info modal
         let nameLink = document.createElement('a');
         nameLink.innerText = player['player_name'];
@@ -86,20 +100,43 @@ function populateLineupTable(tableId, lineup, score) {
         name.appendChild(nameLink);
         tr.appendChild(name);
         let nrlClub = document.createElement('td');
-        nrlClub.innerText = player['nrl_club'];
+        let logo = document.createElement('img');
+        logo.src = '/static/' + player.nrl_club + '.svg';
+        logo.height = '40';
+        logo.className = 'me-1';
+        nrlClub.appendChild(logo);
         tr.appendChild(nrlClub);
-        let position = document.createElement('td');
-        position.innerText = PositionNames[player['position_specific']];
-        tr.appendChild(position);
-        let captain = document.createElement('td');
-        if (player['captain']) captain.innerText = 'Captain';
-        if (player['captain2']) captain.innerText = 'Captain';
-        if (player['vice']) captain.innerText = 'Vice-Captain';
-        tr.appendChild(captain);
-        let kicker = document.createElement('td');
-        if (player['kicker']) kicker.innerText = 'Kicker';
-        if (player['backup_kicker']) kicker.innerText = 'Backup Kicker';
-        tr.appendChild(kicker);
+        // let position = document.createElement('td');
+        // position.innerText = PositionNames[player['position_specific']];
+        // tr.appendChild(position);
+        let tries = document.createElement('td');
+        tries.innerText = statsRecord.stats.Tries;
+        tr.appendChild(tries);
+        let goals = document.createElement('td');
+        goals.innerText = statsRecord.scoring_stats.kicker.goals;
+        tr.appendChild(goals);
+        let fieldGoals = document.createElement('td');
+        fieldGoals.innerText = statsRecord.scoring_stats.kicker.field_goals;
+        tr.appendChild(fieldGoals);
+        let IT = document.createElement('td');
+        IT.innerText = statsRecord.scoring_stats[player.position_general].involvement_try ? 1 : 0;
+        tr.appendChild(IT);
+        let PT = document.createElement('td');
+        PT.innerText = statsRecord.scoring_stats[player.position_general].positional_try ? 1 : 0;
+        tr.appendChild(PT);
+        let MIA = document.createElement('td');
+        MIA.innerText = statsRecord.scoring_stats[player.position_general].mia ? 1 : 0;
+        tr.appendChild(MIA);
+        let concede = document.createElement('td');
+        concede.innerText = statsRecord.scoring_stats[player.position_general].concede ? 1 : 0;
+        tr.appendChild(concede);
+        let roles = document.createElement('td');
+        if (player['captain']) roles.innerText = 'C ';
+        if (player['captain2']) roles.innerText = 'C ';
+        if (player['vice']) roles.innerText = 'VC ';
+        if (player['kicker']) roles.innerText += 'K';
+        if (player['backup_kicker']) roles.innerText += 'BK';
+        tr.appendChild(roles);
         let score = document.createElement('td');
         score.innerText = player['score'];
         tr.appendChild(score);

@@ -83,13 +83,13 @@ async function populateLineupTable(tableId, lineup, score) {
         let statsRecord = await GetPlayerAppearanceStats(player.player_id, player.round_number);
         //Create table row
         let tr = document.createElement('tr');
-        //Colour row green if the player played that week, red if not
-        if (player['played_xrl']) tr.style.color = "green";
-        if (!player['played_xrl'] && completed) tr.style.color = "#c94d38";
         /*For each property to display, create a table cell, assign the data to the innerText property,
         and append it to the table row*/
         let shirtNumber = document.createElement('td');
         shirtNumber.innerText = player.position_number;
+        //Colour player number and name green if the player played that week, red if not
+        if (player['played_xrl']) shirtNumber.style.color = "green";
+        if (!player['played_xrl'] && completed) shirtNumber.style.color = "#c94d38";
         tr.appendChild(shirtNumber);
         let name = document.createElement('td');
         //Turn player name into a clickable element which displays the player lineup info modal
@@ -99,6 +99,8 @@ async function populateLineupTable(tableId, lineup, score) {
         nameLink.onclick = function() {
             DisplayAppearanceInfoFromLineup(player);
         };
+        if (player['played_xrl']) nameLink.style.color = "green";
+        if (!player['played_xrl'] && completed) nameLink.style.color = "#c94d38";
         name.appendChild(nameLink);
         tr.appendChild(name);
         let nrlClub = document.createElement('td');

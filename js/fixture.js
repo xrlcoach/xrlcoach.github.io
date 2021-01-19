@@ -90,8 +90,8 @@ async function populateLineupTable(tableId, lineup, score) {
         and append it to the table row*/
         let shirtNumber = document.createElement('td');
         shirtNumber.innerText = player.position_number;
-        let name = document.createElement('td');
         tr.appendChild(shirtNumber);
+        let name = document.createElement('td');
         //Turn player name into a clickable element which displays the player lineup info modal
         let nameLink = document.createElement('a');
         nameLink.innerText = player['player_name'];
@@ -174,6 +174,7 @@ async function populateLineupTable(tableId, lineup, score) {
         captain and kicker cells*/
         let shirtNumber = document.createElement('td');
         shirtNumber.innerText = player.position_number;
+        tr.appendChild(shirtNumber);
         let name = document.createElement('td');
         //Turn player name into a clickable element which displays the player lineup info modal
         let nameLink = document.createElement('a');

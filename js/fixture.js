@@ -162,6 +162,8 @@ async function populateLineupTable(tableId, lineup, score) {
         if (!player['played_xrl'] && !completed) tr.style.color = "grey";
         /*Create the same table cells as for the starters, but no need to conditionally fill
         captain and kicker cells*/
+        let shirtNumber = document.createElement('td');
+        shirtNumber.innerText = player.position_number;
         let name = document.createElement('td');
         //Turn player name into a clickable element which displays the player lineup info modal
         let nameLink = document.createElement('a');
@@ -173,15 +175,35 @@ async function populateLineupTable(tableId, lineup, score) {
         name.appendChild(nameLink);
         tr.appendChild(name);
         let nrlClub = document.createElement('td');
-        nrlClub.innerText = player['nrl_club'];
+        let logo = document.createElement('img');
+        logo.src = '/static/' + player.nrl_club + '.svg';
+        logo.height = '40';
+        logo.className = 'me-1';
+        nrlClub.appendChild(logo);
         tr.appendChild(nrlClub);
-        let position = document.createElement('td');
-        position.innerText = player['position_general'];
-        tr.appendChild(position);
-        let captain = document.createElement('td');
-        tr.appendChild(captain);
-        let kicker = document.createElement('td');
-        tr.appendChild(kicker);
+        let tries = document.createElement('td');
+        tries.innerText = statsRecord.stats.Tries;
+        tr.appendChild(tries);
+        let goals = document.createElement('td');
+        goals.innerText = statsRecord.scoring_stats.kicker.goals;
+        tr.appendChild(goals);
+        let fieldGoals = document.createElement('td');
+        fieldGoals.innerText = statsRecord.scoring_stats.kicker.field_goals;
+        tr.appendChild(fieldGoals);
+        let IT = document.createElement('td');
+        IT.innerText = statsRecord.scoring_stats[player.position_general].involvement_try ? 1 : 0;
+        tr.appendChild(IT);
+        let PT = document.createElement('td');
+        PT.innerText = statsRecord.scoring_stats[player.position_general].positional_try ? 1 : 0;
+        tr.appendChild(PT);
+        let MIA = document.createElement('td');
+        MIA.innerText = statsRecord.scoring_stats[player.position_general].mia ? 1 : 0;
+        tr.appendChild(MIA);
+        let concede = document.createElement('td');
+        concede.innerText = statsRecord.scoring_stats[player.position_general].concede ? 1 : 0;
+        tr.appendChild(concede);
+        let roles = document.createElement('td');
+        tr.appendChild(roles);
         let score = document.createElement('td');
         score.innerText = player['score'];
         tr.appendChild(score);

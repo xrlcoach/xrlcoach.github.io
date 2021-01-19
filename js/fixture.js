@@ -26,6 +26,14 @@ window.onload = async function() {
         roundInfo = await GetRoundInfoFromCookie();
         roundNumber = roundInfo.round_number;
         match = GetTeamFixture(GetActiveUserTeamShort(), roundInfo);
+    }
+    //If there is no such match to display (draw not done, incorrect query), display message and stop loading
+    if (match == undefined) {
+        document.getElementById('loading').hidden = true;
+        DisplayFeedback('WTF?', 'No match to show yet. Please check back later.');
+        return;
+    }
+    if (match.home == GetActiveUserTeamShort() || match.away == GetActiveUserTeamShort()) {
         if (roundNumber > 1) {
             let lastMatch = GetTeamFixture(GetActiveUserTeamShort(), await GetRoundInfo(Number(roundNumber) - 1));
             document.getElementById('previousMatchLink').href = `fixture.html?round=${Number(roundNumber) - 1}&fixture=${lastMatch.home}-v-${lastMatch.away}`;
@@ -36,12 +44,6 @@ window.onload = async function() {
             document.getElementById('nextMatchLink').href = `fixture.html?round=${Number(roundNumber) + 1}&fixture=${nextMatch.home}-v-${nextMatch.away}`;
             document.getElementById('nextMatchLink').hidden = false;
         }
-    }
-    //If there is no such match to display (draw not done, incorrect query), display message and stop loading
-    if (match == undefined) {
-        document.getElementById('loading').hidden = true;
-        DisplayFeedback('WTF?', 'No match to show yet. Please check back later.');
-        return;
     }
     homeTeam = match.home;
     awayTeam = match.away;

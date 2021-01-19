@@ -1,0 +1,52 @@
+Script executing at Tue Jan 19 20:30:02 2021
+Current XRL round: 2. First round of waivers.
+Current waiver order:
+1. The IT Crowd
+2. London Werewolves
+3. Bondi Wet Sox
+4. TestTeam1
+5. Test Team 2
+6. Test Team 3
+Processing waivers
+User 1 - The IT Crowd
+The IT Crowd want to sign Josh MANSOUR.
+Josh MANSOUR is available.
+admin signed Josh MANSOUR
+User 2 - London Werewolves
+London Werewolves want to sign Clinton GUTHERSON.
+Clinton GUTHERSON is available.
+wolvershank's squad has 18 players. Dropping their indicated player to make room.
+wolvershank signed Clinton GUTHERSON
+User 3 - Bondi Wet Sox
+Bondi Wet Sox want to sign Clinton GUTHERSON.
+Clinton GUTHERSON is not available.
+Bondi Wet Sox want to sign Daniel TUPOU.
+Daniel TUPOU is available.
+jeffrobson signed Daniel TUPOU
+User 4 - TestTeam1
+TestTeam1 want to sign Josh MANSOUR.
+Josh MANSOUR is not available.
+testuser1 didn't get any of their preferences
+User 5 - Test Team 2
+Test Team 2 want to sign Cameron SMITH.
+Cameron SMITH is available.
+testuser2's squad already has 18 players and they haven't indicated a player to drop. Moving to next user.
+testuser2 didn't get any of their preferences
+User 6 - Test Team 3
+Test Team 3 want to sign Jack WIGHTON.
+Jack WIGHTON is available.
+testuser3's squad has 18 players. Dropping their indicated player to make room.
+testuser3 signed Jack WIGHTON
+New waiver order:
+
+1. testuser1
+
+2. testuser2
+
+3. testuser3
+
+4. jeffrobson
+
+5. wolvershank
+
+6. admin

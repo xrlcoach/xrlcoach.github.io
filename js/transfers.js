@@ -17,6 +17,7 @@ window.onload = async () => {
             let linkText = `Round ${r} - ${i}`;
             let li = document.createElement('li');
             let a = document.createElement('a');
+            a.className = "dropdown-item";
             a.href = '#/';
             a.innerText = linkText;
             a.value = report.waiver_round;
@@ -473,4 +474,5 @@ function DisplayWaiverReport(report) {
     let reportModal = new bootstrap.Modal(document.getElementById('waiverReportModal'));
     document.getElementById('waiverReportTitle').innerText = `Waiver Report: Round ${report.waiver_round.split('_')[0]} - ${report.waiver_round.split('_')[1]}`;
     document.getElementById('waiverReportBody').innerText = report.report;
+    reportModal.show();
 }

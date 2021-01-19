@@ -11,6 +11,14 @@ window.onload = async () => {
         user = allUsers.find(u => u.team_short == GetActiveUserTeamShort());
         squad = await GetPlayersFromXrlTeam(user.team_short);
         waiverReports = await GetWaiverReports();
+        waiverReports = waiverReports.sort((r1, r2) => {
+            let r1r = Number(r1.waiver_round.split('_')[0]);
+            let r2r = Number(r2.waiver_round.split('_')[0]);
+            let r1i = Number(r1.waiver_round.split('_')[1]);
+            let r2i = Number(r2.waiver_round.split('_')[1]);
+            if (r1r == r2r) return r2i - r1i;
+            return r2r - r1r;
+        })
         for (let report of waiverReports) {
             let r = report.waiver_round.split('_')[0];
             let i = report.waiver_round.split('_')[1];

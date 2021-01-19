@@ -50,3 +50,38 @@ New waiver order:
 5. wolvershank
 
 6. admin
+Script executing at Tue Jan 19 21:06:48 2021
+Current XRL round: 2. Second round of waivers.
+Current waiver order:
+1. TestTeam1
+2. Test Team 2
+3. Test Team 3
+4. Bondi Wet Sox
+5. London Werewolves
+6. The IT Crowd
+Processing waivers
+User 1 - TestTeam1
+TestTeam1 want to sign Jarrod CROKER.
+Jarrod CROKER is available.
+testuser1's squad has 18 players. Dropping their indicated player to make room.
+testuser1 signed Jarrod CROKER
+User 2 - Test Team 2
+Test Team 2 want to sign Cameron SMITH.
+Cameron SMITH is available.
+testuser2's squad already has 18 players and they haven't indicated a player to drop. Moving to next user.
+testuser2 didn't get any of their preferences
+User 3 - Test Team 3
+Test Team 3 already waivered one player this week
+User 4 - Bondi Wet Sox
+Bondi Wet Sox already waivered one player this week
+User 5 - London Werewolves
+London Werewolves already waivered one player this week
+User 6 - The IT Crowd
+The IT Crowd already waivered one player this week
+New waiver order:
+1. testuser2
+2. testuser3
+3. jeffrobson
+4. wolvershank
+5. admin
+6. testuser1

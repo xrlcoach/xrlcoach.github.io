@@ -160,6 +160,7 @@ async function populateLineupTable(tableId, lineup, score) {
     table.appendChild(tr);
     //Iterate through the interchange players
     for (let player of bench) {
+        let statsRecord = await GetPlayerAppearanceStats(player.player_id, player.round_number);
         //Create a new table row
         let tr = document.createElement('tr');
         /*Colour row green if player played that week and was subbed on, red if not,

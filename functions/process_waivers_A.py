@@ -66,7 +66,7 @@ for rank, user in enumerate(waiver_order, 1):
         )['Item']
         pickable = False
         print(f"{user['team_name']} want to sign {player_info['player_name']}.")
-        report += f"{user['team_name']} want to sign {player_info['player_name']}."
+        report += f"\n{user['team_name']} want to sign {player_info['player_name']}."
         #If player not already picked and available to be picked
         if player not in players_transferred and ('xrl_team' not in player_info.keys() or player_info['xrl_team'] == 'None' or player_info['xrl_team'] == 'On Waivers' or player_info['xrl_team'] == 'Pre-Waivers'):
             print(f"{player_info['player_name']} is available.")
@@ -169,8 +169,8 @@ waiver_order = [u for u in waiver_order if u not in users_who_picked] + users_wh
 print("New waiver order:")
 report += "\nNew waiver order:"
 for rank, user in enumerate(waiver_order, 1):
-    print(f"\n{rank}. {user['username']}")
-    report += f"{rank}. {user['username']}"
+    print(f"{rank}. {user['username']}")
+    report += f"\n{rank}. {user['username']}"
     users_table.update_item(
                 Key={
                     'username': user['username']

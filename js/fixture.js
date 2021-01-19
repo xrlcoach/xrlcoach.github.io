@@ -146,7 +146,7 @@ async function populateLineupTable(tableId, lineup, score) {
     //Create heading for Interchange section of the table
     let tr = document.createElement('tr');
     let benchHeader = document.createElement('td');
-    benchHeader.colSpan = "6";
+    benchHeader.colSpan = "10";
     benchHeader.className = "border-bottom border-white";
     benchHeader.innerText = 'Interchange'; 
     tr.appendChild(benchHeader);
@@ -212,18 +212,21 @@ async function populateLineupTable(tableId, lineup, score) {
     }
     //Create a row to show the total score
     tr = document.createElement('tr');
-    //Fill out the blank cells
-    for (let i = 0; i < 4; i++) {
-        tr.appendChild(document.createElement('td'));
-    }
+    let blank = document.createElement('td');
+    blank.colSpan = '6';
+    tr.appendChild(blank);
     //Create label cell
     let label = document.createElement('td');
+    label.colSpan = '2';
+    label.className = 'h4';
     label.innerText = 'Total:';
     tr.appendChild(label);
     //Pass the lineup to the GetLineupScore function from Helpers module
     let total = score ? score : GetLineupScore(lineup);
     //Create cell to display total
     let totalDisplay = document.createElement('td');
+    totalDisplay.colSpan = '2';
+    totalDisplay.className = 'h4';
     totalDisplay.innerText = total;
     tr.appendChild(totalDisplay);
     table.appendChild(tr);

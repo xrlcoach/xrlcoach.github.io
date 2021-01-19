@@ -11,6 +11,7 @@ transfers_table = dynamodbResource.Table('transfers2020')
 trades_table = dynamodbResource.Table('trades2020')
 players_table = dynamodbResource.Table('players2020')
 rounds_table = dynamodbResource.Table('rounds2020')
+waivers_table = dynamodbResource.Table('waivers2020')
 
 def lambda_handler(event, context):
     method = event["httpMethod"]
@@ -359,6 +360,28 @@ def lambda_handler(event, context):
                     }
             except Exception as e:
                 print("ERROR: " + str(e))
+                return {
+                        'statusCode': 200,
+                        'headers': {
+                        'Access-Control-Allow-Headers': 'Content-Type',
+                        'Access-Control-Allow-Origin': '*',
+                        'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
+                        },
+                        'body': json.dumps({"error": str(e)})
+                    }
+        if operation == 'get_waiver_reports':
+            try:
+                data = waivers_table.scan()['Items']
+                return {
+                        'statusCode': 200,
+                        'headers': {
+                        'Access-Control-Allow-Headers': 'Content-Type',
+                        'Access-Control-Allow-Origin': '*',
+                        'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
+                        },
+                        'body': json.dumps(data)
+                    }
+            except Exception as e:
                 return {
                         'statusCode': 200,
                         'headers': {

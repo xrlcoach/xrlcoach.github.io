@@ -552,6 +552,23 @@ export async function UpdateUserInbox(username, inbox) {
     return data;
 }
 
+export async function GetWaiverReports() {
+    const response = await fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/transfers', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'        
+        },
+        body: JSON.stringify({
+            'operation': 'get_waiver_reports'
+        })
+    });
+    const data = await response.json();
+    if (data.error) {
+        DisplayFeedback('Error', data.error);
+    }
+    return data;
+}
+
 /**
  * Isolates the desired cookie from the browser cookie string
  * @param {String} cname 

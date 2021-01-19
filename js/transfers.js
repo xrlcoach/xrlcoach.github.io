@@ -1,7 +1,7 @@
-import { GetActiveUserTeamShort, GetAllUsers, getCookie, GetPlayerById, GetPlayersFromXrlTeam, GetTransferHistory, GetUserTradeOffers, ProcessTradeOffer, SendTradeOffer, UpdateUserWaiverPreferences, WithdrawTradeOffer } from "./ApiFetch.js";
+import { GetActiveUserTeamShort, GetAllUsers, getCookie, GetPlayerById, GetPlayersFromXrlTeam, GetTransferHistory, GetUserTradeOffers, GetWaiverReports, ProcessTradeOffer, SendTradeOffer, UpdateUserWaiverPreferences, WithdrawTradeOffer } from "./ApiFetch.js";
 import { DisplayFeedback } from "./Helpers.js";
 
-let roundNumber, allUsers, user, squad, waiverPreferences = [], provisionalDrop, tradeOffers, tradeOffersToDisplay, transferHistory;
+let roundNumber, allUsers, user, squad, waiverPreferences = [], provisionalDrop, tradeOffers, tradeOffersToDisplay, transferHistory, waiverReports;
 let tradeTarget, targetPlayers, playersOffered = [], playersRequested = [], powerplaysOffered = 0, powerplaysWanted = 0;
 
 window.onload = async () => {
@@ -10,6 +10,22 @@ window.onload = async () => {
         allUsers = await GetAllUsers();
         user = allUsers.find(u => u.team_short == GetActiveUserTeamShort());
         squad = await GetPlayersFromXrlTeam(user.team_short);
+        waiverReports = await GetWaiverReports();
+        for (let report of waiverReports) {
+            let r = report.waiver_round.split('_')[0];
+            let i = report.waiver_round.split('_')[1];
+            let linkText = `Round ${r} - ${i}`;
+            let li = document.createElement('li');
+            let a = document.createElement('a');
+            a.href = '#/';
+            a.innerText = linkText;
+            a.value = report.waiver_round;
+            a.onclick = function() {
+                DisplayWaiverReport(waiverReports.find(rep => rep.waiver_round == this.value));
+            };
+            li.appendChild(a);
+            document.getElementById('waiverReportSelect').appendChild(li);
+        }
         for (let playerId of user.waiver_preferences) {
             waiverPreferences.push(await GetPlayerById(playerId));
         };
@@ -242,12 +258,14 @@ async function DisplayOfferDetails(offerId) {
     document.getElementById('tradeInfoStatus').style.color = offer.offer_status == 'Accepted' ? 'green' : offer.offer_status == 'Rejected' ? '#c94d38' : '';
     // document.getElementById('tradeInfoOfferedByShort').innerText = offeredBy.team_short;
     // document.getElementById('tradeInfoOfferedToShort').innerText = offeredTo.team_short;
+    document.getElementById('trafeInfoOfferedPlayers').innerHTML = '';
     for (let id of offer.players_offered) {
         let player = await GetPlayerById(id);
         let li = document.createElement('li');
         li.innerText = player.player_name;
         document.getElementById('trafeInfoOfferedPlayers').appendChild(li);
     }
+    document.getElementById('trafeInfoWantedPlayers').innerHTML = '';
     for (let id of offer.players_wanted) {
         let player = await GetPlayerById(id);
         let li = document.createElement('li');
@@ -307,6 +325,8 @@ async function DisplayOfferDetails(offerId) {
 
 function DisplayTradeForm() {
     let tradeForm = new bootstrap.Modal(document.getElementById('tradeForm'));
+    document.getElementById('xrlTeamSelect').innerHTML = '';
+    document.getElementById('tradeFormOfferPlayersSelect').innerHTML = '';
     allUsers.filter(u => u.username != user.username).forEach(u => {
         let li = document.createElement('li');
         let option = document.createElement('a');
@@ -448,3 +468,9 @@ function SubmitTradeOffer() {
     })
 }
 window.SubmitTradeOffer = SubmitTradeOffer;
+
+function DisplayWaiverReport(report) {
+    let reportModal = new bootstrap.Modal(document.getElementById('waiverReportModal'));
+    document.getElementById('waiverReportTitle').innerText = `Waiver Report: Round ${report.waiver_round.split('_')[0]} - ${report.waiver_round.split('_')[1]}`;
+    document.getElementById('waiverReportBody').innerText = report.report;
+}

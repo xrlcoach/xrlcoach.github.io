@@ -70,6 +70,15 @@
                         <div class="col-4 p-2">
                             <h5>Waiver Rank</h5>
                             <p class="h2 text-success" id="teamWaiverRank"></p>
+                            <div class="dropdown mt-5">
+                                <button class="btn btn-success dropdown-toggle" type="button" id="waiverReportButton"
+                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                    Waiver Reports
+                                </button>
+                                <ul id="waiverReportSelect" class="dropdown-menu dropdown-menu-dark"
+                                    aria-labelledby="dropdownMenuButton">
+                                </ul>
+                            </div>
                         </div>
                         <div class="col p-2 align-items-center">
                             <table class="table table-dark my-2 table-striped align-middle">
@@ -133,6 +142,18 @@
         Data provided by <a href="https://www.nrl.com">NRL.com</a>. View <a
             href="https://www.nrl.com/terms-of-use">NRL’s Terms of Use</a>.
     </footer>
+    <div class="modal fade" id="waiverReportModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="waiverReportTitle"></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="waiverReportBody"></div>
+            </div>
+        </div>
+    </div>
     <div class="modal fade" id="tradeInfo" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
         aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">

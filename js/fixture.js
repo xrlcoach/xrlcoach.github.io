@@ -165,15 +165,15 @@ async function populateLineupTable(tableId, lineup, score) {
         let statsRecord = await GetPlayerAppearanceStats(player.player_id, player.round_number);
         //Create a new table row
         let tr = document.createElement('tr');
-        /*Colour row green if player played that week and was subbed on, red if not,
-        and grey if they haven't been subbed on but the round isn't over*/
-        if (player['played_xrl']) tr.style.color = "green";
-        if (!player['played_xrl'] && completed) tr.style.color = "#c94d38";
-        if (!player['played_xrl'] && !completed) tr.style.color = "grey";
         /*Create the same table cells as for the starters, but no need to conditionally fill
         captain and kicker cells*/
         let shirtNumber = document.createElement('td');
         shirtNumber.innerText = player.position_number;
+        /*Colour player name and number green if player played that week and was subbed on, red if not,
+        and grey if they haven't been subbed on but the round isn't over*/
+        if (player['played_xrl']) shirtNumber.style.color = "green";
+        if (!player['played_xrl'] && completed) shirtNumber.style.color = "#c94d38";
+        if (!player['played_xrl'] && !completed) shirtNumber.style.color = "grey";
         tr.appendChild(shirtNumber);
         let name = document.createElement('td');
         //Turn player name into a clickable element which displays the player lineup info modal
@@ -183,6 +183,9 @@ async function populateLineupTable(tableId, lineup, score) {
         nameLink.onclick = function() {
             DisplayAppearanceInfoFromLineup(player);
         };
+        if (player['played_xrl']) nameLink.style.color = "green";
+        if (!player['played_xrl'] && completed) nameLink.style.color = "#c94d38";
+        if (!player['played_xrl'] && !completed) nameLink.style.color = "grey";
         name.appendChild(nameLink);
         tr.appendChild(name);
         let nrlClub = document.createElement('td');

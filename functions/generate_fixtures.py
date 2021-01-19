@@ -38,6 +38,8 @@ while round_number < 21:
                 xrl_users.insert(1, xrl_users.pop())
         print("Saving to database...")
         for r in fixtures:
+                if round_number == 21:
+                        break
                 round_number += 1
                 round_matches = []
                 for match in r:
@@ -73,6 +75,8 @@ while round_number < 21:
                 xrl_users.insert(1, xrl_users.pop())
         print("Saving to database...")
         for r in fixtures:
+                if round_number == 21:
+                        break
                 round_number += 1
                 round_matches = []
                 for match in r:

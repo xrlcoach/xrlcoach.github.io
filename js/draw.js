@@ -104,6 +104,10 @@ async function PopulateFixtureTable(round) {
         homeName.href = 'squads.html?xrlTeam=' + homeUser.team_short;
         homeName.innerText = homeUser.team_name;
         home.appendChild(homeName);
+        let homeScore = document.createElement('td');
+        tr.appendChild(homeScore);
+        let awayScore = document.createElement('td');
+        tr.appendChild(awayScore);
         let away = document.createElement('td');
         let awayName = document.createElement('a');
         awayName.href = 'squads.html?xrlTeam=' + awayUser.team_short;
@@ -117,11 +121,9 @@ async function PopulateFixtureTable(round) {
         //If the round is ongoing or finished, get the team scores and display them alongside the team name
         if (round.completed || round.in_progress) {
             //let homeScore = await GetLineupScoreByTeamAndRound(round.round_number, homeUser.team_short);
-            let homeScore = match.home_score;
-            home.innerText += " " + homeScore;
+            homeScore.innerText = match.home_score;
             //let awayScore = await GetLineupScoreByTeamAndRound(round.round_number, awayUser.team_short);
-            let awayScore = match.away_score;
-            away.innerText += " " + awayScore;
+            awayScore.innerText = match.away_score;
         }
         //Append cells to row
         tr.appendChild(home);

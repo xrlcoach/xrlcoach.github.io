@@ -27,12 +27,12 @@ window.onload = async function() {
         roundNumber = roundInfo.round_number;
         match = GetTeamFixture(GetActiveUserTeamShort(), roundInfo);
         if (roundNumber > 1) {
-            let lastMatch = GetTeamFixture(GetActiveUserTeamShort(), GetRoundInfo(Number(roundNumber) - 1));
+            let lastMatch = GetTeamFixture(GetActiveUserTeamShort(), await GetRoundInfo(Number(roundNumber) - 1));
             document.getElementById('previousMatchLink').href = `fixture.html?round=${Number(roundNumber) - 1}&fixture=${lastMatch.home}-v-${lastMatch.away}`;
             document.getElementById('previousMatchLink').hidden = false;
         }
         if (roundNumber < 21) {
-            let nextMatch = GetTeamFixture(GetActiveUserTeamShort(), GetRoundInfo(Number(roundNumber) + 1));
+            let nextMatch = GetTeamFixture(GetActiveUserTeamShort(), await GetRoundInfo(Number(roundNumber) + 1));
             document.getElementById('nextMatchLink').href = `fixture.html?round=${Number(roundNumber) + 1}&fixture=${nextMatch.home}-v-${nextMatch.away}`;
             document.getElementById('nextMatchLink').hidden = false;
         }

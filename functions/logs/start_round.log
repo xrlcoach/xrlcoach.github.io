@@ -17,3 +17,30 @@ New order:
 5: testuser2
 6: testuser3
 Process complete
+Script executing at 2021-01-20 21:10:53.907598
+Active Round: 2. Setting to 'in progress' and closing player scooping
+Round 2 now in progress.
+Updating captaincy numbers...
+TestTeam1 didn't set a lineup this week. Reverting to last week's lineup.
+Lineup set.
+TestTeam1 captained Pride PETTERSON ROBATI
+The IT Crowd captained Valentine HOLMES
+Bondi Wet Sox captained Kalyn PONGA
+Test Team 3 didn't set a lineup this week. Reverting to last week's lineup.
+Lineup set.
+Test Team 3 captained Reuben COTTER
+London Werewolves didn't set a lineup this week. Reverting to last week's lineup.
+Lineup set.
+London Werewolves captained Cameron MCINNES
+Test Team 2 didn't set a lineup this week. Reverting to last week's lineup.
+Lineup set.
+Test Team 2 captained Renouf Atoni
+Calculating new waiver order
+New order: 
+1: testuser2
+2: wolvershank
+3: admin
+4: testuser1
+5: testuser3
+6: jeffrobson
+Process complete

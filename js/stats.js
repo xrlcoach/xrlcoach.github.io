@@ -189,7 +189,7 @@ async function filterStats(event) {
         if (roundNumber == roundToDisplay) {
             statsToDisplay = singleRoundStats;
         } else {
-            let roundStats = await GetStatsByRound(roundToDisplay);
+            let roundStats = await GetStatsByRound(roundNumber);
             for (let i in roundStats) {
                 let player = allPlayers.find(p => p.player_id == roundStats[i].player_id);
                 roundStats[i].score = GetPlayerXrlScores(player.position, roundStats[i]);

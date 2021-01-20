@@ -78,3 +78,7 @@ table
     text-decoration: none;
 } */
 
+a
+{
+    color: '';
+}

@@ -99,7 +99,7 @@ window.onload = async function() {
 }
 
 
-function populateStatsTable(stats, sortFunction, scoringAsKicker=true, isSingleRound=false) {
+function populateStatsTable(stats, sortFunction, scoringAsKicker=true) {
     let sortedStats = stats.sort(sortFunction);
     let table = document.getElementById('statTableBody');
     table.innerHTML = '';
@@ -115,7 +115,7 @@ function populateStatsTable(stats, sortFunction, scoringAsKicker=true, isSingleR
         nameLink.href = '#';
         nameLink.innerText = player.player_name;
         nameLink.value = player.player_id;
-        if (!isSingleRound) {
+        if (!singleRound) {
             nameLink.onclick = function() {
                 DisplayPlayerInfo(allPlayers.find(p => p.player_id == this.value), currentRound);
             };
@@ -158,13 +158,13 @@ function populateStatsTable(stats, sortFunction, scoringAsKicker=true, isSingleR
         tr.appendChild(mia);
         let total = document.createElement('td');
         if (scoringAsKicker) {
-            if (isSingleRound) {
+            if (singleRound) {
                 total.innerText = player.score;
             } else {
                 total.innerText = player.scoring_stats[player.position].points + player.scoring_stats.kicker.points;
             }
         } else {
-            if (isSingleRound) {
+            if (singleRound) {
                 total.innerText = player.score_not_kicking;
             } else {
                 total.innerText = player.scoring_stats[player.position].points;
@@ -225,7 +225,7 @@ async function filterStats(event) {
 
     displayedStats = statsToDisplay;
     let sortFunction = singleRound ? scoreAsKicker ? sortByXrlScore : sortByXrlScoreNoKicking : scoreAsKicker ? sortByTotalXrlScore : sortByTotalXrlScoreNoKicking;
-    populateStatsTable(statsToDisplay, sortFunction, scoreAsKicker, singleRound);
+    populateStatsTable(statsToDisplay, sortFunction, scoreAsKicker);
     document.getElementById('filterLoading').hidden = true;
 }
 

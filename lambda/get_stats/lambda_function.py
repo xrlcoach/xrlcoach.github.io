@@ -59,6 +59,13 @@ def lambda_handler(event, context):
                         FilterExpression=Attr('round_number').eq(round_number)
                     )
                     data = resp['Items']
+                    if 'LastEvaluatedKey' in resp.keys():
+                        resp2 = table.scan(
+                            FilterExpression=Attr('round_number').eq(round_number),
+                            ExclusiveStartKey=resp['LastEvaluatedKey']
+                        )
+                        data += resp2['Items']
+                    
                 else:
                     print("Couldn't recognise parameter")
                     data = {"error": "Couldn't recognise parameter"}

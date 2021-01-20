@@ -1,7 +1,7 @@
 import { GetActiveUserInfo, GetActiveUserTeamShort, GetAllPlayers, GetAllStats, GetAllUsers, getCookie, GetCurrentRoundInfo, GetIdToken, GetRoundInfo, GetRoundInfoFromCookie, GetStatsByRound } from "./ApiFetch.js";
 import { GetPlayerXrlScores, DisplayPlayerInfo, DisplayFeedback, DisplayAppearanceInfoFromStats, SortByPlayerName, SortByPlayerNameDesc, DefaultPlayerSort, DefaultPlayerSortDesc } from "./Helpers.js";
 
-let roundToDisplay, currentRound, allPlayers, allStats, allUsers, activeUser, allPlayersWithStats, displayedStats, scoreAsKicker, singleRound;
+let roundToDisplay, currentRound, allPlayers, allStats, allUsers, activeUser, allPlayersWithStats, singleRoundStats, displayedStats, scoreAsKicker, singleRound;
 let sortAttribute = 'score';
 let sortOrder = 'Descending';
 
@@ -186,15 +186,20 @@ async function filterStats(event) {
     singleRound = roundNumber != 'ALL';
     let statsToDisplay;
     if (singleRound) {
-        let roundStats = await GetStatsByRound(roundNumber);
-        for (let i in roundStats) {
-            let player = allPlayers.find(p => p.player_id == roundStats[i].player_id);
-            roundStats[i].score = GetPlayerXrlScores(player.position, roundStats[i]);
-            roundStats[i].score_not_kicking = GetPlayerXrlScores(player.position, roundStats[i], false);
-            roundStats[i].position = player.position;
-            roundStats[i].xrl_team = player.xrl_team ? player.xrl_team : 'None';
+        if (roundNumber == roundToDisplay) {
+            statsToDisplay = singleRoundStats;
+        } else {
+            let roundStats = await GetStatsByRound(roundToDisplay);
+            for (let i in roundStats) {
+                let player = allPlayers.find(p => p.player_id == roundStats[i].player_id);
+                roundStats[i].score = GetPlayerXrlScores(player.position, roundStats[i]);
+                roundStats[i].score_not_kicking = GetPlayerXrlScores(player.position, roundStats[i], false);
+                roundStats[i].position = player.position;
+                roundStats[i].xrl_team = player.xrl_team ? player.xrl_team : 'None';
+            }
+            singleRoundStats = roundStats;
+            statsToDisplay = roundStats;
         }
-        statsToDisplay = roundStats;
     } else {
         statsToDisplay = allPlayers;
     }

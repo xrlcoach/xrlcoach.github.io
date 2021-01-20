@@ -68,7 +68,7 @@ export function DisplayPlayerInfo(player, round) {
     document.getElementById('playerNrlClub').innerText = player.nrl_club;
     document.getElementById('playerNrlLogo').src = '/static/' + player.nrl_club + '.svg';
     document.getElementById('playerXrlTeam').innerText = player.xrl_team ? player.xrl_team : 'None';
-    if (!player.xrl_team || player.xrl_team == 'None') {
+    if (!player.xrl_team || player.xrl_team == 'None' || player.xrl_team == 'On Waivers' || player.xrl_team == 'Pre-Waivers') {
         document.getElementById('playerXrlLogo').hidden = true;
     } else {
         document.getElementById('playerXrlLogo').hidden = false;

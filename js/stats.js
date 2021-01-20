@@ -158,7 +158,7 @@ function populateStatsTable(stats, sortFunction, scoringAsKicker=true, isSingleR
         tr.appendChild(mia);
         let total = document.createElement('td');
         if (scoringAsKicker) {
-            if (singleRound) {
+            if (isSingleRound) {
                 total.innerText = player.score;
             } else {
                 total.innerText = player.scoring_stats[player.position].points + player.scoring_stats.kicker.points;
@@ -301,8 +301,8 @@ window.sortPlayers = sortPlayers;
 
 function searchPlayer(event) {
     event.preventDefault();
-    let player = document.getElementById('playerSearch').value.toLowerCase();
-    displayedStats = allPlayers.filter(p => p.search_name.toLowerCase().includes(player));
+    let search = document.getElementById('playerSearch').value.toLowerCase();
+    let result = displayedStats.filter(p => p.search_name.toLowerCase().includes(search));
     populateStatsTable(displayedStats, function(p1, p2) {
         return p1.player_name.split(' ')[1] > p2.player_name.split(' ')[1] ? 1 : -1;
     });

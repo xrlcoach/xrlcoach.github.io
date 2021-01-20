@@ -1,7 +1,7 @@
 import { GetActiveUserInfo, GetActiveUserTeamShort, GetAllPlayers, GetAllStats, GetAllUsers, getCookie, GetCurrentRoundInfo, GetIdToken, GetRoundInfo, GetRoundInfoFromCookie, GetStatsByRound } from "./ApiFetch.js";
 import { GetPlayerXrlScores, DisplayPlayerInfo, DisplayFeedback, DisplayAppearanceInfoFromStats, SortByPlayerName, SortByPlayerNameDesc, DefaultPlayerSort, DefaultPlayerSortDesc } from "./Helpers.js";
 
-let roundToDisplay, currentRound, allPlayers, allStats, allUsers, activeUser, allPlayersWithStats, singleRoundStats, displayedStats, scoreAsKicker, singleRound;
+let roundToDisplay, currentRound, allPlayers, allStats, allUsers, activeUser, allPlayersWithStats, displayedRound, displayedRoundStats, displayedStats, scoreAsKicker, singleRound;
 let sortAttribute = 'score';
 let sortOrder = 'Descending';
 
@@ -186,9 +186,10 @@ async function filterStats(event) {
     singleRound = roundNumber != 'ALL';
     let statsToDisplay;
     if (singleRound) {
-        if (roundNumber == roundToDisplay) {
-            statsToDisplay = singleRoundStats;
+        if (roundNumber == displayedRound) {
+            statsToDisplay = displayedRoundStats;
         } else {
+            displayedRound = roundNumber;
             let roundStats = await GetStatsByRound(roundNumber);
             for (let i in roundStats) {
                 let player = allPlayers.find(p => p.player_id == roundStats[i].player_id);
@@ -197,7 +198,7 @@ async function filterStats(event) {
                 roundStats[i].position = player.position;
                 roundStats[i].xrl_team = player.xrl_team ? player.xrl_team : 'None';
             }
-            singleRoundStats = roundStats;
+            displayedRoundStats = roundStats;
             statsToDisplay = roundStats;
         }
     } else {

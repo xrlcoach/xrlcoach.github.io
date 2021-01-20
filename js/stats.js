@@ -126,9 +126,9 @@ function populateStatsTable(stats, sortFunction, scoringAsKicker=true) {
         }
         name.appendChild(nameLink);
         tr.appendChild(name);
-        let nrlClub = document.createElement('td');
-        nrlClub.innerText = player.nrl_club;
-        tr.appendChild(nrlClub);
+        // let nrlClub = document.createElement('td');
+        // nrlClub.innerText = player.nrl_club;
+        // tr.appendChild(nrlClub);
         let xrlTeam = document.createElement('td');
         xrlTeam.innerText = player.xrl_team == undefined ? 'None' : player.xrl_team;
         tr.appendChild(xrlTeam);

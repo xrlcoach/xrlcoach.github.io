@@ -57,7 +57,7 @@
     </div>
     <main class="container-lg min-vh-100" id="mainContent" hidden>
         <div class="row align-items-center justify-content-center">
-            <div class="col m-3">
+            <div class="col-lg m-3">
                 <div class="card">
                     <h4 class="card-header">Your Squad</h4>
                     <div class="card-body">
@@ -66,7 +66,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col m-3">
+            <div class="col-lg m-3">
                 <div class="card" id="chosenPlayers" hidden>
                     <h4 class="card-header">Your Picks</h4>
                     <div class="card-body">
@@ -83,7 +83,7 @@
         </div>
 
         <div class="row p-3 align-items-center justify-content-center">
-            <div class="dropdown col">
+            <div class="dropdown col-lg my-1">
                 <button class="btn btn-success dropdown-toggle" type="button" id="nrlSelectButton"
                     data-bs-toggle="dropdown" aria-expanded="false">
                     Select NRL Club
@@ -121,10 +121,10 @@
                             onclick="selectNrlClub('Wests Tigers')">Wests Tigers</a></li>
                 </ul>
             </div>
-            <div class="col input-group">
+            <div class="col-lg input-group">
                 <form onsubmit="searchPlayer(event)">
-                    <input type="search" class="form-control" id="playerSearch" />
-                    <button type="submit" class="btn btn-success">Search</button>
+                    <input type="search" class="form-control my-1" id="playerSearch" />
+                    <button type="submit" class="btn btn-success my-1">Search</button>
                 </form>
             </div>
         </div>

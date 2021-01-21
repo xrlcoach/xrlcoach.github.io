@@ -7,8 +7,7 @@ async function login(event) {
         document.getElementById('loading').hidden = false;
         var username = document.getElementById('username').value;
         var password = document.getElementById('password').value;    
-        let idToken = await Login(username, password);
-        if (idToken.error) throw idToken.error;        
+        let idToken = await Login(username, password);       
         var expiry = new Date();
         expiry.setHours(expiry.getHours() + 6);
         document.cookie = `id=${idToken}; expiry=${expiry.toUTCString()}; Secure`;

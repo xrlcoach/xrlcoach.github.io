@@ -46,7 +46,7 @@
     </header>
 
     <main class="container-lg">
-        <div class="container-lg p-5">
+        <div class="p-5">
             <form onsubmit="login(event)">
                 <div class="form-group m-2">
                     <input autocomplete="off" autofocus class="form-control" id="username" placeholder="Username"
@@ -56,6 +56,9 @@
                     <input class="form-control" id="password" placeholder="Password" type="password">
                 </div>
                 <button class="btn btn-primary m-2" type="submit">Log In</button>
+                <div class="spinner-border text-success m-2 d-inline ms-2" role="status" id="loading" hidden>
+                    <span class="visually-hidden">Loading...</span>
+                </div>
             </form>
         </div>
     </main>

@@ -20,9 +20,9 @@ export async function Login(username, password) {
         })
     });
     const data = await response.json();
-    if (data.error) {
+    /*if (data.error) {
         DisplayFeedback('Error', data.error);
-    }
+    }*/
     return data;
 }
 /**
@@ -48,9 +48,9 @@ export async function GetAllUsers() {
         }
     });
     const data = await response.json();
-    if (data.error) {
+    /*if (data.error) {
         DisplayFeedback('Error', data.error);
-    }
+    }*/
     return data;
 }
 /**
@@ -69,9 +69,9 @@ export async function GetActiveUserInfo(idToken) {
         })
     });
     const data = await response.json();
-    if (data.error) {
+    /*if (data.error) {
         DisplayFeedback('Error', data.error);
-    }
+    }*/
     return data;        
 }
 /**
@@ -85,9 +85,9 @@ export async function GetAllPlayers() {
         }
     });
     const data = await response.json();
-    if (data.error) {
+    /*if (data.error) {
         DisplayFeedback('Error', data.error);
-    }
+    }*/
     return data;
 }
 /**
@@ -102,9 +102,9 @@ export async function GetPlayersFromNrlClub(club) {
         }
     });
     const data = await response.json();
-    if (data.error) {
+    /*if (data.error) {
         DisplayFeedback('Error', data.error);
-    }
+    }*/
     return data;
 }
 /**
@@ -119,9 +119,9 @@ export async function GetPlayersFromXrlTeam(team) {
         }
     });
     const data = await response.json();
-    if (data.error) {
+    /*if (data.error) {
         DisplayFeedback('Error', data.error);
-    }
+    }*/
     return data;   
 }
 /**
@@ -136,9 +136,9 @@ export async function GetPlayerById(playerId) {
         }
     });
     const data = await response.json();
-    if (data.error) {
+    /*if (data.error) {
         DisplayFeedback('Error', data.error);
-    }
+    }*/
     return data; 
 }
 /**
@@ -201,9 +201,9 @@ export async function ScoopPlayers(xrlTeam, players) {
         })
     });
     const data = await response.json();
-    if (data.error) {
+    /*if (data.error) {
         DisplayFeedback('Error', data.error);
-    }
+    }*/
     return data;
 }
 
@@ -221,9 +221,9 @@ export async function DropPlayers(xrlTeam, players) {
         })
     });
     const data = await response.json();
-    if (data.error) {
+    /*if (data.error) {
         DisplayFeedback('Error', data.error);
-    }
+    }*/
     const response2 = await fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/lineup', {
         method: 'POST',
         headers: {
@@ -254,9 +254,9 @@ export async function GetLineup(idToken) {
         }
     });
     const data = await response.json();
-    if (data.error) {
+    /*if (data.error) {
         DisplayFeedback('Error', data.error);
-    }
+    }*/
     return data;
 }
 /**
@@ -272,9 +272,9 @@ export async function GetLineupByTeamAndRound(roundNumber, xrlTeam) {
         }
     });
     const data = await response.json();
-    if (data.error) {
+    /*if (data.error) {
         DisplayFeedback('Error', data.error);
-    }
+    }*/
     return data;
 }
 /**
@@ -295,9 +295,9 @@ export async function SetLineup(idToken, players) {
         })
     });
     const data = await response.json();
-    if (data.error) {
+    /*if (data.error) {
         DisplayFeedback('Error', data.error);
-    }
+    }*/
     return data;
 }
 /**
@@ -311,9 +311,9 @@ export async function GetAllFixtures() {
         }
     });
     const data = await response.json();
-    if (data.error) {
+    /*if (data.error) {
         DisplayFeedback('Error', data.error);
-    }
+    }*/
     return data;
 }
 /**
@@ -328,9 +328,9 @@ export async function GetRoundInfo(roundNumber) {
         }
     });
     const data = await response.json();
-    if (data.error) {
+    /*if (data.error) {
         DisplayFeedback('Error', data.error);
-    }
+    }*/
     return data;
 }
 /**
@@ -373,9 +373,9 @@ export async function GetAllStats() {
         }
     });
     const data = await response.json();
-    if (data.error) {
+    /*if (data.error) {
         DisplayFeedback('Error', data.error);
-    }
+    }*/
     return data;
 }
 /**
@@ -390,9 +390,9 @@ export async function GetStatsByRound(roundNumber) {
         }
     });
     const data = await response.json();
-    if (data.error) {
+    /*if (data.error) {
         DisplayFeedback('Error', data.error);
-    }
+    }*/
     return data;
 }
 /**
@@ -434,9 +434,9 @@ export async function UpdateUserWaiverPreferences(username, preferences, provisi
         })
     });
     const data = await response.json();
-    if (data.error) {
+    /*if (data.error) {
         DisplayFeedback('Error', data.error);
-    }
+    }*/
     return data;
 }
 
@@ -448,9 +448,9 @@ export async function GetTransferHistory(roundNumber) {
         }
     });
     const data = await response.json();
-    if (data.error) {
+    /*if (data.error) {
         DisplayFeedback('Error', data.error);
-    }
+    }*/
     return data;
 }
 
@@ -471,9 +471,9 @@ export async function SendTradeOffer(sendingUsername, targetUsername, playersOff
         })
     });
     const data = await response.json();
-    if (data.error) {
+    /*if (data.error) {
         DisplayFeedback('Error', data.error);
-    }
+    }*/
     return data; 
 }
 
@@ -489,9 +489,9 @@ export async function GetUserTradeOffers(username) {
         })
     });
     const data = await response.json();
-    if (data.error) {
+    /*if (data.error) {
         DisplayFeedback('Error', data.error);
-    }
+    }*/
     return data;
 }
 
@@ -509,9 +509,9 @@ export async function ProcessTradeOffer(offerId, accepted = false) {
         })
     });
     const data = await response.json();
-    if (data.error) {
+    /*if (data.error) {
         DisplayFeedback('Error', data.error);
-    }
+    }*/
     return data;
 }
 
@@ -527,9 +527,9 @@ export async function WithdrawTradeOffer(offerId) {
         })
     });
     const data = await response.json();
-    if (data.error) {
+    /*if (data.error) {
         DisplayFeedback('Error', data.error);
-    }
+    }*/
     return data;
 }
 
@@ -546,9 +546,9 @@ export async function UpdateUserInbox(username, inbox) {
         })
     });
     const data = await response.json();
-    if (data.error) {
+    /*if (data.error) {
         DisplayFeedback('Error', data.error);
-    }
+    }*/
     return data;
 }
 
@@ -563,9 +563,9 @@ export async function GetWaiverReports() {
         })
     });
     const data = await response.json();
-    if (data.error) {
+    /*if (data.error) {
         DisplayFeedback('Error', data.error);
-    }
+    }*/
     return data;
 }
 

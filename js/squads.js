@@ -63,6 +63,7 @@ function PopulatePlayerTable(playerData, tableId) {
         var player = playerData[i];
         var tr = document.createElement('tr');
         let name = document.createElement('td');
+        name.style.whiteSpace = 'nowrap';
         let logo = document.createElement('img');
         logo.src = 'static/' + player.nrl_club + '.svg';
         logo.height = '40';

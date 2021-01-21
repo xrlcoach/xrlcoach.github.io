@@ -95,6 +95,7 @@ async function PopulateFixtureTable(round) {
         let awayUser = users.find(u => u.team_short == match.away);
         //Create table cells for each team and fill with team names
         let home = document.createElement('td');
+        home.style.whiteSpace = 'nowrap';
         let homeLogo =  document.createElement('img');
         homeLogo.src = '/static/' + homeUser.team_short + '.png';
         homeLogo.height = '50';
@@ -110,6 +111,7 @@ async function PopulateFixtureTable(round) {
         let awayScore = document.createElement('td');
         tr.appendChild(awayScore);
         let away = document.createElement('td');
+        away.style.whiteSpace = 'nowrap';
         let awayName = document.createElement('a');
         awayName.href = 'squads.html?xrlTeam=' + awayUser.team_short;
         awayName.innerText = awayUser.team_name;

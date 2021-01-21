@@ -69,13 +69,16 @@
                     <div class="card-body">
                         <form onsubmit="filterStats(event)" class="text-center">
                             <div class="row m-2 justify-content-center align-items-center">
-                                <div class="col-4 m-2 align-items-center">
-                                    <label class="me-2" for="round">Round</label>
-                                    <select class="form-select" id="roundSelect">
+                                <div class="col-lg-4 my-2 align-items-center">
+                                    <label class="me-2" for="position">Position</label>
+                                    <select class="form-select" id="positionSelect">
                                         <option>ALL</option>
+                                        <option>Back</option>
+                                        <option>Playmaker</option>
+                                        <option>Forward</option>
                                     </select>
                                 </div>
-                                <div class="col-4 m-2 align-items-center">
+                                <div class="col-lg-4 my-2 align-items-center">
                                     <label class="me-2" for="nrl_club">NRL Club</label>
                                     <select class="form-select" id="nrlClubSelect" aria-placeholder="Choose a club">
                                         <option>ALL</option>
@@ -97,18 +100,7 @@
                                         <option>Wests Tigers</option>
                                     </select>
                                 </div>
-                            </div>
-                            <div class="row m-2 justify-content-center align-items-center">
-                                <div class="col-4 m-2 align-items-center">
-                                    <label class="me-2" for="position">Position</label>
-                                    <select class="form-select" id="positionSelect">
-                                        <option>ALL</option>
-                                        <option>Back</option>
-                                        <option>Playmaker</option>
-                                        <option>Forward</option>
-                                    </select>
-                                </div>
-                                <div class="col-4 m-2 align-items-center">
+                                <div class="col-lg-4 my-2 align-items-center">
                                     <label class="me-2" for="xrl_team">XRL Team</label>
                                     <select class="form-select" id="xrlTeamSelect" aria-placeholder="Choose a team">
                                         <option>ALL</option>
@@ -117,31 +109,38 @@
                                 </div>
                             </div>
                             <div class="row m-2 justify-content-center align-items-center">
-                                <div class="col-4 m-2 align-items-center">
-                                    <label class="me-2" for="scoreKicker">Score kicking stats</label>
+                                <div class="col-lg-4 my-2 align-items-center">
+                                    <label class="me-2" for="round">Round</label>
+                                    <select class="form-select" id="roundSelect">
+                                        <option>ALL</option>
+                                    </select>
+                                </div>
+                            </div>
+                                <div class="col-lg-4 my-2 align-items-center">
+                                    <label class="me-2" for="scoreKicker">Score Kicking Stats</label>
                                     <select class="form-select" id="scoreKickerSelect">
                                         <option>Yes</option>
                                         <option>No</option>
                                     </select>
                                 </div>
-                                <div class="col-4 m-2 align-items-center justify-content-center">
-                                    <button type="submit" class="btn btn-primary col-4">View stats</button>
-                                    <div class="spinner-border text-success ms-2" role="status" id="filterLoading" hidden>
-                                        <span class="visually-hidden">Loading...</span>
-                                    </div>
+                                <div class="col-lg-4 my-2 align-items-center justify-content-center">
+                                    <button type="submit" class="btn btn-primary col-4">Filter Stats</button>
+                                </div>
+                                <div class="col-lg-2 spinner-border text-success ms-2" role="status" id="filterLoading"
+                                    hidden>
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                        </form>
+                        <form onsubmit="searchPlayer(event)">
+                            <div class="row">
+                                <div class="col-lg">
+                                    <input type="search" class="form-control" id="playerSearch" />
+                                </div>
+                                <div class="col-lg">
+                                    <button type="submit" class="btn btn-primary">Search</button>
                                 </div>
                             </div>
                         </form>
-                        <div class="row form-group">
-                            <form onsubmit="searchPlayer(event)">
-                                <div class="col">
-                                    <input type="search" class="form-control" id="playerSearch" />
-                                </div>
-                                <div class="col">
-                                    <button type="submit" class="btn btn-primary">Search</button>
-                                </div>
-                            </form>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -285,7 +284,8 @@
                 <div class="modal-footer" id="playerInfoFooter" hidden>
                     <button type="button" class="btn btn-danger" id="playerInfoDropButton" hidden>Drop</button>
                     <button type="button" class="btn btn-success" id="playerInfoPickButton" hidden>Pick</button>
-                    <button type="button" class="btn btn-warning" id="playerInfoWaiverButton" hidden>Add To Waivers</button>
+                    <button type="button" class="btn btn-warning" id="playerInfoWaiverButton" hidden>Add To
+                        Waivers</button>
                     <button type="button" class="btn btn-info" id="playerInfoTradeButton" hidden>Offer Trade</button>
                 </div>
             </div>
@@ -299,7 +299,7 @@
                     <h2 class="modal-title" id="appearanceInfoTitle">
                         </h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>                
+                </div>
                 <div class="modal-body" id="appearanceInfoBody">
                     <div class="row">
                         <div class="col">

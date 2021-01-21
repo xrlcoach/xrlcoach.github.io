@@ -106,6 +106,7 @@ function populateStatsTable(stats, sortFunction, scoringAsKicker=true) {
     for (var player of sortedStats) {
         let tr = document.createElement('tr');
         let name = document.createElement('td');
+        name.style.whiteSpace = 'nowrap';
         let logo = document.createElement('img');
         logo.src = 'static/' + player.nrl_club + '.svg';
         logo.height = '40';

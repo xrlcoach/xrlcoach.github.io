@@ -75,13 +75,14 @@ function DisplayTradeOffers() {
         let offeredBy = allUsers.find(u => u.username == offer.offered_by);
         let offeredTo = allUsers.find(u => u.username == offer.offered_to);
         let offerDisplay = document.createElement('div');
-        let offerContent = document.createElement('p');
-        let offerTime = document.createElement('span');
-        offerTime.className = 'mx-2 bold';
+        let row = document.createElement('div');
+        row.className = 'row';
+        let offerTime = document.createElement('div');
+        offerTime.className = 'col-lg-3';
         offerTime.innerText = 'Date: ' + new Date(offer.datetime).toDateString();
-        offerContent.appendChild(offerTime);
-        let offerText = document.createElement('span');
-        offerText.className = 'mx-2 ';
+        row.appendChild(offerTime);
+        let offerText = document.createElement('div');
+        offerText.className = 'col-lg';
         if (offer.offer_status == 'Pending') {
             offerDisplay.className = 'alert alert-warning';
             if (offer.offered_by == user.username) {
@@ -114,11 +115,13 @@ function DisplayTradeOffers() {
                 offerText.innerText = 'The trade offer from ' + offeredBy.team_name + ' has been withdrawn.';
             }
         }
-        offerContent.appendChild(offerText);
-        let offerStatus = document.createElement('span');
-        offerStatus.className = 'mx-2';
+        row.appendChild(offerText);
+        let offerStatus = document.createElement('div');
+        offerStatus.className = 'col-lg-2';
         offerStatus.innerText = 'Status: ' + offer.offer_status;
-        offerContent.appendChild(offerStatus);
+        row.appendChild(offerStatus);
+        let viewCol = document.createElement('div');
+        viewCol.className = 'col-lg-2';
         let viewButton = document.createElement('button');
         viewButton.className = 'btn btn-success mx-2';
         viewButton.value = offer.offer_id;
@@ -126,8 +129,9 @@ function DisplayTradeOffers() {
         viewButton.onclick = function() {
             DisplayOfferDetails(this.value);
         }
-        offerContent.appendChild(viewButton);
-        offerDisplay.appendChild(offerContent)
+        viewCol.appendChild(viewButton);
+        row.appendChild(viewCol);
+        offerDisplay.appendChild(row);
         tradeBody.appendChild(offerDisplay);
     }
 

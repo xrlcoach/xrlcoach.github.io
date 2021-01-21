@@ -92,6 +92,7 @@ async function populateLineupTable(tableId, lineup, score) {
         if (!player['played_xrl'] && completed) shirtNumber.style.color = "#c94d38";
         tr.appendChild(shirtNumber);
         let name = document.createElement('td');
+        name.style.whiteSpace = 'nowrap';
         //Turn player name into a clickable element which displays the player lineup info modal
         let nameLink = document.createElement('a');
         nameLink.innerText = player['player_name'];
@@ -178,6 +179,7 @@ async function populateLineupTable(tableId, lineup, score) {
         if (!player['played_xrl'] && !completed) shirtNumber.style.color = "grey";
         tr.appendChild(shirtNumber);
         let name = document.createElement('td');
+        name.style.whiteSpace = 'nowrap';
         //Turn player name into a clickable element which displays the player lineup info modal
         let nameLink = document.createElement('a');
         nameLink.innerText = player['player_name'];

@@ -40,6 +40,7 @@ function PopulateLeagueTable(users) {
         /*For each property to display, create a table cell, assign the data to the innerText property,
         and append it to the table row*/
         let xrlTeam = document.createElement('td');
+        xrlTeam.style.whiteSpace = 'nowrap';
         let teamLogo =  document.createElement('img');
         teamLogo.src = '/static/' + user.team_short + '.png';
         teamLogo.height = '50';

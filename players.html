@@ -115,7 +115,6 @@
                                         <option>ALL</option>
                                     </select>
                                 </div>
-                            </div>
                                 <div class="col-lg-4 my-2 align-items-center">
                                     <label class="me-2" for="scoreKicker">Score Kicking Stats</label>
                                     <select class="form-select" id="scoreKickerSelect">
@@ -127,16 +126,16 @@
                                     <button type="submit" class="btn btn-primary col-4">Filter Stats</button>
                                 </div>
                                 <div class="col-lg-2 spinner-border text-success ms-2" role="status" id="filterLoading"
-                                    hidden>
-                                    <span class="visually-hidden">Loading...</span>
-                                </div>
+                                hidden>
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
                         </form>
                         <form onsubmit="searchPlayer(event)">
                             <div class="row">
-                                <div class="col-lg">
+                                <div class="col-lg p-1 text-end">
                                     <input type="search" class="form-control" id="playerSearch" />
                                 </div>
-                                <div class="col-lg">
+                                <div class="col-lg p-1 text-start">
                                     <button type="submit" class="btn btn-primary">Search</button>
                                 </div>
                             </div>

@@ -62,179 +62,195 @@
         </div>
     </div>
     <main class="container-lg" id="mainContent" hidden>
-        <div class="row align-items-center mt-5">
-            <div class="col-lg card border border-secondary" id="teamInfoCard">
-                <h2 class="card-header bg-dark bg-gradient text-white" id="teamNameDisplay"></h2>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-lg-4 p-2">
-                            <img id="teamLogo" height="200px" />
-                        </div>
-                        <div class="col-lg p-2 align-items-center">
-                            <div class="row">
-                                <div class="col-lg">
-                                    <table class="table table-dark my-2 table-striped">
-                                        <tr>
-                                            <th style="color: green;">Team Owner</th>
-                                        </tr>
-                                        <tr>
-                                            <td id="teamOwner"></td>
-                                        </tr>
-                                    </table>
-                                </div>
-                                <div class="col-lg">
-                                    <table class="table table-dark my-2 table-striped">
-                                        <tr>
-                                            <th style="color: green;">Position</th>
-                                        </tr>
-                                        <tr>
-                                            <td id="teamPosition"></td>
-                                        </tr>
-                                    </table>
-                                </div>
+
+        <div class="card border border-secondary mt-5" id="teamInfoCard">
+            <h2 class="card-header bg-dark bg-gradient text-white" id="teamNameDisplay"></h2>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-lg-4 p-2">
+                        <img id="teamLogo" height="200px" />
+                    </div>
+                    <div class="col-lg p-2 align-items-center">
+                        <div class="row">
+                            <div class="col-lg">
+                                <table class="table table-dark my-2 table-striped">
+                                    <tr>
+                                        <th style="color: green;">Team Owner</th>
+                                    </tr>
+                                    <tr>
+                                        <td id="teamOwner"></td>
+                                    </tr>
+                                </table>
                             </div>
-                            <table class="table table-dark my-2 table-striped">
-                                <tr>
-                                    <th style="color: green;">Wins</th>
-                                    <th style="color: green;">Draws</th>
-                                    <th style="color: green;">Losses</th>
-                                </tr>
-                                <tr>
-                                    <td id="teamWins"></td>
-                                    <td id="teamDraws"></td>
-                                    <td id="teamLosses"></td>
-                                </tr>
-                            </table>
-                            <table class="table table-dark my-2 table-striped">
-                                <tr>
-                                    <th style="color: green;">For</th>
-                                    <th style="color: green;">Against</th>
-                                    <th style="color: green;">PD</th>
-                                </tr>
-                                <tr>
-                                    <td id="teamFor"></td>
-                                    <td id="teamAgainst"></td>
-                                    <td id="teamPD"></td>
-                                </tr>
-                            </table>
-                            <!-- <h4 class="m-1" id="teamOwner"></h4>
+                            <div class="col-lg">
+                                <table class="table table-dark my-2 table-striped">
+                                    <tr>
+                                        <th style="color: green;">Position</th>
+                                    </tr>
+                                    <tr>
+                                        <td id="teamPosition"></td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                        <table class="table table-dark my-2 table-striped">
+                            <tr>
+                                <th style="color: green;">Wins</th>
+                                <th style="color: green;">Draws</th>
+                                <th style="color: green;">Losses</th>
+                            </tr>
+                            <tr>
+                                <td id="teamWins"></td>
+                                <td id="teamDraws"></td>
+                                <td id="teamLosses"></td>
+                            </tr>
+                        </table>
+                        <table class="table table-dark my-2 table-striped">
+                            <tr>
+                                <th style="color: green;">For</th>
+                                <th style="color: green;">Against</th>
+                                <th style="color: green;">PD</th>
+                            </tr>
+                            <tr>
+                                <td id="teamFor"></td>
+                                <td id="teamAgainst"></td>
+                                <td id="teamPD"></td>
+                            </tr>
+                        </table>
+                        <!-- <h4 class="m-1" id="teamOwner"></h4>
                             <h4 class="m-1" id="teamPosition"></h4>
                             <h4 class="m-1" id="teamWinStats"></h4>
                             <h4 class="m-1" id="teamPointStats"></h4> -->
-                        </div>
                     </div>
                 </div>
             </div>
         </div>
         <div class="row justify-content-center mt-5">
-            <div class="col-lg-4 card border border-secondary m-3">
-                <h4 class="card-header bg-success bg-gradient text-white">Last Match</h4>
-                <div class="card-body">
-                    <h5 id="lastMatchOpponent">None</h5>
-                    <p><span id="lastMatchScore"></span><span id="lastMatchResult"></span></p>
-                    <a class="btn btn-primary" id="lastMatchView" hidden>View</a>
+            <div class="col-lg-4">
+                <div class="card border border-secondary m-3">
+                    <h4 class="card-header bg-success bg-gradient text-white">Last Match</h4>
+                    <div class="card-body">
+                        <h5 id="lastMatchOpponent">None</h5>
+                        <p><span id="lastMatchScore"></span><span id="lastMatchResult"></span></p>
+                        <a class="btn btn-primary" id="lastMatchView" hidden>View</a>
+                    </div>
                 </div>
             </div>
-            <div class="col-lg-4 card border border-secondary m-3">
-                <h4 class="card-header bg-success bg-gradient text-white" id="nextMatchHeader">Next Match</h4>
-                <div class="card-body">
-                    <h5 id="nextMatchOpponent"></h5>
-                    <p id="nextMatchStatus"></p>
-                    <p><span id="nextMatchScore" hidden></span><span id="nextMatchResult" hidden></span></p>
-                    <a class="btn btn-primary" id="nextMatchButton"></a>
-                </div>
-            </div>
-        </div>
-        <div class="row mt-5">
-            <div class="col-lg card border border-secondary" id="inboxCard">
-                <h4 class="card-header bg-dark bg-gradient text-white">Inbox</h4>
-                <div class="card-body">
-                    <table class="table table-striped align-middle">
-                        <thead>
-                            <tr>
-                                <th>Sent</th>
-                                <th>From</th>
-                                <th>Subject</th>
-                                <th colspan="2">Message</th>
-                            </tr>
-                        </thead>
-                        <tbody id="inboxBody"></tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-        <div class="row mt-5">
-            <div class="col-lg card border border-secondary" id="squadInfoCard">
-                <h4 class="card-header bg-dark bg-gradient text-white">Team Info</h4>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-lg m-2 card border  border-secondary" id="positionCounts">
-                            <h5 class="card-header bg-secondary bg-gradient text-white">Squad At A Glance</h5>
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col-4 align-items-center">
-                                        <h5>Players</h5>
-                                        <p class="h2 text-success" id="squadCount"></p>
-                                        <a id="pickPlayersLink" class="btn btn-success" href="pickteam.html" hidden>Pick
-                                            Players</a>
-                                    </div>
-                                    <div class="col align-items-center">
-                                        <h5>Breakdown</h5>
-                                        <ul>
-                                            <li id="backsCount"></li>
-                                            <li id="playmakersCount"></li>
-                                            <li id="forwardsCount"></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg m-2 card border  border-secondary" id="captainInfo">
-                            <h5 class="card-header bg-secondary bg-gradient text-white">Captains At A Glance</h5>
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col align-items-center">
-                                        <h5>Powerplays</h5>
-                                        <p class="h2 text-success" id="powerplayCount"></p>
-                                    </div>
-                                    <div class="col align-items-center">
-                                        <h5>Times As Captain</h5>
-                                        <ul id="captainCountList"></ul>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+            <div class="col-lg-4">
+                <div class="card border border-secondary m-3">
+                    <h4 class="card-header bg-success bg-gradient text-white" id="nextMatchHeader">Next Match</h4>
+                    <div class="card-body">
+                        <h5 id="nextMatchOpponent"></h5>
+                        <p id="nextMatchStatus"></p>
+                        <p><span id="nextMatchScore" hidden></span><span id="nextMatchResult" hidden></span></p>
+                        <a class="btn btn-primary" id="nextMatchButton"></a>
                     </div>
                 </div>
             </div>
         </div>
         <div class="row mt-5">
-            <div class="col-lg card border border-secondary mb-3">
-                <h4 class="card-header bg-dark bg-gradient text-white">First Team Squad</h4>
-                <div class="card-body px-0 mx-0">
-                    <div class="table-responsive px-0 mx-0">
-                        <table class="table table-dark table-striped">
+            <div class="col-lg">
+                <div class="card border border-secondary" id="inboxCard">
+                    <h4 class="card-header bg-dark bg-gradient text-white">Inbox</h4>
+                    <div class="card-body">
+                        <table class="table table-striped align-middle">
                             <thead>
                                 <tr>
-                                    <th><a id="sortByNameButton" href="#/" onclick="sortByNameDesc()">Player</a></th>
-                                    <th><a id="sortByPositionButton" href="#/" onclick="sortByPosition()">Position</a>
-                                    </th>
-                                    <th><a id="sortByPosition2Button" href="#/" onclick="sortByPosition2()">Position
-                                            2</a>
-                                    </th>
-                                    <!-- <th><a id="sortByClubButton" href="#/" onclick="sortByClub()">NRL Club</a></th> -->
-                                    <th></th>
+                                    <th>Sent</th>
+                                    <th>From</th>
+                                    <th>Subject</th>
+                                    <th colspan="2">Message</th>
                                 </tr>
                             </thead>
-                            <tbody id="playerSquadTable">
-
-                            </tbody>
-
+                            <tbody id="inboxBody"></tbody>
                         </table>
                     </div>
                 </div>
             </div>
         </div>
+        <div class="row mt-5">
+            <div class="col-lg">
+                <div class="card border border-secondary" id="squadInfoCard">
+                    <h4 class="card-header bg-dark bg-gradient text-white">Team Info</h4>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-lg m-2">
+                                <div class="card border  border-secondary" id="positionCounts">
+                                    <h5 class="card-header bg-secondary bg-gradient text-white">Squad At A Glance</h5>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-4 align-items-center">
+                                                <h5>Players</h5>
+                                                <p class="h2 text-success" id="squadCount"></p>
+                                                <a id="pickPlayersLink" class="btn btn-success" href="pickteam.html"
+                                                    hidden>Pick
+                                                    Players</a>
+                                            </div>
+                                            <div class="col align-items-center">
+                                                <h5>Breakdown</h5>
+                                                <ul>
+                                                    <li id="backsCount"></li>
+                                                    <li id="playmakersCount"></li>
+                                                    <li id="forwardsCount"></li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg m-2">
+                                <div class="card border  border-secondary" id="captainInfo">
+                                    <h5 class="card-header bg-secondary bg-gradient text-white">Captains At A Glance
+                                    </h5>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col align-items-center">
+                                                <h5>Powerplays</h5>
+                                                <p class="h2 text-success" id="powerplayCount"></p>
+                                            </div>
+                                            <div class="col align-items-center">
+                                                <h5>Times As Captain</h5>
+                                                <ul id="captainCountList"></ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col-lg">
+                <div class="card border border-secondary mb-3">
+                    <h4 class="card-header bg-dark bg-gradient text-white">First Team Squad</h4>
+                    <div class="card-body px-0 mx-0">
+                        <div class="table-responsive px-0 mx-0">
+                            <table class="table table-dark table-striped">
+                                <thead>
+                                    <tr>
+                                        <th><a id="sortByNameButton" href="#/" onclick="sortByNameDesc()">Player</a>
+                                        </th>
+                                        <th><a id="sortByPositionButton" href="#/"
+                                                onclick="sortByPosition()">Position</a>
+                                        </th>
+                                        <th><a id="sortByPosition2Button" href="#/" onclick="sortByPosition2()">Position
+                                                2</a>
+                                        </th>
+                                        <!-- <th><a id="sortByClubButton" href="#/" onclick="sortByClub()">NRL Club</a></th> -->
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="playerSquadTable">
+
+                                </tbody>
+
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </main>
 

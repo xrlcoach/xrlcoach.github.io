@@ -62,112 +62,107 @@
         </div>
     </div>
     <main id="mainContent" class="container-lg" hidden>
-        <div class="row">
-            <div class="col">
-                <div class="card">
-                    <h2 class="card-header bg-dark bg-gradient text-white">Select Filters</h2>
-                    <div class="card-body">
-                        <form onsubmit="filterStats(event)" class="text-center">
-                            <div class="row m-2 justify-content-center align-items-center">
-                                <div class="col-lg-4 my-2 align-items-center">
-                                    <label class="me-2" for="position">Position</label>
-                                    <select class="form-select" id="positionSelect">
-                                        <option>ALL</option>
-                                        <option>Back</option>
-                                        <option>Playmaker</option>
-                                        <option>Forward</option>
-                                    </select>
-                                </div>
-                                <div class="col-lg-4 my-2 align-items-center">
-                                    <label class="me-2" for="nrl_club">NRL Club</label>
-                                    <select class="form-select" id="nrlClubSelect" aria-placeholder="Choose a club">
-                                        <option>ALL</option>
-                                        <option>Broncos</option>
-                                        <option>Bulldogs</option>
-                                        <option>Cowboys</option>
-                                        <option>Dragons</option>
-                                        <option>Eels</option>
-                                        <option>Knights</option>
-                                        <option>Panthers</option>
-                                        <option>Rabbitohs</option>
-                                        <option>Raiders</option>
-                                        <option>Roosters</option>
-                                        <option>Sea Eagles</option>
-                                        <option>Sharks</option>
-                                        <option>Storm</option>
-                                        <option>Titans</option>
-                                        <option>Warriors</option>
-                                        <option>Wests Tigers</option>
-                                    </select>
-                                </div>
-                                <div class="col-lg-4 my-2 align-items-center">
-                                    <label class="me-2" for="xrl_team">XRL Team</label>
-                                    <select class="form-select" id="xrlTeamSelect" aria-placeholder="Choose a team">
-                                        <option>ALL</option>
-                                        <option>Free Agents</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="row m-2 justify-content-center align-items-center">
-                                <div class="col-lg-4 my-2 align-items-center">
-                                    <label class="me-2" for="round">Round</label>
-                                    <select class="form-select" id="roundSelect">
-                                        <option>ALL</option>
-                                    </select>
-                                </div>
-                                <div class="col-lg-4 my-2 align-items-center">
-                                    <label class="me-2" for="scoreKicker">Score Kicking Stats</label>
-                                    <select class="form-select" id="scoreKickerSelect">
-                                        <option>Yes</option>
-                                        <option>No</option>
-                                    </select>
-                                </div>
-                                <div class="col-lg-4 my-2 align-items-center justify-content-center">
-                                    <button type="submit" class="btn btn-primary col-4">Filter Stats</button>
-                                </div>
-                                <div class="col-lg-2 spinner-border text-success ms-2" role="status" id="filterLoading"
-                                hidden>
-                                <span class="visually-hidden">Loading...</span>
-                            </div>
-                        </form>
-                        <form onsubmit="searchPlayer(event)">
+        <div class="card">
+            <h2 class="card-header bg-dark bg-gradient text-white">Select Filters</h2>
+            <div class="card-body">
+                <form onsubmit="filterStats(event)" class="text-center">
+                    <div class="row m-2 justify-content-center align-items-center">
+                        <div class="col-lg-4 my-2 align-items-center">
+                            <label class="me-2" for="position">Position</label>
+                            <select class="form-select" id="positionSelect">
+                                <option>ALL</option>
+                                <option>Back</option>
+                                <option>Playmaker</option>
+                                <option>Forward</option>
+                            </select>
+                        </div>
+                        <div class="col-lg-4 my-2 align-items-center">
+                            <label class="me-2" for="nrl_club">NRL Club</label>
+                            <select class="form-select" id="nrlClubSelect" aria-placeholder="Choose a club">
+                                <option>ALL</option>
+                                <option>Broncos</option>
+                                <option>Bulldogs</option>
+                                <option>Cowboys</option>
+                                <option>Dragons</option>
+                                <option>Eels</option>
+                                <option>Knights</option>
+                                <option>Panthers</option>
+                                <option>Rabbitohs</option>
+                                <option>Raiders</option>
+                                <option>Roosters</option>
+                                <option>Sea Eagles</option>
+                                <option>Sharks</option>
+                                <option>Storm</option>
+                                <option>Titans</option>
+                                <option>Warriors</option>
+                                <option>Wests Tigers</option>
+                            </select>
+                        </div>
+                        <div class="col-lg-4 my-2 align-items-center">
+                            <label class="me-2" for="xrl_team">XRL Team</label>
+                            <select class="form-select" id="xrlTeamSelect" aria-placeholder="Choose a team">
+                                <option>ALL</option>
+                                <option>Free Agents</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row m-2 justify-content-center align-items-center">
+                        <div class="col-lg-4 my-2 align-items-center">
+                            <label class="me-2" for="round">Round</label>
+                            <select class="form-select" id="roundSelect">
+                                <option>ALL</option>
+                            </select>
+                        </div>
+                        <div class="col-lg-4 my-2 align-items-center">
+                            <label class="me-2" for="scoreKicker">Score Kicking Stats</label>
+                            <select class="form-select" id="scoreKickerSelect">
+                                <option>Yes</option>
+                                <option>No</option>
+                            </select>
+                        </div>
+                        <div class="col-lg-4 my-2 align-items-center justify-content-center">
+                            <button type="submit" class="btn btn-primary col-4">Filter Stats</button>
+                        </div>
+                        <div class="col-lg-2 spinner-border text-success ms-2" role="status" id="filterLoading" hidden>
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                </form>
+                <form onsubmit="searchPlayer(event)">
+                    <div class="row mt-3 justify-content-center">
+                        <div class="col-lg-5">
                             <div class="row">
-                                <div class="col-lg p-1 text-end">
+                                <div class="col-lg-9 p-1 text-end">
                                     <input type="search" class="form-control" id="playerSearch" />
                                 </div>
-                                <div class="col-lg p-1 text-start">
+                                <div class="col-lg-3 p-1 text-start">
                                     <button type="submit" class="btn btn-primary">Search</button>
                                 </div>
                             </div>
-                        </form>
+                        </div>
                     </div>
-                </div>
+                </form>
             </div>
         </div>
-        <div class="row">
-            <div class="col">
-                <div class="table-responsive" style="height: 750px;">
-                    <table class="table table-dark table-striped">
-                        <thead style="color: green;">
-                            <tr>
-                                <th><a id="" href="#/" onclick="sortPlayers('player_name')">Player</a></th>
-                                <!-- <th><a id="" href="#/" onclick="sortPlayers('nrl_club')">Club</a></th> -->
-                                <th><a id="" href="#/" onclick="sortPlayers('xrl_team')">XRL Team</a></th>
-                                <th><a id="" href="#/" onclick="sortPlayers('position')">Position</a></th>
-                                <th><a id="" href="#/" onclick="sortPlayers('tries')">Tries</a></th>
-                                <th><a id="" href="#/" onclick="sortPlayers('goals')">Goals</a></th>
-                                <th><a id="" href="#/" onclick="sortPlayers('field_goals')">Field Goals</a></th>
-                                <th><a id="" href="#/" onclick="sortPlayers('involvement_try')">Involvement</a></th>
-                                <th><a id="" href="#/" onclick="sortPlayers('positional_try')">Positional</a></th>
-                                <th><a id="" href="#/" onclick="sortPlayers('concede')">Concedes</a></th>
-                                <th><a id="" href="#/" onclick="sortPlayers('mia')">MIA</a></th>
-                                <th><a id="" href="#/" onclick="sortPlayers('score')">XRL Score</a></th>
-                            </tr>
-                        </thead>
-                        <tbody id="statTableBody"></tbody>
-                    </table>
-                </div>
-            </div>
+        <div class="table-responsive" style="height: 750px;">
+            <table class="table table-dark table-striped">
+                <thead style="color: green;">
+                    <tr>
+                        <th><a id="" href="#/" onclick="sortPlayers('player_name')">Player</a></th>
+                        <!-- <th><a id="" href="#/" onclick="sortPlayers('nrl_club')">Club</a></th> -->
+                        <th><a id="" href="#/" onclick="sortPlayers('xrl_team')">XRL Team</a></th>
+                        <th><a id="" href="#/" onclick="sortPlayers('position')">Position</a></th>
+                        <th><a id="" href="#/" onclick="sortPlayers('tries')">Tries</a></th>
+                        <th><a id="" href="#/" onclick="sortPlayers('goals')">Goals</a></th>
+                        <th><a id="" href="#/" onclick="sortPlayers('field_goals')">Field Goals</a></th>
+                        <th><a id="" href="#/" onclick="sortPlayers('involvement_try')">Involvement</a></th>
+                        <th><a id="" href="#/" onclick="sortPlayers('positional_try')">Positional</a></th>
+                        <th><a id="" href="#/" onclick="sortPlayers('concede')">Concedes</a></th>
+                        <th><a id="" href="#/" onclick="sortPlayers('mia')">MIA</a></th>
+                        <th><a id="" href="#/" onclick="sortPlayers('score')">XRL Score</a></th>
+                    </tr>
+                </thead>
+                <tbody id="statTableBody"></tbody>
+            </table>
         </div>
     </main>
 

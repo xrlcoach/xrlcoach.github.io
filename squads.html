@@ -62,76 +62,73 @@
         </div>
     </div>
     <main class="container-lg" id="mainContent" hidden>
-        <div class="container">
-            <div class="row p-3">
-                <div class="dropdown col-lg my-2">
-                    <button class="btn btn-success dropdown-toggle" type="button" id="nrlSelectButton"
-                        data-bs-toggle="dropdown" aria-expanded="false">
-                        Select NRL Club
-                    </button>
-                    <ul id="clubSelect" class="dropdown-menu dropdown-menu-dark" aria-labelledby="dropdownMenuButton">
-                        <li><a href="#" class="dropdown-item" value="Broncos"
-                                onclick="selectNrlClub('Broncos')">Broncos</a></li>
-                        <li><a href="#" class="dropdown-item" value="Bulldogs"
-                                onclick="selectNrlClub('Bulldogs')">Bulldogs</a></li>
-                        <li><a href="#" class="dropdown-item" value="Cowboys"
-                                onclick="selectNrlClub('Cowboys')">Cowboys</a></li>
-                        <li><a href="#" class="dropdown-item" value="Dragons"
-                                onclick="selectNrlClub('Dragons')">Dragons</a></li>
-                        <li><a href="#" class="dropdown-item" value="Eels" onclick="selectNrlClub('Eels')">Eels</a></li>
-                        <li><a href="#" class="dropdown-item" value="Knights"
-                                onclick="selectNrlClub('Knights')">Knights</a></li>
-                        <li><a href="#" class="dropdown-item" value="Panthers"
-                                onclick="selectNrlClub('Panthers')">Panthers</a></li>
-                        <li><a href="#" class="dropdown-item" value="Rabbitohs"
-                                onclick="selectNrlClub('Rabbitohs')">Rabbitohs</a></li>
-                        <li><a href="#" class="dropdown-item" value="Raiders"
-                                onclick="selectNrlClub('Raiders')">Raiders</a></li>
-                        <li><a href="#" class="dropdown-item" value="Roosters"
-                                onclick="selectNrlClub('Roosters')">Roosters</a></li>
-                        <li><a href="#" class="dropdown-item" value="Sea Eagles"
-                                onclick="selectNrlClub('Sea Eagles')">Sea Eagles</a></li>
-                        <li><a href="#" class="dropdown-item" value="Sharks"
-                                onclick="selectNrlClub('Sharks')">Sharks</a></li>
-                        <li><a href="#" class="dropdown-item" value="Storm" onclick="selectNrlClub('Storm')">Storm</a>
-                        </li>
-                        <li><a href="#" class="dropdown-item" value="Titans"
-                                onclick="selectNrlClub('Titans')">Titans</a></li>
-                        <li><a href="#" class="dropdown-item" value="Warriors"
-                                onclick="selectNrlClub('Warriors')">Warriors</a></li>
-                        <li><a href="#" class="dropdown-item" value="Wests Tigers"
-                                onclick="selectNrlClub('Wests Tigers')">Wests Tigers</a></li>
-                    </ul>
-                </div>
-                <div class="dropdown col-lg my-2">
-                    <button class="btn btn-success dropdown-toggle" type="button" id="xrlSelectButton"
-                        data-bs-toggle="dropdown" aria-expanded="false">
-                        Select XRL Team
-                    </button>
-                    <ul id="xrlTeamSelect" class="dropdown-menu dropdown-menu-dark"
-                        aria-labelledby="dropdownMenuButton">
-                    </ul>
-                </div>
+        <div class="row p-3">
+            <div class="dropdown col-lg my-2">
+                <button class="btn btn-success dropdown-toggle" type="button" id="nrlSelectButton"
+                    data-bs-toggle="dropdown" aria-expanded="false">
+                    Select NRL Club
+                </button>
+                <ul id="clubSelect" class="dropdown-menu dropdown-menu-dark" aria-labelledby="dropdownMenuButton">
+                    <li><a href="#" class="dropdown-item" value="Broncos" onclick="selectNrlClub('Broncos')">Broncos</a>
+                    </li>
+                    <li><a href="#" class="dropdown-item" value="Bulldogs"
+                            onclick="selectNrlClub('Bulldogs')">Bulldogs</a></li>
+                    <li><a href="#" class="dropdown-item" value="Cowboys" onclick="selectNrlClub('Cowboys')">Cowboys</a>
+                    </li>
+                    <li><a href="#" class="dropdown-item" value="Dragons" onclick="selectNrlClub('Dragons')">Dragons</a>
+                    </li>
+                    <li><a href="#" class="dropdown-item" value="Eels" onclick="selectNrlClub('Eels')">Eels</a></li>
+                    <li><a href="#" class="dropdown-item" value="Knights" onclick="selectNrlClub('Knights')">Knights</a>
+                    </li>
+                    <li><a href="#" class="dropdown-item" value="Panthers"
+                            onclick="selectNrlClub('Panthers')">Panthers</a></li>
+                    <li><a href="#" class="dropdown-item" value="Rabbitohs"
+                            onclick="selectNrlClub('Rabbitohs')">Rabbitohs</a></li>
+                    <li><a href="#" class="dropdown-item" value="Raiders" onclick="selectNrlClub('Raiders')">Raiders</a>
+                    </li>
+                    <li><a href="#" class="dropdown-item" value="Roosters"
+                            onclick="selectNrlClub('Roosters')">Roosters</a></li>
+                    <li><a href="#" class="dropdown-item" value="Sea Eagles" onclick="selectNrlClub('Sea Eagles')">Sea
+                            Eagles</a></li>
+                    <li><a href="#" class="dropdown-item" value="Sharks" onclick="selectNrlClub('Sharks')">Sharks</a>
+                    </li>
+                    <li><a href="#" class="dropdown-item" value="Storm" onclick="selectNrlClub('Storm')">Storm</a>
+                    </li>
+                    <li><a href="#" class="dropdown-item" value="Titans" onclick="selectNrlClub('Titans')">Titans</a>
+                    </li>
+                    <li><a href="#" class="dropdown-item" value="Warriors"
+                            onclick="selectNrlClub('Warriors')">Warriors</a></li>
+                    <li><a href="#" class="dropdown-item" value="Wests Tigers"
+                            onclick="selectNrlClub('Wests Tigers')">Wests Tigers</a></li>
+                </ul>
             </div>
-
-            <!-- <img src="static/{{ user['team_logo'] }}" alt="{{ user['team_short'] }}" height="80" style="padding: 10px;"><h4>{{ user['team_name'] }} Squad</h4> -->
-
-            <div class="table-responsive">
-                <table class="table table-dark table-striped">
-                    <thead>
-                        <tr>
-                            <th><a id="sortByNameButton" href="#/" onclick="sortByNameDesc()">Player</a></th>
-                            <th><a id="sortByPositionButton" href="#/" onclick="sortByPosition()">Position</a></th>
-                            <th><a id="sortByPosition2Button" href="#/" onclick="sortByPosition2()">Position 2</a></th>
-                            <th><a id="sortByClubButton" href="#/" onclick="sortByClub()">NRL Club</a></th>
-                        </tr>
-                    </thead>
-                    <tbody id="squadTable">
-
-                    </tbody>
-
-                </table>
+            <div class="dropdown col-lg my-2">
+                <button class="btn btn-success dropdown-toggle" type="button" id="xrlSelectButton"
+                    data-bs-toggle="dropdown" aria-expanded="false">
+                    Select XRL Team
+                </button>
+                <ul id="xrlTeamSelect" class="dropdown-menu dropdown-menu-dark" aria-labelledby="dropdownMenuButton">
+                </ul>
             </div>
+        </div>
+
+        <!-- <img src="static/{{ user['team_logo'] }}" alt="{{ user['team_short'] }}" height="80" style="padding: 10px;"><h4>{{ user['team_name'] }} Squad</h4> -->
+
+        <div class="table-responsive">
+            <table class="table table-dark table-striped">
+                <thead>
+                    <tr>
+                        <th><a id="sortByNameButton" href="#/" onclick="sortByNameDesc()">Player</a></th>
+                        <th><a id="sortByPositionButton" href="#/" onclick="sortByPosition()">Position</a></th>
+                        <th><a id="sortByPosition2Button" href="#/" onclick="sortByPosition2()">Position 2</a></th>
+                        <th><a id="sortByClubButton" href="#/" onclick="sortByClub()">NRL Club</a></th>
+                    </tr>
+                </thead>
+                <tbody id="squadTable">
+
+                </tbody>
+
+            </table>
         </div>
     </main>
 

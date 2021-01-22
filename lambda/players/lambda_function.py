@@ -39,9 +39,14 @@ def lambda_handler(event, context):
             elif 'xrlTeam' in params.keys():
                 xrlTeam = params['xrlTeam']
                 print(f'XrlTeam param is {xrlTeam}, querying table')
-                resp = table.scan(
-                    FilterExpression=Attr('xrl_team').eq(xrlTeam)
-                )['Items']
+                if xrlTeam == 'Free Agents':
+                    resp = table.scan(
+                        FilterExpression=Attr('xrl_team').ne | Attr('xrl_team').eq('None') | Attr('xrl_team').eq('On Waivers') | Attr('xrl_team').eq('Pre-Waivers')
+                    )['Items']
+                else:
+                    resp = table.scan(
+                        FilterExpression=Attr('xrl_team').eq(xrlTeam)
+                    )['Items']
             elif 'playerId' in params.keys():
                 player_id = params['playerId']
                 print(f'PlayerId param is {player_id}, querying table')

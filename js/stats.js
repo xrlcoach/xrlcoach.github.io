@@ -119,7 +119,7 @@ function populateStatsTable(stats, sortFunction, scoringAsKicker=true) {
         nameLink.value = player.player_id;
         if (!singleRound) {
             nameLink.onclick = function() {
-                DisplayPlayerInfo(allPlayers.find(p => p.player_id == this.value), currentRound);
+                DisplayPlayerInfo(loadedPlayers.find(p => p.player_id == this.value), currentRound);
             };
         } else {
             nameLink.onclick = function() {
@@ -264,11 +264,12 @@ async function filterStats(event) {
                 loadedTeams.push(nrlClub);
             }
             if (!allTeams) {
-                if (xrlTeam == 'Free Agents') statsToDisplay = statsToDisplay.filter(p => p.xrl_team == undefined || p.xrl_team == 'None');
+                if (xrlTeam == 'Free Agents') statsToDisplay = statsToDisplay.filter(p => p.xrl_team == undefined || p.xrl_team == 'None' || p.xrl_team == 'On Waivers' || p.xrl_team == 'Pre-Waivers');
                 else statsToDisplay = statsToDisplay.filter(p => p.xrl_team == xrlTeam);
             }
         } else if (!allTeams) {
             if (loadedTeams.includes(xrlTeam)) {
+                if (xrlTeam == 'Free Agents') statsToDisplay = statsToDisplay.filter(p => p.xrl_team == undefined || p.xrl_team == 'None' || p.xrl_team == 'On Waivers' || p.xrl_team == 'Pre-Waivers');
                 statsToDisplay = loadedPlayers.filter(p => p.xrl_team == xrlTeam);
             } else {
                 statsToDisplay = await GetPlayersFromXrlTeam(xrlTeam);

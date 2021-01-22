@@ -260,7 +260,7 @@ async function filterStats(event) {
                 statsToDisplay = loadedPlayers.filter(p => p.nrl_club == nrlClub);
             } else {
                 statsToDisplay = await GetPlayersFromNrlClub(nrlClub);
-                loadedPlayers += statsToDisplay.filter(p => !loadedPlayers.includes(p));
+                loadedPlayers = loadedPlayers.concat(statsToDisplay.filter(p => !loadedPlayers.includes(p)));
                 loadedTeams.push(nrlClub);
             }
             if (!allTeams) {
@@ -272,7 +272,7 @@ async function filterStats(event) {
                 statsToDisplay = loadedPlayers.filter(p => p.xrl_team == xrlTeam);
             } else {
                 statsToDisplay = await GetPlayersFromXrlTeam(xrlTeam);
-                loadedPlayers += statsToDisplay.filter(p => !loadedPlayers.includes(p));
+                loadedPlayers = loadedPlayers.concat(statsToDisplay.filter(p => !loadedPlayers.includes(p)));
                 loadedTeams.push(xrlTeam);
             }
         }

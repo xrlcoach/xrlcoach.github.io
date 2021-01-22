@@ -185,7 +185,7 @@ async function filterStats(event) {
     let roundNumber = document.getElementById('roundSelect').value;
     singleRound = roundNumber != 'ALL';
     let position = document.getElementById('positionSelect').value;
-    let allPositions = positions == 'ALL';
+    let allPositions = position == 'ALL';
     let nrlClub = document.getElementById('nrlClubSelect').value;
     let allClubs = nrlClub == 'ALL';
     let xrlTeam = document.getElementById('xrlTeamSelect').value;

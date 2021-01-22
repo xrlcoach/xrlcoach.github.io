@@ -10,48 +10,10 @@ window.onload = async () => {
         allUsers = await GetAllUsers();
         user = allUsers.find(u => u.team_short == GetActiveUserTeamShort());
         squad = await GetPlayersFromXrlTeam(user.team_short);
-        waiverReports = await GetWaiverReports();
-        waiverReports = waiverReports.sort((r1, r2) => {
-            let r1r = Number(r1.waiver_round.split('_')[0]);
-            let r2r = Number(r2.waiver_round.split('_')[0]);
-            let r1i = Number(r1.waiver_round.split('_')[1]);
-            let r2i = Number(r2.waiver_round.split('_')[1]);
-            if (r1r == r2r) return r2i - r1i;
-            return r2r - r1r;
-        })
-        for (let report of waiverReports) {
-            let r = report.waiver_round.split('_')[0];
-            let i = report.waiver_round.split('_')[1];
-            let linkText = `Round ${r} - ${i}`;
-            let li = document.createElement('li');
-            let a = document.createElement('a');
-            a.className = "dropdown-item";
-            a.href = '#/';
-            a.innerText = linkText;
-            a.value = report.waiver_round;
-            a.onclick = function() {
-                DisplayWaiverReport(waiverReports.find(rep => rep.waiver_round == this.value));
-            };
-            li.appendChild(a);
-            document.getElementById('waiverReportSelect').appendChild(li);
-        }
-        for (let playerId of user.waiver_preferences) {
-            waiverPreferences.push(await GetPlayerById(playerId));
-        };
-        provisionalDrop = user.provisional_drop;
-        tradeOffers = await GetUserTradeOffers(user.username);
-        let today = new Date();
-        tradeOffersToDisplay = tradeOffers.filter(t => {
-            let transferDate = new Date(t.datetime);
-            let dayDiff = (today.getTime() - transferDate.getTime()) / (1000 * 3600 * 24);
-            return dayDiff < 14;
-        }).sort((t1, t2) => new Date(t2.datetime) - new Date(t1.datetime));
-        transferHistory = await GetTransferHistory();
-        DisplayUserWaiverInfo();
-        DisplayTradeOffers();
-        DisplayTransferHistory(transferHistory.filter(t => t.round_number == roundNumber).sort((t1, t2) => {
-            return new Date(t2.datetime) - new Date(t1.datetime);
-        }));
+        DisplayUserWaiverInfo();        
+        FillWaiverSelect();
+        DisplayTradeOffers();        
+        DisplayTransferHistory();
         document.getElementById('loading').hidden = true;
         document.getElementById('mainContent').hidden = false;
     } catch (err) {
@@ -59,13 +21,53 @@ window.onload = async () => {
     }
 }
 
-function DisplayUserWaiverInfo() {
+async function FillWaiverSelect() {
+    waiverReports = await GetWaiverReports();
+    waiverReports = waiverReports.sort((r1, r2) => {
+        let r1r = Number(r1.waiver_round.split('_')[0]);
+        let r2r = Number(r2.waiver_round.split('_')[0]);
+        let r1i = Number(r1.waiver_round.split('_')[1]);
+        let r2i = Number(r2.waiver_round.split('_')[1]);
+        if (r1r == r2r)
+            return r2i - r1i;
+        return r2r - r1r;
+    });
+    for (let report of waiverReports) {
+        let r = report.waiver_round.split('_')[0];
+        let i = report.waiver_round.split('_')[1];
+        let linkText = `Round ${r} - ${i}`;
+        let li = document.createElement('li');
+        let a = document.createElement('a');
+        a.className = "dropdown-item";
+        a.href = '#/';
+        a.innerText = linkText;
+        a.value = report.waiver_round;
+        a.onclick = function () {
+            DisplayWaiverReport(waiverReports.find(rep => rep.waiver_round == this.value));
+        };
+        li.appendChild(a);
+        document.getElementById('waiverReportSelect').appendChild(li);
+    }
+}
+
+async function DisplayUserWaiverInfo() {
+    for (let playerId of user.waiver_preferences) {
+        waiverPreferences.push(await GetPlayerById(playerId));
+    };
+    provisionalDrop = user.provisional_drop;
     document.getElementById('teamWaiverRank').innerText = user.waiver_rank;
     PopulateWaiverPreferencesTable();
     PopulateProvisionalDropOptions();
 }
 
-function DisplayTradeOffers() {
+async function DisplayTradeOffers() {
+    tradeOffers = await GetUserTradeOffers(user.username);
+    let today = new Date();
+        tradeOffersToDisplay = tradeOffers.filter(t => {
+            let transferDate = new Date(t.datetime);
+            let dayDiff = (today.getTime() - transferDate.getTime()) / (1000 * 3600 * 24);
+            return dayDiff < 14;
+        }).sort((t1, t2) => new Date(t2.datetime) - new Date(t1.datetime));
     let tradeBody = document.getElementById('tradeOffersBody');
     if (tradeOffers.length == 0) {
         tradeBody.innerText = 'No active trade offers.';
@@ -201,7 +203,11 @@ function PopulateProvisionalDropOptions() {
     }
 }
 
-async function DisplayTransferHistory(transfers) {
+async function DisplayTransferHistory() {
+    transferHistory = await GetTransferHistory();
+    let transfers = transferHistory.filter(t => t.round_number == roundNumber).sort((t1, t2) => {
+        return new Date(t2.datetime) - new Date(t1.datetime);
+    })
     let table = document.getElementById('transferHistoryTable');
     table.innerHTML = '';
     for (let t of transfers) {

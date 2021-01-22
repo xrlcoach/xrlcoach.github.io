@@ -9,27 +9,13 @@ window.onload = async function () {
         allUsers = await GetAllUsers();
         //Isolate active user from team cookie
         user = allUsers.find(u => u.team_short == GetActiveUserTeamShort());
-        //Get the active user's squad data
-        squad = await GetPlayersFromXrlTeam(user.team_short);
-        //Get fixtures data
-        allRounds = await GetAllFixtures();
-        //Isolate current active round
-        nextRound = GetActiveRoundFromFixtures(allRounds);
-        //Isolate last round
-        lastRound = allRounds.find(r => r.round_number == nextRound.round_number - 1);
-        //If current round is not 1st, display last match info
-        if (lastRound) DisplayLastMatch();
-        //Display current/next match info
-        DisplayNextMatch();
-        //Display team, squad and captaincy info
+        //Load the squad data and fill reliant sections
+        LoadSquadInfo();
+        //Load fixture data and display reliant sections
+        LoadFixtureData();
+        //Display team info and inbox
         DisplayTeamInfo();
         DisplayInbox();
-        DisplaySquadInfo();
-        DisplayCaptainInfo();
-        //Sort squad alphabetically by last name
-        let sortedSquad = squad.sort(DefaultPlayerSort);
-        //Populate the squad table
-        PopulatePickPlayerTable(sortedSquad);
         //Hide loading icon and display main content
         document.getElementById('loading').hidden = true;
         document.getElementById('mainContent').hidden = false;
@@ -37,6 +23,32 @@ window.onload = async function () {
         DisplayFeedback(error, error.stack);
     }
 }
+
+async function LoadFixtureData() {
+    //Get fixtures data
+    allRounds = await GetAllFixtures();
+    //Isolate current active round
+    nextRound = GetActiveRoundFromFixtures(allRounds);
+    //Isolate last round
+    lastRound = allRounds.find(r => r.round_number == nextRound.round_number - 1);
+    //If current round is not 1st, display last match info
+    if (lastRound) DisplayLastMatch();
+    //Display current/next match info
+    DisplayNextMatch();
+}
+
+async function LoadSquadInfo() {
+    //Load squad
+    squad = await GetPlayersFromXrlTeam(user.team_short);
+    //Sort players
+    let sortedSquad = squad.sort(DefaultPlayerSort);
+    //Display squad and captain info
+    DisplaySquadInfo();
+    DisplayCaptainInfo();
+    //Display player table
+    PopulatePickPlayerTable(sortedSquad);
+}
+
 /**
  * Display's the active user's last XRL match (opponent, score, result)
  */
@@ -136,11 +148,11 @@ function deleteMessage(messageBody) {
     DisplayInbox();
 }
 
-function DisplayCaptainInfo() {
+async function DisplayCaptainInfo() {
     document.getElementById('powerplayCount').innerText = user.powerplays;
     for (let player in user.captain_counts) {
         let playerInfo = squad.find(p => p.player_id == player);
-        if (!playerInfo) playerInfo = GetPlayerById(player);
+        if (!playerInfo) playerInfo = await GetPlayerById(player);
         let name = playerInfo.player_name;
         document.getElementById('captainCountList').innerHTML += `<li>${name}: ${user.captain_counts[player]}</li>`;
     }

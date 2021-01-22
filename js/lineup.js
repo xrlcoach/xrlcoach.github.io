@@ -1,6 +1,6 @@
 /* Script controlling lineup.html, the page where the user sets their lineup for the next round */
 
-import { GetActiveUserInfo, GetAllFixtures, GetIdToken, GetLineup, GetNextRoundInfo, GetPlayersFromXrlTeam, SetLineup } from './ApiFetch.js'
+import { GetActiveUserInfo, GetIdToken, GetLineup, GetNextRoundInfo, GetPlayersFromXrlTeam, SetLineup } from './ApiFetch.js'
 import { DisplayFeedback, GetTeamFixture } from './Helpers.js';
 
 /**
@@ -246,7 +246,7 @@ window.fillPositionOptions = fillPositionOptions;
 async function submitLineup(event) {
     document.getElementById('submitLoading').hidden = false;
     event.preventDefault();
-    let lineup = [];
+    let newLineup = [];
     const players = document.getElementsByName('player');
     const playerRoles = document.getElementsByName('role');
     for (let i = 0; i < players.length; i++) {
@@ -278,16 +278,16 @@ async function submitLineup(event) {
                 entry[playerRoles[j].id] = false;
             }            
         }
-        lineup.push(entry);
+        newLineup.push(entry);
     }
     let completeSubmission = async function() {
-        await SetLineup(idToken, lineup);
+        await SetLineup(idToken, newLineup);
         window.location.href = 'index.html';
     }
     let problem = false;
     let message = '';
-    for (let player of lineup) {
-        if (lineup.filter(p => p.player_id == player.player_id).length != 1) {
+    for (let player of newLineup) {
+        if (newLineup.filter(p => p.player_id == player.player_id).length != 1) {
             problem = true;
             if (!message.includes(`<li>${player.player_name} has been picked more than once.</li>`)) {
                 message += `<li>${player.player_name} has been picked more than once.</li>`;
@@ -327,7 +327,7 @@ async function submitLineup(event) {
         return;
     }
     
-    await SetLineup(idToken, lineup);
+    await SetLineup(idToken, newLineup);
     document.getElementById('submitLoading').hidden = true;
     DisplayFeedback('Success!', 'Lineup set successfully.', true, function() { location.href = 'index.html' }, false);
 }

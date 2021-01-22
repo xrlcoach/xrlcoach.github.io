@@ -121,12 +121,17 @@
                             </select>
                         </div>
                         <div class="col-lg-4 my-2 align-items-center justify-content-center">
-                            <button type="submit" class="btn btn-primary col-4">Filter Stats</button>
+                            <button type="submit" class="btn btn-primary col-4">Show Players</button>
                         </div>
+                    </div>
+                    <p id="filterMessage" hidden></p>
+                    <div class="row m-2 justify-content-center align-items-center">
                         <div class="col-lg-2 spinner-border text-success ms-2" role="status" id="filterLoading" hidden>
                             <span class="visually-hidden">Loading...</span>
                         </div>
+                    </div>
                 </form>
+                <hr />
                 <form onsubmit="searchPlayer(event)">
                     <div class="row mt-3 justify-content-center">
                         <div class="col-lg-5">
@@ -143,7 +148,7 @@
                 </form>
             </div>
         </div>
-        <div class="table-responsive" style="height: 750px;">
+        <div class="table-responsive" style="height: 750px;" id="playersTable" hidden>
             <table class="table table-dark table-striped">
                 <thead style="color: green;">
                     <tr>
@@ -487,7 +492,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW"
         crossorigin="anonymous"></script>
-    <script type="module" src="js/stats.js"></script>
+    <script type="module" src="js/players.js"></script>
 </body>
 
 </html>

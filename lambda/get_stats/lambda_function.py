@@ -46,10 +46,16 @@ def lambda_handler(event, context):
                         resp = table.scan(
                             FilterExpression=Attr('nrl_club').eq(nrlClub) & Attr('round_number').eq(round_number)
                         )
+                        if 'LastEvaluatedKey' in resp.keys():
+                            resp2 = table.scan(
+                                FilterExpression=Attr('nrl_club').eq(nrlClub) & Attr('round_number').eq(round_number),
+                                ExclusiveStartKey=resp['LastEvaluatedKey']
+                            )
+                            data += resp2['Items']
                     else:
                         print(f'Querying table for {nrlClub} players in all rounds')
                         resp = table.scan(
-                            FilterExpression=Attr('nrlClub').eq(playerId)
+                            FilterExpression=Attr('nrlClub').eq(nrlClub)
                         )
                     data = resp['Items']
                 elif 'round' in params.keys():

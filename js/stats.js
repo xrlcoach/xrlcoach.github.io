@@ -192,7 +192,7 @@ async function filterStats(event) {
     let allTeams = xrlTeam == 'ALL';
     if (singleRound) message +=` Round ${roundNumber} stats for`;
     if (allClubs && allTeams) message += ' all';
-    message += allPositions ? ' players' : ' ' + position;
+    message += allPositions ? ' players' : ' ' + position.toLowerCase() + 's';
     if (!allClubs) message += ` from the ${nrlClub}`;
     if (!allTeams) {
         if (allClubs) message += ` from ${xrlTeam}`;
@@ -229,8 +229,8 @@ async function filterStats(event) {
             } else {
                 statsToDisplay = await GetStatsByClubAndRound(roundNumber, nrlClub);
                 if (!allPlayersLoaded && !loadedTeams.includes(nrlClub)) {
-                    let load = await GetPlayersFromNrlClub(nrlClub).filter(p => !loadedPlayers.includes(p));
-                    loadedPlayers = loadedPlayers.concat(load);
+                    let load = await GetPlayersFromNrlClub(nrlClub);
+                    loadedPlayers = loadedPlayers.concat(load.filter(p => !loadedPlayers.includes(p)));
                     loadedTeams.push(nrlClub);
                 }
                 for (let i in statsToDisplay) {

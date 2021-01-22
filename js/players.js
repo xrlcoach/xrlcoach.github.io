@@ -175,6 +175,7 @@ function populateStatsTable(stats, sortFunction, scoringAsKicker=true) {
         tr.appendChild(total);
         table.appendChild(tr);
     }
+    document.getElementById('playersTable').hidden = false;
 }
 
 async function filterStats(event) {

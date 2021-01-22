@@ -215,7 +215,7 @@ async function filterStats(event) {
                 }
                 for (let i in statsToDisplay) {
                     let player = loadedPlayers.find(p => p.player_id == statsToDisplay[i].player_id);
-                    statsToDisplay[i].score = GetPlayerXrlScores(player.position, roundStats[i]);
+                    statsToDisplay[i].score = GetPlayerXrlScores(player.position, statsToDisplay[i]);
                     statsToDisplay[i].score_not_kicking = GetPlayerXrlScores(player.position, statsToDisplay[i], false);
                     statsToDisplay[i].position = player.position;
                     statsToDisplay[i].xrl_team = player.xrl_team ? player.xrl_team : 'None';
@@ -235,7 +235,7 @@ async function filterStats(event) {
                 }
                 for (let i in statsToDisplay) {
                     let player = loadedPlayers.find(p => p.player_id == statsToDisplay[i].player_id);
-                    statsToDisplay[i].score = GetPlayerXrlScores(player.position, roundStats[i]);
+                    statsToDisplay[i].score = GetPlayerXrlScores(player.position, statsToDisplay[i]);
                     statsToDisplay[i].score_not_kicking = GetPlayerXrlScores(player.position, statsToDisplay[i], false);
                     statsToDisplay[i].position = player.position;
                     statsToDisplay[i].xrl_team = player.xrl_team ? player.xrl_team : 'None';

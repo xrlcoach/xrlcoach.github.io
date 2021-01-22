@@ -269,8 +269,8 @@ async function filterStats(event) {
             }
         } else if (!allTeams) {
             if (loadedTeams.includes(xrlTeam)) {
-                if (xrlTeam == 'Free Agents') statsToDisplay = statsToDisplay.filter(p => p.xrl_team == undefined || p.xrl_team == 'None' || p.xrl_team == 'On Waivers' || p.xrl_team == 'Pre-Waivers');
-                statsToDisplay = loadedPlayers.filter(p => p.xrl_team == xrlTeam);
+                if (xrlTeam == 'Free Agents') statsToDisplay = loadedPlayers.filter(p => p.xrl_team == undefined || p.xrl_team == 'None' || p.xrl_team == 'On Waivers' || p.xrl_team == 'Pre-Waivers');
+                else statsToDisplay = loadedPlayers.filter(p => p.xrl_team == xrlTeam);
             } else {
                 statsToDisplay = await GetPlayersFromXrlTeam(xrlTeam);
                 loadedPlayers = loadedPlayers.concat(statsToDisplay.filter(p => !loadedPlayers.includes(p)));

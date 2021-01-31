@@ -29,12 +29,10 @@ window.onload = async function () {
             for (let q of queries) {
                 if (q.startsWith('xrlTeam')) {
                     xrlTeam = q.split('=')[1];
-                    document.getElementById('squadTitle').innerText = users.find(u => u.team_short == xrlTeam).team_name + ' - First Team Squad';
                     players = await GetPlayersFromXrlTeam(xrlTeam);
                 }
                 if (q.startsWith('nrlTeam')) {
                     nrlClub = q.split('=')[1];
-                    document.getElementById('squadTitle').innerText = nrlClub + ' - First Team Squad';
                     players = await GetPlayersFromNrlClub(nrlClub);
                 }
             }

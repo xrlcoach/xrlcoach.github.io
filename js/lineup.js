@@ -53,7 +53,7 @@ window.onload = async () => {
     console.log(lineup.length);
     //If no lineup is set, get previous lineup
     if (lineup.length == 0) {
-        lineup = GetLineupByTeamAndRound(nextRound.round_number - 1, user.team_short);
+        lineup = await GetLineupByTeamAndRound(nextRound.round_number - 1, user.team_short);
         for (let player of lineup) {
             if (player.captain2) {
                 player.captain2 = false;

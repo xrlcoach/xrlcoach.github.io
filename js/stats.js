@@ -384,6 +384,7 @@ function searchPlayer(event) {
     event.preventDefault();
     let search = document.getElementById('playerSearch').value.toLowerCase();
     let result = displayedStats.filter(p => p.player_name.toLowerCase().includes(search));
+    displayedStats = result;
     populateStatsTable(result, function(p1, p2) {
         return p1.player_name.split(' ')[1] > p2.player_name.split(' ')[1] ? 1 : -1;
     });

@@ -80,5 +80,7 @@ table
 
 a
 {
-    color: "";
+    color: inherit;
+    text-decoration: inherit;
+    font-weight: bold;
 }

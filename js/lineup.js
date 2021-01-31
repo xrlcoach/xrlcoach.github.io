@@ -1,6 +1,6 @@
 /* Script controlling lineup.html, the page where the user sets their lineup for the next round */
 
-import { GetActiveUserInfo, GetIdToken, GetLineup, GetNextRoundInfo, GetPlayersFromXrlTeam, SetLineup } from './ApiFetch.js'
+import { GetActiveUserInfo, GetIdToken, GetLineup, GetLineupByTeamAndRound, GetNextRoundInfo, GetPlayersFromXrlTeam, SetLineup } from './ApiFetch.js'
 import { DisplayFeedback, GetTeamFixture } from './Helpers.js';
 
 /**
@@ -37,9 +37,6 @@ window.onload = async () => {
     //Get player data for the user's XRL squad
     squad = await GetPlayersFromXrlTeam(user.team_short);
     console.log(squad[0]);
-    //Get the user's lineup data for the current round, if already set
-    lineup = await GetLineup(idToken);
-    console.log(lineup.length);
     //Retrieve and display info for the next round
     nextRound = await GetNextRoundInfo();
     let match = GetTeamFixture(user.team_short, nextRound);
@@ -51,6 +48,19 @@ window.onload = async () => {
     let homeGame = match.home == user.team_short;
     let opponent = homeGame ? match.away : match.home;
     document.getElementById('lineupHeading').innerHTML = `Select ${user.team_short} lineup for Round ${nextRound.round_number} vs ${opponent} ${homeGame ? "AT HOME" : "AWAY"}`;
+    //Get the user's lineup data for the current round, if already set
+    lineup = await GetLineup(idToken);
+    console.log(lineup.length);
+    //If no lineup is set, get previous lineup
+    if (lineup.length == 0) {
+        lineup = GetLineupByTeamAndRound(nextRound.round_number - 1, user.team_short);
+        for (let player of lineup) {
+            if (player.captain2) {
+                player.captain2 = false;
+                player.vice = true;
+            }
+        }
+    }
     //Check if existing lineup is using powerplay
     let numCaptains = lineup.filter(p => p.captain || p.captain2).length;
     console.log(numCaptains);

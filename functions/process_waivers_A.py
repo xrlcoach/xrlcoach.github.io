@@ -16,6 +16,7 @@ users_table = dynamodbResource.Table('users2020')
 transfers_table = dynamodbResource.Table('transfers2020')
 rounds_table = dynamodbResource.Table('rounds2020')
 waivers_table = dynamodbResource.Table('waivers2020')
+lineups_table = dynamodbResource.Table('lineups2020')
 
 resp = rounds_table.scan(
     FilterExpression=Attr('active').eq(True)
@@ -80,6 +81,16 @@ for rank, user in enumerate(waiver_order, 1):
                     print(f"{user['username']}'s squad has 18 players. Dropping their indicated player to make room.")
                     report += f"\n{user['username']}'s squad has 18 players. Dropping their indicated player to make room."
                     players_transferred.append(user['provisional_drop'])
+                    player_to_drop = squads_table.get_item(
+                        Key={
+                            'player_id': user['provisional_drop']
+                        }
+                    )['Item']
+                    lineups_table.delete_item(
+                        Key={
+                            'name+nrl+xrl+round': player_to_drop['player_name'] + ';' + player_to_drop['nrl_club'] + ';' + user['team_short'] + ';' + str(round_number)
+                        }
+                    )
                     squads_table.update_item(
                         Key={
                             'player_id': user['provisional_drop']

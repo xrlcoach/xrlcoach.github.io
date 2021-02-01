@@ -12,6 +12,7 @@ trades_table = dynamodbResource.Table('trades2020')
 players_table = dynamodbResource.Table('players2020')
 rounds_table = dynamodbResource.Table('rounds2020')
 waivers_table = dynamodbResource.Table('waivers2020')
+lineups_table = dynamodbResource.Table('lineups2020')
 
 def lambda_handler(event, context):
     method = event["httpMethod"]
@@ -193,6 +194,10 @@ def lambda_handler(event, context):
                     FilterExpression=Attr('active').eq(True)
                 )['Items']
                 round_number = max([r['round_number'] for r in rounds])
+                not_in_progress_rounds = rounds_table.scan(
+                    FilterExpression=Attr('in_progress').eq(False)
+                )['Items']
+                next_round_number = min([r['round_number'] for r in not_in_progress_rounds])
                 outcome = body['outcome']
                 offer = trades_table.get_item(Key={'offer_id': body['offer_id']})['Item']
                 if offer['offer_status'] != 'Pending':
@@ -227,6 +232,16 @@ def lambda_handler(event, context):
                                         ':x': user_offered_to['team_short']
                                     }
                                 )
+                        player_to_drop = players_table.get_item(
+                            Key={
+                                'player_id': player_id
+                            }
+                        )['Item']
+                        lineups_table.delete_item(
+                            Key={
+                                'name+nrl+xrl+round': player_to_drop['player_name'] + ';' + player_to_drop['nrl_club'] + ';' + user_offered_by['team_short'] + ';' + str(next_round_number)
+                            }
+                        )
                         for trade in pending_trades:
                             if player_id in trade['players_offered'] or player_id in trade['players_wanted']:
                                 print(f"Player with ID {player_id} was part of offer with ID {trade['offer_id']}. Withdrawing that trade offer.")
@@ -277,6 +292,16 @@ def lambda_handler(event, context):
                                         ':x': user_offered_by['team_short']
                                     }
                                 )
+                        player_to_drop = players_table.get_item(
+                            Key={
+                                'player_id': player_id
+                            }
+                        )['Item']
+                        lineups_table.delete_item(
+                            Key={
+                                'name+nrl+xrl+round': player_to_drop['player_name'] + ';' + player_to_drop['nrl_club'] + ';' + user_offered_to['team_short'] + ';' + str(next_round_number)
+                            }
+                        )
                         for trade in pending_trades:
                             if player_id in trade['players_offered'] or player_id in trade['players_wanted']:
                                 print(f"Player with ID {player_id} was part of offer with ID {trade['offer_id']}. Withdrawing that trade offer.")

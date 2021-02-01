@@ -262,6 +262,10 @@ async function submitLineup(event) {
     for (let i = 0; i < players.length; i++) {
         if (players[i].value === '' || players[i].value == 'None') continue;
         let playerInfo = squad.find(p => p.player_id == players[i].value);
+        if (!playerInfo) {
+            DisplayFeedback('Error', 'One of the players selected is no longer in your squad.');
+            return;
+        }
         let positionGeneral;
         let secondPosition = '';
         if (positions_backs.includes(players[i].id)) positionGeneral = 'Back'; 

@@ -151,9 +151,23 @@ def lambda_handler(event, context):
                 print("Count updated")                   
             if body['operation'] == 'drop':
                 #Iterate through players to be dropped
+                not_in_progress_rounds = rounds_table.scan(
+                    FilterExpression=Attr('in_progress').eq(False)
+                )['Items']
+                next_round_number = min([r['round_number'] for r in not_in_progress_rounds])
                 for player in body['players']:
                     #Update their XRL team property to 'On Waivers'. This prevents them from being scooped until
                     #they clear the next round of waivers
+                    player_to_drop = table.get_item(
+                        Key={
+                            'player_id': player['player_id']
+                        }
+                    )['Item']
+                    lineups_table.delete_item(
+                        Key={
+                            'name+nrl+xrl+round': player_to_drop['player_name'] + ';' + player_to_drop['nrl_club'] + ';' + active_user['team_short'] + ';' + str(next_round_number)
+                        }
+                    )
                     table.update_item(
                             Key={
                                 'player_id': player['player_id'],

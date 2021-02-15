@@ -5,23 +5,40 @@ let users, players, filteredPlayers, xrlTeam, nrlClub, round;
 
 window.onload = async function () {
     try {
+        //Get users data
         users = await GetAllUsers();
+        //Get current round info
         round = await GetCurrentRoundInfo();
-        let query = window.location.href.split('?')[1];
-        var select = document.getElementById('xrlTeamSelect');
-        for (var i = 0; i < users.length; i++) {
+        //Populate XRL team select options
+        let select = document.getElementById('xrlTeamSelect');
+        users.forEach(u => {
             let li = document.createElement('li')
-            var option = document.createElement('a');
-            option.value = users[i].team_short;
-            option.innerText = users[i].team_short;
-            option.href = '#';
-            option.className = "dropdown-item";
+            let option = document.createElement('a');
+            option.value = u.team_short;
+            option.innerText = u.team_short;
+            option.href = '#\\';
+            option.className = 'dropdown-item';
             option.onclick = function() {
                 selectXrlTeam(this.value);
             }
             li.appendChild(option);
             select.appendChild(li);
-        }
+        });
+        // for (let i = 0; i < users.length; i++) {
+        //     let li = document.createElement('li')
+        //     let option = document.createElement('a');
+        //     option.value = users[i].team_short;
+        //     option.innerText = users[i].team_short;
+        //     option.href = '#';
+        //     option.className = "dropdown-item";
+        //     option.onclick = function() {
+        //         selectXrlTeam(this.value);
+        //     }
+        //     li.appendChild(option);
+        //     select.appendChild(li);
+        // }
+        //Look for URL query parameters
+        let query = window.location.href.split('?')[1];
         if (query) {
             //Split into individual params
             let queries = query.split('&');
@@ -39,7 +56,9 @@ window.onload = async function () {
         } else { //If no query, get user's squad
             players = GetPlayersFromXrlTeam(GetActiveUserTeamShort());
         }
+        //Call function to fill player table
         PopulatePlayerTable(players.sort(DefaultPlayerSort), 'squadTable');
+        //Hide loading icon and display page
         document.getElementById('loading').hidden = true;
         document.getElementById('mainContent').hidden = false;
     } catch (error) {
@@ -54,55 +73,113 @@ window.onload = async function () {
     // });
 }
 
+/**
+ * 
+ * @param {Array} playerData An array of player profile objects
+ * @param {String} tableId The ID of the table to fill
+ */
 function PopulatePlayerTable(playerData, tableId) {
-    var tableBody = document.getElementById(tableId);
+    //Find and clear table
+    let tableBody = document.getElementById(tableId);
     tableBody.innerHTML = '';
-    for (var i = 0; i < playerData.length; i++) {
-        var player = playerData[i];
-        var tr = document.createElement('tr');
+    //For each player...
+    playerData.forEach(p => {
+        //Create a row
+        let tr = document.createElement('tr');
+        //Create a name cell
         let name = document.createElement('td');
         name.style.whiteSpace = 'nowrap';
+        //Add NRL club logo
         let logo = document.createElement('img');
-        logo.src = 'static/' + player.nrl_club + '.svg';
+        logo.src = 'static/' + p.nrl_club + '.svg';
         logo.height = '40';
         logo.className = 'me-1';
         name.appendChild(logo);
+        //Add name with link to display player modal
         let nameLink = document.createElement('a');
-        nameLink.href = '#';
-        nameLink.innerText = player.player_name;
-        nameLink.value = player.player_id;
+        nameLink.href = '#\\';
+        nameLink.innerText = p.player_name;
+        nameLink.value = p.player_id;
         nameLink.onclick = function() {
             DisplayPlayerInfo(players.find(p => p.player_id == this.value, round));
         };
         name.appendChild(nameLink);
         tr.appendChild(name);
-        var pos1 = document.createElement('td');
-        pos1.textContent = player.position;
+        //Add positions and club
+        let pos1 = document.createElement('td');
+        pos1.textContent = p.position;
         tr.appendChild(pos1);
-        var pos2 = document.createElement('td');
-        pos2.textContent = player.position2;
+        let pos2 = document.createElement('td');
+        pos2.textContent = p.position2;
         tr.appendChild(pos2);
-        var team = document.createElement('td');
-        team.textContent = player.nrl_club;
+        let team = document.createElement('td');
+        team.textContent = p.nrl_club;
         tr.appendChild(team);
         tableBody.appendChild(tr);
-    }
+    });
+    // for (let i = 0; i < playerData.length; i++) {
+    //     let player = playerData[i];
+    //     let tr = document.createElement('tr');
+    //     let name = document.createElement('td');
+    //     name.style.whiteSpace = 'nowrap';
+    //     let logo = document.createElement('img');
+    //     logo.src = 'static/' + player.nrl_club + '.svg';
+    //     logo.height = '40';
+    //     logo.className = 'me-1';
+    //     name.appendChild(logo);
+    //     let nameLink = document.createElement('a');
+    //     nameLink.href = '#';
+    //     nameLink.innerText = player.player_name;
+    //     nameLink.value = player.player_id;
+    //     nameLink.onclick = function() {
+    //         DisplayPlayerInfo(players.find(p => p.player_id == this.value, round));
+    //     };
+    //     name.appendChild(nameLink);
+    //     tr.appendChild(name);
+    //     let pos1 = document.createElement('td');
+    //     pos1.textContent = player.position;
+    //     tr.appendChild(pos1);
+    //     let pos2 = document.createElement('td');
+    //     pos2.textContent = player.position2;
+    //     tr.appendChild(pos2);
+    //     let team = document.createElement('td');
+    //     team.textContent = player.nrl_club;
+    //     tr.appendChild(team);
+    //     tableBody.appendChild(tr);
+    // }
 }
 
+/**
+ * Fetches an NRL squad from db and shows in table
+ * @param {String} club NRL club name
+ */
 async function selectNrlClub(club) {
-    document.getElementById('squadName').innerText = club;
-    players = await GetPlayersFromNrlClub(club);
-    PopulatePlayerTable(players.sort(DefaultPlayerSort), 'squadTable');
+    try {
+        document.getElementById('squadName').innerText = club;
+        players = await GetPlayersFromNrlClub(club);
+        PopulatePlayerTable(players.sort(DefaultPlayerSort), 'squadTable');
+    } catch (err) {
+        DisplayFeedback('Error', err);
+    }
 }
 window.selectNrlClub = selectNrlClub;
 
+/**
+ * Fetches an XRL squad from db and shows in table
+ * @param {String} team An XRL team acronym
+ */
 async function selectXrlTeam(team) {
-    document.getElementById('squadName').innerText = team;
-    players = await GetPlayersFromXrlTeam(team);
-    PopulatePlayerTable(players.sort(DefaultPlayerSort), 'squadTable');
+    try {
+        document.getElementById('squadName').innerText = team;
+        players = await GetPlayersFromXrlTeam(team);
+        PopulatePlayerTable(players.sort(DefaultPlayerSort), 'squadTable');
+    } catch (err) {
+        DisplayFeedback('Error', err);
+    }
 }
 window.selectXrlTeam = selectXrlTeam;
 
+//#region Sorting functions...
 function sortByName() {
     let sortedPlayers = filteredPlayers.sort(SortByPlayerName);
     document.getElementById('sortByNameButton').onclick = sortByNameDesc;
@@ -151,3 +228,4 @@ function sortByClubDesc() {
     PopulatePlayerTable(sortedPlayers, 'squadTable');
 }
 window.sortByClubDesc = sortByClubDesc;
+//#endregion

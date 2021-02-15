@@ -67,14 +67,13 @@ for match in fixtures:
             if not player['played_nrl']:
                 if player['captain'] or player['captain2']:
                     print(f"Captain {player['player_name']} did not play.")
-                    user['captain_counts'][player['player_id']] -= 1
-                    users_table.update_item(
+                    squads_table.update_item(
                         Key={
-                            'username': user['username']
+                            'player_id': player['player_id']
                         },
-                        UpdateExpression="set captain_counts=:cc",
+                        UpdateExpression="set times_as_captain = times_as_captain - :i",
                         ExpressionAttributeValues={
-                            ':cc': user['captain_counts']
+                            ':i': 1
                         }
                     )
                     vice_plays = True
@@ -121,18 +120,22 @@ for match in fixtures:
                             ':v': current_score * 2
                         }                        
                     )
-                    cc = user['captain_counts']
-                    if player['player_id'] not in cc.keys():
-                        cc[player['player_id']] = 1
-                    else:
-                        cc[player['player_id']] += 1
-                    users_table.update_item(
+                    vice_entry = squads_table.get_item(
                         Key={
-                            'username': user['username']
+                            'player_id': player['player_id']
+                        }
+                    )['Item']
+                    if 'times_as_captain' not in vice_entry.keys():
+                        tac = 1
+                    else:
+                        tac = vice_entry['times_as_captain'] + 1
+                    squads_table.update_item(
+                        Key={
+                            'player_id': player['player_id']
                         },
-                        UpdateExpression="set captain_counts=:cc",
+                        UpdateExpression="set times_as_captain = :i",
                         ExpressionAttributeValues={
-                            ':cc': cc
+                            ':i': tac
                         }
                     )
         freeSpots = {

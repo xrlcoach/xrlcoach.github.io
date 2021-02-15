@@ -18,6 +18,7 @@ rounds_table = dynamodbResource.Table('rounds2020')
 waivers_table = dynamodbResource.Table('waivers2020')
 lineups_table = dynamodbResource.Table('lineups2020')
 
+#Find current active round
 resp = rounds_table.scan(
     FilterExpression=Attr('active').eq(True)
 )
@@ -68,29 +69,37 @@ for rank, user in enumerate(waiver_order, 1):
         pickable = False
         print(f"{user['team_name']} want to sign {player_info['player_name']}.")
         report += f"\n{user['team_name']} want to sign {player_info['player_name']}."
-        #If player not already picked and available to be picked
+        #Check if player not already picked and available to be picked
         if player not in players_transferred and ('xrl_team' not in player_info.keys() or player_info['xrl_team'] == 'None' or player_info['xrl_team'] == 'On Waivers' or player_info['xrl_team'] == 'Pre-Waivers'):
             print(f"{player_info['player_name']} is available.")
             report += f"\n{player_info['player_name']} is available."
+            #Check if user already has 18 players in squad
             if len(users_squad) == 18:
+                #If they do, and haven't indicated a player to drop, continue to next user
                 if user['provisional_drop'] == None:
                     print(f"{user['username']}'s squad already has 18 players and they haven't indicated a player to drop. Moving to next user.")
                     report += f"\n{user['username']}'s squad already has 18 players and they haven't indicated a player to drop. Moving to next user."
                     break
+                #If they do, and they HAVE indicated a player to drop...
                 else:
                     print(f"{user['username']}'s squad has 18 players. Dropping their indicated player to make room.")
                     report += f"\n{user['username']}'s squad has 18 players. Dropping their indicated player to make room."
+                    #Add their provisional drop player to the array of players transferred
                     players_transferred.append(user['provisional_drop'])
+                    #Get player entry from db
                     player_to_drop = squads_table.get_item(
                         Key={
                             'player_id': user['provisional_drop']
                         }
                     )['Item']
+                    #Remove player from user's next lineup
                     lineups_table.delete_item(
                         Key={
                             'name+nrl+xrl+round': player_to_drop['player_name'] + ';' + player_to_drop['nrl_club'] + ';' + user['team_short'] + ';' + str(round_number)
                         }
                     )
+                    #Update player's XRL team from the user to Pre-Waivers (This means they will remain
+                    #on waiver for one whole round)
                     squads_table.update_item(
                         Key={
                             'player_id': user['provisional_drop']
@@ -100,6 +109,7 @@ for rank, user in enumerate(waiver_order, 1):
                             ':t': 'Pre-Waivers'
                         }
                     )
+                    #Add record of drop to transfers table
                     transfers_table.put_item(
                         Item={
                             'transfer_id': user['username'] + '_' + str(datetime.now()),
@@ -110,6 +120,7 @@ for rank, user in enumerate(waiver_order, 1):
                             'player_id': user['provisional_drop']
                         }
                     )
+                    #Clear user's provisional drop
                     users_table.update_item(
                         Key={
                             'username': user['username']
@@ -119,13 +130,20 @@ for rank, user in enumerate(waiver_order, 1):
                             ':pd': None
                         }
                     )
+                    #Set boolean saying user may sign new player
                     pickable = True
             else:
+                #If player is available AND user's squad has less than 18 players,
+                #then set boolean saying new player is pickable
                 pickable = True
         else:
+            #If player has already been transferred in this session, or their XRL team is not 'None',
+            #'Pre-Waivers' or 'On Waivers', then they are not available to pick
             print(f"{player_info['player_name']} is not available.")
             report += f"\n{player_info['player_name']} is not available."
+
         if pickable:
+            #If player can be signed, update their XRL team to the user's team acronym
             squads_table.update_item(
                 Key={
                     'player_id': player
@@ -135,6 +153,7 @@ for rank, user in enumerate(waiver_order, 1):
                     ':t': user['team_short']
                 }
             )
+            #Add a record of the transfer to the db
             transfers_table.put_item(
                     Item={
                         'transfer_id': user['username'] + '_' + str(datetime.now()),
@@ -145,6 +164,7 @@ for rank, user in enumerate(waiver_order, 1):
                         'player_id': player
                     }
                 )
+            #Add a message to the user's inbox
             message = {
                 "sender": "XRL Admin",
                 "datetime": datetime.now().strftime("%c"),
@@ -152,11 +172,15 @@ for rank, user in enumerate(waiver_order, 1):
                 "message": f"Congratulations! You picked up {player_info['player_name']} in this week's waivers."
             }
             user['inbox'].append(message)
+            #Indicate that the user has signed a player
             gained_player = True
+            #Add player to list of players transferred
             players_transferred.append(player)
             print(f"{user['username']} signed {player_info['player_name']}")
             report += f"\n{user['username']} signed {player_info['player_name']}"
             break
+    
+    #Indicate whether the curent user has picked a player or not
     if gained_player:
         players_picked = 1
         users_who_picked.append(user)
@@ -164,6 +188,7 @@ for rank, user in enumerate(waiver_order, 1):
         players_picked = 0
         print(f"{user['username']} didn't get any of their preferences")
         report += f"\n{user['username']} didn't get any of their preferences"
+    #Clear the user's waiver preferences, update their players_picked attribute and inbox
     users_table.update_item(
                 Key={
                     'username': user['username']
@@ -175,8 +200,10 @@ for rank, user in enumerate(waiver_order, 1):
                     ':i': user['inbox']
                 }
             )
+#Recalculate waiver order (players who didn't pick followed by those who did in reverse order)
 waiver_order = [u for u in waiver_order if u not in users_who_picked] + users_who_picked[::-1]
 
+#Save new waiver order to db 
 print("New waiver order:")
 report += "\nNew waiver order:"
 for rank, user in enumerate(waiver_order, 1):
@@ -192,6 +219,7 @@ for rank, user in enumerate(waiver_order, 1):
                 }
             )
 
+#Add waiver report to db
 waivers_table.put_item(
     Item={
         'waiver_round': str(round_number) + '_A',

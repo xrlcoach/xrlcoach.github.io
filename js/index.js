@@ -1,5 +1,5 @@
-import { GetPlayersFromXrlTeam, GetActiveUserInfo, UpdatePlayerXrlTeam, GetAllUsers, GetActiveUserTeamShort, GetAllFixtures, UpdateUserInbox, GetPlayerById } from './ApiFetch.js';
-import { DisplayFeedback, DisplayPlayerInfo, GetActiveRoundFromFixtures, GetOrdinal, GetTeamFixture, DefaultPlayerSort, SortByPosition2, DefaultPlayerSortDesc, SortByPosition2Desc, SortByNrlClub, SortByNrlClubDesc, SortByPlayerName, SortByPlayerNameDesc } from './Helpers.js';
+import { GetPlayersFromXrlTeam, GetAllUsers, GetActiveUserTeamShort, GetAllFixtures, UpdateUserInbox, GetPlayerById } from './ApiFetch.js';
+import { DisplayFeedback, DisplayPlayerInfo, GetActiveRoundFromFixtures, GetOrdinal, GetTeamFixture, DefaultPlayerSort, SortByPosition2, DefaultPlayerSortDesc, SortByPosition2Desc, SortByNrlClub, SortByNrlClubDesc, SortByPlayerName, SortByPlayerNameDesc, SortLeageTable } from './Helpers.js';
 
 let squad, allUsers, user, allRounds, lastRound, nextRound;
 
@@ -23,7 +23,9 @@ window.onload = async function () {
         DisplayFeedback(error, error.stack);
     }
 }
-
+/**
+ * Loads and displays the active user's last and current/next matches
+ */
 async function LoadFixtureData() {
     //Get fixtures data
     allRounds = await GetAllFixtures();
@@ -36,7 +38,9 @@ async function LoadFixtureData() {
     //Display current/next match info
     DisplayNextMatch();
 }
-
+/**
+ * Loads and displays active user's squad, squad info and captain info
+ */
 async function LoadSquadInfo() {
     //Load squad
     squad = await GetPlayersFromXrlTeam(user.team_short);
@@ -46,7 +50,7 @@ async function LoadSquadInfo() {
     DisplaySquadInfo();
     DisplayCaptainInfo();
     //Display player table
-    PopulatePickPlayerTable(sortedSquad);
+    PopulateSquadTable(sortedSquad);
 }
 
 /**
@@ -75,120 +79,165 @@ function DisplayLastMatch() {
     //Give the 'View' button a href of fixture.html with query parameteres specifying round and match
     document.getElementById('lastMatchView').href = `fixture.html?round=${lastRound.round_number}&fixture=${match.home}-v-${match.away}`;
 }
-
+/**
+ * Displays the active user's current/next XRL match (opponent, live score)
+ */
 function DisplayNextMatch() {
+    //Locate user's fixture in the next round
     let match = GetTeamFixture(user.team_short, nextRound);
+    //If the user has no match in that round, display message and return
     if (match == undefined) {
         document.getElementById('nextMatchOpponent').innerText = 'No game this week.';
         document.getElementById('nextMatchButton').hidden = true;
         return;
     }
+    //If the user's team is the home team, then it's a home game
     let homeGame = match.home == user.team_short;
+    //If it's a homegame, the opponent is the away team, and vice versa
     let opponent = homeGame ? match.away : match.home;
+    //If it's a homegame, the venue is the user's homeground, else it's the opponent's homeground
     let ground = homeGame ? user.homeground : allUsers.find(u => u.team_short == opponent).homeground;
+    //Display opponent and venue
     document.getElementById('nextMatchOpponent').innerText = opponent + ' @ ' + ground;
     let status, color;
+    //Display and colourise the round status
     if (nextRound.completed) { status = 'Completed'; color = 'green'; }
     else if (nextRound.in_progress) { status = 'In Progress'; color = 'green'; }
     else if (nextRound.active) { status = 'Active'; color = 'orange'; }
     else { status = 'Inactive'; color = '#c94d38'; }
     document.getElementById('nextMatchStatus').style.color = color;
-    document.getElementById('nextMatchStatus').innerText = 'Status: ' + status;
-    if (!nextRound.in_progress) {
+    document.getElementById('nextMatchStatus').innerText = 'Status: ' + status;    
+    if (!nextRound.in_progress) { //If the next round hasn't started yet, button should take user to lineup page
         document.getElementById('nextMatchButton').href = `lineup.html`;
         document.getElementById('nextMatchButton').innerText = 'Set Lineup';
-    } else {
+    } else { //If it is in progress, display the live score and set button to take user to match view
         document.getElementById('nextMatchScore').innerText = match.home + ' ' + match.home_score + ' - ' + match.away_score + ' ' + match.away; 
         document.getElementById('nextMatchScore').hidden = false; 
         document.getElementById('nextMatchButton').href = `fixture.html?round=${nextRound.round_number}&fixture=${match.home}-v-${match.away}`;
         document.getElementById('nextMatchButton').innerText = 'View';
     }
-    if (nextRound.completed) {
+    if (nextRound.completed) { //If round is completed, determine the result, colourise and display
         let result = match.home_score == match.away_score ? 'DRAW' : homeGame ? match.home_score > match.away_score ? 'WIN' : 'LOSS' : match.away_score > match.home_score ? 'WIN' : 'LOSS';
         document.getElementById('nextMatchResult').style.color = result == 'WIN' ? 'green' : result == 'LOSS' ? '#c94d38' : 'orange'; 
         document.getElementById('nextMatchResult').innerText = ' ' + result;
     } 
 }
-
+/**
+ * Displays the active user's inbox
+ */
 function DisplayInbox() {
-    let inboxBody = document.getElementById('inboxBody');
-    inboxBody.innerHTML = '';
-    for (let message of user.inbox.sort((m1, m2) => new Date(m2.datetime) - new Date(m1.datetime))) {
-        let alert = document.createElement('tr');
-        let time = document.createElement('td');
-        time.innerText = message.datetime;
-        alert.appendChild(time);
-        let sender = document.createElement('td');
-        sender.innerText = message.sender;
-        alert.appendChild(sender);
-        let subject = document.createElement('td');
-        subject.innerText = message.subject;
-        alert.appendChild(subject);
-        let body = document.createElement('td');
-        body.innerText = message.message;
-        alert.appendChild(body);
-        let deleteCell = document.createElement('td');
-        let deleteButton = document.createElement('button');
-        deleteButton.className = 'btn btn-danger';
-        deleteButton.innerText = 'Delete';
-        deleteButton.value = message.message;
-        deleteButton.onclick = function() {
-            deleteMessage(this.value);
-        };
-        deleteCell.appendChild(deleteButton);
-        alert.appendChild(deleteCell);
-        inboxBody.appendChild(alert);
+    try {
+        let inboxBody = document.getElementById('inboxBody');
+        //Clear any previous contents
+        inboxBody.innerHTML = '';
+        //Sort messages by date
+        let sortedInbox = user.inbox.sort((m1, m2) => new Date(m2.datetime) - new Date(m1.datetime));
+        sortedInbox.forEach((message) => { //For each message...            
+            //Create a row in the table
+            let messageRow = document.createElement('tr');
+            //Add message datetime 
+            let time = document.createElement('td');
+            time.innerText = message.datetime;
+            messageRow.appendChild(time);
+            //Add message sender
+            let sender = document.createElement('td');
+            sender.innerText = message.sender;
+            messageRow.appendChild(sender);
+            //Add message subject
+            let subject = document.createElement('td');
+            subject.innerText = message.subject;
+            messageRow.appendChild(subject);
+            //Add message body
+            let body = document.createElement('td');
+            body.innerText = message.message;
+            messageRow.appendChild(body);
+            //Add a button to delete message
+            let deleteCell = document.createElement('td');
+            let deleteButton = document.createElement('button');
+            deleteButton.className = 'btn btn-danger';
+            deleteButton.innerText = 'Delete';
+            deleteButton.value = message.message;
+            deleteButton.onclick = function() {
+                deleteMessage(this.value);
+            };
+            deleteCell.appendChild(deleteButton);
+            messageRow.appendChild(deleteCell);
+            //Add message to inbox table
+            inboxBody.appendChild(messageRow);
+        });
+    } catch (err) {
+        DisplayFeedback(err, err.stack);
     }
 }
-
+/**
+ * Removes a message from the active user's inbox and calls the method to persist change
+ * in the database.
+ * @param {String} messageBody The body of the message to delete
+ */
 function deleteMessage(messageBody) {
-    let messageIndex = user.inbox.findIndex(m => m.message == messageBody);
-    user.inbox.splice(messageIndex, 1);
-    UpdateUserInbox(user.username, user.inbox);
-    DisplayInbox();
-}
-
-async function DisplayCaptainInfo() {
-    document.getElementById('powerplayCount').innerText = user.powerplays;
-    for (let player in user.captain_counts) {
-        let playerInfo = squad.find(p => p.player_id == player);
-        if (!playerInfo) playerInfo = await GetPlayerById(player);
-        let name = playerInfo.player_name;
-        document.getElementById('captainCountList').innerHTML += `<li>${name}: ${user.captain_counts[player]}</li>`;
+    try {
+        //Find index of message in user's inbox array
+        let messageIndex = user.inbox.findIndex(m => m.message == messageBody);
+        //Remove the message
+        user.inbox.splice(messageIndex, 1);
+        //Call function to persist changes to inbox
+        UpdateUserInbox(user.username, user.inbox);
+        //Display the updated inbox
+        DisplayInbox();
+    } catch (err) {
+        DisplayFeedback(err, err.stack);
     }
 }
-
+/**
+ * Displays how many powerplays user has and how often different players have been captained
+ */
+async function DisplayCaptainInfo() {
+    //Display powerplay count
+    document.getElementById('powerplayCount').innerText = user.powerplays;
+    //Iterate through players who have been captain at least once
+    squad.filter(p => p.times_as_captain > 0).forEach(p => {
+        //Add a record to the captain count list
+        document.getElementById('captainCountList').innerHTML += `<li>${p.player_name}: ${p.times_as_captain}</li>`;
+    });
+}
+/**
+ * Displays info about the makeup of the user's squad (number of players, number in each position)
+ */
 function DisplaySquadInfo() {
+    //Display the number of players in the squad
     document.getElementById('squadCount').innerText = squad.length;
+    //Filter squad array into backs, playmakers and forwards
     let backs = squad.filter(p => p.position == 'Back' || p.position2 == 'Back');
     let playmakers = squad.filter(p => p.position == 'Playmaker' || p.position2 == 'Playmaker');
     let forwards = squad.filter(p => p.position == 'Forward' || p.position2 == 'Forward');
+    //Display counts of those positions
     document.getElementById('backsCount').innerText = 'Backs: ' + backs.length;
     document.getElementById('playmakersCount').innerText = 'Playmakers: ' + playmakers.length;
     document.getElementById('forwardsCount').innerText = 'Forwards: ' + forwards.length;
+    //Find players with more than one position and indicate if there are some
     let duals = squad.filter(p => p.position2 != '');
     if (duals.length == 1)
-        document.getElementById('positionCounts').innerHTML += `<br />Includes ${duals.length} dual-position player`;
+        document.getElementById('positionCounts').innerHTML += `<br />Includes 1 dual-position player`;
     else if (duals.length > 1)
         document.getElementById('positionCounts').innerHTML += `<br />Includes ${duals.length} dual-position players`;
+    //If squad size is less than maximum (18) and the competition hasn't started yet, display the button redirecting to the pick players page
     if (squad.length < 18 && nextRound.round_number == 1) {
         document.getElementById('pickPlayersLink').hidden = false;
     }
 }
-
+/**
+ * Displays general info about the active user's team (name, owner, stats)
+ */
 function DisplayTeamInfo() {
+    //Display team name, logo and owner
     document.getElementById('teamNameDisplay').innerHTML = user.team_name;
     document.getElementById('teamLogo').src = '/static/' + user.team_short + '.png';
     document.getElementById('teamOwner').innerText = user.username;
-    let ladder = allUsers.sort(function (u1, u2) {
-        if (u2.stats.points != u1.stats.points) {
-            return u2.stats.points - u1.stats.points;
-        } if ((u2.stats.for - u2.stats.against) != (u1.stats.for - u1.stats.against)) {
-            return (u2.stats.for - u2.stats.against) - (u1.stats.for - u1.stats.against);
-        }
-        return u2.stats.for - u1.stats.for;
-    });
+    //Sort users into ladder
+    let ladder = SortLeageTable(allUsers);
+    //Get active user's position in the ladder
     let position = ladder.findIndex(u => u.username == user.username) + 1;
+    //Display team position and stats
     document.getElementById('teamPosition').innerText = GetOrdinal(position) + ' (' + user.stats.points + ' points)';
     document.getElementById('teamWins').innerText = user.stats.wins;
     document.getElementById('teamDraws').innerText = user.stats.draws;
@@ -197,116 +246,135 @@ function DisplayTeamInfo() {
     document.getElementById('teamAgainst').innerText = user.stats.against;
     document.getElementById('teamPD').innerText = user.stats.for - user.stats.against;
 }
-
-function PopulatePickPlayerTable(playerData) {
-    var tableBody = document.getElementById('playerSquadTable');
-    tableBody.innerHTML = '';
-    for (var i = 0; i < playerData.length; i++) {
-        var player = playerData[i];
-        var tr = document.createElement('tr');
-        var name = document.createElement('td');
-        name.style.whiteSpace = 'nowrap';
-        let logo = document.createElement('img');
-        logo.src = 'static/' + player.nrl_club + '.svg';
-        logo.height = '40';
-        logo.className = 'me-1';
-        name.appendChild(logo);
-        let nameText = document.createElement('span');
-        nameText.innerText = player.player_name;
-        name.appendChild(nameText);
-        tr.appendChild(name);
-        var pos1 = document.createElement('td');
-        pos1.textContent = player.position;
-        tr.appendChild(pos1);
-        var pos2 = document.createElement('td');
-        pos2.textContent = player.position2;
-        tr.appendChild(pos2);
-        // var team = document.createElement('td');
-        // team.textContent = player.nrl_club;
-        // tr.appendChild(team);
-        var details = document.createElement('td');
-        var form = document.createElement('form');
-        var input = document.createElement('input');
-        input.setAttribute('type', 'hidden')
-        input.setAttribute('value', player.player_id)
-        form.appendChild(input)
-        var button = document.createElement('button');
-        button.setAttribute('type', 'submit');
-        button.className = 'btn btn-success';
-        button.innerText = 'Details';
-        form.appendChild(button);
-        form.onsubmit = function(event) {
-            event.preventDefault();
-            DisplayPlayerInfo(squad.find(p => p.player_id == this.firstChild.value), nextRound);
-        }
-        // form.onsubmit = async function (event) {
-        //     event.preventDefault();
-        //     dropPlayer(this);
-        //     try {
-        //         let playerToDrop = squad.find()
-        //         const resp = await UpdatePlayerXrlTeam(null, this.elements[0].value);
-        //         location.reload();
-        //     } catch (error) {
-        //         DisplayFeedback('Error', error);
-        //     }
-        // };
-        details.appendChild(form);
-        tr.appendChild(details);
-        tableBody.appendChild(tr);
+/**
+ * Displays the active user's squad in the homepage table
+ * @param {Array} playerData An array of player objects
+ */
+function PopulateSquadTable(playerData) {
+    try {
+        var tableBody = document.getElementById('playerSquadTable');
+        //Clear any previous content
+        tableBody.innerHTML = '';
+        playerData.forEach((player) => {
+            //Create a row in the table
+            var tr = document.createElement('tr');
+            //Add player name and NRL club logo 
+            var name = document.createElement('td');
+            name.style.whiteSpace = 'nowrap';
+            let logo = document.createElement('img');
+            logo.src = 'static/' + player.nrl_club + '.svg';
+            logo.height = '40';
+            logo.className = 'me-1';
+            name.appendChild(logo);
+            let nameText = document.createElement('span');
+            nameText.innerText = player.player_name;
+            name.appendChild(nameText);
+            tr.appendChild(name);
+            //Add player's positions
+            var pos1 = document.createElement('td');
+            pos1.textContent = player.position;
+            tr.appendChild(pos1);
+            var pos2 = document.createElement('td');
+            pos2.textContent = player.position2;
+            tr.appendChild(pos2);   
+            //Add a button to view player details      
+            var details = document.createElement('td');
+            var button = document.createElement('button');
+            button.className = 'btn btn-success';
+            button.innerText = 'Details';
+            button.value = player.player_id;
+            button.onclick = function() {
+                DisplayPlayerInfo(squad.find(p => p.player_id == this.value), nextRound);
+            };
+            details.appendChild(button);
+            tr.appendChild(details);
+            //Add row to table
+            tableBody.appendChild(tr);
+        });
+    } catch (err) {
+        DisplayFeedback(err, err.stack);
     }
 }
 
-async function dropPlayer(form) {
-    let playerToDrop = squad.find(p => p.player_id == form.elements[0].value)
-    await UpdatePlayerXrlTeam(null, playerToDrop);
-    location.reload();
-}
-
+//#region The following functions sort the squad table
 function sortByName() {
-    let sortedSquad = squad.sort(SortByPlayerName);
-    document.getElementById('sortByNameButton').onclick = sortByNameDesc;
-    PopulatePickPlayerTable(sortedSquad);
+    try {
+        let sortedSquad = squad.sort(SortByPlayerName);
+        document.getElementById('sortByNameButton').onclick = sortByNameDesc;
+        PopulateSquadTable(sortedSquad);
+    } catch (err) {
+        DisplayFeedback(err, err.stack);
+    }
 }
 window.sortByName = sortByName;
 function sortByNameDesc() {
-    let sortedSquad = squad.sort(SortByPlayerNameDesc);
-    document.getElementById('sortByNameButton').onclick = sortByName;
-    PopulatePickPlayerTable(sortedSquad);
+    try {
+        let sortedSquad = squad.sort(SortByPlayerNameDesc);
+        document.getElementById('sortByNameButton').onclick = sortByName;
+        PopulateSquadTable(sortedSquad);
+    } catch (err) {
+        DisplayFeedback(err, err.stack);
+    }
 }
 window.sortByNameDesc = sortByNameDesc;
 function sortByPosition() {
-    let sortedSquad = squad.sort(DefaultPlayerSort);
-    document.getElementById('sortByPositionButton').onclick = sortByPositionDesc;
-    PopulatePickPlayerTable(sortedSquad);
+    try {
+        let sortedSquad = squad.sort(DefaultPlayerSort);
+        document.getElementById('sortByPositionButton').onclick = sortByPositionDesc;
+        PopulateSquadTable(sortedSquad);
+    } catch (err) {
+        DisplayFeedback(err, err.stack);
+    }
 }
 window.sortByPosition = sortByPosition;
 function sortByPositionDesc() {
-    let sortedSquad = squad.sort(DefaultPlayerSortDesc);
-    document.getElementById('sortByPositionButton').onclick = sortByPosition;
-    PopulatePickPlayerTable(sortedSquad);
+    try {
+        let sortedSquad = squad.sort(DefaultPlayerSortDesc);
+        document.getElementById('sortByPositionButton').onclick = sortByPosition;
+        PopulateSquadTable(sortedSquad);
+    } catch (err) {
+        DisplayFeedback(err, err.stack);
+    }
 }
 window.sortByPositionDesc = sortByPositionDesc;
 function sortByPosition2() {
-    let sortedSquad = squad.sort(SortByPosition2);
-    document.getElementById('sortByPosition2Button').onclick = sortByPosition2Desc;
-    PopulatePickPlayerTable(sortedSquad);
+    try {
+        let sortedSquad = squad.sort(SortByPosition2);
+        document.getElementById('sortByPosition2Button').onclick = sortByPosition2Desc;
+        PopulateSquadTable(sortedSquad);
+    } catch (err) {
+        DisplayFeedback(err, err.stack);
+    }
 }
 window.sortByPosition2 = sortByPosition2;
 function sortByPosition2Desc() {
-    let sortedSquad = squad.sort(SortByPosition2Desc);
-    document.getElementById('sortByPosition2Button').onclick = sortByPosition2;
-    PopulatePickPlayerTable(sortedSquad);
+    try {
+        let sortedSquad = squad.sort(SortByPosition2Desc);
+        document.getElementById('sortByPosition2Button').onclick = sortByPosition2;
+        PopulateSquadTable(sortedSquad);
+    } catch (err) {
+        DisplayFeedback(err, err.stack);
+    }
 }
 window.sortByPosition2Desc = sortByPosition2Desc;
 function sortByClub() {
-    let sortedSquad = squad.sort(SortByNrlClub);
-    document.getElementById('sortByClubButton').onclick = sortByClubDesc;
-    PopulatePickPlayerTable(sortedSquad);
+    try {
+        let sortedSquad = squad.sort(SortByNrlClub);
+        document.getElementById('sortByClubButton').onclick = sortByClubDesc;
+        PopulateSquadTable(sortedSquad);
+    } catch (err) {
+        DisplayFeedback(err, err.stack);
+    }
 }
 window.sortByClub = sortByClub;
 function sortByClubDesc() {
-    let sortedSquad = squad.sort(SortByNrlClubDesc);
-    document.getElementById('sortByClubButton').onclick = sortByClub;
-    PopulatePickPlayerTable(sortedSquad);
+    try {
+        let sortedSquad = squad.sort(SortByNrlClubDesc);
+        document.getElementById('sortByClubButton').onclick = sortByClub;
+        PopulateSquadTable(sortedSquad);
+    } catch (err) {
+        DisplayFeedback(err, err.stack);
+    }
 }
 window.sortByClubDesc = sortByClubDesc;
+//#endregion

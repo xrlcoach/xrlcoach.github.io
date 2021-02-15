@@ -35,5 +35,4 @@ async function login(event) {
         DisplayFeedback('Error', err);
     }
 }
-
 window.login = login;

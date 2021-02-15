@@ -20,11 +20,10 @@ for rank, user in enumerate(users, 1):
         Key={
             'username': user['username']
         },
-        UpdateExpression="set powerplays=:p, stats=:s, captain_counts=:cc, waiver_rank=:wr, waiver_preferences=:wp, inbox=:i, players_picked=:pp, provisional_drop=:pd",
+        UpdateExpression="set powerplays=:p, stats=:s, waiver_rank=:wr, waiver_preferences=:wp, inbox=:i, players_picked=:pp, provisional_drop=:pd",
         ExpressionAttributeValues={
             ':p': 3,
             ':s': clean_stats,
-            ':cc': {},
             ':wr': rank,
             ':wp': [],
             ':i': [],

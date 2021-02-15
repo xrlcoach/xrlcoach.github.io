@@ -10,12 +10,14 @@ print(f"Script executing at {datetime.now()}")
 dynamodb = boto3.resource('dynamodb', 'ap-southeast-2')
 rounds_table = dynamodb.Table('rounds2020')
 
+#Get all rounds that are not yet active
 resp = rounds_table.scan(
     FilterExpression=Attr('active').eq(False)
 )
+#Get the next non-active round
 round_number = min([r['round_number'] for r in resp['Items']])
 print(f"Next Round: {round_number}. Setting to 'active'")
-
+#Update that round to active
 rounds_table.update_item(
     Key={
         'round_number': round_number

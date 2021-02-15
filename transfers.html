@@ -18,7 +18,7 @@
     <link href="/static/styles.css" rel="stylesheet">
 
     <script src="js/Session.js"></script>
-    <script src="js/requireLogin.js"></script>
+    
 
     <title>XRL Transfer Centre</title>
 
@@ -119,7 +119,16 @@
         <div class="row mt-5">
             <div class="col-lg">
                 <div class="card border border-secondary" id="tradeOffers">
-                    <h4 class="card-header bg-dark bg-gradient text-white">Trade Offers</h4>
+                    <div class="card-header bg-dark bg-gradient">
+                        <span class="h4 text-white">Trade Offers</span>
+                        <button class="btn btn-success dropdown-toggle" type="button"
+                            id="transferRoundButton" data-bs-toggle="dropdown" aria-expanded="false">
+                            Waiver Reports
+                        </button>
+                        <ul id="transferRoundSelect" class="dropdown-menu dropdown-menu-dark"
+                            aria-labelledby="dropdownMenuButton">
+                        </ul>
+                    </div>
                     <div class="card-body" id="tradeOffersBody">
                     </div>
                     <div class="row justify-content-center mb-2">

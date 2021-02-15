@@ -1,5 +1,8 @@
 import { GetActiveUserTeamShort, GetLineupByTeamAndRound, GetPlayersFromXrlTeam, UpdatePlayerXrlTeam, GetPlayerAppearanceStats, DropPlayers, ScoopPlayers, GetActiveUserInfo, GetIdToken, UpdateUserWaiverPreferences } from "./ApiFetch.js"
 
+/**
+ * Array indicating sort order for positions
+ */
 export const PositionOrder = ['Back', 'Playmaker', 'Forward'];
 /**
  * Dictionary for converting position element ids into position display names
@@ -24,10 +27,34 @@ export const PositionNames = {
     'int4': 'Interchange',
 }
 /**
+ * Dictionary for converting position element ids into XRL positions
+ */
+export const PositionMap = {
+    'fullback': 'Back',
+    'winger1': 'Back',
+    'winger2': 'Back',
+    'centre1': 'Back',
+    'centre2': 'Back',
+    'five_eighth': 'Playmaker',
+    'halfback': 'Playmaker',
+    'hooker': 'Playmaker',
+    'prop1': 'Forward',
+    'prop2': 'Forward',
+    'row1': 'Forward',
+    'row2': 'Forward',
+    'lock': 'Forward',
+    'int1': 'Interchange', 
+    'int2': 'Interchange',
+    'int3': 'Interchange',
+    'int4': 'Interchange',
+}
+/**
+/**
  * List of NRL stats that are relevant for XRL scores
  */
 export const XrlRelevantStats = ["All Runs", "Line Breaks", "Line Break Assists", "Try Assists", "Tackle Breaks",
-"Offloads", "Tackles Made", "Kicks", "40/20", "20/40", "All Runs", "All Run Metres", "Kicking Metres", "One on One Steal", "Conversions", "Penalty Goals"]
+"Offloads", "Tackles Made", "Kicks", "40/20", "20/40", "All Runs", "All Run Metres", "Kicking Metres", "One on One Steal",
+"Conversions", "Penalty Goals"]
 /**
  * Displays a feedback modal with an optional footer with cancel/confirm buttons and an onconfirm function.
  * @param {String} title A title for the feedback display
@@ -536,6 +563,7 @@ export function GetActiveRoundFromFixtures(rounds) {
     return currentRound;
 }
 
+//#region Various sorting functions
 export function DefaultPlayerSort(p1, p2) {
     if (p1.position == p2.position) {
         return p1.player_name.split(' ')[1] > p2.player_name.split(' ')[1] ? 1 : -1;
@@ -586,3 +614,14 @@ export function SortByPlayerNameDesc(p1, p2) {
     return p1.player_name.split(' ')[1] < p2.player_name.split(' ')[1] ? 1 : -1;
 }
 
+export function SortLeageTable(users) {
+    return users.sort(function(u1, u2) {
+        if (u2.stats.points != u1.stats.points) {
+            return u2.stats.points - u1.stats.points;
+        } if ((u2.stats.for - u2.stats.against) != (u1.stats.for - u1.stats.against)) {
+            return (u2.stats.for - u2.stats.against) - (u1.stats.for - u1.stats.against);
+        }
+        return u2.stats.for - u1.stats.for;
+    });
+}
+//#endregion

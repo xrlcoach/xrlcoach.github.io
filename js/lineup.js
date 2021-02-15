@@ -333,7 +333,7 @@ function createOption(player, position, selected = false) {
 function fillInterchangeOptions(onload = false) {
     //Get all player selections
     let playerSelections = document.getElementsByName('player');
-    let selectedPlayers = playerSelections
+    let selectedPlayers = Array.from(playerSelections)
         .filter(e => !interchange.includes(e.id) && e.value != 'None') //Filter out interchange positions and empty selects
         .map(e => e.value); //Create array of player IDs
 

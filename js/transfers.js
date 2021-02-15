@@ -289,7 +289,7 @@ async function DisplayTransferHistory() {
             link.onclick = function() {
                 populateTransferTable(this.value);
             };
-            document.getElementById('roundSelect').appendChild(option);
+            document.getElementById('transferRoundSelect').appendChild(option);
         }
         //Load all transfer history
         transferHistory = await GetTransferHistory();

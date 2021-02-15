@@ -440,7 +440,7 @@ async function submitLineup(event) {
     let newLineup;
     try {
         //Map new lineup
-        newLineup = players
+        newLineup = Array.from(players)
             .filter(e => e.value != '' && e.value != 'None') //Filter out non-selections
             .map(e => {
                 //Try and find player in squad, throw exception if not found                
@@ -477,7 +477,7 @@ async function submitLineup(event) {
                 return entry;
             });
     } catch (err) {
-        DisplayFeedback('Error', err);
+        DisplayFeedback('Error', err + (err.stack ? '<p>' + err.stack + '</p>': ''));
         return;
     }
     // for (let i = 0; i < players.length; i++) {
@@ -523,7 +523,7 @@ async function submitLineup(event) {
             document.getElementById('submitLoading').hidden = true;
             DisplayFeedback('Success!', 'Lineup set successfully.', true, function() { location.href = 'index.html' }, false);
         } catch (err) {
-            DisplayFeedback('Error', err);
+            DisplayFeedback('Error', err + (err.stack ? '<p>' + err.stack + '</p>': ''));
         }
     }
 

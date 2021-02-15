@@ -444,7 +444,7 @@ async function submitLineup(event) {
             .filter(e => e.value != '' && e.value != 'None') //Filter out non-selections
             .map(e => {
                 //Try and find player in squad, throw exception if not found                
-                let playerInfo = squad.find(p => p.player_id == players[i].value);
+                let playerInfo = squad.find(p => p.player_id == e.value);
                 if (!playerInfo) throw 'One of the players selected is no longer in your squad.';
                 //Get XRL position matching lineup position
                 let positionGeneral = PositionMap[e.id];
@@ -582,7 +582,7 @@ async function submitLineup(event) {
         //If there are no errors, proceed with submission
         completeSubmission();
     } catch (err) {
-        DisplayFeedback('Invalid Lineup', err);
+        DisplayFeedback('Error', err + (err.stack ? '<p>' + err.stack + '</p>': ''));
     }
 
     // for (let player of newLineup) {

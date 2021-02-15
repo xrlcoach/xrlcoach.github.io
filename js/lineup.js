@@ -32,7 +32,7 @@ const interchange = ['int1', 'int2', 'int3', 'int4'];
  */
 const roles = ['captain', 'captain2', 'vice', 'kicker', 'backup_kicker'];
 
-let user, squad, lineup, backs, forwards, playmakers, powerplay, nextRound;
+let user, squad, lineup, backs, forwards, playmakers, powerplay, nextRound, homeGame;
 
 window.onload = async () => {
     //Retrieve info for the next round
@@ -46,7 +46,7 @@ window.onload = async () => {
         DisplayFeedback('WTF?', 'No match this week. Please check back later.');
         return;
     }
-    let homeGame = match.home == user.team_short;
+    homeGame = match.home == user.team_short;
     let opponent = homeGame ? match.away : match.home;
     //Load squad, lineup asynchronously
     LoadData();

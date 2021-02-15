@@ -289,6 +289,7 @@ async function DisplayTransferHistory() {
             link.onclick = function() {
                 populateTransferTable(this.value);
             };
+            option.appendChild(link);
             document.getElementById('transferRoundSelect').appendChild(option);
         }
         //Load all transfer history

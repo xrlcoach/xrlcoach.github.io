@@ -102,16 +102,16 @@ function populateStatsTable(stats, sortFunction, scoringAsKicker=true) {
             fieldGoals.innerText = player.scoring_stats.kicker.field_goals;
             tr.appendChild(fieldGoals);
             let ITs = document.createElement('td');
-            ITs.innerText = player.scoring_stats[player.position].involvement_try;
+            ITs.innerText = player.scoring_stats[player.position].involvement_try | 0;
             tr.appendChild(ITs);
             let PTs = document.createElement('td');
-            PTs.innerText = player.scoring_stats[player.position].positional_try;
+            PTs.innerText = player.scoring_stats[player.position].positional_try | 0;
             tr.appendChild(PTs);
             let concede = document.createElement('td');
-            concede.innerText = player.scoring_stats[player.position].concede;
+            concede.innerText = player.scoring_stats[player.position].concede | 0;
             tr.appendChild(concede);
             let mia = document.createElement('td');
-            mia.innerText = player.scoring_stats[player.position].mia;
+            mia.innerText = player.scoring_stats[player.position].mia | 0;
             tr.appendChild(mia);
             let total = document.createElement('td');
             //Work out whether to include kicking stats in total score

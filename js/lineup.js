@@ -191,9 +191,9 @@ function PopulateLineup() {
     //For each role in the lineup (e.g. captain, kicker)...
     roles.forEach(role => {
         //If user is not using powerplay, skip over second captain role
-        if (role == 'captain2' && !powerplay) continue;
+        if (role == 'captain2' && !powerplay) return;
         //If user IS using powerplay, skip over vice-captain role
-        if (role == 'vice' && powerplay) continue;
+        if (role == 'vice' && powerplay) return;
         //Create a 'None' option
         createOption(null, role);
         //Check if existing/previous lineup has player in that role

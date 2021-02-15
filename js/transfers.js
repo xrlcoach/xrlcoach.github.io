@@ -71,10 +71,10 @@ async function FillWaiverSelect() {
  */
 async function DisplayUserWaiverInfo() {
     try {        
-        user.waiver_preferences.forEach(playerId => {
+        for (let playerId of user.waiver_preferences) {
             //Load player profile and add to global array
             waiverPreferences.push(await GetPlayerById(playerId));
-        });
+        }
         //Assign user's indicated player to drop to global
         provisionalDrop = user.provisional_drop;
         //Display user's waiver rank

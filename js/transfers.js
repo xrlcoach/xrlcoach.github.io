@@ -314,7 +314,7 @@ async function populateTransferTable(round) {
         let table = document.getElementById('transferHistoryTable');
         table.innerHTML = '';
         //Add row to table for each transfer
-        transfers.forEach(t => {
+        for (let t of transfers) {
             //Get player profile and user data
             let player = await GetPlayerById(t.player_id);
             let user = allUsers.find(u => u.username == t.user);
@@ -364,7 +364,7 @@ async function populateTransferTable(round) {
                 description.innerText = 'from ' + allUsers.find(u => u.username == t.seller).team_name;
             row.appendChild(description);
             table.appendChild(row);
-        });
+        }
     } catch (err) {
         DisplayFeedback('Error', err + (err.stack ? '<p>' + err.stack + '</p>': ''));
     }

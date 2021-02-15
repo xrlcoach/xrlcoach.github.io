@@ -37,8 +37,8 @@ let user, squad, lineup, backs, forwards, playmakers, powerplay, nextRound;
 window.onload = async () => {
     //Retrieve info for the next round
     nextRound = await GetNextRoundInfo();
-    //Load user, squad, lineup asynchronously
-    LoadData();
+    //Get the active user's data
+    user = await GetActiveUserInfo(idToken);
     //Display match info
     let match = GetTeamFixture(user.team_short, nextRound);
     if (match == undefined) {
@@ -48,6 +48,8 @@ window.onload = async () => {
     }
     let homeGame = match.home == user.team_short;
     let opponent = homeGame ? match.away : match.home;
+    //Load squad, lineup asynchronously
+    LoadData();
     document.getElementById('lineupHeading').innerHTML = `Select ${user.team_short} lineup for Round ${nextRound.round_number} vs ${opponent} ${homeGame ? "AT HOME" : "AWAY"}`;
     //Stop loading animation
     document.getElementById('loading').hidden = true;
@@ -55,11 +57,9 @@ window.onload = async () => {
 }
 
 /**
- * Loads user's profile, squad and lineup data
+ * Loads squad and lineup data
  */
-async function LoadData() {
-    //Get the active user's data
-    user = await GetActiveUserInfo(idToken);
+async function LoadData() {    
     //Get player data for the user's XRL squad
     squad = await GetPlayersFromXrlTeam(user.team_short);
     //Get the user's lineup data for the current round, if already set

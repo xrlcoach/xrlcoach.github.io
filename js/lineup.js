@@ -350,9 +350,14 @@ function fillInterchangeOptions(onload = false) {
     interchange.forEach(pos => {
         //Find select element for that position
         let select = document.getElementById(pos);
-        //See if there is a player already selected
-        let playerAlreadySelected = select.value != 'None';
-        let player = playerAlreadySelected ? squad.find(p => p.player_id = select.value) : undefined;
+        let player = undefined;
+        //If this function has been called on page load, check lineup for player
+        //in interchange position
+        if (onload) {
+            player = lineup.find(p => p.position_specific == pos);
+        } else {//Else try and find the player selected in that spot
+            player = squad.find(p => p.player_id = select.value);
+        }        
         //Clear select options and create 'None' option
         select.innerHTML = '';
         createOption(null, pos);

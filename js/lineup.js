@@ -356,7 +356,7 @@ function fillInterchangeOptions(onload = false) {
         if (onload) {
             player = lineup.find(p => p.position_specific == pos);
         } else {//Else try and find the player selected in that spot
-            player = squad.find(p => p.player_id = select.value);
+            player = squad.find(p => p.player_id == select.value);
         }        
         //Clear select options and create 'None' option
         select.innerHTML = '';

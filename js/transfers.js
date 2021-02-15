@@ -433,18 +433,18 @@ async function DisplayOfferDetails(offerId) {
         document.getElementById('trafeInfoWantedPlayers').innerHTML = '';
         document.getElementById('trafeInfoOfferedPlayers').innerHTML = '';
         //Display info for players in trade
-        offer.players_offered.forEach(id => {
+        for (let id of offer.players_offered) {
             let player = await GetPlayerById(id);
             let li = document.createElement('li');
             li.innerText = player.player_name;
             document.getElementById('trafeInfoOfferedPlayers').appendChild(li);
-        });
-        offer.players_wanted.forEach(id => {
+        }
+        for (let id of offer.players_wanted) {
             let player = await GetPlayerById(id);
             let li = document.createElement('li');
             li.innerText = player.player_name;
             document.getElementById('trafeInfoWantedPlayers').appendChild(li);
-        });
+        }
         //Display any powerplays involved in trade
         document.getElementById('tradeInfoOfferedPowerplays').innerText = offer.powerplays_offered;
         document.getElementById('tradeInfoWantedPowerplays').innerText = offer.powerplays_wanted;

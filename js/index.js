@@ -9,10 +9,10 @@ window.onload = async function () {
         allUsers = await GetAllUsers();
         //Isolate active user from team cookie
         user = allUsers.find(u => u.team_short == GetActiveUserTeamShort());
+        //Load fixture data and display reliant sections
+        await LoadFixtureData();
         //Load the squad data and fill reliant sections
         LoadSquadInfo();
-        //Load fixture data and display reliant sections
-        LoadFixtureData();
         //Display team info and inbox
         DisplayTeamInfo();
         DisplayInbox();

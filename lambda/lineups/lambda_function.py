@@ -50,7 +50,7 @@ def lambda_handler(event, context):
             if id_token != '':
                 existing_lineup = table.query(
                     IndexName='sk-data-index',
-                    KeyConditionExpression=Key('sk').eq('LINEUP#' + round_number) & Key('data').eq('TEAM#' + team_short)
+                    KeyConditionExpression=Key('sk').eq('LINEUP#' + str(round_number)) & Key('data').eq('TEAM#' + team_short)
                 )
                 if len(existing_lineup['Items']) > 0:
                     print("Existing lineup found. Returning player list.")
@@ -76,7 +76,7 @@ def lambda_handler(event, context):
                 # )
                 resp = table.query(
                     IndexName='sk-data-index',
-                    KeyConditionExpression=Key('sk').eq('LINEUP#' + round_number) & Key('data').eq('TEAM#' + team)
+                    KeyConditionExpression=Key('sk').eq('LINEUP#' + str(round_number)) & Key('data').eq('TEAM#' + team)
                 )
                 return {
                         'statusCode': 200,
@@ -134,7 +134,7 @@ def lambda_handler(event, context):
             if operation == 'set':
                 existing_lineup = table.query(
                     IndexName='sk-data-index',
-                    KeyConditionExpression=Key('sk').eq('LINEUP#' + round_number) & Key('data').eq('TEAM#' + team_short)
+                    KeyConditionExpression=Key('sk').eq('LINEUP#' + str(round_number)) & Key('data').eq('TEAM#' + team_short)
                 )
                 lineup = json.loads(body['players'])
                 print("Lineup: " + str(lineup))

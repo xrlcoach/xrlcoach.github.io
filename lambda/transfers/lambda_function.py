@@ -20,10 +20,11 @@ def lambda_handler(event, context):
     print("Method is " + method)
     if method == 'GET':
         try:
-            print("Scanning waivers table")
+            print("Scanning transfers table")
             # resp = transfers_table.scan()
             resp = table.query(
-                KeyConditionExpression=Key('pk').eq('WAIVER') & Key('sk').begins_with('REPORT#')
+                IndexName='sk-data-index',
+                KeyConditionExpression=Key('sk').eq('TRANSFER') & Key('data').begins_with('ROUND#')
             )
             print("Returning data")
             return {

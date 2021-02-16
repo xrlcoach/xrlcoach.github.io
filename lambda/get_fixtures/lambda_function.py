@@ -22,7 +22,7 @@ def lambda_handler(event, context):
                     round_object['fixtures'] = table.query(
                         KeyConditionExpression=Key('pk').eq('ROUND#' + str(i)) & Key('sk').begins_with('FIXTURE')
                     )['Items']
-                    data += round_object
+                    data.append(round_object)
                 return {
                     'statusCode': 200,
                     'headers': {

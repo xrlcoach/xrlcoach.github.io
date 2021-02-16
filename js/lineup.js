@@ -35,81 +35,89 @@ const roles = ['captain', 'captain2', 'vice', 'kicker', 'backup_kicker'];
 let user, squad, lineup, backs, forwards, playmakers, powerplay, nextRound, homeGame;
 
 window.onload = async () => {
-    //Retrieve info for the next round
-    nextRound = await GetNextRoundInfo();
-    //Get the active user's data
-    user = await GetActiveUserInfo(idToken);
-    //Display match info
-    let match = GetTeamFixture(user.team_short, nextRound);
-    if (match == undefined) {
+    try {
+        //Retrieve info for the next round
+        nextRound = await GetNextRoundInfo();
+        //Get the active user's data
+        user = await GetActiveUserInfo(idToken);
+        //Display match info
+        let match = GetTeamFixture(user.team_short, nextRound);
+        if (match == undefined) {
+            document.getElementById('loading').hidden = true;
+            DisplayFeedback('WTF?', 'No match this week. Please check back later.');
+            return;
+        }
+        homeGame = match.home == user.team_short;
+        let opponent = homeGame ? match.away : match.home;
+        //Load squad, lineup asynchronously
+        LoadData();
+        document.getElementById('lineupHeading').innerHTML = `Select ${user.team_short} lineup for Round ${nextRound.round_number} vs ${opponent} ${homeGame ? "AT HOME" : "AWAY"}`;
+        //Stop loading animation
         document.getElementById('loading').hidden = true;
-        DisplayFeedback('WTF?', 'No match this week. Please check back later.');
-        return;
+        document.getElementById('mainContent').hidden = false;
+    } catch (err) {
+        DisplayFeedback('Error', err + (err.stack ? '<p>' + err.stack + '</p>': ''));
     }
-    homeGame = match.home == user.team_short;
-    let opponent = homeGame ? match.away : match.home;
-    //Load squad, lineup asynchronously
-    LoadData();
-    document.getElementById('lineupHeading').innerHTML = `Select ${user.team_short} lineup for Round ${nextRound.round_number} vs ${opponent} ${homeGame ? "AT HOME" : "AWAY"}`;
-    //Stop loading animation
-    document.getElementById('loading').hidden = true;
-    document.getElementById('mainContent').hidden = false;
 }
 
 /**
  * Loads squad and lineup data
  */
 async function LoadData() {    
-    //Get player data for the user's XRL squad
-    squad = await GetPlayersFromXrlTeam(user.team_short);
-    //Get the user's lineup data for the current round, if already set
-    lineup = await GetLineup(idToken);
-    console.log(lineup.length);
-    //If no lineup is set, get previous lineup
-    if (lineup.length == 0 && nextRound.round_number != 1) {
-        lineup = await GetLineupByTeamAndRound(nextRound.round_number - 1, user.team_short);
-        //Check if the last lineup had two captains (i.e. powerplay), and if so change second captain
-        //to vice-captain
-        for (let player of lineup) {
-            if (player.captain2) {
-                player.captain2 = false;
-                player.vice = true;
+    try {
+        //Get player data for the user's XRL squad
+        squad = await GetPlayersFromXrlTeam(user.team_short);
+        //Get the user's lineup data for the current round, if already set
+        lineup = await GetLineup(idToken);
+        console.log(lineup.length);
+        //If no lineup is set, get previous lineup
+        if (lineup.length == 0 && nextRound.round_number != 1) {
+            lineup = await GetLineupByTeamAndRound(nextRound.round_number - 1, user.team_short);
+            //Check if the last lineup had two captains (i.e. powerplay), and if so change second captain
+            //to vice-captain
+            for (let player of lineup) {
+                if (player.captain2) {
+                    player.captain2 = false;
+                    player.vice = true;
+                }
             }
         }
+        //Check if existing lineup is using powerplay
+        let numCaptains = lineup.filter(p => p.captain || p.captain2).length;
+        console.log(numCaptains);
+        powerplay = numCaptains == 2;
+        console.log(powerplay);
+        //If so, change second captain input to visible, and vice captain to hidden
+        if (powerplay) {
+            document.getElementById('secondCaptainSelect').hidden = false;
+            document.getElementById('viceCaptainSelect').hidden = true;
+        }
+        //Locate powerplay button
+        let button = document.getElementById('powerplayButton');
+        //If powerplay is not already active, and the user is at home and has some left to use, show the green
+        //'Use Powerplay' button
+        if (!powerplay && homeGame && user.powerplays > 0) {
+            button.hidden = false;
+            button.className = 'btn btn-success';
+            button.innerText = 'Use Powerplay';
+        } // If powerplay is already active, show the red 'Turn Off Powerplay' button
+        else if (powerplay) {
+            button.hidden = false;
+            button.className = 'btn btn-danger';
+            button.innerText = 'Turn Off Powerplay';
+        }
+        //Organise user's XRL squad into separate arrays based on their position
+        backs = squad.filter(p => p.position == 'Back' || p.position2 == 'Back');
+        console.log('Backs: ' + backs[0]);
+        forwards = squad.filter(p => p.position == 'Forward' || p.position2 == 'Forward');
+        console.log('Forwards: ' + forwards[0]);
+        playmakers = squad.filter(p => p.position == 'Playmaker' || p.position2 == 'Playmaker');
+        console.log('Playmakers: ' + playmakers[0]);
+        //Call the table constructor
+        PopulateLineup();
+    } catch (err) {
+        DisplayFeedback('Error', err + (err.stack ? '<p>' + err.stack + '</p>': ''));
     }
-    //Check if existing lineup is using powerplay
-    let numCaptains = lineup.filter(p => p.captain || p.captain2).length;
-    console.log(numCaptains);
-    powerplay = numCaptains == 2;
-    console.log(powerplay);
-    //If so, change second captain input to visible, and vice captain to hidden
-    if (powerplay) {
-        document.getElementById('secondCaptainSelect').hidden = false;
-        document.getElementById('viceCaptainSelect').hidden = true;
-    }
-    //Locate powerplay button
-    let button = document.getElementById('powerplayButton');
-    //If powerplay is not already active, and the user is at home and has some left to use, show the green
-    //'Use Powerplay' button
-    if (!powerplay && homeGame && user.powerplays > 0) {
-        button.hidden = false;
-        button.className = 'btn btn-success';
-        button.innerText = 'Use Powerplay';
-    } // If powerplay is already active, show the red 'Turn Off Powerplay' button
-    else if (powerplay) {
-        button.hidden = false;
-        button.className = 'btn btn-danger';
-        button.innerText = 'Turn Off Powerplay';
-    }
-    //Organise user's XRL squad into separate arrays based on their position
-    backs = squad.filter(p => p.position == 'Back' || p.position2 == 'Back');
-    console.log('Backs: ' + backs[0]);
-    forwards = squad.filter(p => p.position == 'Forward' || p.position2 == 'Forward');
-    console.log('Forwards: ' + forwards[0]);
-    playmakers = squad.filter(p => p.position == 'Playmaker' || p.position2 == 'Playmaker');
-    console.log('Playmakers: ' + playmakers[0]);
-    //Call the table constructor
-    PopulateLineup();
 }
 
 /**
@@ -118,34 +126,38 @@ async function LoadData() {
  * @param {*} button The powerplay button
  */
 function togglePowerplay(event, button) {
-    if (powerplay) { //If powerplay is currently ON...
-        //Turn powerplay off
-        powerplay = false;
-        //Remove second captain select
-        document.getElementById('captain2').innerHTML = '';
-        document.getElementById('secondCaptainSelect').hidden = true;
-        //Create vice-captain select
-        squad.forEach((player) => {
-            createOption(player, 'vice');
-        });
-        document.getElementById('viceCaptainSelect').hidden = false;
-        //Change text and colour of powerplay button
-        button.className = 'btn btn-success';
-        button.innerText = 'Use Powerplay';
-    } else { //If powerplay is currently OFF...
-        //Turn powerplay on
-        powerplay = true;
-        //Remove vice-captain select
-        document.getElementById('vice').innerHTML = '';
-        document.getElementById('viceCaptainSelect').hidden = true;
-        //Create second captain select
-        squad.forEach((player) => {
-            createOption(player, 'captain2');
-        });
-        document.getElementById('secondCaptainSelect').hidden = false;
-        //Change text and colour of button
-        button.className = 'btn btn-danger';
-        button.innerText = 'Turn Off Powerplay';
+    try {
+        if (powerplay) { //If powerplay is currently ON...
+            //Turn powerplay off
+            powerplay = false;
+            //Remove second captain select
+            document.getElementById('captain2').innerHTML = '';
+            document.getElementById('secondCaptainSelect').hidden = true;
+            //Create vice-captain select
+            squad.forEach((player) => {
+                createOption(player, 'vice');
+            });
+            document.getElementById('viceCaptainSelect').hidden = false;
+            //Change text and colour of powerplay button
+            button.className = 'btn btn-success';
+            button.innerText = 'Use Powerplay';
+        } else { //If powerplay is currently OFF...
+            //Turn powerplay on
+            powerplay = true;
+            //Remove vice-captain select
+            document.getElementById('vice').innerHTML = '';
+            document.getElementById('viceCaptainSelect').hidden = true;
+            //Create second captain select
+            squad.forEach((player) => {
+                createOption(player, 'captain2');
+            });
+            document.getElementById('secondCaptainSelect').hidden = false;
+            //Change text and colour of button
+            button.className = 'btn btn-danger';
+            button.innerText = 'Turn Off Powerplay';
+        }
+    } catch (err) {
+        DisplayFeedback('Error', err + (err.stack ? '<p>' + err.stack + '</p>': ''));
     }
 }
 window.togglePowerplay = togglePowerplay;
@@ -154,157 +166,60 @@ window.togglePowerplay = togglePowerplay;
  * Populates lineup position select options. Will pre-fill with existing or previous lineup.
  */
 function PopulateLineup() {
-    //For each back position in the lineup (fullback, wingers, centres)...   
-    positions_backs.forEach(pos => {
-        //Create a 'None' option for that position select
-        createOption(null, pos);
-        //Try and find a player in the existing/previous lineup in that position
-        let player = lineup.find(p => p.position_specific == pos);
-        //For each back in the user's squad...
-        backs.forEach(back => {
-            //If that player is the player already picked, create an option and pre-select it
-            if (player && back.player_id == player.player_id) createOption(back, pos, true);
-            //Else just create an option and add it to the position select
-            else createOption(back, pos);
+    try {
+        //For each back position in the lineup (fullback, wingers, centres)...   
+        positions_backs.forEach(pos => {
+            //Create a 'None' option for that position select
+            createOption(null, pos);
+            //Try and find a player in the existing/previous lineup in that position
+            let player = lineup.find(p => p.position_specific == pos);
+            //For each back in the user's squad...
+            backs.forEach(back => {
+                //If that player is the player already picked, create an option and pre-select it
+                if (player && back.player_id == player.player_id) createOption(back, pos, true);
+                //Else just create an option and add it to the position select
+                else createOption(back, pos);
+            });
         });
-    });
-    //Do the same for the forward positions...
-    positions_forwards.forEach(pos => {
-        createOption(null, pos);
-        let player = lineup.find(p => p.position_specific == pos);
-        forwards.forEach(forward => {
-            if (player && forward.player_id == player.player_id) createOption(forward, pos, true);
-            else createOption(forward, pos);
+        //Do the same for the forward positions...
+        positions_forwards.forEach(pos => {
+            createOption(null, pos);
+            let player = lineup.find(p => p.position_specific == pos);
+            forwards.forEach(forward => {
+                if (player && forward.player_id == player.player_id) createOption(forward, pos, true);
+                else createOption(forward, pos);
+            });
         });
-    });
-    //..and the playmakers
-    positions_playmakers.forEach(pos => {
-        createOption(null, pos);
-        let player = lineup.find(p => p.position_specific == pos);
-        playmakers.forEach(pm => {
-            if (player && pm.player_id == player.player_id) createOption(pm, pos, true);
-            else createOption(pm, pos);
+        //..and the playmakers
+        positions_playmakers.forEach(pos => {
+            createOption(null, pos);
+            let player = lineup.find(p => p.position_specific == pos);
+            playmakers.forEach(pm => {
+                if (player && pm.player_id == player.player_id) createOption(pm, pos, true);
+                else createOption(pm, pos);
+            });
         });
-    });
-    //Call the functon to fill the interchange options
-    fillInterchangeOptions(true);
-    //For each role in the lineup (e.g. captain, kicker)...
-    roles.forEach(role => {
-        //If user is not using powerplay, skip over second captain role
-        if (role == 'captain2' && !powerplay) return;
-        //If user IS using powerplay, skip over vice-captain role
-        if (role == 'vice' && powerplay) return;
-        //Create a 'None' option
-        createOption(null, role);
-        //Check if existing/previous lineup has player in that role
-        let player = lineup.find(p => p[role]);
-        //Create an option for each player in the squad, pre-selecting existing selection
-        squad.forEach(p => {
-            if (player && player.player_id == p.player_id) createOption(p, role, true);
-            else createOption(p, role);
-        });
-    });
-    //Check if there is an existing or previous lineup
-    // if (lineup.length > 0) {
-    //     console.log('Pre-filling existing lineup');
-    //     for (let i = 0; i < positions_backs.length; i++) {
-    //         let player = lineup.find(p => p.position_specific == positions_backs[i]);
-    //         let otherBacks;
-    //         if (player == undefined) {
-    //             createOption(null, positions_backs[i]);
-    //             otherBacks = backs;
-    //         } else{
-    //             createOption(player, positions_backs[i]);
-    //             otherBacks = backs.filter(p => player['player_id'] != p['player_id']);
-    //         }
-    //         for (let j = 0; j < otherBacks.length; j++) {
-    //             createOption(otherBacks[j], positions_backs[i]);
-    //         }
-    //         createOption(null, positions_backs[i]);
-    //     }
-    //     for (let i = 0; i < positions_forwards.length; i++) {
-    //         let player = lineup.find(p => p.position_specific == positions_forwards[i]);
-    //         let otherForwards;
-    //         if (player == undefined) {
-    //             createOption(null, positions_forwards[i]);
-    //             otherForwards = forwards;
-    //         } else {
-    //             createOption(player, positions_forwards[i]);
-    //             otherForwards = forwards.filter(p => player['player_id'] != p['player_id']);
-    //         }
-    //         for (let j = 0; j < otherForwards.length; j++) {
-    //             createOption(otherForwards[j], positions_forwards[i]);
-    //         }
-    //         createOption(null, positions_forwards[i]);
-    //     }
-    //     for (let i = 0; i < positions_playmakers.length; i++) {
-    //         let player = lineup.find(p => p.position_specific == positions_playmakers[i]);
-    //         let otherPlaymakers;
-    //         if (player == undefined) {
-    //             createOption(null, positions_playmakers[i]);
-    //             otherPlaymakers = playmakers;
-    //         } else {
-    //             createOption(player, positions_playmakers[i]);
-    //             otherPlaymakers = playmakers.filter(p => player['player_id'] != p['player_id']);
-    //         }
-    //         for (let j = 0; j < otherPlaymakers.length; j++) {
-    //             createOption(otherPlaymakers[j], positions_playmakers[i]);
-    //         }
-    //         createOption(null, positions_playmakers[i]);
-    //     }
-    //     fillInterchangeOptions(true);
-    //     for (let i = 0; i < roles.length; i++) {
-    //         if (roles[i] == 'captain2' && !powerplay) continue;
-    //         if (roles[i] == 'vice' && powerplay) continue;
-    //         let player = lineup.find(p => p[roles[i]]);
-    //         let otherPlayers;
-    //         if (player == undefined) {
-    //             createOption(null, roles[i]);
-    //             otherPlayers = squad;
-    //         } else {
-    //             otherPlayers = squad.filter(p => player['player_id'] != p['player_id']);
-    //             createOption(player, roles[i]);
-    //         }
-    //         for (let j = 0; j < otherPlayers.length; j++) {
-    //             createOption(otherPlayers[j], roles[i]);
-    //         }
-    //         createOption(null, roles[i]);
-    //     }
-    // } else {
-    //     for (let i = 0; i < positions_backs.length; i++) {
-    //         createOption(null, positions_backs[i]);
-    //         for (let j = 0; j < backs.length; j++) {
-    //             createOption(backs[j], positions_backs[i]);
-    //         }
-    //     }
-    //     for (let i = 0; i < positions_forwards.length; i++) {
-    //         createOption(null, positions_forwards[i]);
-    //         for (let j = 0; j < forwards.length; j++) {
-    //             createOption(forwards[j], positions_forwards[i]);
-    //         }
-    //     }
-    //     for (let i = 0; i < positions_playmakers.length; i++) {
-    //         createOption(null, positions_playmakers[i]);
-    //         for (let j = 0; j < playmakers.length; j++) {
-    //             createOption(playmakers[j], positions_playmakers[i]);
-    //         }
-    //     }    
-    //     for (var i = 0; i < interchange.length; i++) {
-    //         createOption(null, interchange[i]);
-    //         for (var j = 0; j < squad.length; j++) {
-    //             createOption(squad[j], interchange[i]);
-    //         }
-    //         fillPositionOptions(document.getElementById(interchange[i]));
-    //     }
-    //     for (var i = 0; i < roles.length; i++) {
-    //         if (roles[i] == 'captain2' && !powerplay) continue;
-    //         if (roles[i] == 'vice' && powerplay) continue;
-    //         createOption(null, roles[i]);
-    //         for (var j = 0; j < squad.length; j++) {
-    //             createOption(squad[j], roles[i]);
-    //         }
-    //     }
-    // }
+        //Call the functon to fill the interchange options
+        fillInterchangeOptions(true);
+        //For each role in the lineup (e.g. captain, kicker)...
+        roles.forEach(role => {
+            //If user is not using powerplay, skip over second captain role
+            if (role == 'captain2' && !powerplay) return;
+            //If user IS using powerplay, skip over vice-captain role
+            if (role == 'vice' && powerplay) return;
+            //Create a 'None' option
+            createOption(null, role);
+            //Check if existing/previous lineup has player in that role
+            let player = lineup.find(p => p[role]);
+            //Create an option for each player in the squad, pre-selecting existing selection
+            squad.forEach(p => {
+                if (player && player.player_id == p.player_id) createOption(p, role, true);
+                else createOption(p, role);
+            });
+        });        
+    } catch (err) {
+        DisplayFeedback('Error', err + (err.stack ? '<p>' + err.stack + '</p>': ''));
+    }
 }
 
 /**
@@ -314,15 +229,19 @@ function PopulateLineup() {
  * @param {Boolean} selected Whether the option should be pre-selected
  */
 function createOption(player, position, selected = false) {
-    //Create an option element
-    let option = document.createElement('option');
-    //Make option text the player's name and value the player's ID (or 'None')
-    option.innerText = player ? player['player_name'] : 'None';
-    option.value = player ? player['player_id']: 'None';
-    //Assign the selected attribute (false by default)
-    option.selected = selected;
-    //Add option to the associated select element
-    document.getElementById(position).appendChild(option);
+    try {
+        //Create an option element
+        let option = document.createElement('option');
+        //Make option text the player's name and value the player's ID (or 'None')
+        option.innerText = player ? player['player_name'] : 'None';
+        option.value = player ? player['player_id']: 'None';
+        //Assign the selected attribute (false by default)
+        option.selected = selected;
+        //Add option to the associated select element
+        document.getElementById(position).appendChild(option);
+    } catch (err) {
+        DisplayFeedback('Error', err + (err.stack ? '<p>' + err.stack + '</p>': ''));
+    }
 }
 
 /**
@@ -331,70 +250,49 @@ function createOption(player, position, selected = false) {
  * @param {Boolean} onload 
  */
 function fillInterchangeOptions(onload = false) {
-    //Get all player selections
-    let playerSelections = document.getElementsByName('player');
-    let selectedPlayers = Array.from(playerSelections)
-        .filter(e => !interchange.includes(e.id) && e.value != 'None') //Filter out interchange positions and empty selects
-        .map(e => e.value); //Create array of player IDs
-
-    // for (let i = 0; i < playerSelections.length; i++) {
-    //     //If element id is e.g. int1, int2, continue
-    //     if (interchange.includes(playerSelections[i].id)) continue;
-    //     //If element is a starting position, push the player_id to selectedPlayers array
-    //     selectedPlayers.push(playerSelections[i].value);
-    // }
-
-    //Available players for bench is everyone not in selectedPlayers array
-    let nonStarters = squad.filter(p => !selectedPlayers.includes(p.player_id));
-    //For each interchange position...
-    interchange.forEach(pos => {
-        //Find select element for that position
-        let select = document.getElementById(pos);
-        let player = undefined;
-        //If this function has been called on page load, check lineup for player
-        //in interchange position
-        if (onload) {
-            player = lineup.find(p => p.position_specific == pos);
-        } else {//Else try and find the player selected in that spot
-            player = squad.find(p => p.player_id == select.value);
-        }        
-        //Clear select options and create 'None' option
-        select.innerHTML = '';
-        createOption(null, pos);
-        //Create an option for each player not already in starting lineup, pre-selecting existing
-        //selection if they have not since been picked in starting lineup
-        nonStarters.forEach(p => {
-            if (player && player.player_id == p.player_id) createOption(p, pos, true);
-            else createOption(p, pos);
-            //Call function to populate positional preference options
-            fillPositionOptions(select);
-        });
-    });
-    // for (var i = 0; i < interchange.length; i++) {
-    //     let player = undefined;
-    //     if (onload) {
-    //         player = lineup.find(p => p.position_specific == interchange[i]);
-    //     } else {
-    //         player = squad.find(p => p.player_id == document.getElementById(interchange[i]).value)
-    //     }
-    //     if (player != undefined && !selectedPlayers.includes(player.player_id)) {
-    //         document.getElementById(interchange[i]).innerHTML = '';
-    //         createOption(player, interchange[i]);
-    //         let restOfBench = nonStarters.filter(p => p.player_id != player.player_id);
-    //         for (var j = 0; j < restOfBench.length; j++) {
-    //             createOption(restOfBench[j], interchange[i]);
-    //         }
-    //         fillPositionOptions(document.getElementById(interchange[i]));
-    //         createOption(null, interchange[i]);
-    //     } else {
-    //         document.getElementById(interchange[i]).innerHTML = '';
-    //         createOption(null, interchange[i]);
-    //         for (var j = 0; j < nonStarters.length; j++) {
-    //             createOption(nonStarters[j], interchange[i]);
-    //         }
-    //         fillPositionOptions(document.getElementById(interchange[i]));
-    //     } 
-    // }
+    try {
+        //Get all player selections
+        let playerSelections = document.getElementsByName('player');
+        let selectedPlayers = Array.from(playerSelections)
+            .filter(e => !interchange.includes(e.id) && e.value != 'None') //Filter out interchange positions and empty selects
+            .map(e => e.value); //Create array of player IDs
+    
+        // for (let i = 0; i < playerSelections.length; i++) {
+        //     //If element id is e.g. int1, int2, continue
+        //     if (interchange.includes(playerSelections[i].id)) continue;
+        //     //If element is a starting position, push the player_id to selectedPlayers array
+        //     selectedPlayers.push(playerSelections[i].value);
+        // }
+    
+        //Available players for bench is everyone not in selectedPlayers array
+        let nonStarters = squad.filter(p => !selectedPlayers.includes(p.player_id));
+        //For each interchange position...
+        interchange.forEach(pos => {
+            //Find select element for that position
+            let select = document.getElementById(pos);
+            let player = undefined;
+            //If this function has been called on page load, check lineup for player
+            //in interchange position
+            if (onload) {
+                player = lineup.find(p => p.position_specific == pos);
+            } else {//Else try and find the player selected in that spot
+                player = squad.find(p => p.player_id == select.value);
+            }        
+            //Clear select options and create 'None' option
+            select.innerHTML = '';
+            createOption(null, pos);
+            //Create an option for each player not already in starting lineup, pre-selecting existing
+            //selection if they have not since been picked in starting lineup
+            nonStarters.forEach(p => {
+                if (player && player.player_id == p.player_id) createOption(p, pos, true);
+                else createOption(p, pos);
+                //Call function to populate positional preference options
+                fillPositionOptions(select);
+            });
+        });        
+    } catch (err) {
+        DisplayFeedback('Error', err + (err.stack ? '<p>' + err.stack + '</p>': ''));
+    }
 }
 window.fillInterchangeOptions = fillInterchangeOptions;
 
@@ -403,25 +301,29 @@ window.fillInterchangeOptions = fillInterchangeOptions;
  * @param {*} select The interchange select element
  */
 async function fillPositionOptions(select) {
-    //Find and clear the select element. If interchange player select element has ID 'int2',
-    //then positional preference select has ID 'int2Position'
-    document.getElementById(select.id + 'Position').innerHTML = '';
-    //If selected player is 'None', do nothing
-    if (select.value == 'None') return;
-    //Look for player in squad
-    let player = squad.find(p => p.player_id == select.value);
-    //Create and fill option for first position
-    let option = document.createElement('option');
-    option.innerText = player['position'];
-    option.value = player['position'];
-    //Add it to select element
-    document.getElementById(select.id + 'Position').appendChild(option);
-    //Do the same for player's second position, if they have one
-    if (player['position2']) {
+    try {
+        //Find and clear the select element. If interchange player select element has ID 'int2',
+        //then positional preference select has ID 'int2Position'
+        document.getElementById(select.id + 'Position').innerHTML = '';
+        //If selected player is 'None', do nothing
+        if (select.value == 'None') return;
+        //Look for player in squad
+        let player = squad.find(p => p.player_id == select.value);
+        //Create and fill option for first position
         let option = document.createElement('option');
-        option.innerText = player['position2'];
-        option.value = player['position2'];
+        option.innerText = player['position'];
+        option.value = player['position'];
+        //Add it to select element
         document.getElementById(select.id + 'Position').appendChild(option);
+        //Do the same for player's second position, if they have one
+        if (player['position2']) {
+            let option = document.createElement('option');
+            option.innerText = player['position2'];
+            option.value = player['position2'];
+            document.getElementById(select.id + 'Position').appendChild(option);
+        }
+    } catch (err) {
+        DisplayFeedback('Error', err + (err.stack ? '<p>' + err.stack + '</p>': ''));
     }
 }
 window.fillPositionOptions = fillPositionOptions;

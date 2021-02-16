@@ -32,7 +32,7 @@ async function login(event) {
     } catch (err) {
         //Catch and display any error messages
         document.getElementById('loading').hidden = true;
-        DisplayFeedback('Error', err);
+        DisplayFeedback('Error', err + (err.stack ? '<p>' + err.stack + '</p>': ''));
     }
 }
 window.login = login;

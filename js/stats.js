@@ -1,5 +1,5 @@
 import { GetActiveUserTeamShort, GetAllPlayers, GetAllUsers, getCookie, GetPlayersFromNrlClub, GetPlayersFromXrlTeam, GetRoundInfoFromCookie, GetStatsByClubAndRound, GetStatsByRound } from "./ApiFetch.js";
-import { GetPlayerXrlScores, DisplayPlayerInfo, DisplayAppearanceInfoFromStats, SortByPlayerName, SortByPlayerNameDesc, DefaultPlayerSort, DefaultPlayerSortDesc } from "./Helpers.js";
+import { GetPlayerXrlScores, DisplayPlayerInfo, DisplayAppearanceInfoFromStats, SortByPlayerName, SortByPlayerNameDesc, DefaultPlayerSort, DefaultPlayerSortDesc, DisplayFeedback } from "./Helpers.js";
 
 let roundToDisplay, currentRound, allUsers, activeUser, displayedStats, scoreAsKicker, singleRound;
 let sortAttribute = 'score';

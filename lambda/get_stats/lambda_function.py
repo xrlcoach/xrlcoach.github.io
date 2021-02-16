@@ -4,7 +4,8 @@ import decimal
 import json
 
 dynamodb = boto3.resource('dynamodb', 'ap-southeast-2')
-table = dynamodb.Table('stats2020')
+# table = dynamodb.Table('stats2020')
+table = dynamodb.Table('XRL2020')
 
 def lambda_handler(event, context):
     try:
@@ -12,10 +13,11 @@ def lambda_handler(event, context):
         if method == 'GET':
             print('Method is get, checking for params')
             if not event["queryStringParameters"]:
-                print('No params found, scanning table')
-                resp = table.scan()
-                print('Table scanned, formulatin json response')
-                data = resp['Items']
+                # print('No params found, scanning table')
+                # resp = table.scan()
+                # print('Table scanned, formulating json response')
+                # data = resp['Items']
+                raise Exception('No query parameters detected. Cannot retrieve all stats')
             else: 
                 print('Params detected')        
                 params = event["queryStringParameters"]
@@ -25,17 +27,26 @@ def lambda_handler(event, context):
                     if 'round' in params.keys():
                         round_number = params['round']
                         print(f'Querying table for PlayerId {playerId} in round {round_number}')
+                        # resp = table.get_item(
+                        #     Key={
+                        #         'player_id': playerId,
+                        #         'round_number': round_number
+                        #     }
+                        # )
                         resp = table.get_item(
                             Key={
-                                'player_id': playerId,
-                                'round_number': round_number
+                                'pk': 'PLAYER#' + playerId,
+                                'sk': 'STATS#' + round_number
                             }
                         )
                         data = resp['Item']                        
                     else:
                         print(f'Querying table for PlayerId {playerId}')
-                        resp = table.scan(
-                            FilterExpression=Attr('player_id').eq(playerId)
+                        # resp = table.scan(
+                        #     FilterExpression=Attr('player_id').eq(playerId)
+                        # )
+                        resp = table.query(
+                            KeyConditionExpression=Key('pk').eq('PLAYER#' + playerId) & Key('sk').begins_with('STATS#')
                         )
                         data = resp['Items']
                 elif 'nrlClub' in params.keys():
@@ -43,32 +54,49 @@ def lambda_handler(event, context):
                     if 'round' in params.keys():
                         round_number = params['round']
                         print(f'Querying table for {nrlClub} players in round {round_number}')
-                        resp = table.scan(
-                            FilterExpression=Attr('nrl_club').eq(nrlClub) & Attr('round_number').eq(round_number)
+                        # resp = table.scan(
+                        #     FilterExpression=Attr('nrl_club').eq(nrlClub) & Attr('round_number').eq(round_number)
+                        # )
+                        resp = table.query(
+                            IndexName='sk-data-index',
+                            KeyConditionExpression=Key('sk').eq('STATS#' + round_number) & Key('data').eq(nrlClub)
                         )
                         data = resp['Items']
                         if 'LastEvaluatedKey' in resp.keys():
-                            resp2 = table.scan(
-                                FilterExpression=Attr('nrl_club').eq(nrlClub) & Attr('round_number').eq(round_number),
+                            resp2 = table.query(
+                                IndexName='sk-data-index',
+                                KeyConditionExpression=Key('sk').eq('STATS#' + round_number) & Key('data').eq(nrlClub),
                                 ExclusiveStartKey=resp['LastEvaluatedKey']
                             )
                             data += resp2['Items']
                     else:
                         print(f'Querying table for {nrlClub} players in all rounds')
+                        # resp = table.scan(
+                        #     FilterExpression=Attr('nrlClub').eq(nrlClub)
+                        # )
                         resp = table.scan(
-                            FilterExpression=Attr('nrlClub').eq(nrlClub)
+                            FilterExpression=Attr('sk').begins_with('STATS#') & Attr('nrlClub').eq(nrlClub)
                         )
                         data = resp['Items']
                 elif 'round' in params.keys():
                     round_number = params['round']
                     print(f'Querying table for all stats from round {round_number}')
-                    resp = table.scan(
-                        FilterExpression=Attr('round_number').eq(round_number)
+                    # resp = table.scan(
+                    #     FilterExpression=Attr('round_number').eq(round_number)
+                    # )
+                    resp = table.query(
+                        IndexName='sk-data-index',
+                        KeyConditionExpression=Key('sk').eq('STATS#' + round_number) & Key('data').begins_with('CLUB#')
                     )
                     data = resp['Items']
                     if 'LastEvaluatedKey' in resp.keys():
-                        resp2 = table.scan(
-                            FilterExpression=Attr('round_number').eq(round_number),
+                        # resp2 = table.scan(
+                        #     FilterExpression=Attr('round_number').eq(round_number),
+                        #     ExclusiveStartKey=resp['LastEvaluatedKey']
+                        # )
+                        resp2 = table.query(
+                            IndexName='sk-data-index',
+                            KeyConditionExpression=Key('sk').eq('STATS#' + round_number) & Key('data').begins_with('CLUB#'),
                             ExclusiveStartKey=resp['LastEvaluatedKey']
                         )
                         data += resp2['Items']

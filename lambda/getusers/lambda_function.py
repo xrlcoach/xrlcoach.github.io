@@ -6,14 +6,19 @@ import hashlib
 import base64
 
 dynamodb = boto3.resource('dynamodb', 'ap-southeast-2')
-table = dynamodb.Table('users2020')
+# table = dynamodb.Table('users2020')
+table = dynamodb.Table('XRL2020')
 
 def lambda_handler(event, context):
     try:
         method = event["httpMethod"]
         print("Method is " + method)
         if method == 'GET':
-            resp = table.scan()
+            # resp = table.scan()
+            resp = table.query(
+                IndexName='sk-data-index',
+                KeyConditionExpression=Key('sk').eq('DETAILS') & Key('data').begins_with('NAME#')
+            )
             print("Return users data")
             return {
                 'statusCode': 200,
@@ -39,7 +44,13 @@ def lambda_handler(event, context):
                 print(decoded)
                 user = json.loads(decoded)['cognito:username']
                 print(user)            
-                response = table.get_item(Key={'username': user})
+                # response = table.get_item(Key={'username': user})
+                response = table.get_item(
+                    Key={
+                        'pk': 'USER#' + user,
+                        'sk': 'DETAILS'
+                    }
+                )
                 print(response['Item'])        
                 return {
                     'statusCode': 200,
@@ -52,9 +63,19 @@ def lambda_handler(event, context):
                 }
             if operation == 'update_inbox':
                 print("Updating user inbox")
+                # table.update_item(
+                #     Key={
+                #         'username': body['username']
+                #     },
+                #     UpdateExpression="set inbox=:i",
+                #     ExpressionAttributeValues={
+                #         ':i': body['inbox']
+                #     }
+                # )
                 table.update_item(
                     Key={
-                        'username': body['username']
+                        'pk': 'USER#' + body['username'],
+                        'sk': 'DETAILS'
                     },
                     UpdateExpression="set inbox=:i",
                     ExpressionAttributeValues={

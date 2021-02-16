@@ -7,9 +7,10 @@ import decimal
 
 dynamodbClient = boto3.client('dynamodb', 'ap-southeast-2')
 dynamodbResource = boto3.resource('dynamodb', 'ap-southeast-2')
-lineup_table = dynamodbResource.Table('lineups2020')
-user_table = dynamodbResource.Table('users2020')
-round_table = dynamodbResource.Table('rounds2020')
+# lineup_table = dynamodbResource.Table('lineups2020')
+# user_table = dynamodbResource.Table('users2020')
+# round_table = dynamodbResource.Table('rounds2020')
+table = dynamodbResource.Table('XRL2020')
 
 
 def lambda_handler(event, context):
@@ -23,20 +24,34 @@ def lambda_handler(event, context):
             decoded = base64.b64decode(payload + '=======')
             username = json.loads(decoded)['cognito:username']
             print(f"User: {username}")
-            resp = user_table.get_item(Key={'username': username})
+            # resp = user_table.get_item(Key={'username': username})
+            resp = table.get_item(Key={
+                'pk': 'USER#' + username,
+                'sk': 'DETAILS'
+            })
             user = resp['Item']
             team_short = user['team_short']
             print(f"XRL Team: {team_short}")
-            resp = round_table.scan(
+            # resp = round_table.scan(
+            #     FilterExpression=Attr('in_progress').eq(False)
+            # )
+            resp = table.query(
+                IndexName='sk-data-index',
+                KeyConditionExpression=Key('sk').eq('STATUS') & Key('data').begins_with('ACTIVE'),
                 FilterExpression=Attr('in_progress').eq(False)
             )
             round_number = min([r['round_number'] for r in resp['Items']])
             print(f"Round Number: {round_number}")
-            existing_lineup = lineup_table.scan(
-                    FilterExpression=Attr('xrl_team').eq(team_short) & Attr('round_number').eq(str(round_number))
-                    )
+            # existing_lineup = lineup_table.scan(
+            #         FilterExpression=Attr('xrl_team').eq(team_short) & Attr('round_number').eq(str(round_number))
+            #         )
+            
         if method == 'GET':
             if id_token != '':
+                existing_lineup = table.query(
+                    IndexName='sk-data-index',
+                    KeyConditionExpression=Key('sk').eq('LINEUP#' + round_number) & Key('data').eq('TEAM#' + team_short)
+                )
                 if len(existing_lineup['Items']) > 0:
                     print("Existing lineup found. Returning player list.")
                 else:
@@ -56,8 +71,12 @@ def lambda_handler(event, context):
                 team = params['team']
                 round_number = params['round']
                 print(f'Specific lineup requested is {team}, Round {round_number}. Querying table..')
-                resp = lineup_table.scan(
-                    FilterExpression=Attr('xrl_team').eq(team) & Attr('round_number').eq(round_number)
+                # resp = lineup_table.scan(
+                #     FilterExpression=Attr('xrl_team').eq(team) & Attr('round_number').eq(round_number)
+                # )
+                resp = table.query(
+                    IndexName='sk-data-index',
+                    KeyConditionExpression=Key('sk').eq('LINEUP#' + round_number) & Key('data').eq('TEAM#' + team)
                 )
                 return {
                         'statusCode': 200,
@@ -72,47 +91,51 @@ def lambda_handler(event, context):
             body = json.loads(event['body'])
             operation = body['operation']
             print("Operation is " + operation)
-            if operation == 'remove_multiple':
-                with lineup_table.batch_writer() as batch:
-                    for player in body['players']:
-                        print("Removing " + player['player_name'] + ' from set lineup')                        
-                        batch.delete_item(
-                            Key={
-                                'name+nrl+xrl+round': player['player_name'] + ';' + player['nrl_club'] + ';' + team_short + ';' + str(round_number)
-                            }
-                        )
-                        print(player['player_name'] + ' removed.')
-                return {
-                    'statusCode': 200,
-                    'headers': {
-                    'Access-Control-Allow-Headers': 'Content-Type',
-                    'Access-Control-Allow-Origin': '*',
-                    'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
-                    },
-                    'body': json.dumps({"message": "Players removed from lineups"})
-                }
-            if operation == 'remove':
-                player = json.loads(body['player'])
-                lineup_table.delete_item(
-                    Key={
-                        'name+nrl+xrl+round': player['player_name'] + ';' + player['nrl_club'] + ';' + team_short + ';' + str(round_number)
-                    }
-                )
-                lineup_table.delete_item(
-                    Key={
-                        'name+nrl+xrl+round': player['player_name'] + ';' + player['nrl_club'] + ';' + team_short + ';' + str(round_number + 1)
-                    }
-                )
-                return {
-                        'statusCode': 200,
-                        'headers': {
-                        'Access-Control-Allow-Headers': 'Content-Type',
-                        'Access-Control-Allow-Origin': '*',
-                        'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
-                        },
-                        'body': json.dumps({"message": "Players removed from lineup"})
-                    }
+            # if operation == 'remove_multiple':
+            #     with table.batch_writer() as batch:
+            #         for player in body['players']:
+            #             print("Removing " + player['player_name'] + ' from set lineup')                        
+            #             batch.delete_item(
+            #                 Key={
+            #                     'name+nrl+xrl+round': player['player_name'] + ';' + player['nrl_club'] + ';' + team_short + ';' + str(round_number)
+            #                 }
+            #             )
+            #             print(player['player_name'] + ' removed.')
+            #     return {
+            #         'statusCode': 200,
+            #         'headers': {
+            #         'Access-Control-Allow-Headers': 'Content-Type',
+            #         'Access-Control-Allow-Origin': '*',
+            #         'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
+            #         },
+            #         'body': json.dumps({"message": "Players removed from lineups"})
+            #     }
+            # if operation == 'remove':
+            #     player = json.loads(body['player'])
+            #     lineup_table.delete_item(
+            #         Key={
+            #             'name+nrl+xrl+round': player['player_name'] + ';' + player['nrl_club'] + ';' + team_short + ';' + str(round_number)
+            #         }
+            #     )
+            #     lineup_table.delete_item(
+            #         Key={
+            #             'name+nrl+xrl+round': player['player_name'] + ';' + player['nrl_club'] + ';' + team_short + ';' + str(round_number + 1)
+            #         }
+            #     )
+            #     return {
+            #             'statusCode': 200,
+            #             'headers': {
+            #             'Access-Control-Allow-Headers': 'Content-Type',
+            #             'Access-Control-Allow-Origin': '*',
+            #             'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
+            #             },
+            #             'body': json.dumps({"message": "Players removed from lineup"})
+            #         }
             if operation == 'set':
+                existing_lineup = table.query(
+                    IndexName='sk-data-index',
+                    KeyConditionExpression=Key('sk').eq('LINEUP#' + round_number) & Key('data').eq('TEAM#' + team_short)
+                )
                 lineup = json.loads(body['players'])
                 print("Lineup: " + str(lineup))
                 position_numbers = {
@@ -135,19 +158,27 @@ def lambda_handler(event, context):
                     "int4": 17,
                     }
                 print("Removing old lineup")     
-                with lineup_table.batch_writer() as batch:   
+                with table.batch_writer() as batch:   
                     for player in existing_lineup['Items']:                        
+                        # batch.delete_item(
+                        #     Key={
+                        #         'name+nrl+xrl+round': player['player_name'] + ';' + player['nrl_club'] + ';' + team_short + ';' + str(round_number)
+                        #     }
+                        # )
                         batch.delete_item(
                             Key={
-                                'name+nrl+xrl+round': player['player_name'] + ';' + player['nrl_club'] + ';' + team_short + ';' + str(round_number)
+                                'pk': player['pk'],
+                                'sk': player['sk']
                             }
                         )
                 print("Writing new lineup")
-                with lineup_table.batch_writer() as batch:
+                with table.batch_writer() as batch:
                     for player in lineup:
                         batch.put_item(
                             Item={
-                                'name+nrl+xrl+round': player['player_name'] + ';' + player['nrl_club'] + ';' + team_short + ';' + str(round_number),
+                                'pk': 'PLAYER#' + player['player_id'],
+                                'sk': 'LINEUP#' + str(round_number),
+                                'data': 'TEAM#' + team_short,
                                 'player_id': player['player_id'],
                                 'player_name': player['player_name'],
                                 'nrl_club': player['nrl_club'],

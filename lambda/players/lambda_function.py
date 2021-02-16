@@ -7,11 +7,12 @@ from boto3.dynamodb.conditions import Key, Attr
 from datetime import date, datetime
 
 dynamodb = boto3.resource('dynamodb', 'ap-southeast-2')
-table = dynamodb.Table('players2020')
-lineups_table = dynamodb.Table('lineups2020')
-users_table = dynamodb.Table('users2020')
-transfers_table = dynamodb.Table('transfers2020')
-rounds_table = dynamodb.Table('rounds2020')
+# table = dynamodb.Table('players2020')
+# lineups_table = dynamodb.Table('lineups2020')
+# users_table = dynamodb.Table('users2020')
+# transfers_table = dynamodb.Table('transfers2020')
+# rounds_table = dynamodb.Table('rounds2020')
+table = dynamodb.Table('XRL2020')
 
 def lambda_handler(event, context):
     #Find request method
@@ -22,7 +23,11 @@ def lambda_handler(event, context):
         if not event["queryStringParameters"]:
             print('No params found, scanning table')
             start = datetime.now()
-            resp = table.scan()['Items']
+            # resp = table.scan()['Items']
+            resp = table.query(
+                IndexName='sk-data-index',
+                KeyConditionExpression=Key('sk').eq('PROFILE') & Key('data').begins_with('TEAM')
+            )['Items']
             finish = datetime.now()
             print(f'Table scan copmlete in {finish - start}. Returning json response')
         else:
@@ -33,28 +38,45 @@ def lambda_handler(event, context):
             if 'nrlClub' in params.keys():
                 nrlClub = params['nrlClub']
                 print(f'NrlClub param is {nrlClub}, querying table')
-                resp = table.scan(
+                # resp = table.scan(
+                #     FilterExpression=Attr('nrl_club').eq(nrlClub)
+                # )['Items']
+                resp = table.query(
+                    IndexName='sk-data-index',
+                    KeyConditionExpression=Key('sk').eq('PROFILE') & Key('data').begins_with('TEAM'),
                     FilterExpression=Attr('nrl_club').eq(nrlClub)
                 )['Items']
             elif 'xrlTeam' in params.keys():
                 xrlTeam = params['xrlTeam']
                 print(f'XrlTeam param is {xrlTeam}, querying table')
                 if xrlTeam == 'Free Agents':
-                    resp = table.scan(
-                        FilterExpression=Attr('xrl_team').not_exists() | Attr('xrl_team').eq('None') | Attr('xrl_team').eq('On Waivers') | Attr('xrl_team').eq('Pre-Waivers')
+                    # resp = table.scan(
+                    #     FilterExpression=Attr('xrl_team').not_exists() | Attr('xrl_team').eq('None') | Attr('xrl_team').eq('On Waivers') | Attr('xrl_team').eq('Pre-Waivers')
+                    # )['Items']
+                    resp = table.query(
+                        IndexName='sk-data-index',
+                        KeyConditionExpression=Key('sk').eq('PROFILE') & Key('data').eq('TEAM#' + 'None') | Key('data').eq('TEAM#' + 'On Waivers') | Key('data').eq('TEAM#' + 'Pre-Waivers')
                     )['Items']
                 else:
-                    resp = table.scan(
-                        FilterExpression=Attr('xrl_team').eq(xrlTeam)
+                    # resp = table.scan(
+                    #     FilterExpression=Attr('xrl_team').eq(xrlTeam)
+                    # )['Items']
+                    resp = table.query(
+                        IndexName='sk-data-index',
+                        KeyConditionExpression=Key('sk').eq('PROFILE') & Key('data').eq('TEAM#' + xrlTeam)
                     )['Items']
             elif 'playerId' in params.keys():
                 player_id = params['playerId']
                 print(f'PlayerId param is {player_id}, querying table')
-                resp = table.get_item(
-                    Key={
-                        'player_id': player_id
-                    }
-                )['Item']
+                # resp = table.get_item(
+                #     Key={
+                #         'player_id': player_id
+                #     }
+                # )['Item']
+                resp = table.get_item(Key={
+                    'pk': 'PLAYER#' + player_id,
+                    'sk': 'PROFILE'
+                })['Item']
             #If query parameters present but are not any of the above, send back error message
             else:
                 print("Couldn't recognise parameter")
@@ -76,11 +98,19 @@ def lambda_handler(event, context):
             print('Method is POST, checking operation')
             body = json.loads(event['body'])
             print("Operation is " + body['operation'])
-            users = users_table.scan()['Items']
-            active_user = [u for u in users if u['team_short'] == body['xrl_team']][0]
+            # users = users_table.scan()['Items']
+            # active_user = [u for u in users if u['team_short'] == body['xrl_team']][0]
+            active_user = table.query(
+                IndexName='sk-data-index',
+                KeyConditionExpression=Key('sk').eq('DETAILS') & Key('data').eq('NAME#' + body['xrl_team'])
+            )['Items'][0]
             print(f"Active user is {active_user['username']}")
-            rounds = rounds_table.scan(
-                FilterExpression=Attr('active').eq(True)
+            # rounds = rounds_table.scan(
+            #     FilterExpression=Attr('active').eq(True)
+            # )['Items']
+            rounds = table.query(
+                IndexName='sk-data-index',
+                KeyConditionExpression=Key('sk').eq('STATUS') & Key('data').eq('ACTIVE#true')
             )['Items']
             round_number = max([r['round_number'] for r in rounds])
             active_round = [r for r in rounds if r['round_number'] == round_number][0]
@@ -91,29 +121,59 @@ def lambda_handler(event, context):
                 #Iterate through all players being scooped
                 for player in body['players']:
                     #Check if player is available to be scooped
+                    # player_record = table.get_item(
+                    #     Key={
+                    #         'player_id': player['player_id']
+                    #     }
+                    # )['Item']
                     player_record = table.get_item(
                         Key={
-                            'player_id': player['player_id']
+                            'pk': 'PLAYER#' + player['player_id'],
+                            'sk': 'PROFILE'
                         }
                     )['Item']
                     if 'xrl_team' in player_record.keys() and player_record['xrl_team'] != 'None':
                         raise Exception(f"{player['player_name']} has already signed for another XRL team.")
                 for player in body['players']:
                     #Update player's XRL team
+                    # table.update_item(
+                    #     Key={
+                    #         'player_id': player['player_id'],
+                    #     },
+                    #     UpdateExpression="set xrl_team=:x",
+                    #     ExpressionAttributeValues={
+                    #         ':x': body['xrl_team']
+                    #     }
+                    # )
                     table.update_item(
                         Key={
-                            'player_id': player['player_id'],
+                            'pk': 'PLAYER#' + player['player_id'],
+                            'sk': 'PROFILE'
                         },
-                        UpdateExpression="set xrl_team=:x",
+                        UpdateExpression="set data=:d, xrl_team=:x",
                         ExpressionAttributeValues={
+                            ':d': 'TEAM#' + body['xrl_team'],
                             ':x': body['xrl_team']
                         }
                     )
-                    transfers_table.put_item(
+                    # transfers_table.put_item(
+                    #     Item={
+                    #         'transfer_id': active_user['username'] + '_' + str(datetime.now()),
+                    #         'user': active_user['username'],                        
+                    #         'datetime': datetime.now().strftime("%c"),
+                    #         'type': 'Scoop',
+                    #         'round_number': round_number,
+                    #         'player_id': player['player_id']
+                    #     }
+                    # ) 
+                    transfer_date = datetime.now()
+                    table.put_item(
                         Item={
-                            'transfer_id': active_user['username'] + '_' + str(datetime.now()),
+                            'pk': 'TRANSFER#' + active_user['username'] + str(transfer_date),
+                            'sk': 'TRANSFER',
+                            'data': str(round_number),
                             'user': active_user['username'],                        
-                            'datetime': datetime.now().strftime("%c"),
+                            'datetime': transfer_date.strftime("%c"),
                             'type': 'Scoop',
                             'round_number': round_number,
                             'player_id': player['player_id']
@@ -122,15 +182,20 @@ def lambda_handler(event, context):
                     print(f"{player['player_name']}'s' XRL team changed to {body['xrl_team']}")                
                 print('Adjusting waiver order')
                 #Sort users by waiver rank
+                users = table.query(
+                    IndexName='sk-data-index',
+                    KeyConditionExpression=Key('sk').eq('DETAILS') & Key('data').begins_with('NAME#')
+                )['Items']
                 waiver_order = sorted(users, key=lambda u: u['waiver_rank'])
                 #Remove the user who just scooped a player and put them at the bottom of the list
                 waiver_order.remove(active_user)
                 waiver_order.append(active_user)
                 #Update everyone's waiver rank to reflect change
                 for rank, user in enumerate(waiver_order, 1):
-                    users_table.update_item(
+                    table.update_item(
                         Key={
-                            'username': user['username']
+                            'pk': 'USER#' + user['username'],
+                            'sk': 'DETAILS'
                         },
                         UpdateExpression="set waiver_rank=:wr",
                         ExpressionAttributeValues={
@@ -139,9 +204,10 @@ def lambda_handler(event, context):
                     )
                 #Add the number of player's scooped to the user's 'players_picked' property 
                 print(f"Adding {len(body['players'])} to {active_user['username']}'s picked players count")
-                users_table.update_item(
+                table.update_item(
                     Key={
-                        'username': active_user['username']
+                        'pk': 'USER#' + user['username'],
+                        'sk': 'DETAILS'
                     },
                     UpdateExpression="set players_picked=players_picked+:v",
                     ExpressionAttributeValues={
@@ -151,37 +217,51 @@ def lambda_handler(event, context):
                 print("Count updated")                   
             if body['operation'] == 'drop':
                 #Iterate through players to be dropped
-                not_in_progress_rounds = rounds_table.scan(
-                    FilterExpression=Attr('in_progress').eq(False)
-                )['Items']
-                next_round_number = min([r['round_number'] for r in not_in_progress_rounds])
+                # not_in_progress_rounds = table.query(
+                #     IndexName='sk-data-index',
+                #     KeyConditionExpression=Key('sk').eq('STATUS') & Key('data').begins_with('ACTIVE'),
+                #     FilterExpression=Attr('in_progress').eq(False)
+                # )['Items']
+                next_round_number = round_number if not active_round['in_progress'] else round_number + 1
                 for player in body['players']:
+                    # player_to_drop = table.get_item(
+                    #     Key={
+                    #         'player_id': player['player_id']
+                    #     }
+                    # )['Item']
+                    # lineups_table.delete_item(
+                    #     Key={
+                    #         'name+nrl+xrl+round': player_to_drop['player_name'] + ';' + player_to_drop['nrl_club'] + ';' + active_user['team_short'] + ';' + str(next_round_number)
+                    #     }
+                    # )
+
+                    #Remove them from any lineup for next round
+                    table.delete_item(Key={
+                        'pk': 'PLAYER#' + player['player_id'],
+                        'sk': 'LINEUP#' + next_round_number
+                    })
                     #Update their XRL team property to 'On Waivers'. This prevents them from being scooped until
                     #they clear the next round of waivers
-                    player_to_drop = table.get_item(
+                    table.update_item(
                         Key={
-                            'player_id': player['player_id']
-                        }
-                    )['Item']
-                    lineups_table.delete_item(
-                        Key={
-                            'name+nrl+xrl+round': player_to_drop['player_name'] + ';' + player_to_drop['nrl_club'] + ';' + active_user['team_short'] + ';' + str(next_round_number)
+                            'pk': 'PLAYER#' + player['player_id'],
+                            'sk': 'PROFILE'
+                        },
+                        UpdateExpression="set data=:d, xrl_team=:x",
+                        ExpressionAttributeValues={
+                            ':d': 'TEAM#On Waivers',
+                            ':x': 'On Waivers'
                         }
                     )
-                    table.update_item(
-                            Key={
-                                'player_id': player['player_id'],
-                            },
-                            UpdateExpression="set xrl_team=:x",
-                            ExpressionAttributeValues={
-                                ':x': 'On Waivers'
-                            }
-                        )
-                    transfers_table.put_item(
+                    #Add record to transfers table
+                    transfer_date = datetime.now()
+                    table.put_item(
                         Item={
-                            'transfer_id': active_user['username'] + '_' + str(datetime.now()),
+                            'pk': 'TRANSFER#' + active_user['username'] + str(transfer_date),
+                            'sk': 'TRANSFER',
+                            'data': str(round_number),
                             'user': active_user['username'],                        
-                            'datetime': datetime.now().strftime("%c"),
+                            'datetime': transfer_date.strftime("%c"),
                             'type': 'Drop',
                             'round_number': round_number,
                             'player_id': player['player_id']

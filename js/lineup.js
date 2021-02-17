@@ -1,16 +1,12 @@
 /* Script controlling lineup.html, the page where the user sets their lineup for the next round */
 
-import { GetActiveUserInfo, GetActiveUserTeamShort, GetIdToken, GetLineup, GetLineupByTeamAndRound, GetNextRoundInfo, GetNextRoundStatus, GetPlayersFromXrlTeam, GetTeamFixtureByRound, SetLineup } from './ApiFetch.js'
-import { DisplayFeedback, GetTeamFixture, PositionMap } from './Helpers.js';
+import { GetActiveUserInfo, GetIdToken, GetLineup, GetLineupByTeamAndRound, GetNextRoundStatus, GetPlayersFromXrlTeam, GetTeamFixtureByRound, SetLineup } from './ApiFetch.js'
+import { DisplayFeedback, PositionMap } from './Helpers.js';
 
 /**
  * The active user's id token
  */
 const idToken = GetIdToken();
-/**
- * The active user's team acronym
- */
-const teamShort = GetActiveUserTeamShort();
 /**
  * An array of position element ids that map to Back positions
  */
@@ -125,7 +121,7 @@ async function LoadData() {
  * @param {*} event The event which triggered the function
  * @param {*} button The powerplay button
  */
-function togglePowerplay(event, button) {
+function togglePowerplay(button) {
     try {
         if (powerplay) { //If powerplay is currently ON...
             //Turn powerplay off

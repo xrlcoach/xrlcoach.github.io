@@ -1,7 +1,7 @@
-import { GetPlayersFromXrlTeam, GetAllUsers, GetActiveUserTeamShort, GetAllFixtures, UpdateUserInbox, GetPlayerById, GetCurrentRoundNumber, GetCurrentRoundStatus } from './ApiFetch.js';
-import { DisplayFeedback, DisplayPlayerInfo, GetActiveRoundFromFixtures, GetOrdinal, GetTeamFixture, DefaultPlayerSort, SortByPosition2, DefaultPlayerSortDesc, SortByPosition2Desc, SortByNrlClub, SortByNrlClubDesc, SortByPlayerName, SortByPlayerNameDesc, SortLeageTable } from './Helpers.js';
+import { GetPlayersFromXrlTeam, GetAllUsers, GetActiveUserTeamShort, UpdateUserInbox, GetCurrentRoundNumber, GetCurrentRoundStatus, GetTeamFixtureByRound } from './ApiFetch.js';
+import { DisplayFeedback, DisplayPlayerInfo, GetOrdinal, DefaultPlayerSort, SortByPosition2, DefaultPlayerSortDesc, SortByPosition2Desc, SortByNrlClub, SortByNrlClubDesc, SortByPlayerName, SortByPlayerNameDesc, SortLeageTable } from './Helpers.js';
 
-let squad, allUsers, user, allRounds, currentRound, lastMatch, nextMatch;
+let squad, allUsers, user, currentRound, lastMatch, nextMatch;
 
 window.onload = async function () {
     try {
@@ -67,7 +67,6 @@ async function LoadSquadInfo() {
  */
 function DisplayLastMatch() {
     //Get user's match from last round's fixtures
-    let match = GetTeamFixture(user.team_short, lastMatch);
     if (lastMatch == undefined) { //If user didn't have a match in the last round, hide section and return
         document.getElementById('lastMatchOpponent').innerText = 'None';
         document.getElementById('lastMatchView').hidden = true;

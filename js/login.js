@@ -1,4 +1,4 @@
-import { GetActiveUserInfo, GetCurrentRoundInfo, Login } from "./ApiFetch.js";
+import { GetActiveUserInfo, GetCurrentRoundStatus, Login } from "./ApiFetch.js";
 import { DisplayFeedback } from "./Helpers.js";
 /**
  * Logs in user and sets session info in cookies.

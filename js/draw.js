@@ -1,8 +1,8 @@
 /* Script controlling draw.html, the page which allows user to brows past, current
 and future XRL fixtures. */
 
-import { GetActiveUserTeamShort, GetAllFixtures, GetAllUsers, GetCurrentRoundInfo } from "./ApiFetch.js";
-import { GetLineupScoreByTeamAndRound, GetActiveRoundFromFixtures, GetTeamFixture, DisplayFeedback } from "./Helpers.js";
+import { GetAllFixtures, GetAllUsers } from "./ApiFetch.js";
+import { GetActiveRoundFromFixtures, DisplayFeedback } from "./Helpers.js";
 /**
  * An array of round objects sorted by round number.
  */

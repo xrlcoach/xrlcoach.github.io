@@ -1,7 +1,7 @@
-import { GetActiveUserTeamShort, GetAllUsers, getCookie, GetPlayerById, GetPlayersFromXrlTeam, GetTransferHistory, GetTransferHistoryByRound, GetUserTradeOffers, GetWaiverReports, ProcessTradeOffer, SendTradeOffer, UpdateUserWaiverPreferences, WithdrawTradeOffer } from "./ApiFetch.js";
+import { GetActiveUserTeamShort, GetAllUsers, getCookie, GetPlayerById, GetPlayersFromXrlTeam, GetTransferHistoryByRound, GetUserTradeOffers, GetWaiverReports, ProcessTradeOffer, SendTradeOffer, UpdateUserWaiverPreferences, WithdrawTradeOffer } from "./ApiFetch.js";
 import { DisplayFeedback } from "./Helpers.js";
 
-let roundNumber, allUsers, user, squad, waiverPreferences = [], provisionalDrop, tradeOffers, tradeOffersToDisplay, transferHistory, waiverReports;
+let roundNumber, allUsers, user, squad, waiverPreferences = [], provisionalDrop, tradeOffers, tradeOffersToDisplay, waiverReports;
 let tradeTarget, targetPlayers, playersOffered = [], playersRequested = [], powerplaysOffered = 0, powerplaysWanted = 0;
 
 window.onload = async () => {
@@ -423,7 +423,6 @@ async function DisplayOfferDetails(offerPk) {
         //Find and display data for users involved
         let offeredBy = allUsers.find(u => u.username == offer.offered_by);
         let offeredTo = allUsers.find(u => u.username == offer.offered_to);
-        let userOffer = offeredBy.username == user.username;
         document.getElementById('tradeInfoOfferedBy').innerText = offeredBy.team_name;
         document.getElementById('tradeInfoStatus').innerText = offer.offer_status;
         //Display offer status

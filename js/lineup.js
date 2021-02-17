@@ -49,7 +49,7 @@ window.onload = async () => {
         //Display match info
         if (sessionStorage.getItem('allFixtures') !== null) {
             let allRounds = JSON.parse(sessionStorage.getItem('allFixtures'));
-            let next = allFixtures.find(r => r.round_number == nextRound.round_number);
+            let next = allRounds.find(r => r.round_number == nextRound.round_number);
             fixture = next.fixtures.find(m => m.home == user.team_short || m.away == user.team_short);
         } else {
             fixture = await GetTeamFixtureByRound(user.team_short, nextRound.round_number);

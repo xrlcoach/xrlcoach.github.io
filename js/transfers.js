@@ -306,7 +306,8 @@ async function DisplayTransferHistory() {
 async function populateTransferTable(round) {
     try {
         //Filter transfer history for desired round and sort newest to oldest
-        let transfers = await GetTransferHistoryByRound(round).sort((t1, t2) => {
+        let transfers = await GetTransferHistoryByRound(round);
+        transfers = transfers.sort((t1, t2) => {
             return new Date(t2.datetime) - new Date(t1.datetime);
         });
         //Find table and clear contents

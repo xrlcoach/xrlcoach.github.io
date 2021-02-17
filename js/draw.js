@@ -76,7 +76,7 @@ window.onload = async function() {
  * Populates the fixtures table body with the desired round's XRL matches.
  * @param {Object} round An XRL round data object
  */
-async function PopulateFixtureTable(round) {
+function PopulateFixtureTable(round) {
     try {
         //Determine round's status and display
         let status;
@@ -171,7 +171,7 @@ window.selectRound = selectRound;
  * Populates the fixtures table body with the desired round's XRL matches.
  * @param {Object} round An XRL round data object
  */
-async function PopulateTeamFixtureTable(team) {
+function PopulateTeamFixtureTable(team) {
     try {
         //Display team heading
         document.getElementById('tableHeading').innerText = team + ' Fixtures';

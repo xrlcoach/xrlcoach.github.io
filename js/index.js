@@ -1,16 +1,17 @@
-import { GetPlayersFromXrlTeam, GetAllUsers, GetActiveUserTeamShort, GetAllFixtures, UpdateUserInbox, GetPlayerById } from './ApiFetch.js';
+import { GetPlayersFromXrlTeam, GetAllUsers, GetActiveUserTeamShort, GetAllFixtures, UpdateUserInbox, GetPlayerById, GetCurrentRoundNumber, GetCurrentRoundStatus } from './ApiFetch.js';
 import { DisplayFeedback, DisplayPlayerInfo, GetActiveRoundFromFixtures, GetOrdinal, GetTeamFixture, DefaultPlayerSort, SortByPosition2, DefaultPlayerSortDesc, SortByPosition2Desc, SortByNrlClub, SortByNrlClubDesc, SortByPlayerName, SortByPlayerNameDesc, SortLeageTable } from './Helpers.js';
 
-let squad, allUsers, user, allRounds, lastRound, nextRound;
+let squad, allUsers, user, allRounds, currentRound, lastMatch, nextMatch;
 
 window.onload = async function () {
     try {
+        currentRound = await GetCurrentRoundStatus();
         //Fetch all users data
         allUsers = await GetAllUsers();
         //Isolate active user from team cookie
         user = allUsers.find(u => u.team_short == GetActiveUserTeamShort());
         //Load fixture data and display reliant sections
-        await LoadFixtureData();
+        LoadFixtureData();
         //Load the squad data and fill reliant sections
         LoadSquadInfo();
         //Display team info and inbox
@@ -28,13 +29,21 @@ window.onload = async function () {
  */
 async function LoadFixtureData() {
     //Get fixtures data
-    allRounds = await GetAllFixtures();
+    //allRounds = await GetAllFixtures();
     //Isolate current active round
-    nextRound = GetActiveRoundFromFixtures(allRounds);
+    try {
+        nextMatch = await GetTeamFixtureByRound(user.team_short, GetCurrentRoundNumber());
+    } catch (err) {
+        nextMatch = undefined;
+    }
     //Isolate last round
-    lastRound = allRounds.find(r => r.round_number == nextRound.round_number - 1);
+    try {
+        lastMatch = await GetTeamFixtureByRound(user.team_short, Number(GetCurrentRoundNumber()) - 1);
+    } catch (err) {
+        lastMatch = undefined;
+    }
     //If current round is not 1st, display last match info
-    if (lastRound) DisplayLastMatch();
+    if (lastMatch) DisplayLastMatch();
     //Display current/next match info
     DisplayNextMatch();
 }
@@ -58,66 +67,66 @@ async function LoadSquadInfo() {
  */
 function DisplayLastMatch() {
     //Get user's match from last round's fixtures
-    let match = GetTeamFixture(user.team_short, lastRound);
-    if (match == undefined) { //If user didn't have a match in the last round, hide section and return
+    let match = GetTeamFixture(user.team_short, lastMatch);
+    if (lastMatch == undefined) { //If user didn't have a match in the last round, hide section and return
         document.getElementById('lastMatchOpponent').innerText = 'None';
         document.getElementById('lastMatchView').hidden = true;
         return;
     }
     document.getElementById('lastMatchView').hidden = false;
     //Check if match was a homegame, find opponent and venue, display
-    let homeGame = match.home == user.team_short;
-    let opponent = homeGame ? match.away : match.home;
+    let homeGame = lastMatch.home == user.team_short;
+    let opponent = homeGame ? lastMatch.away : lastMatch.home;
     let ground = homeGame ? user.homeground : allUsers.find(u => u.team_short == opponent).homeground;
     document.getElementById('lastMatchOpponent').innerText = opponent + ' @ ' + ground;
     //Display score
-    document.getElementById('lastMatchScore').innerText = match.home_score + ' - ' + match.away_score;
+    document.getElementById('lastMatchScore').innerText = lastMatch.home_score + ' - ' + lastMatch.away_score;
     //Work out result based on score and whether user's team was home or away
-    let result = match.home_score == match.away_score ? 'DRAW' : homeGame ? match.home_score > match.away_score ? 'WIN' : 'LOSS' : match.away_score > match.home_score ? 'WIN' : 'LOSS';
+    let result = lastMatch.home_score == lastMatch.away_score ? 'DRAW' : homeGame ? lastMatch.home_score > lastMatch.away_score ? 'WIN' : 'LOSS' : lastMatch.away_score > lastMatch.home_score ? 'WIN' : 'LOSS';
     document.getElementById('lastMatchResult').style.color = result == 'WIN' ? 'green' : result == 'LOSS' ? '#c94d38' : 'orange'; 
     document.getElementById('lastMatchResult').innerText = ' ' + result; 
     //Give the 'View' button a href of fixture.html with query parameteres specifying round and match
-    document.getElementById('lastMatchView').href = `fixture.html?round=${lastRound.round_number}&fixture=${match.home}-v-${match.away}`;
+    document.getElementById('lastMatchView').href = `fixture.html?round=${lastMatch.round_number}&fixture=${lastMatch.home}-v-${lastMatch.away}`;
 }
 /**
  * Displays the active user's current/next XRL match (opponent, live score)
  */
 function DisplayNextMatch() {
     //Locate user's fixture in the next round
-    let match = GetTeamFixture(user.team_short, nextRound);
+    //let match = GetTeamFixture(user.team_short, nextMatch);
     //If the user has no match in that round, display message and return
-    if (match == undefined) {
+    if (nextMatch == undefined) {
         document.getElementById('nextMatchOpponent').innerText = 'No game this week.';
         document.getElementById('nextMatchButton').hidden = true;
         return;
     }
     //If the user's team is the home team, then it's a home game
-    let homeGame = match.home == user.team_short;
+    let homeGame = nextMatch.home == user.team_short;
     //If it's a homegame, the opponent is the away team, and vice versa
-    let opponent = homeGame ? match.away : match.home;
+    let opponent = homeGame ? nextMatch.away : nextMatch.home;
     //If it's a homegame, the venue is the user's homeground, else it's the opponent's homeground
     let ground = homeGame ? user.homeground : allUsers.find(u => u.team_short == opponent).homeground;
     //Display opponent and venue
     document.getElementById('nextMatchOpponent').innerText = opponent + ' @ ' + ground;
     let status, color;
     //Display and colourise the round status
-    if (nextRound.completed) { status = 'Completed'; color = 'green'; }
-    else if (nextRound.in_progress) { status = 'In Progress'; color = 'green'; }
-    else if (nextRound.active) { status = 'Active'; color = 'orange'; }
+    if (currentRound.completed) { status = 'Completed'; color = 'green'; }
+    else if (currentRound.in_progress) { status = 'In Progress'; color = 'green'; }
+    else if (currentRound.active) { status = 'Active'; color = 'orange'; }
     else { status = 'Inactive'; color = '#c94d38'; }
     document.getElementById('nextMatchStatus').style.color = color;
     document.getElementById('nextMatchStatus').innerText = 'Status: ' + status;    
-    if (!nextRound.in_progress) { //If the next round hasn't started yet, button should take user to lineup page
+    if (!currentRound.in_progress) { //If the next round hasn't started yet, button should take user to lineup page
         document.getElementById('nextMatchButton').href = `lineup.html`;
         document.getElementById('nextMatchButton').innerText = 'Set Lineup';
     } else { //If it is in progress, display the live score and set button to take user to match view
-        document.getElementById('nextMatchScore').innerText = match.home + ' ' + match.home_score + ' - ' + match.away_score + ' ' + match.away; 
+        document.getElementById('nextMatchScore').innerText = nextMatch.home + ' ' + nextMatch.home_score + ' - ' + nextMatch.away_score + ' ' + nextMatch.away; 
         document.getElementById('nextMatchScore').hidden = false; 
-        document.getElementById('nextMatchButton').href = `fixture.html?round=${nextRound.round_number}&fixture=${match.home}-v-${match.away}`;
+        document.getElementById('nextMatchButton').href = `fixture.html?round=${currentRound.round_number}&fixture=${nextMatch.home}-v-${nextMatch.away}`;
         document.getElementById('nextMatchButton').innerText = 'View';
     }
-    if (nextRound.completed) { //If round is completed, determine the result, colourise and display
-        let result = match.home_score == match.away_score ? 'DRAW' : homeGame ? match.home_score > match.away_score ? 'WIN' : 'LOSS' : match.away_score > match.home_score ? 'WIN' : 'LOSS';
+    if (nextMatch.completed) { //If round is completed, determine the result, colourise and display
+        let result = nextMatch.home_score == nextMatch.away_score ? 'DRAW' : homeGame ? nextMatch.home_score > nextMatch.away_score ? 'WIN' : 'LOSS' : nextMatch.away_score > nextMatch.home_score ? 'WIN' : 'LOSS';
         document.getElementById('nextMatchResult').style.color = result == 'WIN' ? 'green' : result == 'LOSS' ? '#c94d38' : 'orange'; 
         document.getElementById('nextMatchResult').innerText = ' ' + result;
     } 
@@ -191,7 +200,7 @@ function deleteMessage(messageBody) {
 /**
  * Displays how many powerplays user has and how often different players have been captained
  */
-async function DisplayCaptainInfo() {
+function DisplayCaptainInfo() {
     //Display powerplay count
     document.getElementById('powerplayCount').innerText = user.powerplays;
     //Iterate through players who have been captain at least once
@@ -221,7 +230,7 @@ function DisplaySquadInfo() {
     else if (duals.length > 1)
         document.getElementById('positionCounts').innerHTML += `<br />Includes ${duals.length} dual-position players`;
     //If squad size is less than maximum (18) and the competition hasn't started yet, display the button redirecting to the pick players page
-    if (squad.length < 18 && nextRound.round_number == 1) {
+    if (squad.length < 18 && currentRound.round_number == 1) {
         document.getElementById('pickPlayersLink').hidden = false;
     }
 }
@@ -284,7 +293,7 @@ function PopulateSquadTable(playerData) {
             button.innerText = 'Details';
             button.value = player.player_id;
             button.onclick = function() {
-                DisplayPlayerInfo(squad.find(p => p.player_id == this.value), nextRound);
+                DisplayPlayerInfo(squad.find(p => p.player_id == this.value), nextMatch);
             };
             details.appendChild(button);
             tr.appendChild(details);

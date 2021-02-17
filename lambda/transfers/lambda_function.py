@@ -51,6 +51,33 @@ def lambda_handler(event, context):
         body = json.loads(event['body'])
         operation = body['operation']
         print("Operation is " + operation)
+        if operation == 'get_round_transfers':
+            try:
+                resp = table.query(
+                    IndexName='sk-data-index',
+                    KeyConditionExpression=Key('sk').eq('TRANSFER') & Key('data').eq('ROUND#' + body['round_number'])
+                )
+                print("Returning data")
+                return {
+                        'statusCode': 200,
+                        'headers': {
+                        'Access-Control-Allow-Headers': 'Content-Type',
+                        'Access-Control-Allow-Origin': '*',
+                        'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
+                        },
+                        'body': json.dumps(replace_decimals(resp['Items']))
+                    }
+            except Exception as e:
+                print("ERROR: " + str(e))
+                return {
+                        'statusCode': 200,
+                        'headers': {
+                        'Access-Control-Allow-Headers': 'Content-Type',
+                        'Access-Control-Allow-Origin': '*',
+                        'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
+                        },
+                        'body': json.dumps({"error": str(e)})
+                    }
         if operation == 'update_preferences':
             try:                
                 username = body['username']
@@ -273,8 +300,8 @@ def lambda_handler(event, context):
                 })['Item']
                 if offer['offer_status'] != 'Pending':
                     raise Exception("Trade has already been processed/withdrawn.")
-                user_offered_by = table.get_item(Key={'pk': 'USER#' + body['offered_by'], 'sk': 'DETAILS'})["Item"]
-                user_offered_to = table.get_item(Key={'pk': 'USER#' + body['offered_to'], 'sk': 'DETAILS'})['Item']
+                user_offered_by = table.get_item(Key={'pk': 'USER#' + offer['offered_by'], 'sk': 'DETAILS'})["Item"]
+                user_offered_to = table.get_item(Key={'pk': 'USER#' + offer['offered_to'], 'sk': 'DETAILS'})['Item']
                 if outcome == 'Accepted':
                     print(f"{user_offered_to} has accepted the trade offer from {user_offered_by}. Checking squad sizes.")
                     user_offered_by_squad = table.query(
@@ -375,7 +402,7 @@ def lambda_handler(event, context):
                                 '#D': 'data'
                             },
                             ExpressionAttributeValues={
-                                ':d': 'TEAM#' + user_offered_to['team_short'],
+                                ':d': 'TEAM#' + user_offered_by['team_short'],
                                 ':x': user_offered_by['team_short']
                             }
                         )

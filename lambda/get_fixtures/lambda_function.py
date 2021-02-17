@@ -56,6 +56,75 @@ def lambda_handler(event, context):
                 },
                 'body': json.dumps(replace_decimals(data))
             }
+        if method == 'POST':
+            body = event['body']
+            operation = body['operation']
+            if operation == 'get_current_round':
+                active_rounds = table.query(
+                    IndexName='sk-data-index',
+                    KeyConditionExpression=Key('sk').eq('STATUS') & Key('data').eq('ACTIVE#true')
+                )['Items']
+                round_number = max([r['round_number'] for r in active_rounds])
+                data = [r for r in active_rounds if r['round_number'] == round_number][0]
+                return {
+                    'statusCode': 200,
+                    'headers': {
+                    'Access-Control-Allow-Headers': 'Content-Type',
+                    'Access-Control-Allow-Origin': '*',
+                    'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
+                    },
+                    'body': json.dumps(replace_decimals(data))
+                }
+            if operation == 'get_next_round':
+                not_ongoing_rounds = table.query(
+                    IndexName='sk-data-index',
+                    KeyConditionExpression=Key('sk').eq('STATUS') & Key('data').begins_with('ACTIVE#'),
+                    FilterExpression=Attr('in_progress').eq(False)
+                )['Items']
+                round_number = min([r['round_number'] for r in not_ongoing_rounds])
+                data = [r for r in not_ongoing_rounds if r['round_number'] == round_number][0]
+                return {
+                    'statusCode': 200,
+                    'headers': {
+                    'Access-Control-Allow-Headers': 'Content-Type',
+                    'Access-Control-Allow-Origin': '*',
+                    'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
+                    },
+                    'body': json.dumps(replace_decimals(data))
+                }
+            if operation == 'get_round_status':
+                round_number = body['round_number']
+                data = table.get_item(
+                    Key={
+                        'pk': 'ROUND#' + round_number,
+                        'sk': 'STATUS'
+                    }
+                )
+                return {
+                    'statusCode': 200,
+                    'headers': {
+                    'Access-Control-Allow-Headers': 'Content-Type',
+                    'Access-Control-Allow-Origin': '*',
+                    'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
+                    },
+                    'body': json.dumps(replace_decimals(data))
+                }
+            if operation == 'get_user_fixture':
+                round_number = body['round_number']
+                team_short = body['team_short']
+                data = table.query(
+                    KeyConditionExpression=Key('pk').eq('ROUND#' + round_number) & Key('sk').begins_with('FIXTURE#'),
+                    FilterExpression=Attr('home').eq(team_short) | Attr('away').eq(team_short)
+                )['Items'][0]
+                return {
+                    'statusCode': 200,
+                    'headers': {
+                    'Access-Control-Allow-Headers': 'Content-Type',
+                    'Access-Control-Allow-Origin': '*',
+                    'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
+                    },
+                    'body': json.dumps(replace_decimals(data))
+                }
     except Exception as e:
         return {
             'statusCode': 200,

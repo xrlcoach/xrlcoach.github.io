@@ -344,6 +344,68 @@ export async function GetCurrentRoundInfo() {
     let currentRound = rounds.find(r => r.round_number == currentRoundNumber);
     return currentRound;
 }
+
+/**
+ * Retrieves the current active round's status, without fixtures
+ */
+export async function GetCurrentRoundStatus() {
+    const response = await fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/fixtures', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'        
+        },
+        body: JSON.stringify({
+            'operation': 'get_current_round'
+        })
+    });
+    const data = await response.json();
+    if (data.error) {
+        throw data.error;
+    }
+    return data; 
+}
+
+/**
+ * Retrieves the next round (i.e. not yet in progress)
+ */
+export async function GetNextRoundStatus() {
+    const response = await fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/fixtures', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'        
+        },
+        body: JSON.stringify({
+            'operation': 'get_next_round'
+        })
+    });
+    const data = await response.json();
+    if (data.error) {
+        throw data.error;
+    }
+    return data; 
+}
+
+/**
+ * Retrieves the status info for a particular round
+ */
+export async function GetRoundStatus(roundNumber) {
+    const response = await fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/fixtures', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'        
+        },
+        body: JSON.stringify({
+            'operation': 'get_round_status',
+            'round_number': roundNumber
+        })
+    });
+    const data = await response.json();
+    if (data.error) {
+        throw data.error;
+    }
+    return data; 
+}
+
 /**
  * Retrieves current active round number from 'round' cookie and passes that to GetRoundInfo, returning data.
  */
@@ -351,6 +413,38 @@ export async function GetRoundInfoFromCookie() {
     let data = await GetRoundInfo(getCookie('round'));
     return data; 
 }
+
+/**
+ * Retrieves the current round number (as a Number) from the browser cookie set at login.
+ */
+export function GetCurrentRoundNumber() {
+    return Number(getCookie('round'));
+}
+
+/**
+ * Retrieves an XRL team's fixture for a given round
+ * @param {String} xrlTeam The XRL team acronym
+ * @param {String} roundNumber The round number to find the fixture for
+ */
+export async function GetTeamFixtureByRound(xrlTeam, roundNumber) {
+    const response = await fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/fixtures', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'        
+        },
+        body: JSON.stringify({
+            'operation': 'get_user_fixture',
+            'round_number': roundNumber,
+            'team_short': xrlTeam
+        })
+    });
+    const data = await response.json();
+    if (data.error) {
+        throw data.error;
+    }
+    return data; 
+}
+
 /**
  * Calls GetAllFixtures and then identifies and returns next round, i.e. the next round not in progress or completed.
  */
@@ -457,12 +551,30 @@ export async function UpdateUserWaiverPreferences(username, preferences, provisi
     return data;
 }
 
-export async function GetTransferHistory(roundNumber) {
+export async function GetTransferHistory() {
     const response = await fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/transfers', {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'        
         }
+    });
+    const data = await response.json();
+    if (data.error) {
+        throw data.error;
+    }
+    return data;
+}
+
+export async function GetTransferHistoryByRound(roundNumber) {
+    const response = await fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/transfers', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'        
+        },
+        body: JSON.stringify({
+            'operation': 'get_round_transfers',
+            'round_number': roundNumber            
+        })
     });
     const data = await response.json();
     if (data.error) {

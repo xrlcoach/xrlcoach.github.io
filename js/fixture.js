@@ -1,6 +1,6 @@
 /* Script controlling fixture.html, which displays XRL match stats */
 
-import { GetLineupByTeamAndRound, GetRoundInfo, getCookie, GetRoundInfoFromCookie, GetActiveUserInfo, GetIdToken, GetActiveUserTeamShort, GetPlayerAppearanceStats } from "./ApiFetch.js";
+import { GetLineupByTeamAndRound, GetRoundInfo, getCookie, GetRoundInfoFromCookie, GetActiveUserInfo, GetIdToken, GetActiveUserTeamShort, GetPlayerAppearanceStats, GetRoundStatus, GetTeamFixtureByRound, GetCurrentRoundStatus } from "./ApiFetch.js";
 import { DisplayAppearanceInfoFromLineup, GetLineupScore, GetTeamFixture, PositionNames, DisplayFeedback } from "./Helpers.js";
 
 let roundNumber, roundInfo, completed, match, homeTeam, awayTeam, homeLineup, awayLineup;
@@ -16,17 +16,17 @@ window.onload = async function() {
             for (let q of queries) {
                 if (q.startsWith('round')) {
                     roundNumber = q.split('=')[1];
-                    roundInfo = await GetRoundInfo(roundNumber);
+                    roundInfo = await GetRoundStatus(roundNumber);
                 }
                 if (q.startsWith('fixture')) {
                     let fixture = q.split('=')[1];
-                    match = GetTeamFixture(fixture.split('-v-')[0], roundInfo);
+                    match = GetTeamFixtureByRound(fixture.split('-v-')[0], roundNumber);
                 }
             }
         } else { //If no query, get user's current match
-            roundInfo = await GetRoundInfoFromCookie();
+            roundInfo = await GetCurrentRoundStatus();
             roundNumber = roundInfo.round_number;
-            match = GetTeamFixture(GetActiveUserTeamShort(), roundInfo);
+            match = await GetTeamFixtureByRound(GetActiveUserTeamShort(), roundNumber);
         }
         //If there is no such match to display (draw not done, incorrect query), display message and stop loading
         if (match == undefined) {
@@ -36,12 +36,12 @@ window.onload = async function() {
         }
         if (match.home == GetActiveUserTeamShort() || match.away == GetActiveUserTeamShort()) {
             if (roundNumber > 1) {
-                let lastMatch = GetTeamFixture(GetActiveUserTeamShort(), await GetRoundInfo(Number(roundNumber) - 1));
+                let lastMatch = await GetTeamFixtureByRound(GetActiveUserTeamShort(), Number(roundNumber) - 1);
                 document.getElementById('previousMatchLink').href = `fixture.html?round=${Number(roundNumber) - 1}&fixture=${lastMatch.home}-v-${lastMatch.away}`;
                 document.getElementById('previousMatchLink').hidden = false;
             }
             if (roundNumber < 21) {
-                let nextMatch = GetTeamFixture(GetActiveUserTeamShort(), await GetRoundInfo(Number(roundNumber) + 1));
+                let nextMatch = await GetTeamFixtureByRound(GetActiveUserTeamShort(), Number(roundNumber) + 1);
                 document.getElementById('nextMatchLink').href = `fixture.html?round=${Number(roundNumber) + 1}&fixture=${nextMatch.home}-v-${nextMatch.away}`;
                 document.getElementById('nextMatchLink').hidden = false;
             }

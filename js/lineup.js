@@ -1,6 +1,6 @@
 /* Script controlling lineup.html, the page where the user sets their lineup for the next round */
 
-import { GetActiveUserInfo, GetActiveUserTeamShort, GetIdToken, GetLineup, GetLineupByTeamAndRound, GetNextRoundInfo, GetPlayersFromXrlTeam, SetLineup } from './ApiFetch.js'
+import { GetActiveUserInfo, GetActiveUserTeamShort, GetIdToken, GetLineup, GetLineupByTeamAndRound, GetNextRoundInfo, GetNextRoundStatus, GetPlayersFromXrlTeam, GetTeamFixtureByRound, SetLineup } from './ApiFetch.js'
 import { DisplayFeedback, GetTeamFixture, PositionMap } from './Helpers.js';
 
 /**
@@ -32,23 +32,23 @@ const interchange = ['int1', 'int2', 'int3', 'int4'];
  */
 const roles = ['captain', 'captain2', 'vice', 'kicker', 'backup_kicker'];
 
-let user, squad, lineup, backs, forwards, playmakers, powerplay, nextRound, homeGame;
+let user, squad, lineup, backs, forwards, playmakers, powerplay, nextRound, fixture, homeGame;
 
 window.onload = async () => {
     try {
         //Retrieve info for the next round
-        nextRound = await GetNextRoundInfo();
+        nextRound = await GetNextRoundStatus();
         //Get the active user's data
         user = await GetActiveUserInfo(idToken);
         //Display match info
-        let match = GetTeamFixture(user.team_short, nextRound);
-        if (match == undefined) {
+        fixture = await GetTeamFixtureByRound(user.team_short, nextRound.round_number);
+        if (fixture == undefined) {
             document.getElementById('loading').hidden = true;
             DisplayFeedback('WTF?', 'No match this week. Please check back later.');
             return;
         }
-        homeGame = match.home == user.team_short;
-        let opponent = homeGame ? match.away : match.home;
+        homeGame = fixture.home == user.team_short;
+        let opponent = homeGame ? fixture.away : fixture.home;
         //Load squad, lineup asynchronously
         LoadData();
         document.getElementById('lineupHeading').innerHTML = `Select ${user.team_short} lineup for Round ${nextRound.round_number} vs ${opponent} ${homeGame ? "AT HOME" : "AWAY"}`;

@@ -1,4 +1,4 @@
-import { GetActiveUserTeamShort, GetAllUsers, getCookie, GetPlayerById, GetPlayersFromXrlTeam, GetTransferHistory, GetUserTradeOffers, GetWaiverReports, ProcessTradeOffer, SendTradeOffer, UpdateUserWaiverPreferences, WithdrawTradeOffer } from "./ApiFetch.js";
+import { GetActiveUserTeamShort, GetAllUsers, getCookie, GetPlayerById, GetPlayersFromXrlTeam, GetTransferHistory, GetTransferHistoryByRound, GetUserTradeOffers, GetWaiverReports, ProcessTradeOffer, SendTradeOffer, UpdateUserWaiverPreferences, WithdrawTradeOffer } from "./ApiFetch.js";
 import { DisplayFeedback } from "./Helpers.js";
 
 let roundNumber, allUsers, user, squad, waiverPreferences = [], provisionalDrop, tradeOffers, tradeOffersToDisplay, transferHistory, waiverReports;
@@ -291,9 +291,7 @@ async function DisplayTransferHistory() {
             };
             option.appendChild(link);
             document.getElementById('transferRoundSelect').appendChild(option);
-        }
-        //Load all transfer history
-        transferHistory = await GetTransferHistory();
+        }        
         //Populate table with current round's transfers
         populateTransferTable(roundNumber);
     } catch (err) {
@@ -308,7 +306,7 @@ async function DisplayTransferHistory() {
 async function populateTransferTable(round) {
     try {
         //Filter transfer history for desired round and sort newest to oldest
-        let transfers = transferHistory.filter(t => t.round_number == round).sort((t1, t2) => {
+        let transfers = await GetTransferHistoryByRound(round).sort((t1, t2) => {
             return new Date(t2.datetime) - new Date(t1.datetime);
         });
         //Find table and clear contents

@@ -286,7 +286,8 @@ async function DisplayTransferHistory() {
             link.value = i;
             link.className = "dropdown-item";
             link.href = '#\\';
-            link.onclick = function() {
+            link.onclick = function(e) {
+                e.preventDefault();
                 populateTransferTable(this.value);
             };
             option.appendChild(link);

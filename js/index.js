@@ -10,7 +10,7 @@ window.onload = async function () {
         allUsers = await GetAllUsers();
         //Isolate active user from team cookie
         if (localStorage.getItem('activeUser') !== null) {
-            user = localStorage.getItem('activeUser';
+            user = localStorage.getItem('activeUser');
         } else {
             user = allUsers.find(u => u.team_short == GetActiveUserTeamShort());
         }

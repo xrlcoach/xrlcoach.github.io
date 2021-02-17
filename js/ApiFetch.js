@@ -204,6 +204,7 @@ export async function ScoopPlayers(xrlTeam, players) {
     if (data.error) {
         throw data.error;
     }
+    sessionStorage.removeItem('userSquad');
     return data;
 }
 
@@ -224,22 +225,23 @@ export async function DropPlayers(xrlTeam, players) {
     if (data.error) {
         throw data.error;
     }
-    const response2 = await fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/lineup', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': GetIdToken()         
-        },
-        body: JSON.stringify({
-            'operation': 'remove_multiple',
-            'players': players
-        })
-    });
-    const data2 = await response2.json();  
-    if (data2.error) {
-        DisplayFeedback('Error', data.error);
-    }  
-    return [data, data2];
+    sessionStorage.removeItem('userSquad');
+    // const response2 = await fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/lineup', {
+    //     method: 'POST',
+    //     headers: {
+    //         'Content-Type': 'application/json',
+    //         'Authorization': GetIdToken()         
+    //     },
+    //     body: JSON.stringify({
+    //         'operation': 'remove_multiple',
+    //         'players': players
+    //     })
+    // });
+    // const data2 = await response2.json();  
+    // if (data2.error) {
+    //     DisplayFeedback('Error', data.error);
+    // }  
+    return data;
 }
 /**
  * Retrieves the active user's lineup for the next round (i.e. not the round in progress)
@@ -548,6 +550,7 @@ export async function UpdateUserWaiverPreferences(username, preferences, provisi
     if (data.error) {
         throw data.error;
     }
+    sessionStorage.removeItem('activeUser');
     return data;
 }
 
@@ -641,6 +644,10 @@ export async function ProcessTradeOffer(offerPk, accepted = false) {
     if (data.error) {
         throw data.error;
     }
+    if (accepted) {
+        sessionStorage.removeItem('userSquad');
+        sessionStorage.removeItem('activeUser');
+    }
     return data;
 }
 
@@ -678,6 +685,7 @@ export async function UpdateUserInbox(username, inbox) {
     if (data.error) {
         throw data.error;
     }
+    sessionStorage.removeItem('activeUser');
     return data;
 }
 

@@ -1,4 +1,4 @@
-import { GetPlayersFromXrlTeam, GetAllUsers, GetActiveUserTeamShort, UpdateUserInbox, GetCurrentRoundNumber, GetCurrentRoundStatus, GetTeamFixtureByRound } from './ApiFetch.js';
+import { GetPlayersFromXrlTeam, GetAllUsers, GetActiveUserTeamShort, UpdateUserInbox, GetCurrentRoundNumber, GetCurrentRoundStatus, GetTeamFixtureByRound, GetIdToken } from './ApiFetch.js';
 import { DisplayFeedback, DisplayPlayerInfo, GetOrdinal, DefaultPlayerSort, SortByPosition2, DefaultPlayerSortDesc, SortByPosition2Desc, SortByNrlClub, SortByNrlClubDesc, SortByPlayerName, SortByPlayerNameDesc, SortLeageTable } from './Helpers.js';
 
 let squad, allUsers, user, currentRound, lastMatch, nextMatch;
@@ -22,7 +22,7 @@ window.onload = async function () {
         if (sessionStorage.getItem('activeUser') !== null) {
             user = JSON.parse(sessionStorage.getItem('activeUser'));
         } else {
-            user = allUsers.find(u => u.team_short == GetActiveUserTeamShort());
+            user = GetActiveUserInfo(GetIdToken());
             sessionStorage.setItem('activeUser', JSON.stringify(user));
         }
         //Load fixture data and display reliant sections

@@ -55,7 +55,7 @@ def lambda_handler(event, context):
             try:
                 resp = table.query(
                     IndexName='sk-data-index',
-                    KeyConditionExpression=Key('sk').eq('TRANSFER') & Key('data').eq('ROUND#' + body['round_number'])
+                    KeyConditionExpression=Key('sk').eq('TRANSFER') & Key('data').eq('ROUND#' + str(body['round_number']))
                 )
                 print("Returning data")
                 return {

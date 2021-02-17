@@ -8,30 +8,36 @@ log = open('logs/finalise_stats.log', 'a')
 sys.stdout = log
 print(f"Script executing at {datetime.now()}")
 
-dynamodbClient = boto3.client('dynamodb', 'ap-southeast-2')
+# dynamodbClient = boto3.client('dynamodb', 'ap-southeast-2')
 dynamodbResource = boto3.resource('dynamodb', 'ap-southeast-2')
-stats_table = dynamodbResource.Table('stats2020')
-squads_table = dynamodbResource.Table('players2020')
-users_table = dynamodbResource.Table('users2020')
-lineups_table = dynamodbResource.Table('lineups2020')
-rounds_table = dynamodbResource.Table('rounds2020')
+# stats_table = dynamodbResource.Table('stats2020')
+# squads_table = dynamodbResource.Table('players2020')
+# users_table = dynamodbResource.Table('users2020')
+# lineups_table = dynamodbResource.Table('lineups2020')
+# rounds_table = dynamodbResource.Table('rounds2020')
+table = dynamodbResource.Table('XRL2020')
 
 
-resp = rounds_table.scan(
-    FilterExpression=Attr('completed').eq(False) & Attr('in_progress').eq(True)
-)
-current_round = resp['Items'][0]
+current_round = table.query(
+    IndexName='sk-data-index',
+    KeyConditionExpression=Key('sk').eq('STATUS') & Key('data').eq('ACTIVE#true'),
+    FilterExpression=Attr('in_progress').eq(True) & Attr('completed').eq(False)
+)['Items'][0]
 round_number = current_round['round_number']
 print(f"Finalising Round {round_number}")
-fixtures = current_round['fixtures']
+fixtures = table.query(
+    KeyConditionExpression=Key('pk').eq('ROUND#' + str(round_number)) & Key('sk').begins_with('FIXTURE')
+)['Items']
 
-resp = lineups_table.scan(
-    FilterExpression=Attr('round_number').eq(str(round_number))
-)
-lineups = resp["Items"]
+lineups = table.query(
+    IndexName='sk-data-index',
+    KeyConditionExpression=Key('sk').eq('LINEUP#' + str(round_number)) & Key('data').begins_with('TEAM#')
+)['Items']
 #print(str(lineups[0]))
-resp = users_table.scan()
-users = resp["Items"]
+users = table.query(
+    IndexName='sk-data-index',
+    KeyConditionExpression=Key('sk').eq('DETAILS') & Key('data').begins_with('NAME#')
+)['Items']
 #print(str(users[0]))
 
 print("Finalising lineup substitutions and scores...")
@@ -67,9 +73,10 @@ for match in fixtures:
             if not player['played_nrl']:
                 if player['captain'] or player['captain2']:
                     print(f"Captain {player['player_name']} did not play.")
-                    squads_table.update_item(
+                    table.update_item(
                         Key={
-                            'player_id': player['player_id']
+                            'pk': 'PLAYER#' + player['player_id'],
+                            'sk': 'PROFILE'
                         },
                         UpdateExpression="set times_as_captain = times_as_captain - :i",
                         ExpressionAttributeValues={
@@ -84,19 +91,20 @@ for match in fixtures:
             if player['played_nrl']:          
                 if player['backup_kicker'] and backup_kicks:
                     print(f"{player['player_name']} takes over kicking duties. Adjusting score.")
-                    resp = stats_table.get_item(
+                    resp = table.get_item(
                         Key={
-                            'player_id': player['player_id'],
-                            'round_number': str(round_number)
+                            'pk': 'PLAYER#' + player['player_id'],
+                            'sk': 'STATS#' + str(round_number)
                         }
                     )
                     kicking_stats = resp["Item"]["scoring_stats"]["kicker"]
                     kicking_score = kicking_stats["goals"] * 2 + kicking_stats["field_goals"]
                     if player['captain'] or player['captain2']:
                         kicking_score *= 2
-                    lineups_table.update_item(
+                    table.update_item(
                         Key={
-                            'name+nrl+xrl+round': player['name+nrl+xrl+round']
+                            'pk': player['pk'],
+                            'sk': player['sk']
                         },
                         UpdateExpression="set score=score+:s",
                         ExpressionAttributeValues={
@@ -105,37 +113,41 @@ for match in fixtures:
                     )
                 if player['vice'] and vice_plays:
                     print(f"{player['player_name']} takes over captaincy duties. Adjusting lineup score and user's captain counts.")
-                    resp = lineups_table.get_item(
+                    resp = table.get_item(
                         Key={
-                            'name+nrl+xrl+round': player['name+nrl+xrl+round']
+                            'pk': player['pk'],
+                            'sk': player['sk']
                         }
                     )
                     current_score = resp['Item']['score']
-                    lineups_table.update_item(
+                    table.update_item(
                         Key={
-                            'name+nrl+xrl+round': player['name+nrl+xrl+round']
+                            'pk': player['pk'],
+                            'sk': player['sk']
                         },
                         UpdateExpression="set score=:v",
                         ExpressionAttributeValues={
                             ':v': current_score * 2
                         }                        
                     )
-                    vice_entry = squads_table.get_item(
+                    # vice_entry = table.get_item(
+                    #     Key={
+                    #         'pk': player['pk'],
+                    #         'sk': 'PROFILE'
+                    #     }
+                    # )['Item']
+                    # if 'times_as_captain' not in vice_entry.keys():
+                    #     tac = 1
+                    # else:
+                    #     tac = vice_entry['times_as_captain'] + 1
+                    table.update_item(
                         Key={
-                            'player_id': player['player_id']
-                        }
-                    )['Item']
-                    if 'times_as_captain' not in vice_entry.keys():
-                        tac = 1
-                    else:
-                        tac = vice_entry['times_as_captain'] + 1
-                    squads_table.update_item(
-                        Key={
-                            'player_id': player['player_id']
+                            'pk': player['pk'],
+                            'sk': 'PROFILE'
                         },
-                        UpdateExpression="set times_as_captain = :i",
+                        UpdateExpression="set times_as_captain = times_as_captain + :i",
                         ExpressionAttributeValues={
-                            ':i': tac
+                            ':i': 1
                         }
                     )
         freeSpots = {
@@ -150,15 +162,16 @@ for match in fixtures:
                     print(f"Subbing in {sub['player_name']} as a {sub['position_general']}")
                     freeSpots[sub['position_general']] -= 1
                     subbed_in = True
-                    lineups_table.update_item(
-                                Key={
-                                    'name+nrl+xrl+round': sub['name+nrl+xrl+round']
-                                },
-                                UpdateExpression="set played_xrl=:p",
-                                ExpressionAttributeValues={
-                                    ':p': True
-                                }
-                            )
+                    table.update_item(
+                        Key={
+                            'pk': sub['pk'],
+                            'sk': sub['sk']
+                        },
+                        UpdateExpression="set played_xrl=:p",
+                        ExpressionAttributeValues={
+                            ':p': True
+                        }
+                    )
             # if not subbed_in and sub['second_position'] != '':
             #     if freeSpots[sub['second_position']] > 0:
             #         print(f"Subbing in {sub['player_name']} as a {sub['second_position']}")
@@ -216,10 +229,10 @@ for match in fixtures:
             #         print(f"{player['player_name']} didn't play. No sub available in that position.")
             # else:
 print("Substitutions complete. Finalising match results...")
-resp = lineups_table.scan(
-    FilterExpression=Attr('round_number').eq(str(round_number))
-)
-lineups = resp["Items"]
+lineups = table.query(
+    IndexName='sk-data-index',
+    KeyConditionExpression=Key('sk').eq('LINEUP#' + str(round_number)) & Key('data').begins_with('TEAM#')
+)['Items']
 
 for match in fixtures:
     home_user = [user for user in users if user['team_short'] == match['home']][0]
@@ -251,39 +264,60 @@ for match in fixtures:
         away_user['stats']['points'] += 1
         home_user['stats']['draws'] = home_user['stats']['losses'] + 1
         away_user['stats']['draws'] = away_user['stats']['wins'] + 1
-    users_table.update_item(
+    table.update_item(
         Key={
-            'username': home_user['username']
+            'pk': 'USER#' + home_user['username'],
+            'sk': 'DETAILS'
         },
         UpdateExpression="set stats=:s",
         ExpressionAttributeValues={
             ':s': home_user['stats']
         }
     )
-    users_table.update_item(
+    table.update_item(
         Key={
-            'username': away_user['username']
+            'pk': 'USER#' + away_user['username'],
+            'sk': 'DETAILS'
         },
         UpdateExpression="set stats=:s",
         ExpressionAttributeValues={
             ':s': away_user['stats']
         }
     )
+    table.update_item(
+        Key={
+            'pk': match['pk'],
+            'sk': match['sk']
+        },
+        UpdateExpression='set home_score=:hs, away_score=:as, #D=:d',
+        ExpressionAttributeNames={
+            '#D': 'data'
+        },
+        ExpressionAttributeValues={
+            ':hs': match['home_score'],
+            ':as': match['away_score'],
+            ':d': 'COMPLETED#true'
+        }
+    )
 
 print("Results finalised, marking round as completed...")
-rounds_table.update_item(
+table.update_item(
     Key={
-        'round_number': round_number
+        'pk': 'ROUND#' + str(round_number),
+        'sk': 'STATUS'
     },
-    UpdateExpression="set completed=:c, fixtures=:f",
+    UpdateExpression="set completed=:c",
     ExpressionAttributeValues={
-        ':c': True,
-        ':f': fixtures
+        ':c': True
     }
 )
 print("Round finalised. Checking to see if player positions need updating")
-all_stats = stats_table.scan()['Items']
-squads = squads_table.scan()['Items']
+
+# all_stats = stats_table.scan()['Items']
+squads = table.query(
+    IndexName='sk-data-index',
+    KeyConditionExpression=Key('sk').eq('PROFILE') & Key('data').begins_with('TEAM')
+)['Items']
 positions_general = {
     'Fullback': 'Back',
     'Winger': 'Back',
@@ -295,7 +329,17 @@ positions_general = {
     '2nd': 'Forward',
     'Lock': 'Forward'
 }
-appearances = [stat for stat in all_stats if stat['round_number'] == str(round_number)]
+all_stats = []
+for i in range(1, int(round_number)):
+    all_stats += table.query(
+        IndexName='sk-data-index',
+        KeyConditionExpression=Key('sk').eq('STATS#' + str(i)) & Key('data').begins_with('CLUB#')
+    )['Items']
+appearances = table.query(
+    IndexName='sk-data-index',
+    KeyConditionExpression=Key('sk').eq('STATS#' + str(round_number)) & Key('data').begins_with('CLUB#')
+)['Items']
+all_stats += appearances
 for player in appearances:
     if player['stats']['Position'] == 'Interchange':
         continue
@@ -309,9 +353,10 @@ for player in appearances:
             player_info['new_position_appearances'][played_position] = 1
         else:
             player_info['new_position_appearances'][played_position] += 1
-        squads_table.update_item(
+        table.update_item(
             Key={
-                'player_id': player_info['player_id']
+                'pk': player_info['pk'],
+                'sk': 'PROFILE'
             },
             UpdateExpression="set new_position_appearances=:npa",
             ExpressionAttributeValues={
@@ -321,9 +366,10 @@ for player in appearances:
         if player_info['new_position_appearances'][played_position] == 3:
             print(f"{player['player_name']} has played as a {played_position} three times. Adding {played_position} to his positions.")
             if player_info['position2'] == '':
-                squads_table.update_item(
+                table.update_item(
                     Key={
-                        'player_id': player_info['player_id']
+                        'pk': player_info['pk'],
+                        'sk': 'PROFILE'
                     },
                     UpdateExpression="set position2=:v",
                     ExpressionAttributeValues={
@@ -332,9 +378,10 @@ for player in appearances:
                 )
             else:
                 print(f"{player['player_name']} can now play in all 3 positions!")
-                squads_table.update_item(
+                table.update_item(
                     Key={
-                        'player_id': player_info['player_id']
+                        'pk': player_info['pk'],
+                        'sk': 'PROFILE'
                     },
                     UpdateExpression="set position3=:v",
                     ExpressionAttributeValues={
@@ -385,9 +432,10 @@ for player in squads:
             player_stats['scoring_stats'][position]['points'] -= player_stats['scoring_stats'][position]['sin_bins'] * 2
             player_stats['scoring_stats'][position]['points'] -= player_stats['scoring_stats'][position]['send_off_deduction']
     #print('Updating ' + player['player_name'])
-    squads_table.update_item(
+    table.update_item(
         Key={
-            'player_id': player['player_id']
+            'pk': player['pk'],
+            'sk': 'PROFILE'
         },
         UpdateExpression="set stats=:stats, scoring_stats=:scoring_stats",
         ExpressionAttributeValues={

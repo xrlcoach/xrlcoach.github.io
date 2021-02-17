@@ -1,4 +1,5 @@
 import boto3
+from boto3.dynamodb.conditions import Key, Attr
 import random
 import sys
 from datetime import datetime
@@ -9,11 +10,15 @@ print(f"Script executing at {datetime.now()}")
 
 dynamodbClient = boto3.client('dynamodb', 'ap-southeast-2')
 dynamodbResource = boto3.resource('dynamodb', 'ap-southeast-2')
-roundsTable = dynamodbResource.Table('rounds2020')
-usersTable = dynamodbResource.Table('users2020')
+# roundsTable = dynamodbResource.Table('rounds2020')
+# usersTable = dynamodbResource.Table('users2020')
+table = dynamodbResource.Table('XRL2020')
 
 print("Scanning users table...")
-users = usersTable.scan()['Items']
+users = table.query(
+        IndexName='sk-data-index',
+        KeyConditionExpression=Key('sk').eq('DETAILS') & Key('data').begins_with('NAME#')
+)['Items']
 print(f"First record: {users[0]}")
 round_number = 0
 
@@ -41,18 +46,29 @@ while round_number < 21:
                 if round_number == 21:
                         break
                 round_number += 1
-                round_matches = []
+                #round_matches = []
                 for match in r:
-                        round_matches.append({'home': match[0], 'away': match[1]})                
-                roundsTable.put_item(
-                        Item={
-                                'round_number': round_number,
-                                'active': False,
-                                'in_progress': False,
-                                'completed': False,
-                                'fixtures': round_matches
-                        }
-                )
+                        #round_matches.append({'home': match[0], 'away': match[1]})  
+                        table.put_item(
+                                Item={
+                                        'pk': 'ROUND#' + str(round_number),
+                                        'sk': 'FIXTURE#' + match['home'] + '#' + match['away'],
+                                        'data': 'COMPLETED#false',
+                                        'home': match['home'],
+                                        'away': match['away'],
+                                        'home_score': 0,
+                                        'away_score': 0,
+                                }
+                        )              
+                # roundsTable.put_item(
+                #         Item={
+                #                 'round_number': round_number,
+                #                 'active': False,
+                #                 'in_progress': False,
+                #                 'completed': False,
+                #                 'fixtures': round_matches
+                #         }
+                # )
 
         if round_number == 21:
                 break
@@ -78,16 +94,27 @@ while round_number < 21:
                 if round_number == 21:
                         break
                 round_number += 1
-                round_matches = []
+                # round_matches = []
                 for match in r:
-                        round_matches.append({'home': match[1], 'away': match[0]})                
-                roundsTable.put_item(
-                        Item={
-                                'round_number': round_number,
-                                'active': False,
-                                'in_progress': False,
-                                'completed': False,
-                                'fixtures': round_matches
-                        }
-                )
+                        # round_matches.append({'home': match[1], 'away': match[0]})  
+                        table.put_item(
+                                Item={
+                                        'pk': 'ROUND#' + str(round_number),
+                                        'sk': 'FIXTURE#' + match['home'] + '#' + match['away'],
+                                        'data': 'COMPLETED#false',
+                                        'home': match['home'],
+                                        'away': match['away'],
+                                        'home_score': 0,
+                                        'away_score': 0,
+                                }
+                        )                    
+                # roundsTable.put_item(
+                #         Item={
+                #                 'round_number': round_number,
+                #                 'active': False,
+                #                 'in_progress': False,
+                #                 'completed': False,
+                #                 'fixtures': round_matches
+                #         }
+                # )
 print("Draw complete")

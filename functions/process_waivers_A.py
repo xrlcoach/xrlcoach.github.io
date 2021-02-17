@@ -11,22 +11,27 @@ print(f"Script executing at {datetime.now().strftime('%c')}")
 report = f"Script executing at {datetime.now().strftime('%c')}"
 
 dynamodbResource = boto3.resource('dynamodb', 'ap-southeast-2')
-squads_table = dynamodbResource.Table('players2020')
-users_table = dynamodbResource.Table('users2020')
-transfers_table = dynamodbResource.Table('transfers2020')
-rounds_table = dynamodbResource.Table('rounds2020')
-waivers_table = dynamodbResource.Table('waivers2020')
-lineups_table = dynamodbResource.Table('lineups2020')
+# squads_table = dynamodbResource.Table('players2020')
+# users_table = dynamodbResource.Table('users2020')
+# transfers_table = dynamodbResource.Table('transfers2020')
+# rounds_table = dynamodbResource.Table('rounds2020')
+# waivers_table = dynamodbResource.Table('waivers2020')
+# lineups_table = dynamodbResource.Table('lineups2020')
+table = dynamodbResource.Table('XRL2020')
 
 #Find current active round
-resp = rounds_table.scan(
-    FilterExpression=Attr('active').eq(True)
+resp = table.query(
+    IndexName='sk-data-index',
+    KeyConditionExpression=Key('sk').eq('STATUS') & Key('data').eq('ACTIVE#true')
 )
 round_number = max([r['round_number'] for r in resp['Items']])
 print(f"Current XRL round: {round_number}. First round of waivers.")
 report += f"\nCurrent XRL round: {round_number}. First round of waivers."
 
-users = users_table.scan()['Items']
+users = table.query(
+    IndexName='sk-data-index',
+    KeyConditionExpression=Key('sk').eq('DETAILS') & Key('data').begins_with('NAME#')
+)['Items']
 
 #Sort users by waiver rank
 waiver_order = sorted(users, key=lambda u: u['waiver_rank'])
@@ -49,8 +54,9 @@ for rank, user in enumerate(waiver_order, 1):
         print(f"{user['team_name']} already waivered one player this week")
         report += f"\n{user['team_name']} already waivered one player this week"
         continue
-    users_squad = squads_table.scan(
-        FilterExpression=Attr('xrl_team').eq(user['team_short'])
+    users_squad = table.query(
+        IndexName='sk-data-index',
+        KeyConditionExpression=Key('sk').eq('PROFILE') & Key('data').eq('TEAM#' + user['team_short'])
     )['Items']
     preferences = user['waiver_preferences']
     gained_player = False
@@ -61,9 +67,10 @@ for rank, user in enumerate(waiver_order, 1):
         continue
     #Iterate through user's waiver preferences
     for number, player in enumerate(preferences):
-        player_info = squads_table.get_item(
+        player_info = table.get_item(
             Key={
-                'player_id': player
+                'pk': 'PLAYER#' + player,
+                'sk': 'PROFILE'
             }
         )['Item']
         pickable = False
@@ -87,43 +94,64 @@ for rank, user in enumerate(waiver_order, 1):
                     #Add their provisional drop player to the array of players transferred
                     players_transferred.append(user['provisional_drop'])
                     #Get player entry from db
-                    player_to_drop = squads_table.get_item(
+                    player_to_drop = table.get_item(
                         Key={
-                            'player_id': user['provisional_drop']
+                            'pk': 'PLAYER#' + user['provisional_drop'],
+                            'sk': 'PROFILE'
                         }
                     )['Item']
                     #Remove player from user's next lineup
-                    lineups_table.delete_item(
+                    table.delete_item(
                         Key={
-                            'name+nrl+xrl+round': player_to_drop['player_name'] + ';' + player_to_drop['nrl_club'] + ';' + user['team_short'] + ';' + str(round_number)
+                            'pk': 'PLAYER#' + user['provisional_drop'],
+                            'sk': 'LINEUP#' + str(round_number)
                         }
                     )
                     #Update player's XRL team from the user to Pre-Waivers (This means they will remain
                     #on waiver for one whole round)
-                    squads_table.update_item(
+                    table.update_item(
                         Key={
-                            'player_id': user['provisional_drop']
+                            'pk': 'PLAYER#' + user['provisional_drop'],
+                            'sk': 'PROFILE'
                         },
-                        UpdateExpression="set xrl_team=:t",
+                        UpdateExpression="set #D=:d, xrl_team=:t",
+                        ExpressionAttributeNames={
+                            '#D': 'data'
+                        },
                         ExpressionAttributeValues={
+                            ':d': 'TEAM#Pre-Waivers',
                             ':t': 'Pre-Waivers'
                         }
                     )
                     #Add record of drop to transfers table
-                    transfers_table.put_item(
+                    transfer_date = datetime.now()
+                    table.put_item(
                         Item={
-                            'transfer_id': user['username'] + '_' + str(datetime.now()),
+                            'pk': 'TRANSFER#' + user['username'] + str(transfer_date),
+                            'sk': 'TRANSFER',
+                            'data': 'ROUND#' + str(round_number),
                             'user': user['username'],                        
-                            'datetime': datetime.now().strftime("%c"),
+                            'datetime': transfer_date.strftime("%c"),
                             'type': 'Drop',
                             'round_number': round_number,
                             'player_id': user['provisional_drop']
                         }
                     )
+                    # transfers_table.put_item(
+                    #     Item={
+                    #         'transfer_id': user['username'] + '_' + str(datetime.now()),
+                    #         'user': user['username'],                        
+                    #         'datetime': datetime.now().strftime("%c"),
+                    #         'type': 'Drop',
+                    #         'round_number': round_number,
+                    #         'player_id': user['provisional_drop']
+                    #     }
+                    # )
                     #Clear user's provisional drop
-                    users_table.update_item(
+                    table.update_item(
                         Key={
-                            'username': user['username']
+                            'pk': user['pk'],
+                            'sk': 'DETAILS'
                         },
                         UpdateExpression="set provisional_drop=:pd",
                         ExpressionAttributeValues={
@@ -144,26 +172,44 @@ for rank, user in enumerate(waiver_order, 1):
 
         if pickable:
             #If player can be signed, update their XRL team to the user's team acronym
-            squads_table.update_item(
+            table.update_item(
                 Key={
-                    'player_id': player
+                    'pk': 'PLAYER#' + player,
+                    'sk': 'PROFILE'
                 },
-                UpdateExpression="set xrl_team=:t",
+                UpdateExpression="set #D=:d, xrl_team=:t",
+                ExpressionAttributeNames={
+                    '#D': 'data'
+                },
                 ExpressionAttributeValues={
+                    ':d': 'TEAM#' + user['team_short'],
                     ':t': user['team_short']
                 }
             )
             #Add a record of the transfer to the db
-            transfers_table.put_item(
-                    Item={
-                        'transfer_id': user['username'] + '_' + str(datetime.now()),
-                        'user': user['username'],                        
-                        'datetime': datetime.now().strftime("%c"),
-                        'type': 'Waiver',
-                        'round_number': round_number,
-                        'player_id': player
-                    }
-                )
+            transfer_date = datetime.now()
+            table.put_item(
+                Item={
+                    'pk': 'TRANSFER#' + user['username'] + str(transfer_date),
+                    'sk': 'TRANSFER',
+                    'data': 'ROUND#' + str(round_number),
+                    'user': user['username'],                        
+                    'datetime': transfer_date.strftime("%c"),
+                    'type': 'Waiver',
+                    'round_number': round_number,
+                    'player_id': player
+                }
+            )
+            # transfers_table.put_item(
+            #         Item={
+            #             'transfer_id': user['username'] + '_' + str(datetime.now()),
+            #             'user': user['username'],                        
+            #             'datetime': datetime.now().strftime("%c"),
+            #             'type': 'Waiver',
+            #             'round_number': round_number,
+            #             'player_id': player
+            #         }
+            #     )
             #Add a message to the user's inbox
             message = {
                 "sender": "XRL Admin",
@@ -189,17 +235,18 @@ for rank, user in enumerate(waiver_order, 1):
         print(f"{user['username']} didn't get any of their preferences")
         report += f"\n{user['username']} didn't get any of their preferences"
     #Clear the user's waiver preferences, update their players_picked attribute and inbox
-    users_table.update_item(
-                Key={
-                    'username': user['username']
-                },
-                UpdateExpression="set waiver_preferences=:wp, players_picked=players_picked+:v, inbox=:i",
-                ExpressionAttributeValues={
-                    ':wp': [],
-                    ':v': players_picked,
-                    ':i': user['inbox']
-                }
-            )
+    table.update_item(
+        Key={
+            'pk': user['pk'],
+            'sk': 'DETAILS'
+        },
+        UpdateExpression="set waiver_preferences=:wp, players_picked=players_picked+:v, inbox=:i",
+        ExpressionAttributeValues={
+            ':wp': [],
+            ':v': players_picked,
+            ':i': user['inbox']
+        }
+    )
 #Recalculate waiver order (players who didn't pick followed by those who did in reverse order)
 waiver_order = [u for u in waiver_order if u not in users_who_picked] + users_who_picked[::-1]
 
@@ -207,21 +254,24 @@ waiver_order = [u for u in waiver_order if u not in users_who_picked] + users_wh
 print("New waiver order:")
 report += "\nNew waiver order:"
 for rank, user in enumerate(waiver_order, 1):
-    print(f"{rank}. {user['username']}")
+    print(f"{rank}. {user['team_name']}")
     report += f"\n{rank}. {user['username']}"
-    users_table.update_item(
-                Key={
-                    'username': user['username']
-                },
-                UpdateExpression="set waiver_rank=:wr",
-                ExpressionAttributeValues={
-                    ':wr': rank
-                }
-            )
+    table.update_item(
+        Key={
+            'pk': user['pk'],
+            'sk': 'DETAILS'
+        },
+        UpdateExpression="set waiver_rank=:wr",
+        ExpressionAttributeValues={
+            ':wr': rank
+        }
+    )
 
 #Add waiver report to db
-waivers_table.put_item(
+table.put_item(
     Item={
+        'pk': 'WAIVER',
+        'sk': 'REPORT#' + str(round_number) + '_A',
         'waiver_round': str(round_number) + '_A',
         'report': report
     }

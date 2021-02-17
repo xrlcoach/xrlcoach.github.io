@@ -303,7 +303,10 @@ def lambda_handler(event, context):
                                 'pk': 'PLAYER#' + player_id,
                                 'sk': 'PROFILE'
                             },
-                            UpdateExpression="set data=:d, xrl_team=:x",
+                            UpdateExpression="set #D=:d, xrl_team=:x",
+                            ExpressionAttributeNames={
+                                '#D': 'data'
+                            },
                             ExpressionAttributeValues={
                                 ':d': 'TEAM#' + user_offered_to['team_short'],
                                 ':x': user_offered_to['team_short']
@@ -351,7 +354,7 @@ def lambda_handler(event, context):
                             Item={
                                 'pk': 'TRANSFER#' + user_offered_by['username'] + str(transfer_date),
                                 'sk': 'TRANSFER',
-                                'data': str(round_number),
+                                'data': 'ROUND#' + str(round_number),
                                 'user': user_offered_to['username'],                        
                                 'datetime': transfer_date.strftime("%c"),
                                 'type': 'Trade',
@@ -367,7 +370,10 @@ def lambda_handler(event, context):
                                 'pk': 'PLAYER#' + player_id,
                                 'sk': 'PROFILE'
                             },
-                            UpdateExpression="set data=:d, xrl_team=:x",
+                            UpdateExpression="set #D=:d, xrl_team=:x",
+                            ExpressionAttributeNames={
+                                '#D': 'data'
+                            },
                             ExpressionAttributeValues={
                                 ':d': 'TEAM#' + user_offered_to['team_short'],
                                 ':x': user_offered_by['team_short']
@@ -414,7 +420,7 @@ def lambda_handler(event, context):
                             Item={
                                 'pk': 'TRANSFER#' + user_offered_to['username'] + str(transfer_date),
                                 'sk': 'TRANSFER',
-                                'data': str(round_number),
+                                'data': 'ROUND#' + str(round_number),
                                 'user': user_offered_by['username'],                        
                                 'datetime': transfer_date.strftime("%c"),
                                 'type': 'Trade',

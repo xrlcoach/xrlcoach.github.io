@@ -59,13 +59,13 @@ def lambda_handler(event, context):
                         # )
                         resp = table.query(
                             IndexName='sk-data-index',
-                            KeyConditionExpression=Key('sk').eq('STATS#' + round_number) & Key('data').eq(nrlClub)
+                            KeyConditionExpression=Key('sk').eq('STATS#' + round_number) & Key('data').eq('CLUB#' + nrlClub)
                         )
                         data = resp['Items']
                         if 'LastEvaluatedKey' in resp.keys():
                             resp2 = table.query(
                                 IndexName='sk-data-index',
-                                KeyConditionExpression=Key('sk').eq('STATS#' + round_number) & Key('data').eq(nrlClub),
+                                KeyConditionExpression=Key('sk').eq('STATS#' + round_number) & Key('data').eq('CLUB#' + nrlClub),
                                 ExclusiveStartKey=resp['LastEvaluatedKey']
                             )
                             data += resp2['Items']
@@ -75,7 +75,7 @@ def lambda_handler(event, context):
                         #     FilterExpression=Attr('nrlClub').eq(nrlClub)
                         # )
                         resp = table.scan(
-                            FilterExpression=Attr('sk').begins_with('STATS#') & Attr('nrlClub').eq(nrlClub)
+                            FilterExpression=Attr('sk').begins_with('STATS#') & Attr('nrlClub').eq('CLUB#' + nrlClub)
                         )
                         data = resp['Items']
                 elif 'round' in params.keys():

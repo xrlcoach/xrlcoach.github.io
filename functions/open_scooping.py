@@ -8,47 +8,70 @@ sys.stdout = log
 print(f"Script executing at {datetime.now()}")
 
 dynamodb = boto3.resource('dynamodb', 'ap-southeast-2')
-rounds_table = dynamodb.Table('rounds2020')
-players_table = dynamodb.Table('players2020')
+# rounds_table = dynamodb.Table('rounds2020')
+# players_table = dynamodb.Table('players2020')
+table = dynamodb.Table('XRL2020')
 
 print("Changing 'On Waivers' players to free agents")
 #Find all players who are labelled as 'On Waivers'
-on_waivers = players_table.scan(
-    FilterExpression=Attr('xrl_team').eq('On Waivers')
+on_waivers = table.query(
+    IndexName='sk-data-index',
+    KeyConditionExpression=Key('sk').eq('PROFILE') & Key('data').eq('TEAM#On Waivers')
 )['Items']
 #Update each of those players to have XRL team of 'None'
 for player in on_waivers:
-    players_table.update_item(
-        Key={ 'player_id': player['player_id'] },
-        UpdateExpression="set xrl_team=:n",
-        ExpressionAttributeValues={ ':n': 'None' }
+    table.update_item(
+        Key={
+            'pk': player['pk'],
+            'sk': player['sk']
+        },
+        UpdateExpression="set #D=:d, xrl_team=:n",
+        ExpressionAttributeNames={
+            '#D': 'data'
+        },
+        ExpressionAttributeValues={
+            ':d': 'TEAM#None',
+            ':n': 'None' 
+        }
     )
 
 print("Changing 'Pre-Waivers' players to 'On Waivers'")
 #Find all players who are labelled as 'Pre-Waivers'
-pre_waivers = players_table.scan(
-    FilterExpression=Attr('xrl_team').eq('Pre-Waivers')
+pre_waivers = table.query(
+    IndexName='sk-data-index',
+    KeyConditionExpression=Key('sk').eq('PROFILE') & Key('data').eq('TEAM#Pre-Waivers')
 )['Items']
 #Update those players to be 'On Waivers'
 for player in pre_waivers:
-    players_table.update_item(
-        Key={ 'player_id': player['player_id'] },
-        UpdateExpression="set xrl_team=:ow",
-        ExpressionAttributeValues={ ':ow': 'On Waivers' }
+    table.update_item(
+        Key={
+            'pk': player['pk'],
+            'sk': player['sk']
+        },
+        UpdateExpression="set #D=:d, xrl_team=:n",
+        ExpressionAttributeNames={
+            '#D': 'data'
+        },
+        ExpressionAttributeValues={
+            ':d': 'TEAM#On Waivers',
+            ':n': 'On Waivers' 
+        }
     )
 
 #Find all active rounds
-resp = rounds_table.scan(
-    FilterExpression=Attr('active').eq(True)
+resp = table.query(
+    IndexName='sk-data-index',
+    KeyConditionExpression=Key('sk').eq('STATUS') & Key('data').eq('ACTIVE#true')
 )
 #Find the current active round
 round_number = max([r['round_number'] for r in resp['Items']])
 
 print(f"Current round: {round_number}. Setting 'scooping' to true")
 #Update round to open scooping
-rounds_table.update_item(
+table.update_item(
     Key={
-        'round_number': round_number
+        'pk': 'ROUND#' + str(round_number),
+        'sk': 'STATUS'
     },
     UpdateExpression="set scooping=:t",
     ExpressionAttributeValues={

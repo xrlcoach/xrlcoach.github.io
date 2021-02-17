@@ -4,8 +4,14 @@ from boto3.dynamodb.conditions import Key, Attr
 dynamodb = boto3.resource('dynamodb', 'ap-southeast-2')
 
 #Reset users table with zeroed stats and captain counts, and 3 powerplays
-users_table = dynamodb.Table('users2020')
-resp = users_table.scan()
+# users_table = dynamodb.Table('users2020')
+
+table = dynamodb.Table('XRL2020')
+
+resp = table.query(
+    IndexName='sk-data-index',
+    KeyConditionExpression=Key('sk').eq('DETAILS') & Key('data').begins_with('NAME#')
+)
 users = resp['Items']
 clean_stats = {
     'wins': 0,
@@ -15,10 +21,13 @@ clean_stats = {
     'against': 0,
     'points': 0
 }
+
+print("Resetting user details and deleting trade offer records")
 for rank, user in enumerate(users, 1):
-    users_table.update_item(
+    table.update_item(
         Key={
-            'username': user['username']
+            'pk': user['pk'],
+            'sk': 'DETAILS'
         },
         UpdateExpression="set powerplays=:p, stats=:s, waiver_rank=:wr, waiver_preferences=:wp, inbox=:i, players_picked=:pp, provisional_drop=:pd",
         ExpressionAttributeValues={
@@ -31,103 +40,167 @@ for rank, user in enumerate(users, 1):
             ':pd': None
         }
     )
+    offers = table.query(
+        KeyConditionExpression=Key('pk').eq(user['pk']) & Key('sk').begins_with('OFFER#')
+    )['Items']
+    for o in offers:
+        table.delete_item(
+            Key={
+                'pk': o['pk'],
+                'sk': o['sk']
+            }
+        )
 
 #Reset rounds table with zeroed match scores and stati reset with only round 1 active
-rounds_table = dynamodb.Table('rounds2020')
-all_rounds = rounds_table.scan()['Items']
-for r in all_rounds:
-    fixtures = r['fixtures']
-    for match in fixtures:
-        match['home_score'] = 0
-        match['away_score'] = 0
-    if r['round_number'] == 1:
-        rounds_table.update_item(
+# rounds_table = dynamodb.Table('rounds2020')
+# all_rounds = rounds_table.scan()['Items']
+
+print("Resetting round status and fixture scores")
+for r in range(1, 22):
+    #Reset round status
+    if r == 1:
+        table.update_item(
             Key={
-                'round_number': r['round_number']
+                'pk': 'ROUND#' + str(r),
+                'sk': 'STATUS'
             },
-            UpdateExpression="set active=:a, in_progress=:ip, completed=:c, fixtures=:f, scooping=:s",
+            UpdateExpression="set #D=:d, active=:a, in_progress=:ip, completed=:c, scooping=:s",
+            ExpressionAttributeNames={
+                '#D': 'data'
+            },
             ExpressionAttributeValues={
+                ':d': 'ACTIVE#true',
                 ':a': True,
                 ':ip': False,
                 ':c': False,
-                ':f': [],
                 ':s': True
             }
         )
     else:
-        rounds_table.update_item(
+        table.update_item(
             Key={
-                'round_number': r['round_number']
+                'pk': 'ROUND#' + str(r),
+                'sk': 'STATUS'
             },
-            UpdateExpression="set active=:a, in_progress=:ip, completed=:c, fixtures=:f, scooping=:s",
+            UpdateExpression="set #D=:d, active=:a, in_progress=:ip, completed=:c, scooping=:s",
+            ExpressionAttributeNames={
+                '#D': 'data'
+            },
             ExpressionAttributeValues={
+                ':d': 'ACTIVE#false',
                 ':a': False,
                 ':ip': False,
                 ':c': False,
-                ':f': [],
                 ':s': False
             }
         )
 
-#Reset lineup table with played columns as false and score as 0
-lineups_table = dynamodb.Table('lineups2020')
-resp = lineups_table.scan()
-lineups = resp['Items']
-with lineups_table.batch_writer() as batch:
-    for player in lineups:
-        lineups_table.delete_item(
+    #Reset fixture scores 
+    fixtures = table.query(
+        KeyConditionExpression=Key('pk').eq('ROUND#' + str(r)) & Key('sk').begins_with('FIXTURE')
+    )['Items']
+    for match in fixtures:
+        table.update_item(
             Key={
-                'name+nrl+xrl+round': player['name+nrl+xrl+round']
+                'pk': match['pk'],
+                'sk': match['sk']
+            },
+            UpdateExpression='set home_score=:hs, away_score=:as',
+            ExpressionAttributeValues={
+                ':hs': 0,
+                ':as': 0
             }
         )
 
-#Reset any accumulated 2nd position appearances and awarded second position
-players_table = dynamodb.Table('players2020')
-players = players_table.scan(
-    FilterExpression=Attr('new_position_appearances').exists()
+#Get all players
+print("Retrieving all player profiles")
+players = table.query(
+    IndexName='sk-data-index',
+    KeyConditionExpression=Key('sk').eq('PROFILE') & Key('data').begins_with('TEAM#')
 )['Items']
+
+print('Deleting lineup and stat records and resetting profiles')
 for player in players:
-    players_table.update_item(
+    #Delete any lineup entries
+    entries = table.query(
+        KeyConditionExpression=Key('pk').eq(player['pk']) & Key('sk').begins_with('LINEUP#')
+    )['Items']
+    for entry in entries:
+        table.delete_item(
+            Key={
+                'pk': entry['pk'],
+                'sk': entry['sk']
+            }
+        )
+
+    #Delete any stat entries
+    entries = table.query(
+        KeyConditionExpression=Key('pk').eq(player['pk']) & Key('sk').begins_with('STAT#')
+    )['Items']
+    for entry in entries:
+        table.delete_item(
+            Key={
+                'pk': entry['pk'],
+                'sk': entry['sk']
+            }
+        )
+
+    #Reset any captaincy counts, second position appearances, XRL team and stats
+    table.update_item(
         Key={
-            'player_id': player['player_id']
+            'pk': player['pk'],
+            'sk': 'PROFILE'
         },
-        UpdateExpression="SET position2=:p2, new_position_appearances=:npa",
+        UpdateExpression="SET times_as_captain=:tact, position2=:p2, new_position_appearances=:npa, #D=:d, xrl_team=:xrl, stats=:s, scoring_stats=:ss",
+        ExpressionAttributeNames={
+            '#D': 'data'
+        },
         ExpressionAttributeValues={
-            ':p2': '',
-            ':npa': {}
+            ':tac': 0,
+            ':p2': None,
+            ':npa': {},
+            ':d': 'TEAM#None',
+            ':xrl': 'None',
+            ':s': {},
+            ':ss': {}
         }
     )
 
-players = players_table.scan(
-    FilterExpression=Attr('xrl_team').exists() & Attr('xrl_team').ne('')
+print("Deleting transfer records")
+transfers = table.query(
+    IndexName='sk-data-index',
+    KeyConditionExpression=Key('sk').eq('TRANSFER') & Key('data').begins_with('ROUND#')
 )['Items']
-for player in players:
-    players_table.update_item(
+for transfer in transfers:
+    table.delete_item(
         Key={
-            'player_id': player['player_id']
-        },
-        UpdateExpression="SET xrl_team=:n",
-        ExpressionAttributeValues={
-            ':n': 'None'
+            'pk': transfer['pk'],
+            'sk': transfer['sk']
         }
     )
 
-transfers_table = dynamodb.Table('transfers2020')
-transfers = transfers_table.scan()['Items']
-with transfers_table.batch_writer() as batch:
-    for transfer in transfers:
-        batch.delete_item(
-            Key={
-                'transfer_id': transfer['transfer_id']
-            }
-        )
+print("Deleting trade offers")
+trades = table.query(
+    IndexName='sk-data-index',
+    KeyConditionExpression=Key('sk').eq('OFFER') & Key('data').begins_with('TO#')
+)['Items']
+for trade in trades:
+    table.delete_item(
+        Key={
+            'pk': trade['pk'],
+            'sk': trade['sk']
+        }
+    )
 
-trades_table = dynamodb.Table('trades2020')
-trades = trades_table.scan()['Items']
-with trades_table.batch_writer() as batch:
-    for trade in trades:
-        batch.delete_item(
-            Key={
-                'offer_id': trade['offer_id']
-            }
-        )
+print("Deleting waiver reports")
+reports = table.query(
+    KeyConditionExpression=Key('pk').eq('WAIVER') & Key('sk').begins_with('REPORT#')
+)['Items']
+
+for r in reports:
+    table.delete_item(
+        Key={
+            'pk': r['pk'],
+            'sk': r['sk']
+        }
+    )

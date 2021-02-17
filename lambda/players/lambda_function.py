@@ -18,80 +18,93 @@ def lambda_handler(event, context):
     #Find request method
     method = event["httpMethod"]
     if method == 'GET':
-        print('Method is get, checking for params')
-        #If there is no query added to fetch GET request, scan the whole players table
-        if not event["queryStringParameters"]:
-            print('No params found, scanning table')
-            start = datetime.now()
-            # resp = table.scan()['Items']
-            resp = table.query(
-                IndexName='sk-data-index',
-                KeyConditionExpression=Key('sk').eq('PROFILE') & Key('data').begins_with('TEAM')
-            )['Items']
-            finish = datetime.now()
-            print(f'Table scan copmlete in {finish - start}. Returning json response')
-        else:
-            #If query string attached to GET request, determine request parameters and query players table accordingly
-            print('Params detected')        
-            params = event["queryStringParameters"]
-            print(params)
-            if 'nrlClub' in params.keys():
-                nrlClub = params['nrlClub']
-                print(f'NrlClub param is {nrlClub}, querying table')
-                # resp = table.scan(
-                #     FilterExpression=Attr('nrl_club').eq(nrlClub)
-                # )['Items']
+        try:
+            print('Method is get, checking for params')
+            #If there is no query added to fetch GET request, scan the whole players table
+            if not event["queryStringParameters"]:
+                print('No params found, scanning table')
+                start = datetime.now()
+                # resp = table.scan()['Items']
                 resp = table.query(
                     IndexName='sk-data-index',
-                    KeyConditionExpression=Key('sk').eq('PROFILE') & Key('data').begins_with('TEAM'),
-                    FilterExpression=Attr('nrl_club').eq(nrlClub)
+                    KeyConditionExpression=Key('sk').eq('PROFILE') & Key('data').begins_with('TEAM')
                 )['Items']
-            elif 'xrlTeam' in params.keys():
-                xrlTeam = params['xrlTeam']
-                print(f'XrlTeam param is {xrlTeam}, querying table')
-                if xrlTeam == 'Free Agents':
-                    # resp = table.scan(
-                    #     FilterExpression=Attr('xrl_team').not_exists() | Attr('xrl_team').eq('None') | Attr('xrl_team').eq('On Waivers') | Attr('xrl_team').eq('Pre-Waivers')
-                    # )['Items']
-                    resp = table.query(
-                        IndexName='sk-data-index',
-                        KeyConditionExpression=Key('sk').eq('PROFILE') & Key('data').eq('TEAM#' + 'None') | Key('data').eq('TEAM#' + 'On Waivers') | Key('data').eq('TEAM#' + 'Pre-Waivers')
-                    )['Items']
-                else:
-                    # resp = table.scan(
-                    #     FilterExpression=Attr('xrl_team').eq(xrlTeam)
-                    # )['Items']
-                    resp = table.query(
-                        IndexName='sk-data-index',
-                        KeyConditionExpression=Key('sk').eq('PROFILE') & Key('data').eq('TEAM#' + xrlTeam)
-                    )['Items']
-            elif 'playerId' in params.keys():
-                player_id = params['playerId']
-                print(f'PlayerId param is {player_id}, querying table')
-                # resp = table.get_item(
-                #     Key={
-                #         'player_id': player_id
-                #     }
-                # )['Item']
-                resp = table.get_item(Key={
-                    'pk': 'PLAYER#' + player_id,
-                    'sk': 'PROFILE'
-                })['Item']
-            #If query parameters present but are not any of the above, send back error message
+                finish = datetime.now()
+                print(f'Table scan copmlete in {finish - start}. Returning json response')
             else:
-                print("Couldn't recognise parameter")
-                resp = {"error": "GET request parameter not recognised"}
-        print('Returning respnse')
-        #Return response
-        return {
-                'statusCode': 200,
-                'headers': {
-                'Access-Control-Allow-Headers': 'Content-Type',
-                'Access-Control-Allow-Origin': '*',
-                'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
-                },
-                'body': json.dumps(replace_decimals(resp))
-            }
+                #If query string attached to GET request, determine request parameters and query players table accordingly
+                print('Params detected')        
+                params = event["queryStringParameters"]
+                print(params)
+                if 'nrlClub' in params.keys():
+                    nrlClub = params['nrlClub']
+                    print(f'NrlClub param is {nrlClub}, querying table')
+                    # resp = table.scan(
+                    #     FilterExpression=Attr('nrl_club').eq(nrlClub)
+                    # )['Items']
+                    resp = table.query(
+                        IndexName='sk-data-index',
+                        KeyConditionExpression=Key('sk').eq('PROFILE') & Key('data').begins_with('TEAM'),
+                        FilterExpression=Attr('nrl_club').eq(nrlClub)
+                    )['Items']
+                elif 'xrlTeam' in params.keys():
+                    xrlTeam = params['xrlTeam']
+                    print(f'XrlTeam param is {xrlTeam}, querying table')
+                    if xrlTeam == 'Free Agents':
+                        # resp = table.scan(
+                        #     FilterExpression=Attr('xrl_team').not_exists() | Attr('xrl_team').eq('None') | Attr('xrl_team').eq('On Waivers') | Attr('xrl_team').eq('Pre-Waivers')
+                        # )['Items']
+                        resp = table.query(
+                            IndexName='sk-data-index',
+                            KeyConditionExpression=Key('sk').eq('PROFILE') & Key('data').begins_with('TEAM#'),
+                            FilterExpression=Attr('xrl_team').eq('None') | Attr('xrl_team').eq('On Waivers') | Attr('xrl_team').eq('Pre-Waivers')
+                        )['Items']
+                    else:
+                        # resp = table.scan(
+                        #     FilterExpression=Attr('xrl_team').eq(xrlTeam)
+                        # )['Items']
+                        resp = table.query(
+                            IndexName='sk-data-index',
+                            KeyConditionExpression=Key('sk').eq('PROFILE') & Key('data').eq('TEAM#' + xrlTeam)
+                        )['Items']
+                elif 'playerId' in params.keys():
+                    player_id = params['playerId']
+                    print(f'PlayerId param is {player_id}, querying table')
+                    # resp = table.get_item(
+                    #     Key={
+                    #         'player_id': player_id
+                    #     }
+                    # )['Item']
+                    resp = table.get_item(Key={
+                        'pk': 'PLAYER#' + player_id,
+                        'sk': 'PROFILE'
+                    })['Item']
+                #If query parameters present but are not any of the above, send back error message
+                else:
+                    print("Couldn't recognise parameter")
+                    resp = {"error": "GET request parameter not recognised"}
+            print('Returning respnse')
+            #Return response
+            return {
+                    'statusCode': 200,
+                    'headers': {
+                    'Access-Control-Allow-Headers': 'Content-Type',
+                    'Access-Control-Allow-Origin': '*',
+                    'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
+                    },
+                    'body': json.dumps(replace_decimals(resp))
+                }
+        except Exception as e:
+                print(e)
+                return {
+                    'statusCode': 500,
+                    'headers': {
+                    'Access-Control-Allow-Headers': 'Content-Type',
+                    'Access-Control-Allow-Origin': '*',
+                    'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
+                    },
+                    'body': json.dumps({"error": str(e)})
+                }
     if method == 'POST':
         try:
             #POST request should contain an 'operation' property in the request body
@@ -150,7 +163,10 @@ def lambda_handler(event, context):
                             'pk': 'PLAYER#' + player['player_id'],
                             'sk': 'PROFILE'
                         },
-                        UpdateExpression="set data=:d, xrl_team=:x",
+                        UpdateExpression="set #D=:d, xrl_team=:x",
+                        ExpressionAttributeNames={
+                            '#D': 'data'
+                        },
                         ExpressionAttributeValues={
                             ':d': 'TEAM#' + body['xrl_team'],
                             ':x': body['xrl_team']
@@ -166,19 +182,20 @@ def lambda_handler(event, context):
                     #         'player_id': player['player_id']
                     #     }
                     # ) 
-                    transfer_date = datetime.now()
-                    table.put_item(
-                        Item={
-                            'pk': 'TRANSFER#' + active_user['username'] + str(transfer_date),
-                            'sk': 'TRANSFER',
-                            'data': str(round_number),
-                            'user': active_user['username'],                        
-                            'datetime': transfer_date.strftime("%c"),
-                            'type': 'Scoop',
-                            'round_number': round_number,
-                            'player_id': player['player_id']
-                        }
-                    ) 
+                    if round_number > 1:
+                        transfer_date = datetime.now()
+                        table.put_item(
+                            Item={
+                                'pk': 'TRANSFER#' + active_user['username'] + str(transfer_date),
+                                'sk': 'TRANSFER',
+                                'data': 'ROUND#' + str(round_number),
+                                'user': active_user['username'],                        
+                                'datetime': transfer_date.strftime("%c"),
+                                'type': 'Scoop',
+                                'round_number': round_number,
+                                'player_id': player['player_id']
+                            }
+                        ) 
                     print(f"{player['player_name']}'s' XRL team changed to {body['xrl_team']}")                
                 print('Adjusting waiver order')
                 #Sort users by waiver rank
@@ -247,7 +264,10 @@ def lambda_handler(event, context):
                             'pk': 'PLAYER#' + player['player_id'],
                             'sk': 'PROFILE'
                         },
-                        UpdateExpression="set data=:d, xrl_team=:x",
+                        UpdateExpression="set #D=:d, xrl_team=:x",
+                        ExpressionAttributeNames={
+                            '#D': 'data'
+                        },
                         ExpressionAttributeValues={
                             ':d': 'TEAM#On Waivers',
                             ':x': 'On Waivers'
@@ -259,7 +279,7 @@ def lambda_handler(event, context):
                         Item={
                             'pk': 'TRANSFER#' + active_user['username'] + str(transfer_date),
                             'sk': 'TRANSFER',
-                            'data': str(round_number),
+                            'data': 'ROUND#' + str(round_number),
                             'user': active_user['username'],                        
                             'datetime': transfer_date.strftime("%c"),
                             'type': 'Drop',

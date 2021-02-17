@@ -24,20 +24,24 @@ sys.stdout = log
 start = datetime.now()
 print(f"Script executing at {start}")
 
-dynamodbClient = boto3.client('dynamodb', 'ap-southeast-2')
+# dynamodbClient = boto3.client('dynamodb', 'ap-southeast-2')
 dynamodbResource = boto3.resource('dynamodb', 'ap-southeast-2')
-table = dynamodbResource.Table('stats2020')
-squads_table = dynamodbResource.Table('players2020')
-users_table = dynamodbResource.Table('users2020')
-lineups_table = dynamodbResource.Table('lineups2020')
-rounds_table = dynamodbResource.Table('rounds2020')
+# table = dynamodbResource.Table('stats2020')
+# squads_table = dynamodbResource.Table('players2020')
+# users_table = dynamodbResource.Table('users2020')
+# lineups_table = dynamodbResource.Table('lineups2020')
+# rounds_table = dynamodbResource.Table('rounds2020')
+table = dynamodbResource.Table('XRL2020')
 
 forwards = ['Prop', '2nd Row', 'Lock', 'Interchange']
 playmakers = ['Five-Eighth', 'Halfback', 'Hooker']
 backs = ['Winger', 'Centre', 'Fullback']
 
-resp = squads_table.scan()
-squads = resp["Items"]
+# resp = squads_table.scan()
+squads = table.query(
+    IndexName='sk-data-index',
+    KeyConditionExpression=Key('sk').eq('PROFILE') & Key('data').begins_with('TEAM')
+)['Items']
 
 stat_columns_final = []
 
@@ -360,14 +364,22 @@ def get_stats():
                 if player[1]['Position'] in playmakers: new_player_position = 'Playmaker'
                 if player[1]['Position'] in backs: new_player_position = 'Back'
                 player_id = str(max([int(p['player_id']) for p in squads]) + 1)
-                squads_table.put_item(
+                table.put_item(
                     Item={
+                        'pk': 'PLAYER#' + player_id,
+                        'sk': 'PROFILE',
+                        'data': 'TEAM#None',
                         'player_id': player_id,
                         'player_name': player[0]['player_name'],
                         'nrl_club': player[0]['nrl_club'],
+                        'xrl_team': 'None',
+                        'search_name': player[0]['player_name'].lower(),
                         'position': new_player_position,
-                        'search_name': player[0]['player_name'].lower()
-                    }
+                        'position2': None,
+                        'stats': {},
+                        'scoring_stats': {},
+                        'times_as_captain': 0
+                    }                    
                 )
                 squad_entry = {}
                 squad_entry['position'] = new_player_position
@@ -376,9 +388,10 @@ def get_stats():
                 squad_entry = squad_entry[0]
                 player_id = squad_entry['player_id']
                 print(f"{player[0]['player_name']} has moved to the {player[0]['nrl_club']}. Updating his team in the database.")
-                squads_table.update_item(
+                table.update_item(
                     Key={
-                        'player_id': squad_entry['player_id']
+                        'pk': squad_entry['pk'],
+                        'sk': 'PROFILE'
                     },
                     UpdateExpression="set nrl_club=:c",
                     ExpressionAttributeValues={
@@ -424,11 +437,14 @@ def get_stats():
     print("First score map: " + str(player_stats_final[0][2]))
     
     for player in player_stats_final:
-        table.delete_item(Key={
-            "player_id": player[0]['player_id'],
-            "round_number": number,
-        })
+        # table.delete_item(Key={
+        #     "pk": 'PLAYER#' + player[0]['player_id'],
+        #     "sk": 'STATS#' + str(number),
+        # })
         table.put_item(Item={
+            "pk": 'PLAYER#' + player[0]['player_id'],
+            "sk": 'STATS#' + str(number),
+            'data': 'CLUB#' + player[0]['nrl_club'],
             "player_id": player[0]['player_id'],
             "round_number": number,
             "player_name": player[0]['player_name'],
@@ -441,20 +457,21 @@ def get_stats():
     print("Stats update complete, scoring lineups")
     # users = users_table.scan()['Items']
     # xrl_teams = [user['team_short'] for user in users]
-    round_info = rounds_table.get_item(
-        Key={
-            'round_number': int(number)
-        }
-    )['Item']
-    fixtures = round_info['fixtures']
-    resp = lineups_table.scan(
-        FilterExpression=Attr('round_number').eq(number)
-    )
-    round_lineups = resp["Items"]
+    fixtures = table.query(
+        KeyConditionExpression=Key('pk').eq('ROUND#' + str(number)) & Key('sk').begins_with('FIXTURE')
+    )['Items']
+    round_lineups = table.query(
+        IndexName='sk-data-index',
+        KeyConditionExpression=Key('sk').eq('LINEUP#' + str(number)) & Key('data').begins_with('TEAM#')
+    )['Items']
+    # print("First lineup entry: " + str(round_lineups[0]))
     for match in fixtures:
+        print(f"Match: {match['home']} v {match['away']}")
         scores = {}
         for team in ['home', 'away']:
             lineup = [p for p in round_lineups if p['xrl_team'] == match[team]]
+            print(f"{match[team]} fielded {len(lineup)} players")
+            # print("First player: " + str(lineup[0]))
             lineup_score = 0
             for player in lineup:
                 player_lineup_score = 0
@@ -484,9 +501,12 @@ def get_stats():
                             player_lineup_score += player_kicking_stats['field_goals']
                         if player['captain'] or player['captain2']:
                             player_lineup_score *= 2
-                lineups_table.update_item(
+                # if not played_nrl:
+                #     print(f"{player['player_name']} didn't play NRL this week")
+                table.update_item(
                     Key={
-                        'name+nrl+xrl+round': player['name+nrl+xrl+round']
+                        'pk': player['pk'],
+                        'sk': player['sk']
                     },
                     UpdateExpression="set played_nrl=:p, played_xrl=:x, score=:s",
                     ExpressionAttributeValues={
@@ -500,15 +520,26 @@ def get_stats():
             scores[team] = lineup_score
         match['home_score'] = scores['home']
         match['away_score'] = scores['away']
-    rounds_table.update_item(
-        Key={
-            'round_number': int(number)
-        },
-        UpdateExpression="set fixtures=:f",
-        ExpressionAttributeValues={
-            ':f': fixtures
-        }
-    )
+        table.update_item(
+            Key={
+                'pk': match['pk'],
+                'sk': match['sk']
+            },
+            UpdateExpression='set home_score=:hs, away_score=:as',
+            ExpressionAttributeValues={
+                ':hs': match['home_score'],
+                ':as': match['away_score']
+            }
+        )
+    # rounds_table.update_item(
+    #     Key={
+    #         'round_number': int(number)
+    #     },
+    #     UpdateExpression="set fixtures=:f",
+    #     ExpressionAttributeValues={
+    #         ':f': fixtures
+    #     }
+    # )
     print('Lineup scoring complete')
     finish = datetime.now()
     print(f"Execution took {finish - start}")       

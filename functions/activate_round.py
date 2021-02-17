@@ -8,22 +8,29 @@ sys.stdout = log
 print(f"Script executing at {datetime.now()}")
 
 dynamodb = boto3.resource('dynamodb', 'ap-southeast-2')
-rounds_table = dynamodb.Table('rounds2020')
+# rounds_table = dynamodb.Table('rounds2020')
+table = dynamodb.Table('XRL2020')
 
 #Get all rounds that are not yet active
-resp = rounds_table.scan(
-    FilterExpression=Attr('active').eq(False)
+resp = table.query(
+    IndexName='sk-data-index',
+    KeyConditionExpression=Key('sk').eq('STATUS') & Key('data').eq('ACTIVE#false')
 )
 #Get the next non-active round
 round_number = min([r['round_number'] for r in resp['Items']])
 print(f"Next Round: {round_number}. Setting to 'active'")
 #Update that round to active
-rounds_table.update_item(
+table.update_item(
     Key={
-        'round_number': round_number
+        'pk': 'ROUND#' + str(round_number),
+        'sk': 'STATUS'
     },
-    UpdateExpression="set active=:t",
+    UpdateExpression="set #D=:d, active=:t",
+    ExpressionAttributeNames={
+        '#D': 'data'
+    },
     ExpressionAttributeValues={
+        ':d': 'ACTIVE#true',
         ':t': True
     }
 )

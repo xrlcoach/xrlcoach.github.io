@@ -44,3 +44,77 @@ New order:
 5: testuser3
 6: jeffrobson
 Process complete
+Script executing at 2021-02-17 11:58:12.833944
+Active Round: 3. Setting to 'in progress' and closing player scooping
+Round 3 now in progress.
+Checking lineups...
+Bondi Wet Sox captained Kalyn PONGA
+Script executing at 2021-02-17 12:00:43.997287
+Active Round: 3. Setting to 'in progress' and closing player scooping
+Round 3 now in progress.
+Checking lineups...
+Bondi Wet Sox captained Kalyn PONGA
+Bondi Wet Sox captained James TEDESCO
+Bondi Wet Sox used a powerplay. Updating database
+The IT Crowd captained Kyle FLANAGAN
+TestTeam1 didn't set a lineup this week. Reverting to last week's lineup.
+Script executing at 2021-02-17 12:01:34.087979
+Active Round: 3. Setting to 'in progress' and closing player scooping
+Round 3 now in progress.
+Checking lineups...
+Bondi Wet Sox captained Kalyn PONGA
+Bondi Wet Sox captained James TEDESCO
+Bondi Wet Sox used a powerplay. Updating database
+The IT Crowd captained Kyle FLANAGAN
+TestTeam1 didn't set a lineup this week. Reverting to last week's lineup.
+Lineup set.
+TestTeam1 captained Pride PETTERSON ROBATI
+Test Team 2 didn't set a lineup this week. Reverting to last week's lineup.
+Lineup set.
+Test Team 2 captained Renouf Atoni
+Test Team 3 didn't set a lineup this week. Reverting to last week's lineup.
+Lineup set.
+Test Team 3 captained Reuben COTTER
+London Werewolves didn't set a lineup this week. Reverting to last week's lineup.
+Lineup set.
+London Werewolves captained Cameron MCINNES
+Calculating new waiver order
+New order: 
+1: testuser2
+2: wolvershank
+3: testuser1
+4: testuser3
+5: jeffrobson
+6: admin
+Process complete
+Script executing at 2021-02-17 12:35:36.899967
+Active Round: 4. Setting to 'in progress' and closing player scooping
+Round 4 now in progress.
+Checking lineups...
+Bondi Wet Sox didn't set a lineup this week. Reverting to last week's lineup.
+Lineup set.
+Bondi Wet Sox captained James TEDESCO
+The IT Crowd didn't set a lineup this week. Reverting to last week's lineup.
+Lineup set.
+The IT Crowd captained Kyle FLANAGAN
+TestTeam1 didn't set a lineup this week. Reverting to last week's lineup.
+Lineup set.
+TestTeam1 captained Pride PETTERSON ROBATI
+Test Team 2 didn't set a lineup this week. Reverting to last week's lineup.
+Lineup set.
+Test Team 2 captained Renouf Atoni
+Test Team 3 didn't set a lineup this week. Reverting to last week's lineup.
+Lineup set.
+Test Team 3 captained Reuben COTTER
+London Werewolves didn't set a lineup this week. Reverting to last week's lineup.
+Lineup set.
+London Werewolves captained Cameron MCINNES
+Calculating new waiver order
+New order: 
+1: testuser2
+2: wolvershank
+3: testuser1
+4: testuser3
+5: jeffrobson
+6: admin
+Process complete

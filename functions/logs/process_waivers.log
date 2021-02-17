@@ -85,3 +85,123 @@ New waiver order:
 4. wolvershank
 5. admin
 6. testuser1
+Script executing at Wed Feb 17 11:53:10 2021
+Current XRL round: 3. First round of waivers.
+Current waiver order:
+1. Test Team 2
+2. London Werewolves
+3. The IT Crowd
+4. TestTeam1
+5. Test Team 3
+6. Bondi Wet Sox
+Processing waivers
+User 1 - Test Team 2
+Test Team 2 chose not to waiver this week.
+User 2 - London Werewolves
+London Werewolves chose not to waiver this week.
+User 3 - The IT Crowd
+The IT Crowd want to sign Ryan MATTERSON.
+Ryan MATTERSON is available.
+admin signed Ryan MATTERSON
+User 4 - TestTeam1
+TestTeam1 chose not to waiver this week.
+User 5 - Test Team 3
+Test Team 3 chose not to waiver this week.
+User 6 - Bondi Wet Sox
+Bondi Wet Sox want to sign Bradman BEST.
+Bradman BEST is not available.
+jeffrobson didn't get any of their preferences
+New waiver order:
+1. testuser2
+2. wolvershank
+3. testuser1
+4. testuser3
+5. jeffrobson
+6. admin
+Script executing at Wed Feb 17 11:53:54 2021
+Current XRL round: 3. Second round of waivers.
+Current waiver order:
+1. Test Team 2
+2. London Werewolves
+3. TestTeam1
+4. Test Team 3
+5. Bondi Wet Sox
+6. The IT Crowd
+Processing waivers
+User 1 - Test Team 2
+Test Team 2 chose not to waiver this week.
+User 2 - London Werewolves
+London Werewolves chose not to waiver this week.
+User 3 - TestTeam1
+TestTeam1 chose not to waiver this week.
+User 4 - Test Team 3
+Test Team 3 chose not to waiver this week.
+User 5 - Bondi Wet Sox
+Bondi Wet Sox chose not to waiver this week.
+User 6 - The IT Crowd
+The IT Crowd already waivered one player this week
+New waiver order:
+1. testuser2
+2. wolvershank
+3. testuser1
+4. testuser3
+5. jeffrobson
+6. admin
+Script executing at Wed Feb 17 12:35:20 2021
+Current XRL round: 4. First round of waivers.
+Current waiver order:
+1. Test Team 2
+2. London Werewolves
+3. TestTeam1
+4. Test Team 3
+5. Bondi Wet Sox
+6. The IT Crowd
+Processing waivers
+User 1 - Test Team 2
+Test Team 2 chose not to waiver this week.
+User 2 - London Werewolves
+London Werewolves chose not to waiver this week.
+User 3 - TestTeam1
+TestTeam1 chose not to waiver this week.
+User 4 - Test Team 3
+Test Team 3 chose not to waiver this week.
+User 5 - Bondi Wet Sox
+Bondi Wet Sox chose not to waiver this week.
+User 6 - The IT Crowd
+The IT Crowd chose not to waiver this week.
+New waiver order:
+1. Test Team 2
+2. London Werewolves
+3. TestTeam1
+4. Test Team 3
+5. Bondi Wet Sox
+6. The IT Crowd
+Script executing at Wed Feb 17 12:35:25 2021
+Current XRL round: 4. Second round of waivers.
+Current waiver order:
+1. Test Team 2
+2. London Werewolves
+3. TestTeam1
+4. Test Team 3
+5. Bondi Wet Sox
+6. The IT Crowd
+Processing waivers
+User 1 - Test Team 2
+Test Team 2 chose not to waiver this week.
+User 2 - London Werewolves
+London Werewolves chose not to waiver this week.
+User 3 - TestTeam1
+TestTeam1 chose not to waiver this week.
+User 4 - Test Team 3
+Test Team 3 chose not to waiver this week.
+User 5 - Bondi Wet Sox
+Bondi Wet Sox chose not to waiver this week.
+User 6 - The IT Crowd
+The IT Crowd chose not to waiver this week.
+New waiver order:
+1. Test Team 2
+2. London Werewolves
+3. TestTeam1
+4. Test Team 3
+5. Bondi Wet Sox
+6. The IT Crowd

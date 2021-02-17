@@ -39,3 +39,102 @@ First score map: {'Back': {'tries': 0, 'sin_bins': 1, 'send_offs': 0, 'involveme
 Stats update complete, scoring lineups
 Lineup scoring complete
 Execution took 0:05:17.092582
+Script executing at 2021-02-17 12:02:21.511177
+Connecting to http://www.nrl.com/draw
+['Round', '3']
+[32mGetting player stats for Broncos v Eels[0m
+[32mGetting player stats for Cowboys v Titans[0m
+[32mGetting player stats for Roosters v Rabbitohs[0m
+[32mGetting player stats for Warriors v Dragons[0m
+[32mGetting player stats for Sharks v Wests Tigers[0m
+[32mGetting player stats for Storm v Raiders[0m
+[32mGetting player stats for Panthers v Knights[0m
+[32mGetting player stats for Sea Eagles v Bulldogs[0m
+Stat scraping complete. Calculating player scores...
+Josh Morris has moved to the Roosters. Updating his team in the database.
+Loading to dynamodb, table: stats2020
+round_number: 3
+First Player: {'player_name': 'Jamayne Isaako', 'nrl_club': 'Broncos', 'opponent': 'Eels', 'player_id': '100063'}
+First stat map: {'Number': 1, 'Position': 'Fullback', 'Mins Played': 80, 'Points': 2, 'Tries': 0, 'Conversions': 1, 'Conversion Attempts': 1, 'Penalty Goals': 0, 'Goal Conversion Rate': Decimal('1.0'), 'Field Goals': 0, 'Total Points': 44, 'All Runs': 14, 'All Run Metres': 109, 'Kick Return Metres': 54, 'Post Contact Metres': 34, 'Line Breaks': 0, 'Line Break Assists': 0, 'Try Assists': 0, 'Line Engaged Runs': 0, 'Tackle Breaks': 7, 'Hit Ups': 0, 'Play The Ball': 13, 'Average Play The Ball Speed': Decimal('3.29'), 'Dummy Half Runs': 0, 'Dummy Half Run Metres': 0, 'One on One Steal': 0, 'Offloads': 0, 'Dummy Passes': 0, 'Passes': 16, 'Receipts': 30, 'Passes To Run Ratio': Decimal('1.14'), 'Tackle Efficiency': Decimal('1.0'), 'Tackles Made': 9, 'Missed Tackles': 0, 'Ineffective Tackles': 0, 'Intercepts': 0, 'Kicks Defused': 4, 'Kicks': 0, 'Kicking Metres': 0, 'Forced Drop Outs': 0, 'Bomb Kicks': 0, 'Grubbers': 0, '40/20': 0, '20/40': 0, 'Cross Field Kicks': 0, 'Kicked Dead': 0, 'Errors': 1, 'Handling Errors': 1, 'One on One Lost': 0, 'Penalties': 0, 'Ruck Infringements': 0, 'On Report': 0, 'Sin Bins': 0, 'Send Offs': 0, 'Stint One': 80, 'Stint Two': 0}
+First score map: {'Back': {'tries': 0, 'sin_bins': 0, 'send_offs': 0, 'involvement_try': False, 'positional_try': False, 'mia': False, 'concede': False}, 'kicker': {'goals': 1, 'field_goals': 0}}
+Stats update complete, scoring lineups
+Lineup scoring complete
+Execution took 0:02:11.388329
+Script executing at 2021-02-17 12:19:10.624601
+Connecting to http://www.nrl.com/draw
+['Round', '3']
+[32mGetting player stats for Broncos v Eels[0m
+[32mGetting player stats for Cowboys v Titans[0m
+[32mGetting player stats for Roosters v Rabbitohs[0m
+[32mGetting player stats for Warriors v Dragons[0m
+[32mGetting player stats for Sharks v Wests Tigers[0m
+[32mGetting player stats for Storm v Raiders[0m
+[32mGetting player stats for Panthers v Knights[0m
+[32mGetting player stats for Sea Eagles v Bulldogs[0m
+Stat scraping complete. Calculating player scores...
+Loading to dynamodb, table: stats2020
+round_number: 3
+First Player: {'player_name': 'Jamayne Isaako', 'nrl_club': 'Broncos', 'opponent': 'Eels', 'player_id': '100063'}
+First stat map: {'Number': 1, 'Position': 'Fullback', 'Mins Played': 80, 'Points': 2, 'Tries': 0, 'Conversions': 1, 'Conversion Attempts': 1, 'Penalty Goals': 0, 'Goal Conversion Rate': Decimal('1.0'), 'Field Goals': 0, 'Total Points': 44, 'All Runs': 14, 'All Run Metres': 109, 'Kick Return Metres': 54, 'Post Contact Metres': 34, 'Line Breaks': 0, 'Line Break Assists': 0, 'Try Assists': 0, 'Line Engaged Runs': 0, 'Tackle Breaks': 7, 'Hit Ups': 0, 'Play The Ball': 13, 'Average Play The Ball Speed': Decimal('3.29'), 'Dummy Half Runs': 0, 'Dummy Half Run Metres': 0, 'One on One Steal': 0, 'Offloads': 0, 'Dummy Passes': 0, 'Passes': 16, 'Receipts': 30, 'Passes To Run Ratio': Decimal('1.14'), 'Tackle Efficiency': Decimal('1.0'), 'Tackles Made': 9, 'Missed Tackles': 0, 'Ineffective Tackles': 0, 'Intercepts': 0, 'Kicks Defused': 4, 'Kicks': 0, 'Kicking Metres': 0, 'Forced Drop Outs': 0, 'Bomb Kicks': 0, 'Grubbers': 0, '40/20': 0, '20/40': 0, 'Cross Field Kicks': 0, 'Kicked Dead': 0, 'Errors': 1, 'Handling Errors': 1, 'One on One Lost': 0, 'Penalties': 0, 'Ruck Infringements': 0, 'On Report': 0, 'Sin Bins': 0, 'Send Offs': 0, 'Stint One': 80, 'Stint Two': 0}
+First score map: {'Back': {'tries': 0, 'sin_bins': 0, 'send_offs': 0, 'involvement_try': False, 'positional_try': False, 'mia': False, 'concede': False}, 'kicker': {'goals': 1, 'field_goals': 0}}
+Stats update complete, scoring lineups
+Script executing at 2021-02-17 12:24:05.879333
+Connecting to http://www.nrl.com/draw
+['Round', '3']
+[32mGetting player stats for Broncos v Eels[0m
+[32mGetting player stats for Cowboys v Titans[0m
+[32mGetting player stats for Roosters v Rabbitohs[0m
+[32mGetting player stats for Warriors v Dragons[0m
+[32mGetting player stats for Sharks v Wests Tigers[0m
+[32mGetting player stats for Storm v Raiders[0m
+[32mGetting player stats for Panthers v Knights[0m
+[32mGetting player stats for Sea Eagles v Bulldogs[0m
+Stat scraping complete. Calculating player scores...
+Loading to dynamodb, table: stats2020
+round_number: 3
+First Player: {'player_name': 'Jamayne Isaako', 'nrl_club': 'Broncos', 'opponent': 'Eels', 'player_id': '100063'}
+First stat map: {'Number': 1, 'Position': 'Fullback', 'Mins Played': 80, 'Points': 2, 'Tries': 0, 'Conversions': 1, 'Conversion Attempts': 1, 'Penalty Goals': 0, 'Goal Conversion Rate': Decimal('1.0'), 'Field Goals': 0, 'Total Points': 44, 'All Runs': 14, 'All Run Metres': 109, 'Kick Return Metres': 54, 'Post Contact Metres': 34, 'Line Breaks': 0, 'Line Break Assists': 0, 'Try Assists': 0, 'Line Engaged Runs': 0, 'Tackle Breaks': 7, 'Hit Ups': 0, 'Play The Ball': 13, 'Average Play The Ball Speed': Decimal('3.29'), 'Dummy Half Runs': 0, 'Dummy Half Run Metres': 0, 'One on One Steal': 0, 'Offloads': 0, 'Dummy Passes': 0, 'Passes': 16, 'Receipts': 30, 'Passes To Run Ratio': Decimal('1.14'), 'Tackle Efficiency': Decimal('1.0'), 'Tackles Made': 9, 'Missed Tackles': 0, 'Ineffective Tackles': 0, 'Intercepts': 0, 'Kicks Defused': 4, 'Kicks': 0, 'Kicking Metres': 0, 'Forced Drop Outs': 0, 'Bomb Kicks': 0, 'Grubbers': 0, '40/20': 0, '20/40': 0, 'Cross Field Kicks': 0, 'Kicked Dead': 0, 'Errors': 1, 'Handling Errors': 1, 'One on One Lost': 0, 'Penalties': 0, 'Ruck Infringements': 0, 'On Report': 0, 'Sin Bins': 0, 'Send Offs': 0, 'Stint One': 80, 'Stint Two': 0}
+First score map: {'Back': {'tries': 0, 'sin_bins': 0, 'send_offs': 0, 'involvement_try': False, 'positional_try': False, 'mia': False, 'concede': False}, 'kicker': {'goals': 1, 'field_goals': 0}}
+Stats update complete, scoring lineups
+Match: BWS v WOL
+BWS fielded 15 players
+WOL fielded 16 players
+Match: ITC v TT2
+ITC fielded 17 players
+TT2 fielded 17 players
+Match: TT3 v TT1
+TT3 fielded 17 players
+TT1 fielded 17 players
+Lineup scoring complete
+Execution took 0:02:32.698444
+Script executing at 2021-02-17 12:35:48.239025
+Connecting to http://www.nrl.com/draw
+['Round', '4']
+[32mGetting player stats for Broncos v Roosters[0m
+[32mGetting player stats for Panthers v Warriors[0m
+[32mGetting player stats for Storm v Rabbitohs[0m
+[32mGetting player stats for Eels v Sea Eagles[0m
+[32mGetting player stats for Cowboys v Sharks[0m
+[32mGetting player stats for Raiders v Knights[0m
+[32mGetting player stats for Titans v Wests Tigers[0m
+[32mGetting player stats for Bulldogs v Dragons[0m
+Stat scraping complete. Calculating player scores...
+Poasa Faamausili has moved to the Warriors. Updating his team in the database.
+Andrew McCullough has moved to the Knights. Updating his team in the database.
+Loading to dynamodb, table: stats2020
+round_number: 4
+First Player: {'player_name': 'Jamayne Isaako', 'nrl_club': 'Broncos', 'opponent': 'Roosters', 'player_id': '100063'}
+First stat map: {'Number': 1, 'Position': 'Fullback', 'Mins Played': 80, 'Points': 0, 'Tries': 0, 'Conversions': 0, 'Conversion Attempts': 0, 'Penalty Goals': 0, 'Goal Conversion Rate': 0, 'Field Goals': 0, 'Total Points': 20, 'All Runs': 10, 'All Run Metres': 74, 'Kick Return Metres': 26, 'Post Contact Metres': 27, 'Line Breaks': 0, 'Line Break Assists': 0, 'Try Assists': 0, 'Line Engaged Runs': 0, 'Tackle Breaks': 3, 'Hit Ups': 0, 'Play The Ball': 8, 'Average Play The Ball Speed': Decimal('3.22'), 'Dummy Half Runs': 1, 'Dummy Half Run Metres': 13, 'One on One Steal': 0, 'Offloads': 0, 'Dummy Passes': 1, 'Passes': 14, 'Receipts': 24, 'Passes To Run Ratio': Decimal('1.4'), 'Tackle Efficiency': Decimal('0.769'), 'Tackles Made': 10, 'Missed Tackles': 2, 'Ineffective Tackles': 1, 'Intercepts': 0, 'Kicks Defused': 2, 'Kicks': 0, 'Kicking Metres': 0, 'Forced Drop Outs': 0, 'Bomb Kicks': 0, 'Grubbers': 0, '40/20': 0, '20/40': 0, 'Cross Field Kicks': 0, 'Kicked Dead': 0, 'Errors': 1, 'Handling Errors': 1, 'One on One Lost': 0, 'Penalties': 1, 'Ruck Infringements': 1, 'On Report': 0, 'Sin Bins': 0, 'Send Offs': 0, 'Stint One': 80, 'Stint Two': 0}
+First score map: {'Back': {'tries': 0, 'sin_bins': 0, 'send_offs': 0, 'involvement_try': False, 'positional_try': False, 'mia': False, 'concede': False}, 'kicker': {'goals': 0, 'field_goals': 0}}
+Stats update complete, scoring lineups
+Match: TT1 v BWS
+TT1 fielded 17 players
+BWS fielded 15 players
+Match: TT3 v ITC
+TT3 fielded 17 players
+ITC fielded 17 players
+Match: WOL v TT2
+WOL fielded 16 players
+TT2 fielded 17 players
+Lineup scoring complete
+Execution took 0:02:19.073374

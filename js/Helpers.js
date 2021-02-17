@@ -125,9 +125,13 @@ export function DisplayPlayerInfo(player, round) {
         document.getElementById('playerInfoDropButton').onclick = function() {
             DisplayFeedback('Confirm', 'Are you sure you want to drop ' + player.player_name + '?',
             true, async function() {
-                await DropPlayers(GetActiveUserTeamShort(), [player]);
-                DisplayFeedback('Success', player.player_name + ' has been dropped from your squad.',
-                true, function() { location.href = 'index.html' }, false);
+                try {
+                    await DropPlayers(GetActiveUserTeamShort(), [player]);
+                    DisplayFeedback('Success', player.player_name + ' has been dropped from your squad.',
+                    true, function() { location.href = 'index.html' }, false);
+                } catch (err) {
+                    DisplayFeedback('Error', err + (err.stack ? '<p>' + err.stack + '</p>': ''));                    
+                }                
             });
         };
         document.getElementById('playerInfoDropButton').hidden = false; //Show the drop button
@@ -141,13 +145,17 @@ export function DisplayPlayerInfo(player, round) {
         document.getElementById('playerInfoPickButton').onclick = function () {
             DisplayFeedback('Confirm', 'Are you sure you want to scoop ' + player.player_name + '?',
             true, async function() {
-                let playerSquad = await GetPlayersFromXrlTeam(GetActiveUserTeamShort());
-                if (playerSquad.length > 17) {
-                    DisplayFeedback('Sorry!', "Your squad already has 18 players. You'll need to drop someone first.");
-                } else {
-                    await ScoopPlayers(GetActiveUserTeamShort(), [player]);
-                    DisplayFeedback('Success', player.player_name + ' has been added to your squad.',
-                    true, function() { location.href = 'index.html' }, false);
+                try {
+                    let playerSquad = await GetPlayersFromXrlTeam(GetActiveUserTeamShort());
+                    if (playerSquad.length > 17) {
+                        DisplayFeedback('Sorry!', "Your squad already has 18 players. You'll need to drop someone first.");
+                    } else {
+                        await ScoopPlayers(GetActiveUserTeamShort(), [player]);
+                        DisplayFeedback('Success', player.player_name + ' has been added to your squad.',
+                            true, function() { location.href = 'index.html' }, false);
+                    }
+                } catch (err) {
+                    DisplayFeedback('Error', err + (err.stack ? '<p>' + err.stack + '</p>': ''));
                 }
             });
         };
@@ -159,15 +167,20 @@ export function DisplayPlayerInfo(player, round) {
         document.getElementById('playerInfoWaiverButton').onclick = function () {
             DisplayFeedback('Confirm', 'Are you sure you want to add ' + player.player_name + ' to your waiver preferences?',
             true, async function() {
-                    let user = await GetActiveUserInfo(GetIdToken());
-                    if (user.waiver_preferences.includes(player.player_id)) {
-                        DisplayFeedback('Error', player.player_name + ' is already listed in your waiver preferences.');
-                    } else {
-                        user.waiver_preferences.push(player.player_id);
-                        await UpdateUserWaiverPreferences(user.username, user.waiver_preferences, user.provisional_drop);
-                        DisplayFeedback('Success', player.player_name + ' has been added to your waiver preferences. You can change the order of preferences in the Transfer Centre',
-                        true, null, false);
-                    }
+                    try {
+                        let user = await GetActiveUserInfo(GetIdToken());
+                        if (user.waiver_preferences.includes(player.player_id)) {
+                            DisplayFeedback('Error', player.player_name + ' is already listed in your waiver preferences.');
+                        } else {
+                            user.waiver_preferences.push(player.player_id);
+                            await UpdateUserWaiverPreferences(user.username, user.waiver_preferences, user.provisional_drop);
+                            DisplayFeedback('Success', player.player_name + ' has been added to your waiver preferences. You can change the order of preferences in the Transfer Centre',
+                                true, null, false);
+                        }
+                    } catch (err) {
+                        DisplayFeedback('Success', player.player_name + ' has been dropped from your squad.',
+                            true, function() { location.href = 'index.html' }, false);
+                    }   
             });
         };
         document.getElementById('playerInfoWaiverButton').hidden = false;

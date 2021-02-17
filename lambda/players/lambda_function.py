@@ -255,7 +255,7 @@ def lambda_handler(event, context):
                     #Remove them from any lineup for next round
                     table.delete_item(Key={
                         'pk': 'PLAYER#' + player['player_id'],
-                        'sk': 'LINEUP#' + next_round_number
+                        'sk': 'LINEUP#' + str(next_round_number)
                     })
                     #Update their XRL team property to 'On Waivers'. This prevents them from being scooped until
                     #they clear the next round of waivers

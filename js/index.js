@@ -9,7 +9,11 @@ window.onload = async function () {
         //Fetch all users data
         allUsers = await GetAllUsers();
         //Isolate active user from team cookie
-        user = allUsers.find(u => u.team_short == GetActiveUserTeamShort());
+        if (localStorage.getItem('activeUser') !== null) {
+            user = localStorage.getItem('activeUser';
+        } else {
+            user = allUsers.find(u => u.team_short == GetActiveUserTeamShort());
+        }
         //Load fixture data and display reliant sections
         LoadFixtureData();
         //Load the squad data and fill reliant sections
@@ -21,7 +25,7 @@ window.onload = async function () {
         document.getElementById('loading').hidden = true;
         document.getElementById('mainContent').hidden = false;
     } catch (error) {
-        DisplayFeedback(error, error.stack);
+        DisplayFeedback('Error', err + (err.stack ? '<p>' + err.stack + '</p>': ''));
     }
 }
 /**
@@ -51,84 +55,96 @@ async function LoadFixtureData() {
  * Loads and displays active user's squad, squad info and captain info
  */
 async function LoadSquadInfo() {
-    //Load squad
-    squad = await GetPlayersFromXrlTeam(user.team_short);
-    //Sort players
-    let sortedSquad = squad.sort(DefaultPlayerSort);
-    //Display squad and captain info
-    DisplaySquadInfo();
-    DisplayCaptainInfo();
-    //Display player table
-    PopulateSquadTable(sortedSquad);
+    try {
+        //Load squad
+        squad = await GetPlayersFromXrlTeam(user.team_short);
+        //Sort players
+        let sortedSquad = squad.sort(DefaultPlayerSort);
+        //Display squad and captain info
+        DisplaySquadInfo();
+        DisplayCaptainInfo();
+        //Display player table
+        PopulateSquadTable(sortedSquad);
+    } catch (err) {
+        DisplayFeedback('Error', err + (err.stack ? '<p>' + err.stack + '</p>': ''));
+    }
 }
 
 /**
  * Display's the active user's last XRL match (opponent, score, result)
  */
 function DisplayLastMatch() {
-    //Get user's match from last round's fixtures
-    if (lastMatch == undefined) { //If user didn't have a match in the last round, hide section and return
-        document.getElementById('lastMatchOpponent').innerText = 'None';
-        document.getElementById('lastMatchView').hidden = true;
-        return;
+    try {
+        //Get user's match from last round's fixtures
+        if (lastMatch == undefined) { //If user didn't have a match in the last round, hide section and return
+            document.getElementById('lastMatchOpponent').innerText = 'None';
+            document.getElementById('lastMatchView').hidden = true;
+            return;
+        }
+        document.getElementById('lastMatchView').hidden = false;
+        //Check if match was a homegame, find opponent and venue, display
+        let homeGame = lastMatch.home == user.team_short;
+        let opponent = homeGame ? lastMatch.away : lastMatch.home;
+        let ground = homeGame ? user.homeground : allUsers.find(u => u.team_short == opponent).homeground;
+        document.getElementById('lastMatchOpponent').innerText = opponent + ' @ ' + ground;
+        //Display score
+        document.getElementById('lastMatchScore').innerText = lastMatch.home_score + ' - ' + lastMatch.away_score;
+        //Work out result based on score and whether user's team was home or away
+        let result = lastMatch.home_score == lastMatch.away_score ? 'DRAW' : homeGame ? lastMatch.home_score > lastMatch.away_score ? 'WIN' : 'LOSS' : lastMatch.away_score > lastMatch.home_score ? 'WIN' : 'LOSS';
+        document.getElementById('lastMatchResult').style.color = result == 'WIN' ? 'green' : result == 'LOSS' ? '#c94d38' : 'orange'; 
+        document.getElementById('lastMatchResult').innerText = ' ' + result; 
+        //Give the 'View' button a href of fixture.html with query parameteres specifying round and match
+        document.getElementById('lastMatchView').href = `fixture.html?round=${currentRound.round_number - 1}&fixture=${lastMatch.home}-v-${lastMatch.away}`;
+    } catch (err) {
+        DisplayFeedback('Error', err + (err.stack ? '<p>' + err.stack + '</p>': ''));
     }
-    document.getElementById('lastMatchView').hidden = false;
-    //Check if match was a homegame, find opponent and venue, display
-    let homeGame = lastMatch.home == user.team_short;
-    let opponent = homeGame ? lastMatch.away : lastMatch.home;
-    let ground = homeGame ? user.homeground : allUsers.find(u => u.team_short == opponent).homeground;
-    document.getElementById('lastMatchOpponent').innerText = opponent + ' @ ' + ground;
-    //Display score
-    document.getElementById('lastMatchScore').innerText = lastMatch.home_score + ' - ' + lastMatch.away_score;
-    //Work out result based on score and whether user's team was home or away
-    let result = lastMatch.home_score == lastMatch.away_score ? 'DRAW' : homeGame ? lastMatch.home_score > lastMatch.away_score ? 'WIN' : 'LOSS' : lastMatch.away_score > lastMatch.home_score ? 'WIN' : 'LOSS';
-    document.getElementById('lastMatchResult').style.color = result == 'WIN' ? 'green' : result == 'LOSS' ? '#c94d38' : 'orange'; 
-    document.getElementById('lastMatchResult').innerText = ' ' + result; 
-    //Give the 'View' button a href of fixture.html with query parameteres specifying round and match
-    document.getElementById('lastMatchView').href = `fixture.html?round=${lastMatch.round_number}&fixture=${lastMatch.home}-v-${lastMatch.away}`;
 }
 /**
  * Displays the active user's current/next XRL match (opponent, live score)
  */
 function DisplayNextMatch() {
-    //Locate user's fixture in the next round
-    //let match = GetTeamFixture(user.team_short, nextMatch);
-    //If the user has no match in that round, display message and return
-    if (nextMatch == undefined) {
-        document.getElementById('nextMatchOpponent').innerText = 'No game this week.';
-        document.getElementById('nextMatchButton').hidden = true;
-        return;
+    try {
+        //Locate user's fixture in the next round
+        //let match = GetTeamFixture(user.team_short, nextMatch);
+        //If the user has no match in that round, display message and return
+        if (nextMatch == undefined) {
+            document.getElementById('nextMatchOpponent').innerText = 'No game this week.';
+            document.getElementById('nextMatchButton').hidden = true;
+            return;
+        }
+        //If the user's team is the home team, then it's a home game
+        let homeGame = nextMatch.home == user.team_short;
+        //If it's a homegame, the opponent is the away team, and vice versa
+        let opponent = homeGame ? nextMatch.away : nextMatch.home;
+        //If it's a homegame, the venue is the user's homeground, else it's the opponent's homeground
+        let ground = homeGame ? user.homeground : allUsers.find(u => u.team_short == opponent).homeground;
+        //Display opponent and venue
+        document.getElementById('nextMatchOpponent').innerText = opponent + ' @ ' + ground;
+        let status, color;
+        //Display and colourise the round status
+        if (currentRound.completed) { status = 'Completed'; color = 'green'; }
+        else if (currentRound.in_progress) { status = 'In Progress'; color = 'green'; }
+        else if (currentRound.active) { status = 'Active'; color = 'orange'; }
+        else { status = 'Inactive'; color = '#c94d38'; }
+        document.getElementById('nextMatchStatus').style.color = color;
+        document.getElementById('nextMatchStatus').innerText = 'Status: ' + status;    
+        if (!currentRound.in_progress) { //If the next round hasn't started yet, button should take user to lineup page
+            document.getElementById('nextMatchButton').href = `lineup.html`;
+            document.getElementById('nextMatchButton').innerText = 'Set Lineup';
+        } else { //If it is in progress, display the live score and set button to take user to match view
+            document.getElementById('nextMatchScore').innerText = nextMatch.home + ' ' + nextMatch.home_score + ' - ' + nextMatch.away_score + ' ' + nextMatch.away; 
+            document.getElementById('nextMatchScore').hidden = false; 
+            document.getElementById('nextMatchButton').href = `fixture.html?round=${currentRound.round_number}&fixture=${nextMatch.home}-v-${nextMatch.away}`;
+            document.getElementById('nextMatchButton').innerText = 'View';
+        }
+        if (nextMatch.completed) { //If round is completed, determine the result, colourise and display
+            let result = nextMatch.home_score == nextMatch.away_score ? 'DRAW' : homeGame ? nextMatch.home_score > nextMatch.away_score ? 'WIN' : 'LOSS' : nextMatch.away_score > nextMatch.home_score ? 'WIN' : 'LOSS';
+            document.getElementById('nextMatchResult').style.color = result == 'WIN' ? 'green' : result == 'LOSS' ? '#c94d38' : 'orange'; 
+            document.getElementById('nextMatchResult').innerText = ' ' + result;
+        } 
+    } catch (err) {
+        DisplayFeedback('Error', err + (err.stack ? '<p>' + err.stack + '</p>': ''));
     }
-    //If the user's team is the home team, then it's a home game
-    let homeGame = nextMatch.home == user.team_short;
-    //If it's a homegame, the opponent is the away team, and vice versa
-    let opponent = homeGame ? nextMatch.away : nextMatch.home;
-    //If it's a homegame, the venue is the user's homeground, else it's the opponent's homeground
-    let ground = homeGame ? user.homeground : allUsers.find(u => u.team_short == opponent).homeground;
-    //Display opponent and venue
-    document.getElementById('nextMatchOpponent').innerText = opponent + ' @ ' + ground;
-    let status, color;
-    //Display and colourise the round status
-    if (currentRound.completed) { status = 'Completed'; color = 'green'; }
-    else if (currentRound.in_progress) { status = 'In Progress'; color = 'green'; }
-    else if (currentRound.active) { status = 'Active'; color = 'orange'; }
-    else { status = 'Inactive'; color = '#c94d38'; }
-    document.getElementById('nextMatchStatus').style.color = color;
-    document.getElementById('nextMatchStatus').innerText = 'Status: ' + status;    
-    if (!currentRound.in_progress) { //If the next round hasn't started yet, button should take user to lineup page
-        document.getElementById('nextMatchButton').href = `lineup.html`;
-        document.getElementById('nextMatchButton').innerText = 'Set Lineup';
-    } else { //If it is in progress, display the live score and set button to take user to match view
-        document.getElementById('nextMatchScore').innerText = nextMatch.home + ' ' + nextMatch.home_score + ' - ' + nextMatch.away_score + ' ' + nextMatch.away; 
-        document.getElementById('nextMatchScore').hidden = false; 
-        document.getElementById('nextMatchButton').href = `fixture.html?round=${currentRound.round_number}&fixture=${nextMatch.home}-v-${nextMatch.away}`;
-        document.getElementById('nextMatchButton').innerText = 'View';
-    }
-    if (nextMatch.completed) { //If round is completed, determine the result, colourise and display
-        let result = nextMatch.home_score == nextMatch.away_score ? 'DRAW' : homeGame ? nextMatch.home_score > nextMatch.away_score ? 'WIN' : 'LOSS' : nextMatch.away_score > nextMatch.home_score ? 'WIN' : 'LOSS';
-        document.getElementById('nextMatchResult').style.color = result == 'WIN' ? 'green' : result == 'LOSS' ? '#c94d38' : 'orange'; 
-        document.getElementById('nextMatchResult').innerText = ' ' + result;
-    } 
 }
 /**
  * Displays the active user's inbox
@@ -174,7 +190,7 @@ function DisplayInbox() {
             inboxBody.appendChild(messageRow);
         });
     } catch (err) {
-        DisplayFeedback(err, err.stack);
+        DisplayFeedback('Error', err + (err.stack ? '<p>' + err.stack + '</p>': ''));
     }
 }
 /**
@@ -193,66 +209,78 @@ function deleteMessage(messageBody) {
         //Display the updated inbox
         DisplayInbox();
     } catch (err) {
-        DisplayFeedback(err, err.stack);
+        DisplayFeedback('Error', err + (err.stack ? '<p>' + err.stack + '</p>': ''));
     }
 }
 /**
  * Displays how many powerplays user has and how often different players have been captained
  */
 function DisplayCaptainInfo() {
-    //Display powerplay count
-    document.getElementById('powerplayCount').innerText = user.powerplays;
-    //Iterate through players who have been captain at least once
-    squad.filter(p => p.times_as_captain > 0).forEach(p => {
-        //Add a record to the captain count list
-        document.getElementById('captainCountList').innerHTML += `<li>${p.player_name}: ${p.times_as_captain}</li>`;
-    });
+    try {
+        //Display powerplay count
+        document.getElementById('powerplayCount').innerText = user.powerplays;
+        //Iterate through players who have been captain at least once
+        squad.filter(p => p.times_as_captain > 0).forEach(p => {
+            //Add a record to the captain count list
+            document.getElementById('captainCountList').innerHTML += `<li>${p.player_name}: ${p.times_as_captain}</li>`;
+        });
+    } catch (err) {
+        DisplayFeedback('Error', err + (err.stack ? '<p>' + err.stack + '</p>': ''));
+    }
 }
 /**
  * Displays info about the makeup of the user's squad (number of players, number in each position)
  */
 function DisplaySquadInfo() {
-    //Display the number of players in the squad
-    document.getElementById('squadCount').innerText = squad.length;
-    //Filter squad array into backs, playmakers and forwards
-    let backs = squad.filter(p => p.position == 'Back' || p.position2 == 'Back');
-    let playmakers = squad.filter(p => p.position == 'Playmaker' || p.position2 == 'Playmaker');
-    let forwards = squad.filter(p => p.position == 'Forward' || p.position2 == 'Forward');
-    //Display counts of those positions
-    document.getElementById('backsCount').innerText = 'Backs: ' + backs.length;
-    document.getElementById('playmakersCount').innerText = 'Playmakers: ' + playmakers.length;
-    document.getElementById('forwardsCount').innerText = 'Forwards: ' + forwards.length;
-    //Find players with more than one position and indicate if there are some
-    let duals = squad.filter(p => p.position2 != '');
-    if (duals.length == 1)
-        document.getElementById('positionCounts').innerHTML += `<br />Includes 1 dual-position player`;
-    else if (duals.length > 1)
-        document.getElementById('positionCounts').innerHTML += `<br />Includes ${duals.length} dual-position players`;
-    //If squad size is less than maximum (18) and the competition hasn't started yet, display the button redirecting to the pick players page
-    if (squad.length < 18 && currentRound.round_number == 1) {
-        document.getElementById('pickPlayersLink').hidden = false;
+    try {
+        //Display the number of players in the squad
+        document.getElementById('squadCount').innerText = squad.length;
+        //Filter squad array into backs, playmakers and forwards
+        let backs = squad.filter(p => p.position == 'Back' || p.position2 == 'Back');
+        let playmakers = squad.filter(p => p.position == 'Playmaker' || p.position2 == 'Playmaker');
+        let forwards = squad.filter(p => p.position == 'Forward' || p.position2 == 'Forward');
+        //Display counts of those positions
+        document.getElementById('backsCount').innerText = 'Backs: ' + backs.length;
+        document.getElementById('playmakersCount').innerText = 'Playmakers: ' + playmakers.length;
+        document.getElementById('forwardsCount').innerText = 'Forwards: ' + forwards.length;
+        //Find players with more than one position and indicate if there are some
+        let duals = squad.filter(p => p.position2 != '');
+        if (duals.length == 1)
+            document.getElementById('positionCounts').innerHTML += `<br />Includes 1 dual-position player`;
+        else if (duals.length > 1)
+            document.getElementById('positionCounts').innerHTML += `<br />Includes ${duals.length} dual-position players`;
+        //If squad size is less than maximum (18) and the competition hasn't started yet, display the button redirecting to the pick players page
+        if (squad.length < 18 && currentRound.round_number == 1) {
+            document.getElementById('pickPlayersLink').hidden = false;
+        }
+    } catch (err) {
+        DisplayFeedback('Error', err + (err.stack ? '<p>' + err.stack + '</p>': ''));
     }
 }
 /**
  * Displays general info about the active user's team (name, owner, stats)
  */
 function DisplayTeamInfo() {
-    //Display team name, logo and owner
-    document.getElementById('teamNameDisplay').innerHTML = user.team_name;
-    document.getElementById('teamLogo').src = '/static/' + user.team_short + '.png';
-    document.getElementById('teamOwner').innerText = user.username;
-    //Sort users into ladder
-    let ladder = SortLeageTable(allUsers);
-    //Get active user's position in the ladder
-    let position = ladder.findIndex(u => u.username == user.username) + 1;
-    //Display team position and stats
-    document.getElementById('teamPosition').innerText = GetOrdinal(position) + ' (' + user.stats.points + ' points)';
-    document.getElementById('teamWins').innerText = user.stats.wins;
-    document.getElementById('teamDraws').innerText = user.stats.draws;
-    document.getElementById('teamLosses').innerText = user.stats.losses;
-    document.getElementById('teamFor').innerText = user.stats.for;
-    document.getElementById('teamAgainst').innerText = user.stats.against;
-    document.getElementById('teamPD').innerText = user.stats.for - user.stats.against;
+    try {
+        //Display team name, logo and owner
+        document.getElementById('teamNameDisplay').innerHTML = user.team_name;
+        document.getElementById('teamLogo').src = '/static/' + user.team_short + '.png';
+        document.getElementById('teamOwner').innerText = user.username;
+        //Sort users into ladder
+        let ladder = SortLeageTable(allUsers);
+        //Get active user's position in the ladder
+        let position = ladder.findIndex(u => u.username == user.username) + 1;
+        //Display team position and stats
+        document.getElementById('teamPosition').innerText = GetOrdinal(position) + ' (' + user.stats.points + ' points)';
+        document.getElementById('teamWins').innerText = user.stats.wins;
+        document.getElementById('teamDraws').innerText = user.stats.draws;
+        document.getElementById('teamLosses').innerText = user.stats.losses;
+        document.getElementById('teamFor').innerText = user.stats.for;
+        document.getElementById('teamAgainst').innerText = user.stats.against;
+        document.getElementById('teamPD').innerText = user.stats.for - user.stats.against;
+    } catch (err) {
+        DisplayFeedback('Error', err + (err.stack ? '<p>' + err.stack + '</p>': ''));
+    }
 }
 /**
  * Displays the active user's squad in the homepage table
@@ -300,7 +328,7 @@ function PopulateSquadTable(playerData) {
             tableBody.appendChild(tr);
         });
     } catch (err) {
-        DisplayFeedback(err, err.stack);
+        DisplayFeedback('Error', err + (err.stack ? '<p>' + err.stack + '</p>': ''));
     }
 }
 

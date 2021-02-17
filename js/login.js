@@ -25,7 +25,7 @@ async function login(event) {
         document.cookie = `round=${roundInfo.round_number}; expires=${expiry.toUTCString()}; Secure`;
         //Get user's data and set team acronym as team cookie
         let activeUser = await GetActiveUserInfo(idToken);
-        localStorage.setItem('activeUser', JSON.stringify(activeUser));
+        sessionStorage.setItem('activeUser', JSON.stringify(activeUser));
         document.cookie = `team=${activeUser.team_short}; expires=${expiry.toUTCString()}; Secure`;
         document.getElementById('loading').hidden = true;
         //Redirect to home page

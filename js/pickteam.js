@@ -1,4 +1,4 @@
-import { GetAllPlayers, GetActiveUserInfo, DropPlayers, ScoopPlayers } from "./ApiFetch.js";
+import { GetAllPlayers, GetActiveUserInfo, DropPlayers, ScoopPlayers, GetIdToken } from "./ApiFetch.js";
 import { DisplayFeedback } from "./Helpers.js";
 
 let user, squad, players, allPlayers, modifiedSquad;
@@ -7,7 +7,7 @@ const droppedPlayers = [];
 
 window.onload = async function () {
     try {
-        user = await GetActiveUserInfo(idToken);
+        user = await GetActiveUserInfo(GetIdToken());
         allPlayers = await GetAllPlayers();
         squad = allPlayers.filter(p => p.xrl_team == user.team_short);
         modifiedSquad = squad;

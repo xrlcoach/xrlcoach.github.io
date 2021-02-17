@@ -11,7 +11,12 @@ window.onload = async function() {
         console.log("Page load start at " + new Date());
         //Get current active round number and info
         roundToDisplay = getCookie('round');
-        currentRound = await GetRoundInfoFromCookie();
+        if(sessionStorage.getItem('roundStatus') !== null) {
+            currentRound = JSON.parse(sessionStorage.getItem('roundStatus'));
+        } else {
+            currentRound = await GetCurrentRoundStatus();
+            sessionStorage.setItem('roundStatus', JSON.stringify(currentRound));
+        }  
         console.log("Round data loaded at " + new Date());
         //Populate round filter options, starting at current round and going backwards
         for (let i = roundToDisplay; i > 0; i--) {
@@ -20,7 +25,12 @@ window.onload = async function() {
             document.getElementById('roundSelect').appendChild(option);
         }
         //Load user data
-        allUsers = await GetAllUsers();
+        if(sessionStorage.getItem('allUsers') !== null) {
+            allUsers = JSON.parse(sessionStorage.getItem('allUsers'));
+        } else {
+            allUsers = await GetAllUsers();
+            sessionStorage.setItem('allUsers', JSON.stringify(allUsers));
+        }  
         console.log("User data loaded at " + new Date());
         //Populate XRL team filter options
         allUsers.forEach(u => {

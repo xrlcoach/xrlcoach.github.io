@@ -1,7 +1,7 @@
 /* Script controlling lineup.html, the page where the user sets their lineup for the next round */
 
 import { GetActiveUserInfo, GetIdToken, GetLineup, GetLineupByTeamAndRound, GetNextRoundStatus, GetPlayersFromXrlTeam, GetTeamFixtureByRound, SetLineup } from './ApiFetch.js'
-import { DisplayFeedback, PositionMap } from './Helpers.js';
+import { DisplayFeedback, GetTeamFixture, PositionMap } from './Helpers.js';
 
 /**
  * The active user's id token
@@ -47,7 +47,13 @@ window.onload = async () => {
             sessionStorage.setItem('activeUser', JSON.stringify(user));
         }
         //Display match info
-        fixture = await GetTeamFixtureByRound(user.team_short, nextRound.round_number);
+        if (sessionStorage.getItem('allFixtures') !== null) {
+            let allRounds = JSON.parse(sessionStorage.getItem('allFixtures'));
+            let next = allFixtures.find(r => r.round_number == nextRound.round_number);
+            fixture = next.fixtures.find(m => m.home == user.team_short || m.away == user.team_short);
+        } else {
+            fixture = await GetTeamFixtureByRound(user.team_short, nextRound.round_number);
+        }          
         if (fixture == undefined) {
             document.getElementById('loading').hidden = true;
             DisplayFeedback('WTF?', 'No match this week. Please check back later.');
@@ -72,7 +78,12 @@ window.onload = async () => {
 async function LoadData() {    
     try {
         //Get player data for the user's XRL squad
-        squad = await GetPlayersFromXrlTeam(user.team_short);
+        if (sessionStorage.getItem('userSquad') !== null) {
+            squad = JSON.parse(sessionStorage.getItem('userSquad'));
+        } else {
+            squad = await GetPlayersFromXrlTeam(user.team_short);
+            sessionStorage.setItem('userSquad', JSON.stringify(squad));
+        }     
         //Get the user's lineup data for the current round, if already set
         lineup = await GetLineup(idToken);
         console.log(lineup.length);

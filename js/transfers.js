@@ -23,7 +23,12 @@ window.onload = async () => {
             sessionStorage.setItem('activeUser', JSON.stringify(user));
         }
         //Load active user's squad data
-        squad = await GetPlayersFromXrlTeam(user.team_short);
+        if (sessionStorage.getItem('userSquad') !== null) {
+            squad = JSON.parse(sessionStorage.getItem('userSquad'));
+        } else {
+            squad = await GetPlayersFromXrlTeam(user.team_short);
+            sessionStorage.setItem('userSquad', JSON.stringify(squad));
+        }     
         //Call functions to load rest of data asynchronously
         DisplayUserWaiverInfo();        
         FillWaiverSelect();

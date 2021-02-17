@@ -73,7 +73,12 @@ async function LoadFixtureData() {
 async function LoadSquadInfo() {
     try {
         //Load squad
-        squad = await GetPlayersFromXrlTeam(user.team_short);
+        if (sessionStorage.getItem('userSquad') !== null) {
+            squad = JSON.parse(sessionStorage.getItem('userSquad'));
+        } else {
+            squad = await GetPlayersFromXrlTeam(user.team_short);
+            sessionStorage.setItem('userSquad', JSON.stringify(squad));
+        }        
         //Sort players
         let sortedSquad = squad.sort(DefaultPlayerSort);
         //Display squad and captain info

@@ -19,11 +19,21 @@ let users;
 window.onload = async function() {
     try {
         //Retrieve data for all rounds
-        let fixtures = await GetAllFixtures();
-        //Sort by round number
-        draw = fixtures.sort((a, b) => a.round_number - b.round_number);
+        if (sessionStorage.getItem('allFixtures') !== null) {
+            draw = JSON.parse(sessionStorage.getItem('allFixtures'));
+        } else {
+            let fixtures = await GetAllFixtures();
+            //Sort by round number
+            draw = fixtures.sort((a, b) => a.round_number - b.round_number);
+            sessionStorage.setItem('allFixtures', JSON.stringify(draw));
+        }        
         //Retrieve all users' data
-        users = await GetAllUsers();
+        if(sessionStorage.getItem('allUsers') !== null) {
+            users = JSON.parse(sessionStorage.getItem('allUsers'));
+        } else {
+            users = await GetAllUsers();
+            sessionStorage.setItem('allUsers', JSON.stringify(users));
+        }  
         console.log(draw);
         //If draw has not been created yet, alert user and stop loading process.
         if (draw.length == 0) {

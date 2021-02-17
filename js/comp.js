@@ -10,7 +10,12 @@ let users;
 window.onload = async function() {
     try {
         //Retrieve users' data
-        users = await GetAllUsers();
+        if(sessionStorage.getItem('allUsers') !== null) {
+            users = JSON.parse(sessionStorage.getItem('allUsers'));
+        } else {
+            users = await GetAllUsers();
+            sessionStorage.setItem('allUsers', JSON.stringify(users));
+        }  
         //Sort users first by points, point difference, then by points for
         users = users.sort(function(u1, u2) {
             if (u2.stats.points != u1.stats.points) {

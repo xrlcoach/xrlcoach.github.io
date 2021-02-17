@@ -24,9 +24,19 @@ window.onload = async function() {
                 }
             }
         } else { //If no query, get user's current match
-            roundInfo = await GetCurrentRoundStatus();
+            if(sessionStorage.getItem('roundStatus') !== null) {
+                roundInfo = JSON.parse(sessionStorage.getItem('roundStatus'));
+            } else {
+                roundInfo = await GetCurrentRoundStatus();
+                sessionStorage.setItem('roundStatus', JSON.stringify(roundInfo));
+            } 
             roundNumber = roundInfo.round_number;
-            match = await GetTeamFixtureByRound(GetActiveUserTeamShort(), roundNumber);
+            if (sessionStorage.getItem('currentMatch') !== null) {
+                match = JSON.parse(sessionStorage.getItem('currentMatch'));
+            } else {
+                match = await GetTeamFixtureByRound(GetActiveUserTeamShort(), roundNumber);
+                sessionStorage.setItem('currentMatch', JSON.stringify(match));
+            }            
         }
         //If there is no such match to display (draw not done, incorrect query), display message and stop loading
         if (match == undefined) {

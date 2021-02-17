@@ -47,7 +47,12 @@ async function LoadFixtureData() {
     //allRounds = await GetAllFixtures();
     //Isolate current active round
     try {
-        nextMatch = await GetTeamFixtureByRound(user.team_short, GetCurrentRoundNumber());
+        if (sessionStorage.getItem('currentMatch') !== null) {
+            nextMatch = JSON.parse(sessionStorage.getItem('currentMatch'));
+        } else {
+            nextMatch = await GetTeamFixtureByRound(user.team_short, GetCurrentRoundNumber());
+            sessionStorage.setItem('currentMatch', JSON.stringify(nextMatch));
+        }        
     } catch (err) {
         nextMatch = undefined;
     }

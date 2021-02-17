@@ -33,9 +33,19 @@ let user, squad, lineup, backs, forwards, playmakers, powerplay, nextRound, fixt
 window.onload = async () => {
     try {
         //Retrieve info for the next round
-        nextRound = await GetNextRoundStatus();
+        if (sessionStorage.getItem('nextRoundStatus') !== null) {
+            nextRound = JSON.parse(sessionStorage.getItem('nextRoundStatus'));
+        } else {
+            nextRound = await GetNextRoundStatus();
+            sessionStorage.setItem('nextRoundStatus', JSON.stringify(nextRound));
+        }        
         //Get the active user's data
-        user = await GetActiveUserInfo(idToken);
+        if (sessionStorage.getItem('activeUser') !== null) {
+            user = JSON.parse(sessionStorage.getItem('activeUser'));
+        } else {
+            user = GetActiveUserInfo(idToken);
+            sessionStorage.setItem('activeUser', JSON.stringify(user));
+        }
         //Display match info
         fixture = await GetTeamFixtureByRound(user.team_short, nextRound.round_number);
         if (fixture == undefined) {

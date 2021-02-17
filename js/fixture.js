@@ -20,7 +20,7 @@ window.onload = async function() {
                 }
                 if (q.startsWith('fixture')) {
                     let fixture = q.split('=')[1];
-                    match = GetTeamFixtureByRound(fixture.split('-v-')[0], roundNumber);
+                    match = await GetTeamFixtureByRound(fixture.split('-v-')[0], roundNumber);
                 }
             }
         } else { //If no query, get user's current match

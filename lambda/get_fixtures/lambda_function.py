@@ -57,7 +57,7 @@ def lambda_handler(event, context):
                 'body': json.dumps(replace_decimals(data))
             }
         if method == 'POST':
-            body = event['body']
+            body = json.loads(event['body'])
             operation = body['operation']
             if operation == 'get_current_round':
                 active_rounds = table.query(
@@ -113,7 +113,7 @@ def lambda_handler(event, context):
                 round_number = body['round_number']
                 team_short = body['team_short']
                 data = table.query(
-                    KeyConditionExpression=Key('pk').eq('ROUND#' + round_number) & Key('sk').begins_with('FIXTURE#'),
+                    KeyConditionExpression=Key('pk').eq('ROUND#' + str(round_number)) & Key('sk').begins_with('FIXTURE#'),
                     FilterExpression=Attr('home').eq(team_short) | Attr('away').eq(team_short)
                 )['Items'][0]
                 return {

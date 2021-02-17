@@ -41,7 +41,7 @@ window.onload = async function() {
             return;
         }
         //Isolate curent active round and display heading
-        roundToDisplay = GetActiveRoundFromFixtures(fixtures);
+        roundToDisplay = GetActiveRoundFromFixtures(draw);
         console.log('Current round: ' + roundToDisplay.round_number);
         //Populate round number dropdown options
         draw.forEach(r => {

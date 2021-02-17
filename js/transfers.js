@@ -169,7 +169,7 @@ async function DisplayTradeOffers() {
             viewCol.className = 'col-lg-2';
             let viewButton = document.createElement('button');
             viewButton.className = 'btn btn-success mx-2';
-            viewButton.value = offer.offer_id;
+            viewButton.value = offer.pk;
             viewButton.innerText = 'View';
             viewButton.onclick = function() {
                 DisplayOfferDetails(this.value);
@@ -416,12 +416,12 @@ window.submitWaiverPreferences = submitWaiverPreferences;
  * Displays the a modal with the details of a trade offer
  * @param {String} offerId 
  */
-async function DisplayOfferDetails(offerId) {
+async function DisplayOfferDetails(offerPk) {
     try {
         //Find and activate modal
         let tradeInfoModal = new bootstrap.Modal(document.getElementById('tradeInfo'));
         //Find trade offer in global array
-        let offer = tradeOffers.find(t => t.offer_id == offerId);
+        let offer = tradeOffers.find(t => t.pk == offerPk);
         //Find and display data for users involved
         let offeredBy = allUsers.find(u => u.username == offer.offered_by);
         let offeredTo = allUsers.find(u => u.username == offer.offered_to);
@@ -464,7 +464,7 @@ async function DisplayOfferDetails(offerId) {
                 //Program reject button to reject the offer
                 rejectButton.onclick = async function() {
                     try {
-                        await ProcessTradeOffer(offer.offer_id, false);                        
+                        await ProcessTradeOffer(offer.pk, false);                        
                         DisplayFeedback('Rejected', 'Trade offer rejected.', true, function() {location.reload()}, false);
                     } catch (err) {
                         DisplayFeedback('Error', err + (err.stack ? '<p>' + err.stack + '</p>': ''));
@@ -476,7 +476,7 @@ async function DisplayOfferDetails(offerId) {
                 acceptButton.onclick = function() {
                     DisplayFeedback('Confirm', 'Are you sure you want to accept this trade offer?', true, async function() {
                         try {
-                            await ProcessTradeOffer(offer.offer_id, true);                        
+                            await ProcessTradeOffer(offer.pk, true);                        
                             DisplayFeedback('Success', 'Trade completed!', true, function() {location.reload()}, false);
                         } catch (err) {
                             DisplayFeedback('Error', err + (err.stack ? '<p>' + err.stack + '</p>': ''));
@@ -497,7 +497,7 @@ async function DisplayOfferDetails(offerId) {
                 withdrawButton.onclick = function() {
                     DisplayFeedback('Confirm', 'Are you sure you want to withdraw this trade offer?', true, async function() {
                         try {
-                            await WithdrawTradeOffer(offer.offer_id);                        
+                            await WithdrawTradeOffer(offer.pk);                        
                             DisplayFeedback('Success', 'Trade offer withdrawn.', true, function() {location.reload()}, false);
                         } catch (err) {
                             DisplayFeedback('Error', err + (err.stack ? '<p>' + err.stack + '</p>': ''));

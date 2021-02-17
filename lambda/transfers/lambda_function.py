@@ -227,7 +227,7 @@ def lambda_handler(event, context):
             try:
                 table.update_item(
                     Key={
-                        'pk': 'OFFER#' + body['offer_id'],
+                        'pk': body['offer_id'],
                         'sk': 'OFFER'
                     },
                     UpdateExpression="set offer_status=:w",
@@ -268,7 +268,7 @@ def lambda_handler(event, context):
                 next_round_number = round_number if not active_round['in_progress'] else round_number + 1
                 outcome = body['outcome']
                 offer = table.get_item(Key={
-                    'pk': 'OFFER#' + body['offer_id'],
+                    'pk': body['offer_id'],
                     'sk': 'OFFER'
                 })['Item']
                 if offer['offer_status'] != 'Pending':

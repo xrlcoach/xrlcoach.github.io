@@ -512,7 +512,7 @@ export async function GetUserTradeOffers(username) {
     return data;
 }
 
-export async function ProcessTradeOffer(offerId, accepted = false) {
+export async function ProcessTradeOffer(offerPk, accepted = false) {
     let outcome = accepted ? 'Accepted': 'Rejected';
     const response = await fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/transfers', {
         method: 'POST',
@@ -521,7 +521,7 @@ export async function ProcessTradeOffer(offerId, accepted = false) {
         },
         body: JSON.stringify({
             'operation': 'process_trade',
-            'offer_id': offerId,
+            'offer_id': offerPk,
             'outcome': outcome
         })
     });
@@ -532,7 +532,7 @@ export async function ProcessTradeOffer(offerId, accepted = false) {
     return data;
 }
 
-export async function WithdrawTradeOffer(offerId) {
+export async function WithdrawTradeOffer(offerPk) {
     const response = await fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/transfers', {
         method: 'POST',
         headers: {
@@ -540,7 +540,7 @@ export async function WithdrawTradeOffer(offerId) {
         },
         body: JSON.stringify({
             'operation': 'withdraw_trade',
-            'offer_id': offerId
+            'offer_id': offerPk
         })
     });
     const data = await response.json();

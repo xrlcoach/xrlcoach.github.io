@@ -22,6 +22,7 @@ async function login(event) {
         document.cookie = `id=${idToken}; expiry=${expiry.toUTCString()}; Secure`;
         //Get current active round and set as round cookie
         let roundInfo = await GetCurrentRoundStatus();
+        sessionStorage.setItem('roundStatus', JSON.stringify(roundInfo));
         document.cookie = `round=${roundInfo.round_number}; expires=${expiry.toUTCString()}; Secure`;
         //Get user's data and set team acronym as team cookie
         let activeUser = await GetActiveUserInfo(idToken);

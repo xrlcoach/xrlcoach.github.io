@@ -5,14 +5,25 @@ let squad, allUsers, user, currentRound, lastMatch, nextMatch;
 
 window.onload = async function () {
     try {
-        currentRound = await GetCurrentRoundStatus();
+        if(sessionStorage.getItem('roundStatus') !== null) {
+            currentRound = JSON.parse(sessionStorage.getItem('roundStatus'));
+        } else {
+            currentRound = await GetCurrentRoundStatus();
+            sessionStorage.setItem('roundStatus', JSON.stringify(currentRound));
+        }        
         //Fetch all users data
-        allUsers = await GetAllUsers();
+        if(sessionStorage.getItem('allUsers') !== null) {
+            allUsers = JSON.parse(sessionStorage.getItem('allUsers'));
+        } else {
+            allUsers = await GetAllUsers();
+            sessionStorage.setItem('allUsers', JSON.stringify(allUsers));
+        }        
         //Isolate active user from team cookie
         if (sessionStorage.getItem('activeUser') !== null) {
-            user = sessionStorage.getItem('activeUser');
+            user = JSON.parse(sessionStorage.getItem('activeUser'));
         } else {
             user = allUsers.find(u => u.team_short == GetActiveUserTeamShort());
+            sessionStorage.setItem('activeUser', JSON.stringify(user));
         }
         //Load fixture data and display reliant sections
         LoadFixtureData();

@@ -339,7 +339,7 @@ function scoreAppearanceStats(stats) {
  * and loads results into table
  * @param {*} event 
  */
-function searchPlayer(event) {
+async function searchPlayer(event) {
     try {
         event.preventDefault();
         //Get entered search expression

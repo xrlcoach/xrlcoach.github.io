@@ -1,6 +1,6 @@
 import boto3
 from boto3.dynamodb.conditions import Key, Attr
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 import json
 import decimal
 
@@ -142,7 +142,7 @@ def lambda_handler(event, context):
                 #         'offer_status': 'Pending'
                 #     }
                 # )
-                offer_time = datetime.now()
+                offer_time = datetime.now() + timedelta(hours=11)
                 table.put_item(
                     Item={
                         'pk': 'OFFER#' + body['offered_by'] + '#' + str(offer_time),
@@ -180,7 +180,7 @@ def lambda_handler(event, context):
                 user_offered_to = table.get_item(Key={'pk': 'USER#' + body['offered_to'], 'sk': 'DETAILS'})['Item']
                 user_offered_to['inbox'].append({
                     'sender': user_offered_by['team_name'],
-                    'datetime': datetime.now().strftime('%c'),
+                    'datetime': offer_time.strftime('%c'),
                     'subject': 'Trade Offer',
                     'message': user_offered_by['team_name'] + " has offered you a trade. You can view the offer in the Transfer Centre."
                 })
@@ -302,6 +302,7 @@ def lambda_handler(event, context):
                     raise Exception("Trade has already been processed/withdrawn.")
                 user_offered_by = table.get_item(Key={'pk': 'USER#' + offer['offered_by'], 'sk': 'DETAILS'})["Item"]
                 user_offered_to = table.get_item(Key={'pk': 'USER#' + offer['offered_to'], 'sk': 'DETAILS'})['Item']
+                transfer_date = datetime.now() + timedelta(hours=11)
                 if outcome == 'Accepted':
                     print(f"{user_offered_to} has accepted the trade offer from {user_offered_by}. Checking squad sizes.")
                     user_offered_by_squad = table.query(
@@ -367,7 +368,7 @@ def lambda_handler(event, context):
                                 withdrawn_offer_target = table.get_item(Key={'pk': 'USER#' + trade['offered_to'], 'sk': 'DETAILS'})["Item"]
                                 withdrawn_offer_user['inbox'].append({
                                     "sender": 'XRL Admin',
-                                    "datetime": datetime.now().strftime("%c"),
+                                    "datetime": transfer_date.strftime("%c"),
                                     "subject": "Trade Offer Withdrawn",
                                     "message": f"Your trade offer to {withdrawn_offer_target['team_name']} was withdrawn because one of the players signed for another club."
                                 })
@@ -376,7 +377,6 @@ def lambda_handler(event, context):
                                     UpdateExpression="set inbox=:i",
                                     ExpressionAttributeValues={':i': withdrawn_offer_user['inbox']}
                                 )
-                        transfer_date = datetime.now()
                         table.put_item(
                             Item={
                                 'pk': 'TRANSFER#' + user_offered_by['username'] + str(transfer_date),
@@ -433,7 +433,7 @@ def lambda_handler(event, context):
                                 withdrawn_offer_target = table.get_item(Key={'pk': 'USER#' + trade['offered_to'], 'sk': 'DETAILS'})["Item"]
                                 withdrawn_offer_user['inbox'].append({
                                     "sender": 'XRL Admin',
-                                    "datetime": datetime.now().strftime("%c"),
+                                    "datetime": transfer_date.strftime("%c"),
                                     "subject": "Trade Offer Withdrawn",
                                     "message": f"Your trade offer to {withdrawn_offer_target['team_name']} was withdrawn because one of the players signed for another club."
                                 })
@@ -442,7 +442,6 @@ def lambda_handler(event, context):
                                     UpdateExpression="set inbox=:i",
                                     ExpressionAttributeValues={':i': withdrawn_offer_user['inbox']}
                                 )
-                        transfer_date = datetime.now()
                         table.put_item(
                             Item={
                                 'pk': 'TRANSFER#' + user_offered_to['username'] + str(transfer_date),
@@ -473,7 +472,7 @@ def lambda_handler(event, context):
                     )                 
                     user_offered_by_message = {
                         "sender": user_offered_to['team_name'],
-                        "datetime": datetime.now().strftime("%c"),
+                        "datetime": transfer_date.strftime("%c"),
                         "subject": "Trade Accepted",
                         "message": "You've got a deal."
                     }
@@ -481,7 +480,7 @@ def lambda_handler(event, context):
                     print(f"{user_offered_to} has rejected the trade offer from {user_offered_by}.")
                     user_offered_by_message = {
                         "sender": user_offered_to['team_name'],
-                        "datetime": datetime.now().strftime("%c"),
+                        "datetime": transfer_date.strftime("%c"),
                         "subject": "Trade Rejected",
                         "message": "Tell him he's dreaming."
                     }

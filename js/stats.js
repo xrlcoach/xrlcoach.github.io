@@ -342,8 +342,16 @@ function scoreAppearanceStats(stats) {
 async function searchPlayer(event) {
     try {
         event.preventDefault();
+        document.getElementById('filterLoading').hidden = false;
+        //Initialise loading message
+        let message = 'Searching ';
+        message += displayedStats ? 'within results for ' : 'all players for ';
         //Get entered search expression
         let search = document.getElementById('playerSearch').value.toLowerCase();
+        message += search + '...';
+        //Show loading message
+        document.getElementById('filterMessage').innerText = message;
+        document.getElementById('filterMessage').hidden = false;
         let result;
         if (displayedStats) {//If there are already stats showing...
             //Filter currently displayed stats for player names including search expression
@@ -358,6 +366,8 @@ async function searchPlayer(event) {
         populateStatsTable(result, function(p1, p2) {
             return p1.player_name.split(' ')[1] > p2.player_name.split(' ')[1] ? 1 : -1;
         });
+        document.getElementById('filterMessage').hidden = true;
+        document.getElementById('filterLoading').hidden = true;
     } catch (err) {
         DisplayFeedback('Error', err + (err.stack ? '<p>' + err.stack + '</p>': ''));
     }

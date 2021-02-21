@@ -4,7 +4,7 @@ import decimal
 import hashlib
 import base64
 from boto3.dynamodb.conditions import Key, Attr
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 
 dynamodb = boto3.resource('dynamodb', 'ap-southeast-2')
 # table = dynamodb.Table('players2020')
@@ -23,13 +23,13 @@ def lambda_handler(event, context):
             #If there is no query added to fetch GET request, scan the whole players table
             if not event["queryStringParameters"]:
                 print('No params found, scanning table')
-                start = datetime.now()
+                start = datetime.now() + timedelta(hours=11)
                 # resp = table.scan()['Items']
                 resp = table.query(
                     IndexName='sk-data-index',
                     KeyConditionExpression=Key('sk').eq('PROFILE') & Key('data').begins_with('TEAM')
                 )['Items']
-                finish = datetime.now()
+                finish = datetime.now() + timedelta(hours=11)
                 print(f'Table scan copmlete in {finish - start}. Returning json response')
             else:
                 #If query string attached to GET request, determine request parameters and query players table accordingly
@@ -183,7 +183,7 @@ def lambda_handler(event, context):
                     #     }
                     # ) 
                     if round_number > 1:
-                        transfer_date = datetime.now()
+                        transfer_date = datetime.now() + timedelta(hours=11)
                         table.put_item(
                             Item={
                                 'pk': 'TRANSFER#' + active_user['username'] + str(transfer_date),
@@ -274,7 +274,7 @@ def lambda_handler(event, context):
                         }
                     )
                     #Add record to transfers table
-                    transfer_date = datetime.now()
+                    transfer_date = datetime.now() + timedelta(hours=11)
                     table.put_item(
                         Item={
                             'pk': 'TRANSFER#' + active_user['username'] + str(transfer_date),

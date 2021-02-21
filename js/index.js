@@ -22,7 +22,7 @@ window.onload = async function () {
         if (sessionStorage.getItem('activeUser') !== null) {
             user = JSON.parse(sessionStorage.getItem('activeUser'));
         } else {
-            user = GetActiveUserInfo(GetIdToken());
+            user = await GetActiveUserInfo(GetIdToken());
             sessionStorage.setItem('activeUser', JSON.stringify(user));
         }
         //Load fixture data and display reliant sections

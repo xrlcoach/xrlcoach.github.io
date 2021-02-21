@@ -19,7 +19,7 @@ window.onload = async () => {
         if (sessionStorage.getItem('activeUser') !== null) {
             user = JSON.parse(sessionStorage.getItem('activeUser'));
         } else {
-            user = GetActiveUserInfo(GetIdToken());
+            user = await GetActiveUserInfo(GetIdToken());
             sessionStorage.setItem('activeUser', JSON.stringify(user));
         }
         //Load active user's squad data

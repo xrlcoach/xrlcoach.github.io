@@ -43,7 +43,7 @@ window.onload = async () => {
         if (sessionStorage.getItem('activeUser') !== null) {
             user = JSON.parse(sessionStorage.getItem('activeUser'));
         } else {
-            user = GetActiveUserInfo(idToken);
+            user = await GetActiveUserInfo(idToken);
             sessionStorage.setItem('activeUser', JSON.stringify(user));
         }
         //Display match info

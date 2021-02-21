@@ -13,7 +13,7 @@ window.onload = async function() {
         console.log("Page load start at " + new Date());
         //Get current active round number and info
         roundToDisplay = getCookie('round');
-        if(sessionStorage.getItem('roundStatus') !== null) {
+        if(sessionStorage.getItem('roundStatus')) {
             currentRound = JSON.parse(sessionStorage.getItem('roundStatus'));
         } else {
             currentRound = await GetCurrentRoundStatus();
@@ -27,7 +27,7 @@ window.onload = async function() {
             document.getElementById('roundSelect').appendChild(option);
         }
         //Load user data
-        if(sessionStorage.getItem('allUsers') !== null) {
+        if(sessionStorage.getItem('allUsers')) {
             allUsers = JSON.parse(sessionStorage.getItem('allUsers'));
         } else {
             allUsers = await GetAllUsers();

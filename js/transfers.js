@@ -9,21 +9,21 @@ window.onload = async () => {
         //Get current active round number
         roundNumber = getCookie('round');
         //Load all user data
-        if(sessionStorage.getItem('allUsers') !== null) {
+        if(sessionStorage.getItem('allUsers')) {
             allUsers = JSON.parse(sessionStorage.getItem('allUsers'));
         } else {
             allUsers = await GetAllUsers();
             sessionStorage.setItem('allUsers', JSON.stringify(allUsers));
         }   
         //Isolate active user info
-        if (sessionStorage.getItem('activeUser') !== null) {
+        if (sessionStorage.getItem('activeUser')) {
             user = JSON.parse(sessionStorage.getItem('activeUser'));
         } else {
             user = await GetActiveUserInfo(GetIdToken());
             sessionStorage.setItem('activeUser', JSON.stringify(user));
         }
         //Load active user's squad data
-        if (sessionStorage.getItem('userSquad') !== null) {
+        if (sessionStorage.getItem('userSquad')) {
             squad = JSON.parse(sessionStorage.getItem('userSquad'));
         } else {
             squad = await GetPlayersFromXrlTeam(user.team_short);

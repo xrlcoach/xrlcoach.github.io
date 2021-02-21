@@ -24,14 +24,14 @@ window.onload = async function() {
                 }
             }
         } else { //If no query, get user's current match
-            if(sessionStorage.getItem('roundStatus') !== null) {
+            if(sessionStorage.getItem('roundStatus')) {
                 roundInfo = JSON.parse(sessionStorage.getItem('roundStatus'));
             } else {
                 roundInfo = await GetCurrentRoundStatus();
                 sessionStorage.setItem('roundStatus', JSON.stringify(roundInfo));
             } 
             roundNumber = roundInfo.round_number;
-            if (sessionStorage.getItem('currentMatch') !== null) {
+            if (sessionStorage.getItem('currentMatch')) {
                 match = JSON.parse(sessionStorage.getItem('currentMatch'));
             } else {
                 match = await GetTeamFixtureByRound(GetActiveUserTeamShort(), roundNumber);

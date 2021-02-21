@@ -33,21 +33,21 @@ let user, squad, lineup, backs, forwards, playmakers, powerplay, nextRound, fixt
 window.onload = async () => {
     try {
         //Retrieve info for the next round
-        if (sessionStorage.getItem('nextRoundStatus') !== null) {
+        if (sessionStorage.getItem('nextRoundStatus')) {
             nextRound = JSON.parse(sessionStorage.getItem('nextRoundStatus'));
         } else {
             nextRound = await GetNextRoundStatus();
             sessionStorage.setItem('nextRoundStatus', JSON.stringify(nextRound));
         }        
         //Get the active user's data
-        if (sessionStorage.getItem('activeUser') !== null) {
+        if (sessionStorage.getItem('activeUser')) {
             user = JSON.parse(sessionStorage.getItem('activeUser'));
         } else {
             user = await GetActiveUserInfo(idToken);
             sessionStorage.setItem('activeUser', JSON.stringify(user));
         }
         //Display match info
-        if (sessionStorage.getItem('allFixtures') !== null) {
+        if (sessionStorage.getItem('allFixtures')) {
             let allRounds = JSON.parse(sessionStorage.getItem('allFixtures'));
             let next = allRounds.find(r => r.round_number == nextRound.round_number);
             fixture = next.fixtures.find(m => m.home == user.team_short || m.away == user.team_short);
@@ -78,7 +78,7 @@ window.onload = async () => {
 async function LoadData() {    
     try {
         //Get player data for the user's XRL squad
-        if (sessionStorage.getItem('userSquad') !== null) {
+        if (sessionStorage.getItem('userSquad')) {
             squad = JSON.parse(sessionStorage.getItem('userSquad'));
         } else {
             squad = await GetPlayersFromXrlTeam(user.team_short);

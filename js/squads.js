@@ -1,17 +1,26 @@
 import { GetActiveUserTeamShort, GetAllPlayers, GetAllUsers, GetCurrentRoundInfo, GetCurrentRoundStatus, GetPlayersFromNrlClub, GetPlayersFromXrlTeam } from "./ApiFetch.js";
 import { DefaultPlayerSort, DefaultPlayerSortDesc, DisplayFeedback, SortByNrlClub, SortByNrlClubDesc, SortByPlayerName, SortByPlayerNameDesc, SortByPosition2, SortByPosition2Desc, DisplayPlayerInfo } from "./Helpers.js";
 
-let users, players, filteredPlayers, xrlTeam, nrlClub, round;
+let allUsers, players, filteredPlayers, xrlTeam, nrlClub, currentRound;
 
 window.onload = async function () {
     try {
-        //Get users data
-        users = await GetAllUsers();
-        //Get current round info
-        round = await GetCurrentRoundStatus();
+        if(sessionStorage.getItem('roundStatus')) {
+            currentRound = JSON.parse(sessionStorage.getItem('roundStatus'));
+        } else {
+            currentRound = await GetCurrentRoundStatus();
+            sessionStorage.setItem('roundStatus', JSON.stringify(currentRound));
+        }        
+        //Fetch all users data
+        if(sessionStorage.getItem('allUsers')) {
+            allUsers = JSON.parse(sessionStorage.getItem('allUsers'));
+        } else {
+            allUsers = await GetAllUsers();
+            sessionStorage.setItem('allUsers', JSON.stringify(allUsers));
+        }        
         //Populate XRL team select options
         let select = document.getElementById('xrlTeamSelect');
-        users.forEach(u => {
+        allUsers.forEach(u => {
             let li = document.createElement('li')
             let option = document.createElement('a');
             option.value = u.team_short;
@@ -102,7 +111,7 @@ function PopulatePlayerTable(playerData, tableId) {
             nameLink.innerText = p.player_name;
             nameLink.value = p.player_id;
             nameLink.onclick = function() {
-                DisplayPlayerInfo(players.find(p => p.player_id == this.value), round);
+                DisplayPlayerInfo(players.find(p => p.player_id == this.value), currentRound);
             };
             name.appendChild(nameLink);
             tr.appendChild(name);

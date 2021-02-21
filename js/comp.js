@@ -10,7 +10,7 @@ let users;
 window.onload = async function() {
     try {
         //Retrieve users' data
-        if(sessionStorage.getItem('allUsers') !== null) {
+        if(sessionStorage.getItem('allUsers')) {
             users = JSON.parse(sessionStorage.getItem('allUsers'));
         } else {
             users = await GetAllUsers();

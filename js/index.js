@@ -5,21 +5,21 @@ let squad, allUsers, user, currentRound, lastMatch, nextMatch;
 
 window.onload = async function () {
     try {
-        if(sessionStorage.getItem('roundStatus') !== null) {
+        if(sessionStorage.getItem('roundStatus')) {
             currentRound = JSON.parse(sessionStorage.getItem('roundStatus'));
         } else {
             currentRound = await GetCurrentRoundStatus();
             sessionStorage.setItem('roundStatus', JSON.stringify(currentRound));
         }        
         //Fetch all users data
-        if(sessionStorage.getItem('allUsers') !== null) {
+        if(sessionStorage.getItem('allUsers')) {
             allUsers = JSON.parse(sessionStorage.getItem('allUsers'));
         } else {
             allUsers = await GetAllUsers();
             sessionStorage.setItem('allUsers', JSON.stringify(allUsers));
         }        
         //Isolate active user from team cookie
-        if (sessionStorage.getItem('activeUser') !== null) {
+        if (sessionStorage.getItem('activeUser')) {
             user = JSON.parse(sessionStorage.getItem('activeUser'));
         } else {
             user = await GetActiveUserInfo(GetIdToken());
@@ -47,7 +47,7 @@ async function LoadFixtureData() {
     //allRounds = await GetAllFixtures();
     //Isolate current active round
     try {
-        if (sessionStorage.getItem('currentMatch') !== null) {
+        if (sessionStorage.getItem('currentMatch')) {
             nextMatch = JSON.parse(sessionStorage.getItem('currentMatch'));
         } else {
             nextMatch = await GetTeamFixtureByRound(user.team_short, GetCurrentRoundNumber());
@@ -73,7 +73,7 @@ async function LoadFixtureData() {
 async function LoadSquadInfo() {
     try {
         //Load squad
-        if (sessionStorage.getItem('userSquad') !== null) {
+        if (sessionStorage.getItem('userSquad')) {
             squad = JSON.parse(sessionStorage.getItem('userSquad'));
         } else {
             squad = await GetPlayersFromXrlTeam(user.team_short);

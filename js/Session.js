@@ -15,3 +15,8 @@ function logout() {
     window.location.replace('login.html');
 }
 window.logout = logout;
+
+function refresh() {
+    sessionStorage.clear();
+    window.location.reload();
+}

@@ -1,4 +1,4 @@
-import { GetActiveUserTeamShort, GetAllUsers, getCookie, GetPlayerById, GetPlayersFromXrlTeam, GetTransferHistoryByRound, GetUserTradeOffers, GetWaiverReports, ProcessTradeOffer, SendTradeOffer, UpdateUserWaiverPreferences, WithdrawTradeOffer } from "./ApiFetch.js";
+import { GetAllUsers, getCookie, GetPlayerById, GetPlayersFromXrlTeam, GetTransferHistoryByRound, GetUserTradeOffers, GetWaiverReports, ProcessTradeOffer, SendTradeOffer, UpdateUserWaiverPreferences, WithdrawTradeOffer, GetActiveUserInfo, GetIdToken } from "./ApiFetch.js";
 import { DisplayFeedback } from "./Helpers.js";
 
 let roundNumber, allUsers, user, squad, waiverPreferences = [], provisionalDrop, tradeOffers, tradeOffersToDisplay, waiverReports;

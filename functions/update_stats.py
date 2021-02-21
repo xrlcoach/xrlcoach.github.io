@@ -398,6 +398,16 @@ def get_stats():
                         ':c': player[0]['nrl_club']
                     }
                 )
+                table.update_item(
+                    Key={
+                        'pk': squad_entry['pk'],
+                        'sk': 'LINEUP#' + str(number)
+                    },
+                    UpdateExpression="set nrl_club=:c",
+                    ExpressionAttributeValues={
+                        ':c': player[0]['nrl_club']
+                    }
+                )
         else: 
             squad_entry = squad_entry[0]
             player_id = squad_entry['player_id']

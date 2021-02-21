@@ -35,7 +35,7 @@ window.onload = async function () {
         //Hide loading icon and display main content
         document.getElementById('loading').hidden = true;
         document.getElementById('mainContent').hidden = false;
-    } catch (error) {
+    } catch (err) {
         DisplayFeedback('Error', err + (err.stack ? '<p>' + err.stack + '</p>': ''));
     }
 }

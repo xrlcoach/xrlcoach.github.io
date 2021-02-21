@@ -5,6 +5,8 @@ let roundToDisplay, currentRound, allUsers, activeUser, displayedStats, scoreAsK
 let sortAttribute = 'score';
 let sortOrder = 'Descending';
 let loadedPlayers = [], loadedStats = [], loadedTeams = [], loadedTeamStats = [], loadedRounds = [], allPlayersLoaded = false;
+// const allClubs = ['Broncos', 'Bulldogs', 'Cowboys', 'Dragons', 'Eels', 'Knights', 'Panthers', 'Rabbitohs', 'Raiders', 'Roosters',
+// 'Sea Eagles', 'Sharks', 'Storm', 'Titans', 'Warriors', 'Wests Tigers'];
 
 window.onload = async function() {
     try {
@@ -200,6 +202,7 @@ async function filterStats(event) {
                         loadedPlayers = await GetAllPlayers();
                         //Set global to true, indicating all player profiles have been loaded.
                         allPlayersLoaded = true;
+                        loadedTeams
                     }
                     //Add score, position and XRL team to appearance record
                     statsToDisplay = scoreAppearanceStats(statsToDisplay);
@@ -341,10 +344,16 @@ function searchPlayer(event) {
         event.preventDefault();
         //Get entered search expression
         let search = document.getElementById('playerSearch').value.toLowerCase();
-        //Filter currently displayed stats for player names including search expression
-        let result = displayedStats.filter(p => p.player_name.toLowerCase().includes(search));
-        //Set results as the new displayed stats
-        displayedStats = result;
+        let result;
+        if (displayedStats) {//If there are already stats showing...
+            //Filter currently displayed stats for player names including search expression
+            result = displayedStats.filter(p => p.player_name.toLowerCase().includes(search));
+        } else {//Else if search is first action on page...
+            //Load all players
+            loadedPlayers = await GetAllPlayers();
+            //Filter for search expression
+            result = loadedPlayers.filter(p => p.search_name.includes(search));
+        }
         //Populate the display table with the results sorted alphabetically by name
         populateStatsTable(result, function(p1, p2) {
             return p1.player_name.split(' ')[1] > p2.player_name.split(' ')[1] ? 1 : -1;

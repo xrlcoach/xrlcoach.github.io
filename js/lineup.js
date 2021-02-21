@@ -495,12 +495,14 @@ async function submitLineup(event) {
         });
         //If there's a non-breaking error, display a warning error with option to proceed or cancel
         if (problem) {
+            document.getElementById('submitLoading').hidden = false;
             DisplayFeedback('Warning!', "<ul>" + message + "</ul><p>Would you like to proceed with lineup submission?</p>", true, completeSubmission);
             return;
         }
         //If there are no errors, proceed with submission
         completeSubmission();
     } catch (err) {
+        document.getElementById('submitLoading').hidden = false;
         DisplayFeedback('Error', err + (err.stack ? '<p>' + err.stack + '</p>': ''));
     }
 

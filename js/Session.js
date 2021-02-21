@@ -20,3 +20,4 @@ function refresh() {
     sessionStorage.clear();
     window.location.reload();
 }
+window.refresh = refresh;

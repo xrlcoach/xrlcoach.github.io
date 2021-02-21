@@ -1,4 +1,4 @@
-import { GetPlayersFromXrlTeam, GetAllUsers, GetActiveUserTeamShort, UpdateUserInbox, GetCurrentRoundNumber, GetCurrentRoundStatus, GetTeamFixtureByRound, GetIdToken } from './ApiFetch.js';
+import { GetPlayersFromXrlTeam, GetAllUsers, GetActiveUserInfo, UpdateUserInbox, GetCurrentRoundNumber, GetCurrentRoundStatus, GetTeamFixtureByRound, GetIdToken } from './ApiFetch.js';
 import { DisplayFeedback, DisplayPlayerInfo, GetOrdinal, DefaultPlayerSort, SortByPosition2, DefaultPlayerSortDesc, SortByPosition2Desc, SortByNrlClub, SortByNrlClubDesc, SortByPlayerName, SortByPlayerNameDesc, SortLeageTable } from './Helpers.js';
 
 let squad, allUsers, user, currentRound, lastMatch, nextMatch;

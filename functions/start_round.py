@@ -57,19 +57,18 @@ for user in users:
     if len(lineup) == 0:
         print(f"{user['team_name']} didn't set a lineup this week. Reverting to last week's lineup.")
         #Find last round's lineup in db
-        lineup = table.query(
+        old_lineup = table.query(
             IndexName='sk-data-index',
             KeyConditionExpression=Key('sk').eq('LINEUP#' + str(round_number - 1)) & Key('data').eq('TEAM#' + user['team_short'])
         )['Items']
         #Go through each player and create a new entry for this round's lineup
-        for player in lineup:
+        for player in old_lineup:
             #If the user powerplayed last round, set the second captain to be vice-captain
             if player['captain2']:
                 player['captain2'] = False
                 player['vice'] = True
             #Add entry to lineups table
-            table.put_item(
-                Item={
+            entry = {
                     'pk': player['pk'],
                     'sk': 'LINEUP#' + str(round_number),
                     'data': 'TEAM#' + user['team_short'],
@@ -91,6 +90,9 @@ for user in users:
                     'played_xrl': False,
                     'score': 0
                 }
+            lineup.append(entry)
+            table.put_item(
+                Item=entry
             )
         print("Lineup set.")
 
@@ -98,6 +100,8 @@ for user in users:
     captains = [player for player in lineup if player['captain'] or player['captain2']]
     #Check if user has used a powerplay
     powerplay = len(captains) > 1
+    #Bool to see if vice-captain needs to be made captain
+    sub_vice_captain = False
 
     #For each captain, update their captain counts
     for captain in captains:
@@ -124,6 +128,8 @@ for user in users:
                     ':c2': False
                 }
             )
+            sub_vice_captain = True
+            
         #Else increment times as captain by 1
         else:
             player_entry['times_as_captain'] += 1
@@ -158,6 +164,20 @@ for user in users:
                 UpdateExpression="set vice=:v",
                 ExpressionAttributeValues={
                     ':v': False
+                }
+            )
+        #If main captain has already been captain 6 times, and the vice hasn't, sub in vice as captain 
+        elif sub_vice_captain:
+            print(f"{vice['player_name']} takes over as captain.")
+            table.update_item(
+                Key={
+                    'pk': vice['pk'],
+                    'sk': vice['sk']
+                },
+                UpdateExpression="set vice=:v, captain=:c",
+                ExpressionAttributeValues={
+                    ':v': False,
+                    ':c': True
                 }
             )
 

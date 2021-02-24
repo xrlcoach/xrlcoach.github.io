@@ -7,7 +7,12 @@ const droppedPlayers = [];
 
 window.onload = async function () {
     try {
-        user = await GetActiveUserInfo(GetIdToken());
+        if (sessionStorage.getItem('activeUser')) {
+            user = JSON.parse(sessionStorage.getItem('activeUser'));
+        } else {
+            user = await GetActiveUserInfo(GetIdToken());
+            sessionStorage.setItem('activeUser', JSON.stringify(user));
+        }
         allPlayers = await GetAllPlayers();
         squad = allPlayers.filter(p => p.xrl_team == user.team_short);
         modifiedSquad = squad;
@@ -15,7 +20,7 @@ window.onload = async function () {
         document.getElementById('loading').hidden = true;
         document.getElementById('mainContent').hidden = false;
     } catch (error) {
-        DisplayFeedback(error, error.stack);
+        DisplayFeedback('Error', err + (err.stack ? '<p>' + err.stack + '</p>': ''));
     }
 }
 
@@ -41,7 +46,7 @@ async function DisplayPlayerCounts() {
                 `<li>You need at least ${3 - playmakers.length} more ${3 - playmakers.length > 1 ? 'playmakers' : 'playmaker'}.`;
         }
     } catch (error) {
-        DisplayFeedback('Error while displaying player counts', error);
+        DisplayFeedback('Error', err + (err.stack ? '<p>' + err.stack + '</p>': ''));
     }
 }
 

@@ -34,8 +34,13 @@ window.onload = async function() {
             if (sessionStorage.getItem('currentMatch')) {
                 match = JSON.parse(sessionStorage.getItem('currentMatch'));
             } else {
-                match = await GetTeamFixtureByRound(GetActiveUserTeamShort(), roundNumber);
-                sessionStorage.setItem('currentMatch', JSON.stringify(match));
+                try {
+                    match = await GetTeamFixtureByRound(GetActiveUserTeamShort(), roundNumber);
+                    sessionStorage.setItem('currentMatch', JSON.stringify(match));
+                } catch (err) {
+                    DisplayFeedback('Error', 'No match to display yet.');
+                    document.getElementById('loading').hidden = true;
+                }
             }            
         }
         //If there is no such match to display (draw not done, incorrect query), display message and stop loading

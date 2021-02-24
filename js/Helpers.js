@@ -104,17 +104,17 @@ export function DisplayPlayerInfo(player, round) {
     document.getElementById('playerPositions').innerText = player.position;
     if (player.position2) document.getElementById('playerPositions').innerText += ', ' + player.position2;
     //Populate the stats sections with XRL scoring stats
-    document.getElementById('playerXrlPoints').innerText = player.scoring_stats[player.position].points + player.scoring_stats.kicker.points;
+    document.getElementById('playerXrlPoints').innerText = player.scoring_stats[player.position].points + player.scoring_stats.kicker.points || 0;
     document.getElementById('playerInfoAppearances').innerText = player.stats.appearances ? player.stats.appearances : '0';
-    document.getElementById('playerTries').innerText = player.stats.Tries;
-    document.getElementById('playerITs').innerText = player.scoring_stats[player.position].involvement_try;
-    document.getElementById('playerPTs').innerText = player.scoring_stats[player.position].positional_try;
-    document.getElementById('playerGoals').innerText = player.scoring_stats.kicker.goals;
-    document.getElementById('playerFGs').innerText = player.scoring_stats.kicker.field_goals;
-    document.getElementById('playerMIAs').innerText = player.scoring_stats[player.position].mia;
-    document.getElementById('playerConcedes').innerText = player.scoring_stats[player.position].concede;
-    document.getElementById('playerSinBins').innerText = player.stats['Sin Bins'];
-    document.getElementById('playerSendOffs').innerText = player.stats['Send Offs'];
+    document.getElementById('playerTries').innerText = player.stats.Tries || 0;
+    document.getElementById('playerITs').innerText = player.scoring_stats[player.position].involvement_try || 0;
+    document.getElementById('playerPTs').innerText = player.scoring_stats[player.position].positional_try || 0;
+    document.getElementById('playerGoals').innerText = player.scoring_stats.kicker.goals || 0;
+    document.getElementById('playerFGs').innerText = player.scoring_stats.kicker.field_goals || 0;
+    document.getElementById('playerMIAs').innerText = player.scoring_stats[player.position].mia || 0;
+    document.getElementById('playerConcedes').innerText = player.scoring_stats[player.position].concede || 0;
+    document.getElementById('playerSinBins').innerText = player.stats['Sin Bins'] || 0;
+    document.getElementById('playerSendOffs').innerText = player.stats['Send Offs'] || 0;
     //If the player is in the user's team, display a 'Drop' button
     if (player.xrl_team == GetActiveUserTeamShort()) {
         document.getElementById('playerInfoFooter').hidden = false; //Show the footer

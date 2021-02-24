@@ -3,8 +3,6 @@ from boto3.dynamodb.conditions import Key, Attr
 
 dynamodb = boto3.resource('dynamodb', 'ap-southeast-2')
 
-#Reset users table with zeroed stats and captain counts, and 3 powerplays
-# users_table = dynamodb.Table('users2020')
 
 table = dynamodb.Table('XRL2020')
 
@@ -52,10 +50,9 @@ for rank, user in enumerate(users, 1):
         )
 
 #Reset rounds table with zeroed match scores and stati reset with only round 1 active
-# rounds_table = dynamodb.Table('rounds2020')
-# all_rounds = rounds_table.scan()['Items']
 
-print("Resetting round status and fixture scores")
+
+print("Resetting round status and clearing fixtures")
 for r in range(1, 22):
     #Reset round status
     if r == 1:
@@ -95,24 +92,22 @@ for r in range(1, 22):
             }
         )
 
-    #Reset fixture scores 
+    #Delete fixtures
+
     fixtures = table.query(
         KeyConditionExpression=Key('pk').eq('ROUND#' + str(r)) & Key('sk').begins_with('FIXTURE')
     )['Items']
     for match in fixtures:
-        table.update_item(
+        table.delete_item(
             Key={
                 'pk': match['pk'],
                 'sk': match['sk']
-            },
-            UpdateExpression='set home_score=:hs, away_score=:as',
-            ExpressionAttributeValues={
-                ':hs': 0,
-                ':as': 0
             }
         )
+    
 
 #Get all players
+
 print("Retrieving all player profiles")
 players = table.query(
     IndexName='sk-data-index',
@@ -135,7 +130,7 @@ for player in players:
 
     #Delete any stat entries
     entries = table.query(
-        KeyConditionExpression=Key('pk').eq(player['pk']) & Key('sk').begins_with('STAT#')
+        KeyConditionExpression=Key('pk').eq(player['pk']) & Key('sk').begins_with('STATS#')
     )['Items']
     for entry in entries:
         table.delete_item(
@@ -151,7 +146,7 @@ for player in players:
             'pk': player['pk'],
             'sk': 'PROFILE'
         },
-        UpdateExpression="SET times_as_captain=:tact, position2=:p2, new_position_appearances=:npa, #D=:d, xrl_team=:xrl, stats=:s, scoring_stats=:ss",
+        UpdateExpression="SET times_as_captain=:tac, position2=:p2, new_position_appearances=:npa, #D=:d, xrl_team=:xrl, stats=:s, scoring_stats=:ss",
         ExpressionAttributeNames={
             '#D': 'data'
         },
@@ -162,7 +157,9 @@ for player in players:
             ':d': 'TEAM#None',
             ':xrl': 'None',
             ':s': {},
-            ':ss': {}
+            ':ss': {
+                player['position']: {}
+            }
         }
     )
 

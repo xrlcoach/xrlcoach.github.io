@@ -99,27 +99,27 @@ def lambda_handler(event, context):
         }   
     try:       
         table.put_item(Item={
-            'pk': 'USER#' + username,
-            'sk': 'DETAILS',
+            'pk': 'NEWUSER#' + username,
+            'sk': 'TEMP',
             'data': 'NAME#' + team_short,
             "username": username,
             "team_name": team_name,
             "team_short": team_short,
             "homeground": homeground,
-            "powerplays": 3,
-            "stats": {
-                "wins": 0,
-                "draws": 0,
-                "losses": 0,
-                "for": 0,
-                "against": 0,
-                "points": 0
-            },                
-            "inbox": [],
-            "players_picked": 0,
-            "provisional_drop": '',
-            "waiver_preferences": [],
-            "waiver_rank": 0
+            # "powerplays": 3,
+            # "stats": {
+            #     "wins": 0,
+            #     "draws": 0,
+            #     "losses": 0,
+            #     "for": 0,
+            #     "against": 0,
+            #     "points": 0
+            # },                
+            # "inbox": [],
+            # "players_picked": 0,
+            # "provisional_drop": '',
+            # "waiver_preferences": [],
+            # "waiver_rank": 0
         })
     except Exception as e:
         return {'statusCode': 200,

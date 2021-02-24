@@ -412,14 +412,16 @@ for player in squads:
             for stat in app['scoring_stats'][position].keys():
                 if stat not in player_stats['scoring_stats'][position]:
                     player_stats['scoring_stats'][position][stat] = 0
-                player_stats['scoring_stats'][position][stat] += app['scoring_stats'][position][stat]
                 if stat == 'send_offs':
                     if 'send_off_deduction' not in player_stats['scoring_stats'][position]:
                         player_stats['scoring_stats'][position]['send_off_deduction'] = 0
                     if app['scoring_stats'][position][stat] != 0:
-                        minutes = 80 - app['scoring_stats'][position][stat]
+                        player_stats['scoring_stats'][position][stat] += 1
+                        minutes = 80 - int(app['scoring_stats'][position][stat])
                         deduction = math.floor(minutes / 10) + 4
                         player_stats['scoring_stats'][position]['send_off_deduction'] += deduction
+                else:
+                    player_stats['scoring_stats'][position][stat] += app['scoring_stats'][position][stat]
     for position in player_stats['scoring_stats'].keys():
         if position == 'kicker':
             player_stats['scoring_stats'][position]['points'] = player_stats['scoring_stats'][position]['goals'] * 2 + player_stats['scoring_stats'][position]['field_goals']

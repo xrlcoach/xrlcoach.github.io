@@ -191,13 +191,14 @@ function PopulateTeamFixtureTable(team) {
         table.innerHTML = '';
         //Iterate through the all the rounds
         draw.forEach(round => {
+            //Get user's match from round
+            let match = round.fixtures.find(f => f.home == team || f.away == team);;
+            if (!match) return;
             //Create table row
             let tr = document.createElement('tr');
             let roundCell = document.createElement('td');
             roundCell.innerText = round.round_number;
             tr.appendChild(roundCell);
-            //Get user's match from round
-            let match = round.fixtures.find(f => f.home == team || f.away == team);;
             //Use match to find user data for home and away teams 
             let homeUser = users.find(u => u.team_short == match.home);
             let awayUser = users.find(u => u.team_short == match.away);

@@ -52,10 +52,10 @@ while round_number < 21:
                         table.put_item(
                                 Item={
                                         'pk': 'ROUND#' + str(round_number),
-                                        'sk': 'FIXTURE#' + match['home'] + '#' + match['away'],
+                                        'sk': 'FIXTURE#' + match[0] + '#' + match[1],
                                         'data': 'COMPLETED#false',
-                                        'home': match['home'],
-                                        'away': match['away'],
+                                        'home': match[0],
+                                        'away': match[1],
                                         'home_score': 0,
                                         'away_score': 0,
                                 }
@@ -100,10 +100,10 @@ while round_number < 21:
                         table.put_item(
                                 Item={
                                         'pk': 'ROUND#' + str(round_number),
-                                        'sk': 'FIXTURE#' + match['home'] + '#' + match['away'],
+                                        'sk': 'FIXTURE#' + match[0] + '#' + match[1],
                                         'data': 'COMPLETED#false',
-                                        'home': match['home'],
-                                        'away': match['away'],
+                                        'home': match[0],
+                                        'away': match[1],
                                         'home_score': 0,
                                         'away_score': 0,
                                 }

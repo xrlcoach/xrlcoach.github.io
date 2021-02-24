@@ -138,3 +138,77 @@ WOL fielded 16 players
 TT2 fielded 17 players
 Lineup scoring complete
 Execution took 0:02:19.073374
+Script executing at 2021-02-24 15:21:59.052367
+Script executing at 2021-02-24 15:22:07.052376
+Stat scraping complete. Calculating player scores...
+Script executing at 2021-02-24 15:43:17.686946
+Stat scraping complete. Calculating player scores...
+Script executing at 2021-02-24 15:47:58.131841
+Stat scraping complete. Calculating player scores...
+Script executing at 2021-02-24 15:53:34.746231
+Stat scraping complete. Calculating player scores...
+Script executing at 2021-02-24 15:53:54.136343
+Stat scraping complete. Calculating player scores...
+Script executing at 2021-02-24 15:54:15.012957
+Stat scraping complete. Calculating player scores...
+Andrew McCullough has moved to the Broncos. Updating his team in the database.
+Josh Morris has moved to the Sharks. Updating his team in the database.
+Jack Hetherington has moved to the Panthers. Updating his team in the database.
+Issac Luke has moved to the Dragons. Updating his team in the database.
+Corey Thompson has moved to the Wests Tigers. Updating his team in the database.
+Loading to dynamodb, table: stats2020
+round_number: 1
+Script executing at 2021-02-24 15:54:36.436838
+Stat scraping complete. Calculating player scores...
+Loading to dynamodb, table: stats2020
+round_number: 1
+Stats update complete, scoring lineups
+Match: TT4 v ITC
+TT4 fielded 17 players
+Script executing at 2021-02-24 15:57:51.844031
+Stat scraping complete. Calculating player scores...
+Loading to dynamodb, table: stats2020
+round_number: 1
+Stats update complete, scoring lineups
+Match: TT4 v ITC
+TT4 fielded 17 players
+ITC fielded 17 players
+Script executing at 2021-02-24 15:58:29.904051
+Stat scraping complete. Calculating player scores...
+Loading to dynamodb, table: stats2020
+round_number: 1
+Stats update complete, scoring lineups
+Match: TT4 v ITC
+TT4 fielded 17 players
+ITC fielded 17 players
+Match: WOL v BWS
+WOL fielded 17 players
+BWS fielded 17 players
+Lineup scoring complete
+Execution took 0:00:12.970576
+Script executing at 2021-02-24 16:02:14.364940
+Stat scraping complete. Calculating player scores...
+Loading to dynamodb, table: stats2020
+round_number: 1
+Stats update complete, scoring lineups
+Match: TT4 v ITC
+TT4 fielded 17 players
+ITC fielded 17 players
+Match: WOL v BWS
+WOL fielded 17 players
+BWS fielded 17 players
+Lineup scoring complete
+Execution took 0:00:11.522306
+Script executing at 2021-02-24 16:10:12.298970
+Stat scraping complete. Calculating player scores...
+Loading to dynamodb, table: stats2020
+round_number: 1
+Stats update complete, scoring lineups
+Match: TT4 v ITC
+TT4 fielded 17 players
+ITC fielded 17 players
+Match: WOL v BWS
+WOL fielded 17 players
+BWS fielded 17 players
+Lineup scoring complete
+Execution took 0:00:12.636554

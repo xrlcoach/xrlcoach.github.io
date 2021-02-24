@@ -52,11 +52,16 @@ window.onload = async () => {
             let next = allRounds.find(r => r.round_number == nextRound.round_number);
             fixture = next.fixtures.find(m => m.home == user.team_short || m.away == user.team_short);
         } else {
-            fixture = await GetTeamFixtureByRound(user.team_short, nextRound.round_number);
+            try {
+                fixture = await GetTeamFixtureByRound(user.team_short, nextRound.round_number);
+            } catch (err) {
+                DisplayFeedback('Error', 'No match this week. Please check back later.');
+                return;
+            }
         }          
         if (fixture == undefined) {
             document.getElementById('loading').hidden = true;
-            DisplayFeedback('WTF?', 'No match this week. Please check back later.');
+            DisplayFeedback('Error', 'No match this week. Please check back later.');
             return;
         }
         homeGame = fixture.home == user.team_short;
@@ -69,6 +74,7 @@ window.onload = async () => {
         document.getElementById('mainContent').hidden = false;
     } catch (err) {
         DisplayFeedback('Error', err + (err.stack ? '<p>' + err.stack + '</p>': ''));
+        document.getElementById('loading').hidden = true;
     }
 }
 

@@ -1,5 +1,6 @@
 import boto3
 from boto3.dynamodb.conditions import Key, Attr
+import random
 
 dynamodb = boto3.resource('dynamodb', 'ap-southeast-2')
 
@@ -158,7 +159,8 @@ for player in players:
             ':xrl': 'None',
             ':s': {},
             ':ss': {
-                player['position']: {}
+                player['position']: {},
+                'kicker': {}
             }
         }
     )
@@ -201,3 +203,198 @@ for r in reports:
             'sk': r['sk']
         }
     )
+
+backs = [p for p in players if p['position'] == 'Back']
+forwards = [p for p in players if p['position'] == 'Forward']
+playmakers = [p for p in players if p['position'] == 'Playmaker']
+
+#Randomly assign players to team
+print("Randomly assigning players to XRL teams")
+for user in users:
+    for i in range(7):
+        random_player = backs.pop(random.randint(0, len(backs) - 1))
+        table.update_item(
+            Key={
+                'pk': random_player['pk'],
+                'sk': 'PROFILE'
+            },
+            UpdateExpression="set #D=:d, xrl_team=:xrl",
+            ExpressionAttributeNames={
+                '#D': 'data'
+            },
+            ExpressionAttributeValues={
+                ':d': 'TEAM#' + user['team_short'],
+                ':xrl': user['team_short']
+            }
+        )
+    for i in range(7):
+        random_player = forwards.pop(random.randint(0, len(forwards) - 1))
+        table.update_item(
+            Key={
+                'pk': random_player['pk'],
+                'sk': 'PROFILE'
+            },
+            UpdateExpression="set #D=:d, xrl_team=:xrl",
+            ExpressionAttributeNames={
+                '#D': 'data'
+            },
+            ExpressionAttributeValues={
+                ':d': 'TEAM#' + user['team_short'],
+                ':xrl': user['team_short']
+            }
+        )
+
+    for i in range(4):
+        random_player = playmakers.pop(random.randint(0, len(playmakers) - 1))
+        table.update_item(
+            Key={
+                'pk': random_player['pk'],
+                'sk': 'PROFILE'
+            },
+            UpdateExpression="set #D=:d, xrl_team=:xrl",
+            ExpressionAttributeNames={
+                '#D': 'data'
+            },
+            ExpressionAttributeValues={
+                ':d': 'TEAM#' + user['team_short'],
+                ':xrl': user['team_short']
+            }
+        )
+
+#Set random lineup for each user
+
+
+positions_backs = ['fullback', 'winger1', 'centre1', 'centre2', 'winger2']
+positions_playmakers = ['five_eighth', 'halfback', 'hooker']
+playmaker_numbers = [6, 7, 9]
+positions_forwards = ['prop1', 'prop2', 'row1', 'row2', 'lock']
+forward_numbers = [8, 10, 11, 12, 13]
+interchange = ['int1', 'int2', 'int3', 'int4']
+int_numbers = [14, 15, 16, 17]
+roles = ['captain', 'captain2', 'vice', 'kicker', 'backup_kicker']
+
+print("Setting a lineup for each user")
+for user in users:
+    squad = table.query(
+        IndexName='sk-data-index',
+        KeyConditionExpression=Key('sk').eq('PROFILE') & Key('data').eq('TEAM#' + user['team_short'])
+    )['Items']
+    squad_numbers = list(range(1, 14))
+    captain = squad_numbers.pop(random.randint(0, len(squad_numbers) - 1))
+    vice = squad_numbers.pop(random.randint(0, len(squad_numbers) - 1))
+    kicker = squad_numbers.pop(random.randint(0, len(squad_numbers) - 1))
+    backup = squad_numbers.pop(random.randint(0, len(squad_numbers) - 1))
+    backs = [p for p in squad if p['position'] == 'Back']
+    forwards = [p for p in squad if p['position'] == 'Forward']
+    playmakers = [p for p in squad if p['position'] == 'Playmaker']
+    for number, pos in enumerate(positions_backs, 1):
+        p = backs.pop()
+        squad.remove(p)        
+        entry = {
+            'pk': p['pk'],
+            'sk': 'LINEUP#1',
+            'data': 'TEAM#' + user['team_short'],
+            'player_id': p['player_id'],
+            'player_name': p['player_name'],
+            'nrl_club': p['nrl_club'],
+            'xrl_team': user['team_short'],
+            'round_number': '1',
+            'position_specific': pos,
+            'position_general': 'Back',
+            'second_position': None,
+            'position_number': number,
+            'captain': captain == number,
+            'captain2': False,
+            'vice': vice == number,
+            'kicker': kicker == number,
+            'backup_kicker': backup == number,
+            'played_nrl': False,
+            'played_xrl': False,
+            'score': 0
+        }
+        table.put_item(
+                Item=entry
+            )
+    for i, pos in enumerate(positions_playmakers):
+        p = playmakers.pop()      
+        squad.remove(p)          
+        entry = {
+            'pk': p['pk'],
+            'sk': 'LINEUP#1',
+            'data': 'TEAM#' + user['team_short'],
+            'player_id': p['player_id'],
+            'player_name': p['player_name'],
+            'nrl_club': p['nrl_club'],
+            'xrl_team': user['team_short'],
+            'round_number': '1',
+            'position_specific': pos,
+            'position_general': 'Playmaker',
+            'second_position': None,
+            'position_number': playmaker_numbers[i],
+            'captain': captain == playmaker_numbers[i],
+            'captain2': False,
+            'vice': vice == playmaker_numbers[i],
+            'kicker': kicker == playmaker_numbers[i],
+            'backup_kicker': backup == playmaker_numbers[i],
+            'played_nrl': False,
+            'played_xrl': False,
+            'score': 0
+        }
+        table.put_item(
+                Item=entry
+            )
+    for i, pos in enumerate(positions_forwards):
+        p = forwards.pop() 
+        squad.remove(p)               
+        entry = {
+            'pk': p['pk'],
+            'sk': 'LINEUP#1',
+            'data': 'TEAM#' + user['team_short'],
+            'player_id': p['player_id'],
+            'player_name': p['player_name'],
+            'nrl_club': p['nrl_club'],
+            'xrl_team': user['team_short'],
+            'round_number': '1',
+            'position_specific': pos,
+            'position_general': 'Forward',
+            'second_position': None,
+            'position_number': forward_numbers[i],
+            'captain': captain == forward_numbers[i],
+            'captain2': False,
+            'vice': vice == forward_numbers[i],
+            'kicker': kicker == forward_numbers[i],
+            'backup_kicker': backup == forward_numbers[i],
+            'played_nrl': False,
+            'played_xrl': False,
+            'score': 0
+        }
+        table.put_item(
+                Item=entry
+            )
+    for i, pos in enumerate(interchange):
+        p = squad.pop() 
+        entry = {
+            'pk': p['pk'],
+            'sk': 'LINEUP#1',
+            'data': 'TEAM#' + user['team_short'],
+            'player_id': p['player_id'],
+            'player_name': p['player_name'],
+            'nrl_club': p['nrl_club'],
+            'xrl_team': user['team_short'],
+            'round_number': '1',
+            'position_specific': pos,
+            'position_general': p['position'],
+            'second_position': None,
+            'position_number': int_numbers[i],
+            'captain': False,
+            'captain2': False,
+            'vice': False,
+            'kicker': False,
+            'backup_kicker': False,
+            'played_nrl': False,
+            'played_xrl': False,
+            'score': 0
+        }
+        table.put_item(
+                Item=entry
+            )

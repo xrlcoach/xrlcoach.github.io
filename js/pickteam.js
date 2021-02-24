@@ -21,6 +21,7 @@ window.onload = async function () {
         document.getElementById('mainContent').hidden = false;
     } catch (error) {
         DisplayFeedback('Error', err + (err.stack ? '<p>' + err.stack + '</p>': ''));
+        document.getElementById('loading').hidden = true;
     }
 }
 

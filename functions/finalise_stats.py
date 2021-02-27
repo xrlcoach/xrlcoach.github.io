@@ -327,6 +327,7 @@ positions_general = {
     'Hooker': 'Playmaker',
     'Prop': 'Forward',
     '2nd': 'Forward',
+    '2nd Row': 'Forward',
     'Lock': 'Forward'
 }
 all_stats = []
@@ -399,7 +400,7 @@ for player in squads:
     player_stats['scoring_stats'] = {}
     for app in player_appearances:
         for stat in app['stats'].keys():
-            if type(app['stats'][stat]) is str:
+            if type(app['stats'][stat]) is str or type(app['stats'][stat]) is dict:
                 continue 
             if app['stats'][stat] % 1 != 0:
                 continue

@@ -17,6 +17,9 @@ function logout() {
 }
 window.logout = logout;
 
+/**
+ * Clears session storage and reloads page
+ */
 function refresh() {
     sessionStorage.clear();
     window.location.reload();

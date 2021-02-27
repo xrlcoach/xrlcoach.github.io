@@ -40,13 +40,14 @@ window.onload = async function() {
                 } catch (err) {
                     DisplayFeedback('Error', 'No match to display yet.');
                     document.getElementById('loading').hidden = true;
+                    return;
                 }
             }            
         }
         //If there is no such match to display (draw not done, incorrect query), display message and stop loading
         if (match == undefined) {
             document.getElementById('loading').hidden = true;
-            DisplayFeedback('WTF?', 'No match to show yet. Please check back later.');
+            DisplayFeedback('Error', 'No match to show yet. Please check back later.');
             return;
         }
         if (match.home == GetActiveUserTeamShort() || match.away == GetActiveUserTeamShort()) {

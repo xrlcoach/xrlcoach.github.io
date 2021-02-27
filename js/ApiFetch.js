@@ -183,7 +183,7 @@ export async function UpdatePlayerXrlTeam(xrlTeam, player) {
     }
 }
 /**
- * Used to pick or drop multiple players (must be one or the other for whole player group, not a mix of picks and drops)
+ * Used to pick one or more players
  * @param {String} xrlTeam XRL team acronym
  * @param {Array} players An array of player objects
  */
@@ -207,7 +207,11 @@ export async function ScoopPlayers(xrlTeam, players) {
     sessionStorage.removeItem('userSquad');
     return data;
 }
-
+/**
+ * Used to drop one or more players from a user's squad
+ * @param {String} xrlTeam XRL team acronym
+ * @param {Array} players An array of player objects
+ */
 export async function DropPlayers(xrlTeam, players) {
     const response = await fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/players', {
         method: 'POST',
@@ -533,6 +537,12 @@ export async function GetPlayerAppearanceStats(playerId, roundNumber) {
     }
 }
 
+/**
+ * Update's a user's preferences for players to pick up during the next waiver round.
+ * @param {String} username User to update
+ * @param {String[]} preferences An array of player IDs
+ * @param {String} provisionalDrop The ID of the player to drop if a user needs to make room in their squad
+ */
 export async function UpdateUserWaiverPreferences(username, preferences, provisionalDrop) {
     const response = await fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/transfers', {
         method: 'POST',
@@ -554,6 +564,9 @@ export async function UpdateUserWaiverPreferences(username, preferences, provisi
     return data;
 }
 
+/**
+ * Retrieves transfer records for the entire season
+ */
 export async function GetTransferHistory() {
     const response = await fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/transfers', {
         method: 'GET',
@@ -568,6 +581,10 @@ export async function GetTransferHistory() {
     return data;
 }
 
+/**
+ * Retrieves transfer records for a particular round
+ * @param {Number} roundNumber 
+ */
 export async function GetTransferHistoryByRound(roundNumber) {
     const response = await fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/transfers', {
         method: 'POST',
@@ -586,6 +603,15 @@ export async function GetTransferHistoryByRound(roundNumber) {
     return data;
 }
 
+/**
+ * Records a trade offer and sends message to target user's inbox
+ * @param {String} sendingUsername The user making the trade offer
+ * @param {String} targetUsername The user to make the offer to 
+ * @param {String[]} playersOffered An array of player IDs
+ * @param {String[]} playersWanted An array of player IDs
+ * @param {Number} powerplaysOffered The number of powerplays being offered
+ * @param {Number} powerplaysWanted The number of powerplays being requested
+ */
 export async function SendTradeOffer(sendingUsername, targetUsername, playersOffered, playersWanted, powerplaysOffered = 0, powerplaysWanted = 0) {
     const response = await fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/transfers', {
         method: 'POST',
@@ -609,6 +635,10 @@ export async function SendTradeOffer(sendingUsername, targetUsername, playersOff
     return data; 
 }
 
+/**
+ * Retrieves all trade offers involving the specific user
+ * @param {String} username 
+ */
 export async function GetUserTradeOffers(username) {
     const response = await fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/transfers', {
         method: 'POST',
@@ -627,6 +657,11 @@ export async function GetUserTradeOffers(username) {
     return data;
 }
 
+/**
+ * Resolves a trade offer by either processing or rejecting
+ * @param {String} offerPk The primary key of the offer record
+ * @param {Boolean} accepted Whether the offer is being accepted or rejected
+ */
 export async function ProcessTradeOffer(offerPk, accepted = false) {
     let outcome = accepted ? 'Accepted': 'Rejected';
     const response = await fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/transfers', {
@@ -651,6 +686,10 @@ export async function ProcessTradeOffer(offerPk, accepted = false) {
     return data;
 }
 
+/**
+ * Withdraws a trade offer made by the active user
+ * @param {String} offerPk The primary key of the offer record
+ */
 export async function WithdrawTradeOffer(offerPk) {
     const response = await fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/transfers', {
         method: 'POST',
@@ -669,6 +708,11 @@ export async function WithdrawTradeOffer(offerPk) {
     return data;
 }
 
+/**
+ * Update's a user's inbox
+ * @param {String} username The user to update
+ * @param {Object[]} inbox The updated inbox
+ */
 export async function UpdateUserInbox(username, inbox) {
     const response = await fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/xrl-users', {
         method: 'POST',
@@ -689,6 +733,9 @@ export async function UpdateUserInbox(username, inbox) {
     return data;
 }
 
+/**
+ * Retrieves all waiver reports
+ */
 export async function GetWaiverReports() {
     const response = await fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/transfers', {
         method: 'POST',

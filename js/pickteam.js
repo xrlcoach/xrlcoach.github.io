@@ -207,11 +207,11 @@ function PickDropPlayer(xrlTeam, button) {
         }
         //Calculate spots available and how many players user needs in each position
         let availableSpots = 18 - modifiedSquad.length;
-        let requiredBacks = 5 - squad.filter(p => p.position == 'Back' || p.position2 == 'Back').length;
+        let requiredBacks = 5 - modifiedSquad.filter(p => p.position == 'Back' || p.position2 == 'Back').length;
         requiredBacks = requiredBacks < 0 ? 0 : requiredBacks;
-        let requiredForwards = 5 - squad.filter(p => p.position == 'Forward' || p.position2 == 'Forward').length;
+        let requiredForwards = 5 - modifiedSquad.filter(p => p.position == 'Forward' || p.position2 == 'Forward').length;
         requiredForwards = requiredForwards < 0 ? 0 : requiredForwards;
-        let requiredPlaymakers = 3 - squad.filter(p => p.position == 'Playmaker' || p.position2 == 'Playmaker').length;
+        let requiredPlaymakers = 3 - modifiedSquad.filter(p => p.position == 'Playmaker' || p.position2 == 'Playmaker').length;
         requiredPlaymakers = requiredPlaymakers < 0 ? 0 : requiredPlaymakers;
         //Create a pick function to pass to the feedback modal
         let pickFunction = function() {

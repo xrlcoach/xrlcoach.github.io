@@ -62,7 +62,7 @@ def lambda_handler(event, context):
         )
         table.put_item(
             Item={
-                'pk': 'USER#' + new_user['username'],
+                'pk': 'USER#' + username,
                 'sk': 'KEY',
                 'data': password
             }

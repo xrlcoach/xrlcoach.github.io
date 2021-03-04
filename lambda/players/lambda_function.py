@@ -259,6 +259,7 @@ def lambda_handler(event, context):
                     })
                     #Update their XRL team property to 'On Waivers'. This prevents them from being scooped until
                     #they clear the next round of waivers
+                    new_team = 'TEAM#None' if round_number == 1 else 'Team#On Waivers'
                     table.update_item(
                         Key={
                             'pk': 'PLAYER#' + player['player_id'],
@@ -269,7 +270,7 @@ def lambda_handler(event, context):
                             '#D': 'data'
                         },
                         ExpressionAttributeValues={
-                            ':d': 'TEAM#On Waivers',
+                            ':d': new_team,
                             ':x': 'On Waivers'
                         }
                     )

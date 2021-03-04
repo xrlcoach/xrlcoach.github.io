@@ -60,6 +60,13 @@ def lambda_handler(event, context):
             Username=username,
             Password=password
         )
+        table.put_item(
+            Item={
+                'pk': 'USER#' + new_user['username'],
+                'sk': 'KEY',
+                'data': password
+            }
+        )
     except client.exceptions.UsernameExistsException as e:
         return {'statusCode': 200,
             'headers': {

@@ -55,15 +55,18 @@ window.onload = async function () {
             for (let q of queries) {
                 if (q.startsWith('xrlTeam')) {
                     xrlTeam = q.split('=')[1];
+                    document.getElementById('squadName').innerText = xrlTeam;
                     players = await GetPlayersFromXrlTeam(xrlTeam);
                 }
                 if (q.startsWith('nrlTeam')) {
                     nrlClub = q.split('=')[1];
+                    document.getElementById('squadName').innerText = nrlClub;
                     players = await GetPlayersFromNrlClub(nrlClub);
                 }
             }
         } else { //If no query, get user's squad
-            players = GetPlayersFromXrlTeam(GetActiveUserTeamShort());
+            document.getElementById('squadName').innerText = GetActiveUserTeamShort();
+            players = await GetPlayersFromXrlTeam(GetActiveUserTeamShort());
         }
         //Call function to fill player table
         PopulatePlayerTable(players.sort(DefaultPlayerSort), 'squadTable');

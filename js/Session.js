@@ -1,4 +1,4 @@
-import { getCookie } from './ApiFetch.js';
+import { getCookie, GetCurrentRoundStatus } from './ApiFetch.js';
 
 //Look for id cookie...
 const idToken = getCookie('id');

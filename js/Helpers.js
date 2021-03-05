@@ -102,6 +102,7 @@ export function DisplayPlayerInfo(player, round) {
         document.getElementById('playerXrlLogo').src = '/static/' + player.xrl_team + '.png';
     }
     document.getElementById('playerPositions').innerText = player.position;
+    document.getElementById('playerTAC').innerText = player.times_as_captain;
     if (player.position2) document.getElementById('playerPositions').innerText += ', ' + player.position2;
     //Populate the stats sections with XRL scoring stats
     document.getElementById('playerXrlPoints').innerText = player.scoring_stats[player.position].points + player.scoring_stats.kicker.points || 0;

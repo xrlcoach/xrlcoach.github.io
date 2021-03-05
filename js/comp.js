@@ -52,7 +52,7 @@ function PopulateLeagueTable(users) {
             let teamLogoCell =  document.createElement('td');
             // teamLogoCell.className = 'text-right';
             let teamLogo =  document.createElement('img');
-            teamLogo.className = 'd-block ms-auto';
+            // teamLogo.className = 'd-block ms-auto';
             teamLogo.src = '/static/' + user.team_short + '.png';
             teamLogo.height = '50';
             teamLogoCell.appendChild(teamLogo);

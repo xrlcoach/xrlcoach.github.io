@@ -58,13 +58,13 @@ window.onload = async function () {
                     document.getElementById('squadName').innerText = xrlTeam;
                     players = await GetPlayersFromXrlTeam(xrlTeam);
                     teamOwner = allUsers.find(u => u.team_short == xrlTeam);
-                    document.getElementById('powerplays').innerText = 'Powerplays: ' + teamOwner.powerplays;
+                    document.getElementById('powerplayCount').innerText = 'Powerplays: ' + teamOwner.powerplays;
                 }
                 if (q.startsWith('nrlTeam')) {
                     nrlClub = q.split('=')[1];
                     document.getElementById('squadName').innerText = nrlClub;
                     players = await GetPlayersFromNrlClub(nrlClub);
-                    document.getElementById('powerplays').innerText = '';
+                    document.getElementById('powerplayCount').innerText = '';
                 }
             }
         } else { //If no query, get user's squad
@@ -183,7 +183,7 @@ async function selectNrlClub(club) {
     try {
         document.getElementById('squadName').innerText = club;
         players = await GetPlayersFromNrlClub(club);
-        document.getElementById('powerplays').innerText = '';
+        document.getElementById('powerplayCount').innerText = '';
         PopulatePlayerTable(players.sort(DefaultPlayerSort), 'squadTable');
     } catch (err) {
         DisplayFeedback('Error', err + (err.stack ? '<p>' + err.stack + '</p>': ''));
@@ -200,7 +200,7 @@ async function selectXrlTeam(team) {
         document.getElementById('squadName').innerText = team;
         players = await GetPlayersFromXrlTeam(team);
         teamOwner = allUsers.find(u => u.team_short == team);
-        document.getElementById('powerplays').innerText = 'Powerplays: ' + teamOwner.powerplays;
+        document.getElementById('powerplayCount').innerText = 'Powerplays: ' + teamOwner.powerplays;
         PopulatePlayerTable(players.sort(DefaultPlayerSort), 'squadTable');
     } catch (err) {
         DisplayFeedback('Error', err + (err.stack ? '<p>' + err.stack + '</p>': ''));

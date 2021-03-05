@@ -20,7 +20,7 @@ window.logout = logout;
 /**
  * Clears session storage and reloads page
  */
-function refresh() {
+async function refresh() {
     sessionStorage.clear();
     var expiry = new Date();
     expiry.setHours(expiry.getHours() + 6);

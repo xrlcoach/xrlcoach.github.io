@@ -50,8 +50,9 @@ function PopulateLeagueTable(users) {
             /*For each property to display, create a table cell, assign the data to the innerText property,
             and append it to the table row*/
             let teamLogoCell =  document.createElement('td');
-            teamLogoCell.className = 'text-right';
+            // teamLogoCell.className = 'text-right';
             let teamLogo =  document.createElement('img');
+            teamLogo.className = 'd-block ms-auto';
             teamLogo.src = '/static/' + user.team_short + '.png';
             teamLogo.height = '50';
             teamLogoCell.appendChild(teamLogo);

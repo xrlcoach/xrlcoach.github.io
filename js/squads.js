@@ -71,7 +71,7 @@ window.onload = async function () {
             xrlTeam = GetActiveUserTeamShort();
             document.getElementById('squadName').innerText = xrlTeam;
             teamOwner = allUsers.find(u => u.team_short == xrlTeam);
-            document.getElementById('powerplays').innerText = 'Powerplays: ' + teamOwner.powerplays;
+            document.getElementById('powerplayCount').innerText = 'Powerplays: ' + teamOwner.powerplays;
             players = await GetPlayersFromXrlTeam(xrlTeam);
         }
         //Call function to fill player table

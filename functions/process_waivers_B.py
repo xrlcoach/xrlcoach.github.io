@@ -84,13 +84,13 @@ for rank, user in enumerate(waiver_order, 1):
             if len(users_squad) == 18:
                 #If they do, and haven't indicated a player to drop, continue to next user
                 if user['provisional_drop'] == None:
-                    print(f"{user['username']}'s squad already has 18 players and they haven't indicated a player to drop. Moving to next user.")
-                    report += f"\n{user['username']}'s squad already has 18 players and they haven't indicated a player to drop. Moving to next user."
+                    print(f"{user['team_name']}'s squad already has 18 players and they haven't indicated a player to drop. Moving to next user.")
+                    report += f"\n{user['team_name']}'s squad already has 18 players and they haven't indicated a player to drop. Moving to next user."
                     break
                 #If they do, and they HAVE indicated a player to drop...
                 else:
-                    print(f"{user['username']}'s squad has 18 players. Dropping their indicated player to make room.")
-                    report += f"\n{user['username']}'s squad has 18 players. Dropping their indicated player to make room."
+                    print(f"{user['team_name']}'s squad has 18 players. Dropping their indicated player to make room.")
+                    report += f"\n{user['team_name']}'s squad has 18 players. Dropping their indicated player to make room."
                     #Add their provisional drop player to the array of players transferred
                     players_transferred.append(user['provisional_drop'])
                     #Get player entry from db
@@ -222,8 +222,8 @@ for rank, user in enumerate(waiver_order, 1):
             gained_player = True
             #Add player to list of players transferred
             players_transferred.append(player)
-            print(f"{user['username']} signed {player_info['player_name']}")
-            report += f"\n{user['username']} signed {player_info['player_name']}"
+            print(f"{user['team_name']} signed {player_info['player_name']}")
+            report += f"\n{user['team_name']} signed {player_info['player_name']}"
             break
     
     #Indicate whether the curent user has picked a player or not
@@ -232,8 +232,8 @@ for rank, user in enumerate(waiver_order, 1):
         users_who_picked.append(user)
     else:
         players_picked = 0
-        print(f"{user['username']} didn't get any of their preferences")
-        report += f"\n{user['username']} didn't get any of their preferences"
+        print(f"{user['team_name']} didn't get any of their preferences")
+        report += f"\n{user['team_name']} didn't get any of their preferences"
     #Clear the user's waiver preferences, update their players_picked attribute and inbox
     table.update_item(
         Key={
@@ -255,7 +255,7 @@ print("New waiver order:")
 report += "\nNew waiver order:"
 for rank, user in enumerate(waiver_order, 1):
     print(f"{rank}. {user['team_name']}")
-    report += f"\n{rank}. {user['username']}"
+    report += f"\n{rank}. {user['team_name']}"
     table.update_item(
         Key={
             'pk': user['pk'],

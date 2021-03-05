@@ -262,8 +262,8 @@ for match in fixtures:
         print(f"{home_user['team_name']} {home_score} DRAW {away_score} {away_user['team_name']}")
         home_user['stats']['points'] += 1
         away_user['stats']['points'] += 1
-        home_user['stats']['draws'] = home_user['stats']['losses'] + 1
-        away_user['stats']['draws'] = away_user['stats']['wins'] + 1
+        home_user['stats']['draws'] = home_user['stats']['draws'] + 1
+        away_user['stats']['draws'] = away_user['stats']['draws'] + 1
     table.update_item(
         Key={
             'pk': 'USER#' + home_user['username'],

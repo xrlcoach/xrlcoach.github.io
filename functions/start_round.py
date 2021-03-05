@@ -63,6 +63,14 @@ for user in users:
         )['Items']
         #Go through each player and create a new entry for this round's lineup
         for player in old_lineup:
+            #Check that player is still in the side
+            profile = table.get_item(Item={
+                'pk': player['pk'],
+                'sk': 'PROFILE'
+            })['Item']
+            if profile['xrl_team'] != user['team_short']:
+                print(f"{profile['player_name']} is no longer at {user['team_name']}.")
+                continue
             #If the user powerplayed last round, set the second captain to be vice-captain
             if player['captain2']:
                 player['captain2'] = False

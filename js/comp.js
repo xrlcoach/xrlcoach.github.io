@@ -49,18 +49,20 @@ function PopulateLeagueTable(users) {
             let tr = document.createElement('tr');
             /*For each property to display, create a table cell, assign the data to the innerText property,
             and append it to the table row*/
-            let xrlTeam = document.createElement('td');
-            xrlTeam.style.whiteSpace = 'nowrap';
+            let teamLogoCell =  document.createElement('td');
+            // teamLogoCell.className = 'justify-content-end';
             let teamLogo =  document.createElement('img');
             teamLogo.src = '/static/' + user.team_short + '.png';
             teamLogo.height = '50';
-            teamLogo.className = 'me-1';
-            xrlTeam.appendChild(teamLogo);
+            teamLogoCell.appendChild(teamLogo);
+            tr.appendChild(teamLogoCell);
+            let teamNameCell = document.createElement('td');
+            teamNameCell.style.whiteSpace = 'nowrap';
             let teamName = document.createElement('a');
             teamName.href = 'squads.html?xrlTeam=' + user.team_short;
             teamName.innerText = user.team_name;
-            xrlTeam.appendChild(teamName);
-            tr.appendChild(xrlTeam);
+            teamNameCell.appendChild(teamName);
+            tr.appendChild(teamNameCell);
             let wins = document.createElement('td');
             wins.innerText = user.stats.wins;
             tr.appendChild(wins);

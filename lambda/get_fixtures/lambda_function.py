@@ -99,7 +99,7 @@ def lambda_handler(event, context):
                         'pk': 'ROUND#' + round_number,
                         'sk': 'STATUS'
                     }
-                )
+                )['Item']
                 return {
                     'statusCode': 200,
                     'headers': {

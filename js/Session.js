@@ -22,6 +22,11 @@ window.logout = logout;
  */
 function refresh() {
     sessionStorage.clear();
+    var expiry = new Date();
+    expiry.setHours(expiry.getHours() + 6);
+    let roundInfo = await GetCurrentRoundStatus();
+    sessionStorage.setItem('roundStatus', JSON.stringify(roundInfo));
+    document.cookie = `round=${roundInfo.round_number}; expires=${expiry.toUTCString()}; Secure`;
     window.location.reload();
 }
 window.refresh = refresh;

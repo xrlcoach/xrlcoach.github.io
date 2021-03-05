@@ -283,26 +283,28 @@ def lambda_handler(event, context):
 
         if operation == 'process_trade':
             try:
+                #Get active round and next round
                 rounds = table.query(
                     IndexName='sk-data-index',
                     KeyConditionExpression=Key('sk').eq('STATUS') & Key('data').eq('ACTIVE#true')
                 )['Items']
                 round_number = max([r['round_number'] for r in rounds])
                 active_round = [r for r in rounds if r['round_number'] == round_number][0]
-                # not_in_progress_rounds = rounds_table.scan(
-                #     FilterExpression=Attr('in_progress').eq(False)
-                # )['Items']
                 next_round_number = round_number if not active_round['in_progress'] else round_number + 1
+                #Get outcome and offer
                 outcome = body['outcome']
                 offer = table.get_item(Key={
                     'pk': body['offer_id'],
                     'sk': 'OFFER'
                 })['Item']
+                #Reject if offer has already been processed
                 if offer['offer_status'] != 'Pending':
                     raise Exception("Trade has already been processed/withdrawn.")
+                #Retrieve users involved
                 user_offered_by = table.get_item(Key={'pk': 'USER#' + offer['offered_by'], 'sk': 'DETAILS'})["Item"]
                 user_offered_to = table.get_item(Key={'pk': 'USER#' + offer['offered_to'], 'sk': 'DETAILS'})['Item']
                 transfer_date = datetime.now() + timedelta(hours=11)
+
                 if outcome == 'Accepted':
                     print(f"{user_offered_to} has accepted the trade offer from {user_offered_by}. Checking squad sizes.")
                     user_offered_by_squad = table.query(
@@ -317,7 +319,11 @@ def lambda_handler(event, context):
                         raise Exception(f"The trade would result in {user_offered_by['team_name']} having too many players.")
                     if len(user_offered_to_squad) - len(offer['players_wanted']) + len(offer['players_offered']) > 18:
                         raise Exception(f"The trade would result in {user_offered_to['team_name']} having too many players.")
-                    print("Squad sizes ok. Transferring players.")
+                    print("Squad sizes ok. Checking powerplays.")
+                    if user_offered_by['powerplays'] < offer['powerplays_offered']:
+                        raise Exception(f"{user_offered_by['team_name']} doesn't have enough powerplays to make good on this deal.")
+                    if user_offered_to['powerplays'] < offer['powerplays_wanted']:
+                        raise Exception(f"You don't have enough powerplays to make good on this deal.")
                     pending_trades = table.query(
                         IndexName='sk-data-index',
                         KeyConditionExpression=Key('sk').eq('OFFER') & Key('data').begins_with('TO#'),

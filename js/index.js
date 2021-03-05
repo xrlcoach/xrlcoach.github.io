@@ -266,7 +266,7 @@ function DisplaySquadInfo() {
         document.getElementById('playmakersCount').innerText = 'Playmakers: ' + playmakers.length;
         document.getElementById('forwardsCount').innerText = 'Forwards: ' + forwards.length;
         //Find players with more than one position and indicate if there are some
-        let duals = squad.filter(p => p.position2 != '');
+        let duals = squad.filter(p => p.position2);
         if (duals.length == 1)
             document.getElementById('positionCounts').innerHTML += `<br />Includes 1 dual-position player`;
         else if (duals.length > 1)

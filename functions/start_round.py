@@ -100,6 +100,33 @@ for user in users:
     captains = [player for player in lineup if player['captain'] or player['captain2']]
     #Check if user has used a powerplay
     powerplay = len(captains) > 1
+    #Check if they have a powerplay to use
+    if powerplay and user['powerplays'] < 1:
+        print(f"{user['team_name']} fielded two captains but has no powerplays left. Changing their second captain to vice-captain.")
+        captain2 = [p for p in captains if p['captain2']][0]
+        captains = [p for p in captains if not p['captain2']]
+        #If they can't powerplay, change second captain to vice in lineup...
+        for i, player in enumerate(lineup):
+            if player['player_id'] == captain2['player_id']:
+                player['captain2'] = False
+                player['vice'] = True
+                lineup[i] = player
+        #...and in database
+        table.update_item(
+            Key={
+                'pk': captain2['pk'],
+                'sk': captain2['sk']
+            },
+            UpdateExpression="set captain=:c, captain2=:c2, vice=:v",
+            ExpressionAttributeValues={
+                ':c': False,
+                ':c2': False,
+                ':v': True
+            }
+        )
+        #And turn off powerplay
+        powerplay = False
+
     #Bool to see if vice-captain needs to be made captain
     sub_vice_captain = False
 
@@ -195,26 +222,27 @@ for user in users:
             }
         )
 
-#Calculate the new waiver order based on number of players picked during scooping period
-print("Calculating new waiver order")
-#Get original waiver order
-waiver_order = sorted(users, key=lambda u: u['waiver_rank'])
-#Sort by number of players picked
-new_waiver_order = sorted(waiver_order, key=lambda u: u['players_picked'])
-#Update new order to db
-print("New order: ")
-for rank, user in enumerate(new_waiver_order, 1):
-    print(f"{rank}: {user['username']}")
-    table.update_item(
-                Key={
-                    'pk': user['pk'],
-                    'sk': 'DETAILS'
-                },
-                UpdateExpression="set waiver_rank=:wr, players_picked=:pp",
-                ExpressionAttributeValues={
-                    ':wr': rank,
-                    ':pp': 0
-                }
-            )
+if round_number > 1:
+    #Calculate the new waiver order based on number of players picked during scooping period
+    print("Calculating new waiver order")
+    #Get original waiver order
+    waiver_order = sorted(users, key=lambda u: u['waiver_rank'])
+    #Sort by number of players picked
+    new_waiver_order = sorted(waiver_order, key=lambda u: u['players_picked'])
+    #Update new order to db
+    print("New order: ")
+    for rank, user in enumerate(new_waiver_order, 1):
+        print(f"{rank}: {user['username']}")
+        table.update_item(
+                    Key={
+                        'pk': user['pk'],
+                        'sk': 'DETAILS'
+                    },
+                    UpdateExpression="set waiver_rank=:wr, players_picked=:pp",
+                    ExpressionAttributeValues={
+                        ':wr': rank,
+                        ':pp': 0
+                    }
+                )
 print("Process complete")
     

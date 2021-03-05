@@ -321,7 +321,7 @@ def lambda_handler(event, context):
                         raise Exception(f"The trade would result in {user_offered_to['team_name']} having too many players.")
                     print("Squad sizes ok. Checking powerplays.")
                     if user_offered_by['powerplays'] < offer['powerplays_offered']:
-                        raise Exception(f"{user_offered_by['team_name']} doesn't have enough powerplays to make good on this deal.")
+                        raise Exception(f"{user_offered_by['team_name']} don't have enough powerplays to make good on this deal.")
                     if user_offered_to['powerplays'] < offer['powerplays_wanted']:
                         raise Exception(f"You don't have enough powerplays to make good on this deal.")
                     pending_trades = table.query(

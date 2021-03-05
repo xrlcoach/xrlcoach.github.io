@@ -1,7 +1,7 @@
 import { GetActiveUserTeamShort, GetAllPlayers, GetAllUsers, GetCurrentRoundInfo, GetCurrentRoundStatus, GetPlayersFromNrlClub, GetPlayersFromXrlTeam } from "./ApiFetch.js";
 import { DefaultPlayerSort, DefaultPlayerSortDesc, DisplayFeedback, SortByNrlClub, SortByNrlClubDesc, SortByPlayerName, SortByPlayerNameDesc, SortByPosition2, SortByPosition2Desc, DisplayPlayerInfo } from "./Helpers.js";
 
-let allUsers, players, filteredPlayers, xrlTeam, nrlClub, currentRound;
+let allUsers, players, xrlTeam, nrlClub, currentRound, teamOwner;
 
 window.onload = async function () {
     try {
@@ -57,16 +57,22 @@ window.onload = async function () {
                     xrlTeam = q.split('=')[1];
                     document.getElementById('squadName').innerText = xrlTeam;
                     players = await GetPlayersFromXrlTeam(xrlTeam);
+                    teamOwner = allUsers.find(u => u.team_short == xrlTeam);
+                    document.getElementById('powerplays').innerText = 'Powerplays: ' + teamOwner.powerplays;
                 }
                 if (q.startsWith('nrlTeam')) {
                     nrlClub = q.split('=')[1];
                     document.getElementById('squadName').innerText = nrlClub;
                     players = await GetPlayersFromNrlClub(nrlClub);
+                    document.getElementById('powerplays').innerText = '';
                 }
             }
         } else { //If no query, get user's squad
-            document.getElementById('squadName').innerText = GetActiveUserTeamShort();
-            players = await GetPlayersFromXrlTeam(GetActiveUserTeamShort());
+            xrlTeam = GetActiveUserTeamShort();
+            document.getElementById('squadName').innerText = xrlTeam;
+            teamOwner = allUsers.find(u => u.team_short == xrlTeam);
+            document.getElementById('powerplays').innerText = 'Powerplays: ' + teamOwner.powerplays;
+            players = await GetPlayersFromXrlTeam(xrlTeam);
         }
         //Call function to fill player table
         PopulatePlayerTable(players.sort(DefaultPlayerSort), 'squadTable');
@@ -126,6 +132,9 @@ function PopulatePlayerTable(playerData, tableId) {
             let pos2 = document.createElement('td');
             pos2.textContent = p.position2;
             tr.appendChild(pos2);
+            let tac = document.createElement('td');
+            tac.textContent = p.times_as_captain;
+            tr.appendChild(tac);
             let team = document.createElement('td');
             team.textContent = p.nrl_club;
             tr.appendChild(team);
@@ -174,6 +183,7 @@ async function selectNrlClub(club) {
     try {
         document.getElementById('squadName').innerText = club;
         players = await GetPlayersFromNrlClub(club);
+        document.getElementById('powerplays').innerText = '';
         PopulatePlayerTable(players.sort(DefaultPlayerSort), 'squadTable');
     } catch (err) {
         DisplayFeedback('Error', err + (err.stack ? '<p>' + err.stack + '</p>': ''));
@@ -189,6 +199,8 @@ async function selectXrlTeam(team) {
     try {
         document.getElementById('squadName').innerText = team;
         players = await GetPlayersFromXrlTeam(team);
+        teamOwner = allUsers.find(u => u.team_short == team);
+        document.getElementById('powerplays').innerText = 'Powerplays: ' + teamOwner.powerplays;
         PopulatePlayerTable(players.sort(DefaultPlayerSort), 'squadTable');
     } catch (err) {
         DisplayFeedback('Error', err + (err.stack ? '<p>' + err.stack + '</p>': ''));
@@ -198,51 +210,63 @@ window.selectXrlTeam = selectXrlTeam;
 
 //#region Sorting functions...
 function sortByName() {
-    let sortedPlayers = filteredPlayers.sort(SortByPlayerName);
+    let sortedPlayers = players.sort(SortByPlayerName);
     document.getElementById('sortByNameButton').onclick = sortByNameDesc;
     PopulatePlayerTable(sortedPlayers, 'squadTable');
 }
 window.sortByName = sortByName;
 function sortByNameDesc() {
-    let sortedPlayers = filteredPlayers.sort(SortByPlayerNameDesc);
+    let sortedPlayers = players.sort(SortByPlayerNameDesc);
     document.getElementById('sortByNameButton').onclick = sortByName;
     PopulatePlayerTable(sortedPlayers, 'squadTable');
 }
 window.sortByNameDesc = sortByNameDesc;
 function sortByPosition() {
-    let sortedPlayers = filteredPlayers.sort(DefaultPlayerSort);
+    let sortedPlayers = players.sort(DefaultPlayerSort);
     document.getElementById('sortByPositionButton').onclick = sortByPositionDesc;
     PopulatePlayerTable(sortedPlayers, 'squadTable');
 }
 window.sortByPosition = sortByPosition;
 function sortByPositionDesc() {
-    let sortedPlayers = filteredPlayers.sort(DefaultPlayerSortDesc);
+    let sortedPlayers = players.sort(DefaultPlayerSortDesc);
     document.getElementById('sortByPositionButton').onclick = sortByPosition;
     PopulatePlayerTable(sortedPlayers, 'squadTable');
 }
 window.sortByPositionDesc = sortByPositionDesc;
 function sortByPosition2() {
-    let sortedPlayers = filteredPlayers.sort(SortByPosition2);
+    let sortedPlayers = players.sort(SortByPosition2);
     document.getElementById('sortByPosition2Button').onclick = sortByPosition2Desc;
     PopulatePlayerTable(sortedPlayers, 'squadTable');
 }
 window.sortByPosition2 = sortByPosition2;
 function sortByPosition2Desc() {
-    let sortedPlayers = filteredPlayers.sort(SortByPosition2Desc);
+    let sortedPlayers = players.sort(SortByPosition2Desc);
     document.getElementById('sortByPosition2Button').onclick = sortByPosition2;
     PopulatePlayerTable(sortedPlayers, 'squadTable');
 }
 window.sortByPosition2Desc = sortByPosition2Desc;
 function sortByClub() {
-    let sortedPlayers = filteredPlayers.sort(SortByNrlClub);
+    let sortedPlayers = players.sort(SortByNrlClub);
     document.getElementById('sortByClubButton').onclick = sortByClubDesc;
     PopulatePlayerTable(sortedPlayers, 'squadTable');
 }
 window.sortByClub = sortByClub;
 function sortByClubDesc() {
-    let sortedPlayers = filteredPlayers.sort(SortByNrlClubDesc);
+    let sortedPlayers = players.sort(SortByNrlClubDesc);
     document.getElementById('sortByClubButton').onclick = sortByClub;
     PopulatePlayerTable(sortedPlayers, 'squadTable');
 }
 window.sortByClubDesc = sortByClubDesc;
+function sortByTAC() {
+    let sortedPlayers = players.sort((a, b) => a.times_as_captain - b.times_as_captain);
+    document.getElementById('sortByTACButton').onclick = sortByTACDesc;
+    PopulatePlayerTable(sortedPlayers, 'squadTable');
+}
+window.sortByTAC = sortByTAC;
+function sortByTACDesc() {
+    let sortedPlayers = players.sort((a, b) => b.times_as_captain - a.times_as_captain);
+    document.getElementById('sortByTACButton').onclick = sortByTAC;
+    PopulatePlayerTable(sortedPlayers, 'squadTable');
+}
+window.sortByTACDesc = sortByTACDesc;
 //#endregion

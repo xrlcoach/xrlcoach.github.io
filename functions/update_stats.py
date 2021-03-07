@@ -31,7 +31,7 @@ dynamodbResource = boto3.resource('dynamodb', 'ap-southeast-2')
 # users_table = dynamodbResource.Table('users2020')
 # lineups_table = dynamodbResource.Table('lineups2020')
 # rounds_table = dynamodbResource.Table('rounds2020')
-table = dynamodbResource.Table('XRL2020')
+table = dynamodbResource.Table('XRL2021')
 
 forwards = ['Prop', '2nd Row', 'Lock', 'Interchange']
 playmakers = ['Five-Eighth', 'Halfback', 'Hooker']

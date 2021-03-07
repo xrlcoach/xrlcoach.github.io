@@ -12,7 +12,7 @@ dynamodb = boto3.resource('dynamodb', 'ap-southeast-2')
 # lineups_table = dynamodb.Table('lineups2020')
 # users_table = dynamodb.Table('users2020')
 # players_table = dynamodb.Table('players2020')
-table = dynamodb.Table('XRL2020')
+table = dynamodb.Table('XRL2021')
 
 #Get all active rounds
 resp = table.query(

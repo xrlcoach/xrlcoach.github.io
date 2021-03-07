@@ -9,7 +9,7 @@ print(f"Script executing at {datetime.now()}")
 
 dynamodb = boto3.resource('dynamodb', 'ap-southeast-2')
 # rounds_table = dynamodb.Table('rounds2020')
-table = dynamodb.Table('XRL2020')
+table = dynamodb.Table('XRL2021')
 
 #Get all rounds that are not yet active
 resp = table.query(

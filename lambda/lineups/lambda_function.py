@@ -10,7 +10,7 @@ dynamodbResource = boto3.resource('dynamodb', 'ap-southeast-2')
 # lineup_table = dynamodbResource.Table('lineups2020')
 # user_table = dynamodbResource.Table('users2020')
 # round_table = dynamodbResource.Table('rounds2020')
-table = dynamodbResource.Table('XRL2020')
+table = dynamodbResource.Table('XRL2021')
 
 
 def lambda_handler(event, context):

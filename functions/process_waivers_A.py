@@ -17,7 +17,7 @@ dynamodbResource = boto3.resource('dynamodb', 'ap-southeast-2')
 # rounds_table = dynamodbResource.Table('rounds2020')
 # waivers_table = dynamodbResource.Table('waivers2020')
 # lineups_table = dynamodbResource.Table('lineups2020')
-table = dynamodbResource.Table('XRL2020')
+table = dynamodbResource.Table('XRL2021')
 
 #Find current active round
 resp = table.query(

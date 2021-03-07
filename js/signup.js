@@ -24,8 +24,8 @@ async function signUp(event) {
     }
     //Check that team acronym is three characters
     let teamShort = document.getElementById('team_short').value.toUpperCase();
-    if (teamShort.length != 3) {
-        DisplayFeedback('Error', 'Team acronym must be three letters');
+    if (teamShort.length > 5) {
+        DisplayFeedback('Error', 'Team acronym must be less than 5 characters');
         return;
     }
     //Check that homeground is not empty or too long

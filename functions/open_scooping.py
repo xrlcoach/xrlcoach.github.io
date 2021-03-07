@@ -10,7 +10,7 @@ print(f"Script executing at {datetime.now()}")
 dynamodb = boto3.resource('dynamodb', 'ap-southeast-2')
 # rounds_table = dynamodb.Table('rounds2020')
 # players_table = dynamodb.Table('players2020')
-table = dynamodb.Table('XRL2020')
+table = dynamodb.Table('XRL2021')
 
 print("Changing 'On Waivers' players to free agents")
 #Find all players who are labelled as 'On Waivers'

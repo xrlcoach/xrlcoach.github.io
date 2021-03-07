@@ -6,7 +6,7 @@ import decimal
 dynamodbClient = boto3.client('dynamodb', 'ap-southeast-2')
 dynamodbResource = boto3.resource('dynamodb', 'ap-southeast-2')
 # round_table = dynamodbResource.Table('rounds2020')
-table = dynamodbResource.Table('XRL2020')
+table = dynamodbResource.Table('XRL2021')
 
 def lambda_handler(event, context):
     try:

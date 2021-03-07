@@ -10,7 +10,7 @@ USER_POOL_ID = 'ap-southeast-2_X405VGEIl'
 CLIENT_ID = '53irugvhakp6kd5cmd2o75kn'
 
 dynamodb = boto3.resource('dynamodb', 'ap-southeast-2')
-table = dynamodb.Table('XRL2020')
+table = dynamodb.Table('XRL2021')
 
 def lambda_handler(event, context):
     data = json.loads(event['body'])

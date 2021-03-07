@@ -12,7 +12,7 @@ dynamodb = boto3.resource('dynamodb', 'ap-southeast-2')
 # users_table = dynamodb.Table('users2020')
 # transfers_table = dynamodb.Table('transfers2020')
 # rounds_table = dynamodb.Table('rounds2020')
-table = dynamodb.Table('XRL2020')
+table = dynamodb.Table('XRL2021')
 
 def lambda_handler(event, context):
     #Find request method

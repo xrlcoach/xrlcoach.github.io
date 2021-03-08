@@ -42,7 +42,7 @@ async function DisplayPlayerCounts() {
         let playmakers = modifiedSquad.filter(p => p.position == 'Playmaker' || p.position2 == 'Playmaker');
         document.getElementById('playerCountBreakdown').innerHTML = '';
         document.getElementById('playerCountMessage').innerText =
-            `You currently have ${totalPlayers} in your squad. You need ${18 - totalPlayers} more in total.`;
+            `You currently have ${totalPlayers} in your squad. You need ${Math.max(13 - totalPlayers, Math.max(5 - backs.length, 5 - forwards.length, 3 - playmakers.length))} more in total.`;
         if (backs.length < 5) {
             document.getElementById('playerCountBreakdown').innerHTML +=
                 `<li>You need at least ${5 - backs.length} more ${5 - backs.length > 1 ? 'backs' : 'back'}.`;

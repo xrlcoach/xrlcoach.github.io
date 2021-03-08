@@ -119,7 +119,7 @@ function PopulateFixtureTable(round) {
             home.appendChild(homeLogo);
             let homeName = document.createElement('a');
             homeName.href = 'squads.html?xrlTeam=' + match.home;
-            homeName.innerText = homeUser.team_name ? homeUser.team_name : match.home;
+            homeName.innerText = homeUser ? homeUser.team_name : match.home;
             home.appendChild(homeName);
             tr.appendChild(home);
             let homeScore = document.createElement('td');
@@ -130,7 +130,7 @@ function PopulateFixtureTable(round) {
             away.style.whiteSpace = 'nowrap';
             let awayName = document.createElement('a');
             awayName.href = 'squads.html?xrlTeam=' + match.away;
-            awayName.innerText = awayUser.team_name ? awayUser.team_name : match.away;
+            awayName.innerText = awayUser ? awayUser.team_name : match.away;
             away.appendChild(awayName);
             let awayLogo =  document.createElement('img');
             awayLogo.src = '/static/' + match.away + '.png';

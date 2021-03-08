@@ -271,8 +271,8 @@ for rank, user in enumerate(waiver_order, 1):
 table.put_item(
     Item={
         'pk': 'WAIVER',
-        'sk': 'REPORT#' + str(round_number) + '_A',
-        'waiver_round': str(round_number) + '_A',
+        'sk': 'REPORT#' + str(round_number) + '_Tuesday',
+        'waiver_round': str(round_number) + '_Tuesday',
         'report': report
     }
 )

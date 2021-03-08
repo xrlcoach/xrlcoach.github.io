@@ -4,13 +4,13 @@
 ,,ROX,,v,,RAM,Elysium Fields,,,0
 ,,PUN,,v,,BWS,TAB Stadium,,,0
 ,,MCD,,v,,XIII,Lillyfield Rectangle,,,0
-,,BOX,,v,,CGRS,Fragile Stadium,,,0
+,,BOX,,v,,COU,Fragile Stadium,,,0
 ,,MIN,,v,,CBT,Lithgow Stadium,,,0
 ,,DRU,,v,,WOL,Crack-Den Stadium,,,0
 ,,MON,,v,,GUN,Monster Arena,,,0
 ,,,,,,,,,,0
 ,ROUND 2,,,,,,,,,
-,,GUN,,v,,CGRS,The Armoury,,,0
+,,GUN,,v,,COU,The Armoury,,,0
 ,,MON,,v,,DRU,Monster Arena,,,0
 ,,CBT,,v,,WOL,TWU Stadium,,,0
 ,,MIN,,v,,PUN,Lithgow Stadium,,,0
@@ -20,7 +20,7 @@
 ,,,,,,,,,,0
 ,ROUND 3,,,,,,,,,0
 ,,ROX,,v,,MIN,Elysium Fields,,,0
-,,CGRS,,v,,DRU,The Cage of Pain,,,0
+,,COU,,v,,DRU,The Cage of Pain,,,0
 ,,PUN,,v,,MON,TAB Stadium,,,0
 ,,WOL,,v,,XIII,Full Moon Stadium,,,0
 ,,GUN,,v,,CBT,The Armoury,,,0
@@ -28,7 +28,7 @@
 ,,RAM,,v,,MCD,The Meadow,,,0
 ,,,,,,,,,,0
 ,ROUND 4,,,,,,,,,0
-,,CBT,,v,,CGRS,TWU Stadium,,,0
+,,CBT,,v,,COU,TWU Stadium,,,0
 ,,DRU,,v,,PUN,Crack-Den Stadium,,,0
 ,,XIII,,v,,GUN,Hell,,,0
 ,,MON,,v,,ROX,Monster Arena,,,0
@@ -43,7 +43,7 @@
 ,,GUN,,v,,BOX,The Armoury,,,0
 ,,RAM,,v,,MON,The Meadow,,,0
 ,,WOL,,v,,MCD,Full Moon Stadium,,,0
-,,CGRS,,v,,PUN,The Cage of Pain,,,0
+,,COU,,v,,PUN,The Cage of Pain,,,0
 ,,,,,,,,,,0
 ,ROUND 6,,,,,,,,,0
 ,,BOX,,v,,CBT,Fragile Stadium,,,0
@@ -51,14 +51,14 @@
 ,,MON,,v,,BWS,Monster Arena,,,0
 ,,DRU,,v,,RAM,Crack-Den Stadium,,,0
 ,,MCD,,v,,GUN,Lillyfield Rectangle,,,0
-,,XIII,,v,,CGRS,Hell,,,0
+,,XIII,,v,,COU,Hell,,,0
 ,,MIN,,v,,WOL,Lithgow Stadium,,,0
 ,,,,,,,,,,0
 ,ROUND 7,,,,,,,,,0
 ,,PUN,,v,,RAM,TAB Stadium,,,0
 ,,MON,,v,,WOL,Monster Arena,,,0
 ,,MCD,,v,,CBT,Lillyfield Rectangle,,,0
-,,ROX,,v,,CGRS,Elysium Fields,,,0
+,,ROX,,v,,COU,Elysium Fields,,,0
 ,,DRU,,v,,BWS,Crack-Den Stadium,,,0
 ,,MIN,,v,,GUN,Lithgow Stadium,,,0
 ,,BOX,,v,,XIII,Fragile Stadium,,,0
@@ -66,7 +66,7 @@
 ,ROUND 8,,,,,,,,,0
 ,,XIII,,v,,MCD,Hell,,,0
 ,,RAM,,v,,ROX,The Meadow,,,0
-,,CGRS,,v,,BOX,The Cage of Pain,,,0
+,,COU,,v,,BOX,The Cage of Pain,,,0
 ,,BWS,,v,,PUN,Bondi Beach Pavilion,,,0
 ,,CBT,,v,,MIN,TWU Stadium,,,0
 ,,WOL,,v,,DRU,Full Moon Stadium,,,0
@@ -74,7 +74,7 @@
 ,,,,,,,,,,0
 ,ROUND 9,,,,,,,,,0
 ,,PUN,,v,,WOL,TAB Stadium,,,0
-,,RAM,,v,,CGRS,The Meadow,,,0
+,,RAM,,v,,COU,The Meadow,,,0
 ,,ROX,,v,,BWS,Elysium Fields,,,0
 ,,MIN,,v,,XIII,Lithgow Stadium,,,0
 ,,MCD,,v,,BOX,Lillyfield Rectangle,,,0
@@ -87,7 +87,7 @@
 ,,BOX,,v,,MIN,Fragile Stadium,,,0
 ,,CBT,,v,,DRU,TWU Stadium,,,0
 ,,XIII,,v,,MON,Hell,,,0
-,,CGRS,,v,,MCD,The Cage of Pain,,,0
+,,COU,,v,,MCD,The Cage of Pain,,,0
 ,,WOL,,v,,ROX,Full Moon Stadium,,,0
 ,,,,,,,,,,0
 ,ROUND 11,,,,,,,,,0
@@ -97,10 +97,10 @@
 ,,PUN,,v,,CBT,TAB Stadium,,,0
 ,,ROX,,v,,GUN,Elysium Fields,,,0
 ,,DRU,,v,,XIII,Crack-Den Stadium,,,0
-2,,BWS,,v,,CGRS,Bondi Beach Pavilion,,,0
+2,,BWS,,v,,COU,Bondi Beach Pavilion,,,0
 ,,,,,,,,,,0
 ,ROUND 12,,,,,,,,,0
-,,CGRS,,v,,MIN,The Cage of Pain,,,0
+,,COU,,v,,MIN,The Cage of Pain,,,0
 ,,WOL,,v,,BWS,Full Moon Stadium,,,0
 ,,MCD,,v,,MON,Lillyfield Rectangle,,,0
 ,,GUN,,v,,RAM,The Armoury,,,0
@@ -109,7 +109,7 @@
 ,,XIII,,v,,PUN,Hell,,,0
 ,,,,,,,,,,0
 ,ROUND 13,,,,,,,,,0
-,,DRU,,v,,CGRS,Crack-Den Stadium,,,0
+,,DRU,,v,,COU,Crack-Den Stadium,,,0
 ,,CBT,,v,,GUN,TWU Stadium,,,0
 ,,MON,,v,,PUN,Monster Arena,,,0
 ,,XIII,,v,,WOL,Hell,,,0
@@ -123,7 +123,7 @@
 ,,MON,,v,,MIN,Monster Arena,,,0
 ,,BWS,,v,,GUN,Bondi Beach Pavilion,,,0
 ,,DRU,,v,,MCD,Crack-Den Stadium,,,0
-,,WOL,,v,,CGRS,Full Moon Stadium,,,0
+,,WOL,,v,,COU,Full Moon Stadium,,,0
 ,,PUN,,v,,BOX,TAB Stadium,,,0
 ,,ROX,,v,,XIII,Elysium Fields,,,0
 ,,,,,,,,,,0
@@ -131,14 +131,14 @@
 ,,GUN,,v,,WOL,The Armoury,,,0
 ,,CBT,,v,,BWS,TWU Stadium,,,0
 ,,MIN,,v,,DRU,Lithgow Stadium,,,0
-,,CGRS,,v,,MON,The Cage of Pain,,,0
+,,COU,,v,,MON,The Cage of Pain,,,0
 ,,MCD,,v,,PUN,Lillyfield Rectangle,,,0
 ,,XIII,,v,,RAM,Hell,,,0
 ,,BOX,,v,,ROX,Fragile Stadium,,,0
 ,,,,,,,,,,0
 ,,,,,,,,,,0
 ,ROUND 16,,,,,,,,,0
-,,CGRS,,v,,GUN,The Cage of Pain,,,0
+,,COU,,v,,GUN,The Cage of Pain,,,0
 ,,DRU,,v,,MON,Crack-Den Stadium,,,0
 ,,WOL,,v,,CBT,Full Moon Stadium,,,0
 ,,PUN,,v,,MIN,TAB Stadium,,,0
@@ -153,7 +153,7 @@
 ,,BWS,,v,,MCD,Bondi Beach Pavilion,,,0
 ,,PUN,,v,,DRU,TAB Stadium,,,0
 ,,RAM,,v,,MIN,The Meadow,,,0
-,,CGRS,,v,,CBT,The Cage of Pain,,,0
+,,COU,,v,,CBT,The Cage of Pain,,,0
 ,,,,,,,,,,0
 ,,,,,,,,,,0
 ,ROUND 18,,,,,,,,,0
@@ -162,7 +162,7 @@
 ,,DRU,,v,,ROX,Crack-Den Stadium,,,0
 ,,BOX,,v,,GUN,Fragile Stadium,,,0
 ,,MON,,v,,RAM,Monster Arena,,,0
-,,PUN,,v,,CGRS,TAB Stadium,,,0
+,,PUN,,v,,COU,TAB Stadium,,,0
 ,,MIN,,v,,BWS,Lithgow Stadium,,,0
 ,,,,,,,,,,0
 ,ROUND 19,,,,,,,,,0
@@ -170,7 +170,7 @@
 ,,ROX,,v,,PUN,Elysium Fields,,,0
 ,,CBT,,v,,BOX,TWU Stadium,,,0
 2,,RAM,,v,,DRU,The Meadow,,,0
-,,CGRS,,v,,XIII,The Cage of Pain,,,0
+,,COU,,v,,XIII,The Cage of Pain,,,0
 ,,BWS,,v,,MON,Bondi Beach Pavilion,,,0
 ,,WOL,,v,,MIN,Full Moon Stadium,,,0
 ,,,,,,,,,,0
@@ -179,14 +179,14 @@
 ,,XIII,,v,,BOX,Hell,,,0
 ,,RAM,,v,,PUN,The Meadow,,,0
 ,,CBT,,v,,MCD,TWU Stadium,,,0
-,,CGRS,,v,,ROX,The Cage of Pain,,,0
+,,COU,,v,,ROX,The Cage of Pain,,,0
 ,,GUN,,v,,MIN,The Armoury,,,0
 ,,WOL,,v,,MON,Full Moon Stadium,,,0
 ,,,,,,,,,,0
 ,ROUND 21,,,,,,,,,0
 ,,BWS,,v,,ROX,XRL Stadium,,,0
 ,,BOX,,v,,MCD,XRL Stadium,,,0
-,,CGRS,,v,,RAM,XRL Stadium,,,0
+,,COU,,v,,RAM,XRL Stadium,,,0
 ,,XIII,,v,,MIN,XRL Stadium,,,0
 ,,WOL,,v,,PUN,XRL Stadium,,,0
 ,,CBT,,v,,MON,XRL Stadium,,,0

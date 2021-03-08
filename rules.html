@@ -17,8 +17,8 @@
 
     <link href="/static/styles.css" rel="stylesheet">
 
-    <script type="module" src="js/Session.js"></script>
-    
+    <!-- <script type="module" src="js/Session.js"></script> -->
+
 
     <title>XRL Rules</title>
 
@@ -55,111 +55,565 @@
     <header class="p-3 bg-success bg-gradient text-white text-center">
         <h4>Rules</h4>
     </header>
-    <main class="container-lg px-0" id="mainContent" hidden>
-        <section>
-            Backs:
+    <main class="container-lg px-0" id="mainContent">
+        <section class="accordion m-3">
+            <div class="accordion-item">
+                <h2 class="accordion-header"><button class="accordion-button collapsed" type="button"
+                        data-bs-toggle="collapse" data-bs-target="#scoring-collapse" aria-expanded="true"
+                        aria-controls="scoring-collapse">Scoring</button>
+                </h2>
+                <div id="scoring-collapse" class="accordion-collapse collapse" aria-labelledby="headingOne"
+                    data-bs-parent="#accordionExample">
+                    <div class="accordion-body">
+                        <article class="card" id="back-scoring-card">
+                            <div class="card-header">
+                                <h4 class="card-title">Backs</h4>
+                            </div>
+                            <div class="card-body">
+                                <ul class="nav nav-tabs" id="backTab" role="tablist">
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link active" id="back-try-tab" data-bs-toggle="tab"
+                                            data-bs-target="#back-try" type="button" role="tab" aria-controls="back-try"
+                                            aria-selected="true">Positional Try</button>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link" id="back-inv-tab" data-bs-toggle="tab"
+                                            data-bs-target="#back-inv" type="button" role="tab" aria-controls="back-inv"
+                                            aria-selected="false">Involvement
+                                            Try</button>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link" id="back-mia-tab" data-bs-toggle="tab"
+                                            data-bs-target="#back-mia" type="button" role="tab" aria-controls="back-mia"
+                                            aria-selected="false">Missing In
+                                            Action</button>
+                                    </li>
+                                </ul>
+                                <div class="tab-content" id="backTabContent">
+                                    <div class="tab-pane fade show active" id="back-try" role="tabpanel"
+                                        aria-labelledby="back-try-tab">
+                                        <ul class="list-group">
+                                            <li class="list-group-item text-success"><strong>4 points</strong></li>
+                                            <li class="list-group-item">8 Line Breaks, Line Break Assists, Try Assists,
+                                                Offloads,
+                                                Tackle
+                                                Breaks,
+                                                40/20s, 20/40s, 1on1
+                                                Strips.</li>
+                                            <li class="list-group-item">17 Runs</li>
+                                        </ul>
+                                    </div>
+                                    <div class="tab-pane fade" id="back-inv" role="tabpanel"
+                                        aria-labelledby="back-inv-tab">
+                                        <ul class="list-group">
+                                            <li class="list-group-item text-success"><strong>4 points</strong></li>
+                                            <li class="list-group-item">35 Stats.</li>
+                                        </ul>
+                                    </div>
+                                    <div class="tab-pane fade" id="back-mia" role="tabpanel"
+                                        aria-labelledby="back-mia-tab">
+                                        <ul class="list-group">
+                                            <li class="list-group-item text-danger"><strong>-4 points</strong></li>
+                                            <li class="list-group-item">14 or less Stats. No more than 1 Try. At least
+                                                50
+                                                mins.
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </article>
+                        <article class="card" id="pm-scoring-card">
+                            <div class="card-header">
+                                <h4 class="card-title">Playmakers</h4>
+                            </div>
+                            <div class="card-body">
+                                <ul class="nav nav-tabs" id="backTab" role="tablist">
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link active" id="pm-try-tab" data-bs-toggle="tab"
+                                            data-bs-target="#pm-try" type="button" role="tab" aria-controls="pm-try"
+                                            aria-selected="true">Positional Try</button>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link" id="pm-inv-tab" data-bs-toggle="tab"
+                                            data-bs-target="#pm-inv" type="button" role="tab" aria-controls="pm-inv"
+                                            aria-selected="false">Involvement
+                                            Try</button>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link" id="pm-mia-tab" data-bs-toggle="tab"
+                                            data-bs-target="#pm-mia" type="button" role="tab" aria-controls="pm-mia"
+                                            aria-selected="false">Missing In
+                                            Action</button>
+                                    </li>
+                                </ul>
+                                <div class="tab-content" id="backTabContent">
+                                    <div class="tab-pane fade show active" id="pm-try" role="tabpanel"
+                                        aria-labelledby="pm-try-tab">
 
-            Back Try
-            4 points
-            8 Line Breaks, Line Break Assists, Try Assists, Offloads, Tackle Breaks, 40/20s, 20/40s, 1on1 Strips.
-            17 Runs
-            Back Involvement Try
-            4 points
-            35 Stats.
-            Missing in Action
-            -4 points
-            14 or less Stats. No more than 1 Try. At least 50 mins.
+                                        <ul class="list-group">
+                                            <li class="list-group-item text-success"><strong>4 points</strong></li>
+                                            <li class="list-group-item">8 Line Breaks, Line Break Assists, Try Assists,
+                                                Offloads, Tackle Breaks,
+                                                40/20, 20/40s, 1on1 Strips.
+                                            </li>
+                                            <li class="list-group-item">250m in Kicks.</li>
+                                            <li class="list-group-item">40 Tackles.</li>
+                                        </ul>
+                                    </div>
+                                    <div class="tab-pane fade" id="pm-inv" role="tabpanel" aria-labelledby="pm-inv-tab">
 
+                                        <ul class="list-group">
+                                            <li class="list-group-item text-success"><strong>4 points</strong></li>
+                                            <li class="list-group-item">45 Stats.</li>
+                                        </ul>
+                                    </div>
+                                    <div class="tab-pane fade" id="pm-mia" role="tabpanel" aria-labelledby="pm-mia-tab">
 
-            Playmakers:
+                                        <ul class="list-group">
+                                            <li class="list-group-item text-danger"><strong>-4 points</strong></li>
+                                            <li class="list-group-item">19 or less Stats. No more than 1 Try. At least
+                                                50
+                                                mins.
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </article>
+                        <article class="card" id="forward-scoring-card">
+                            <div class="card-header">
+                                <h4 class="card-title">Forwards</h4>
+                            </div>
+                            <div class="card-body">
+                                <ul class="nav nav-tabs" id="forwardTab" role="tablist">
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link active" id="forward-try-tab" data-bs-toggle="tab"
+                                            data-bs-target="#forward-try" type="button" role="tab"
+                                            aria-controls="forward-try" aria-selected="true">Positional Try</button>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link" id="forward-inv-tab" data-bs-toggle="tab"
+                                            data-bs-target="#forward-inv" type="button" role="tab"
+                                            aria-controls="forward-inv" aria-selected="false">Involvement
+                                            Try</button>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link" id="forward-mia-tab" data-bs-toggle="tab"
+                                            data-bs-target="#forward-mia" type="button" role="tab"
+                                            aria-controls="forward-mia" aria-selected="false">Missing In
+                                            Action</button>
+                                    </li>
+                                </ul>
+                                <div class="tab-content" id="backTabContent">
+                                    <div class="tab-pane fade show active" id="forward-try" role="tabpanel"
+                                        aria-labelledby="forward-try-tab">
 
-            Playmaker Try
-            4 points
-            8 Line Breaks, Line Break Assists, Try Assists, Offloads, Tackle Breaks, 40/20, 20/40s, 1on1 Strips.
-            250m in Kicks.
-            40 Tackles.
-            Playmaker Involvement Try
-            4 points
-            45 Stats.
-            Missing in Action
-            -4 points
-            19 or less Stats. No more than 1 Try. At least 50 mins.
+                                        <ul class="list-group">
+                                            <li class="list-group-item text-success"><strong>4 points</strong></li>
+                                            <li class="list-group-item">140m in Runs.</li>
+                                            <li class="list-group-item">40 Tackles.</li>
+                                            <li class="list-group-item">8 Line Breaks, Line Break Assists, Try Assists,
+                                                Offloads, Tackle Breaks,
+                                                40/20s, 20/40s, 1on1
+                                                Strips.</li>
+                                        </ul>
+                                    </div>
+                                    <div class="tab-pane fade" id="forward-inv" role="tabpanel"
+                                        aria-labelledby="forward-inv-tab">
 
+                                        <ul class="list-group">
+                                            <li class="list-group-item text-success"><strong>4 points</strong></li>
+                                            <li class="list-group-item">50 Stats.</li>
+                                        </ul>
+                                    </div>
+                                    <div class="tab-pane fade" id="forward-mia" role="tabpanel"
+                                        aria-labelledby="forward-mia-tab">
 
-            Forwards:
+                                        <ul class="list-group">
+                                            <li class="list-group-item text-danger"><strong>-4 points</strong></li>
+                                            <li class="list-group-item">24 or less Stats. No More than 1 Try. At least
+                                                50
+                                                mins.
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </article>
+                        <article class="card" id="negative-scoring-card">
+                            <div class="card-header">
+                                <h4 class="card-title">Negatives</h4>
+                            </div>
+                            <div class="card-body">
+                                <ul class="nav nav-tabs" id="forwardTab" role="tablist">
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link active" id="concede-tab" data-bs-toggle="tab"
+                                            data-bs-target="#concede" type="button" role="tab" aria-controls="concede"
+                                            aria-selected="true">Concede</button>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link" id="sinbin-tab" data-bs-toggle="tab"
+                                            data-bs-target="#sinbin" type="button" role="tab" aria-controls="sinbin"
+                                            aria-selected="false">Sin
+                                            Bin</button>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link" id="sendoff-tab" data-bs-toggle="tab"
+                                            data-bs-target="#sendoff" type="button" role="tab" aria-controls="sendoff"
+                                            aria-selected="false">Missing In
+                                            Action</button>
+                                    </li>
+                                </ul>
+                                <div class="tab-content" id="backTabContent">
+                                    <div class="tab-pane fade show active" id="concede" role="tabpanel"
+                                        aria-labelledby="concede-tab">
 
-            Forward Try
-            4 points
-            140m in Runs.
-            40 Tackles.
-            8 Line Breaks, Line Break Assists, Try Assists, Offloads, Tackle Breaks, 40/20s, 20/40s, 1on1 Strips.
-            Forward Involvement Try
-            4 points
-            50 Stats.  
-            Missing in Action
-            - 4 points
-            24 or less Stats. No More than 1 Try. At least 50 mins.
+                                        <ul class="list-group">
+                                            <li class="list-group-item text-danger"><strong>-4 points</strong></li>
+                                            <li class="list-group-item">5 Missed Tackles</li>
+                                            <li class="list-group-item">3 Errors</li>
+                                        </ul>
+                                    </div>
+                                    <div class="tab-pane fade" id="sinbin" role="tabpanel" aria-labelledby="sinbin-tab">
 
+                                        <ul class="list-group">
+                                            <li class="list-group-item text-danger"><strong>-2 points</strong></li>
+                                        </ul>
+                                    </div>
+                                    <div class="tab-pane fade" id="sendoff" role="tabpanel"
+                                        aria-labelledby="sendoff-tab">
 
+                                        <ul class="list-group">
+                                            <li class="list-group-item text-danger"><strong>-4 points</strong> plus -1
+                                                point
+                                                for
+                                                every 10 minutes off the field</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </article>
+                        <article class="card" id="goal-card">
+                            <div class="card-header">
+                                <h4 class="card-title">Goalkicking</h4>
+                            </div>
+                            <div class="card-body">
+                                <ul class="nav nav-tabs" id="goalTab" role="tablist">
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link active" id="goal-tab" data-bs-toggle="tab"
+                                            data-bs-target="#goal" type="button" role="tab" aria-controls="goal"
+                                            aria-selected="true">Goals</button>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link" id="fg-tab" data-bs-toggle="tab" data-bs-target="#fg"
+                                            type="button" role="tab" aria-controls="fg" aria-selected="false">Field
+                                            Goals</button>
+                                    </li>
 
-            Negative Points:
+                                </ul>
+                                <div class="tab-content" id="backTabContent">
+                                    <div class="tab-pane fade show active" id="goal" role="tabpanel"
+                                        aria-labelledby="goal-tab">
 
-            Concede
-            -4 points
-            5 Missed Tackles
-            3 Errors
-            Sin Bin
-            -2 points
-            Send Off
-            -4 points plus -1 point for every 10 minutes off the field
+                                        <ul class="list-group">
+                                            <li class="list-group-item text-success"><strong>2 points</strong></li>
 
+                                        </ul>
+                                    </div>
+                                    <div class="tab-pane fade" id="fg" role="tabpanel" aria-labelledby="fg-tab">
 
-            Goalkicking:
+                                        <ul class="list-group">
+                                            <li class="list-group-item text-success"><strong>1 point</strong></li>
+                                        </ul>
+                                    </div>
 
-            Goal
-            2 points
-
-            Scoring
-            A player can only score a maximum of 4 points for a positional try, even if they met the criteria for multiple positional tries. Players who do score multiple positional tries will negate the effect of any concede they also score. Multiple positional tries will not effect the negative points from a sin bin or send off.
-
-            Lineups
-            Team Lineups must be announced at least 15 minutes prior to the scheduled kick off time for the first match for any given round. If a lineup is submitted after this time then the team will use the same lineup they used the week before. If alterations are made after this time it will revert to the last legitimate lineup posted. Only eligible player selections can be substituted. Picking a player of the wrong position, or leaving a blank space in your lineup will not result in bench players replacing them.
-
-            Substitutions
-            If you name a blank spot in your lineup, or pick a player out of position, no bench player will substitute in to this position, even if you have a bench player of the same position who plays in a game.
-
-            Squad Limit
-            The maximum squad size is 18 players.
-
-            Trade Deadline
-            The trade deadline will be in effect this season from the lockout for Round 21 matches (15 mins prior to kickoff of the first game of the round). No trades will be possible after this point, however players can still be cut and scooped/waivered. From the start of the finals, eliminated teams are frozen.
-
-            Captaincy
-            Each player is limited to 6 captaincies through the regular season. When a player reaches their limit their name will be greyed out, and this player won't be able to captain the team again until the finals. A progressive tally will be kept next to the player's name in the squads note.
-
-            Powerplays
-            A Powerplay allows the home team to use two captains in a match. No vice-captain can be named during a powerplay so if a named captain does not play, you will lose that captaincy. Each team gets 3 powerplays to use through the regular season. They can only be used at home games, and can be declared at any point up until team lockouts. You can rescind a decision to powerplay before the lockout with no penalty. You can see how many powerplays you have left by looking next to your team name in the squads note. Powerplays are not mandatory. If you do not declare all of your powerplays by your last home game, you may still trade them to other teams.
-
-            Vice Goalkickers
-            The purpose of a vice goalkicker is to provide a safety net if your starting goalkicker does not make the final 17 of their team. In this case your vice goalkicker will earn points for any goals they score. If your first choice goal kicker gets injured in the match, or just does not kick any goals, your vice goalkicker will not sub in.
-
-            Dual Positions
-            Players can earn dual position status and play in either of their nominated positions. If a player is named in one position and subsequently starts 3 NRL matches in a different position (according to XRL definitions of positions, ie. forward, back, playmaker), the player will be awarded a dual player status. This will be processed upon the completion of each round, at the same time as the Waiver Wire. Managers can apply for dual status if they feel a player has been overlooked for dual status in writing on the forum. The XRL Commissioner will then decide on the merit of applications. Players who spend a large amount of time in another position without necessarily starting, or players coming off the bench, can also have games count towards their tally.
-
-            NB: Dual Positions does not mean a player is limited to two positions.
-
-
-            Waivers/Scooping
-            1. There will be two waivers, at midday Tuesday and then at midday Wednesday.
-            2. At 9am Thursday mornings free scooping opens and will cease 15 mins before the scheduled kick off of the first game of the round.
-            3. Teams may only waiver one player per week, but may scoop as many players as they like.
-            4. Waiver lists should be sent by email to the Oxford United Boxes (toby.parker@bigpond.com). The squad list will be updated as regularly as possible.
-            5. Scoops should be made in the appropriate thread in the forum (Waivers thread).
-            6. Waiver order is drawn along with the draft. Teams that waiver at a given waiver time will drop to the bottom of the list, in the reverse order that they were in that week. Teams who scoop after the Tuesday and Wednesday waivers will fall to the bottom of the list in the chronological order that they make their signings. At the end of the scooping period, any teams that picked up multiple players in the week will move below any teams that picked up less players than them.
-
-
-            Dropped Players
-            Any player cut from a teams lineup will be ineligible for scooping until after clearing Waivers.
+                                </div>
+                            </div>
+                        </article>
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header"><button class="accordion-button collapsed" type="button"
+                        data-bs-toggle="collapse" data-bs-target="#pos-try-collapse" aria-expanded="true"
+                        aria-controls="pos-try-collapse">Multiple
+                        Positional Tries</button></h2>
+                <div id="pos-try-collapse" class="accordion-collapse collapse" aria-labelledby="headingOne"
+                    data-bs-parent="#accordionExample">
+                    <div class="accordion-body">
+                        <p>A player can only score a maximum of 4 points for a positional try, even if they met the
+                            criteria for
+                            multiple positional tries. Players who do score multiple positional tries will negate
+                            the
+                            effect of
+                            any
+                            concede they also score. Multiple positional tries will not effect the negative points
+                            from
+                            a sin
+                            bin or
+                            send off.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header"><button class="accordion-button collapsed" type="button"
+                        data-bs-toggle="collapse" data-bs-target="#lineups-collapse" aria-expanded="true"
+                        aria-controls="lineups-collapse">Lineups</button>
+                </h2>
+                <div id="lineups-collapse" class="accordion-collapse collapse" aria-labelledby="headingOne"
+                    data-bs-parent="#accordionExample">
+                    <div class="accordion-body">
+                        <p>Team Lineups must be announced at least 15 minutes prior to the scheduled kick off time
+                            for
+                            the first
+                            match
+                            for any given round. If a lineup is submitted after this time then the team will use the
+                            same lineup
+                            they
+                            used the week before. If alterations are made after this time it will revert to the last
+                            legitimate
+                            lineup
+                            posted. Only eligible player selections can be substituted. Picking a player of the
+                            wrong
+                            position,
+                            or
+                            leaving a blank space in your lineup will not result in bench players replacing them.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header"><button class="accordion-button collapsed" type="button"
+                        data-bs-toggle="collapse" data-bs-target="#subs-collapse" aria-expanded="true"
+                        aria-controls="subs-collapse">Substitutions</button></h2>
+                <div id="subs-collapse" class="accordion-collapse collapse" aria-labelledby="headingOne"
+                    data-bs-parent="#accordionExample">
+                    <div class="accordion-body">
+                        <p>If you name a blank spot in your lineup, or pick a player out of position, no bench
+                            player
+                            will
+                            substitute
+                            in to this position, even if you have a bench player of the same position who plays in a
+                            game.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header"><button class="accordion-button collapsed" type="button"
+                        data-bs-toggle="collapse" data-bs-target="#limit-collapse" aria-expanded="true"
+                        aria-controls="limit-collapse">Squad
+                        Limit</button></h2>
+                <div id="limit-collapse" class="accordion-collapse collapse" aria-labelledby="headingOne"
+                    data-bs-parent="#accordionExample">
+                    <div class="accordion-body">
+                        <p>The maximum squad size is 18 players.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header"><button class="accordion-button collapsed" type="button"
+                        data-bs-toggle="collapse" data-bs-target="#deadline-collapse" aria-expanded="true"
+                        aria-controls="deadline-collapse">Trade
+                        Deadline</button></h2>
+                <div id="deadline-collapse" class="accordion-collapse collapse" aria-labelledby="headingOne"
+                    data-bs-parent="#accordionExample">
+                    <div class="accordion-body">
+                        <p>The trade deadline will be in effect this season from the lockout for Round 21 matches
+                            (15
+                            mins prior
+                            to
+                            kickoff of the first game of the round). No trades will be possible after this point,
+                            however
+                            players
+                            can
+                            still be cut and scooped/waivered. From the start of the finals, eliminated teams are
+                            frozen.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header"><button class="accordion-button collapsed" type="button"
+                        data-bs-toggle="collapse" data-bs-target="#captaincy-collapse" aria-expanded="true"
+                        aria-controls="captaincy-collapse">Captaincy</button></h2>
+                <div id="captaincy-collapse" class="accordion-collapse collapse" aria-labelledby="headingOne"
+                    data-bs-parent="#accordionExample">
+                    <div class="accordion-body">
+                        <p>Each player is limited to 6 captaincies through the regular season. When a player reaches
+                            their limit
+                            their
+                            name will be greyed out, and this player won't be able to captain the team again until
+                            the
+                            finals. A
+                            progressive tally will be kept next to the player's name in the squads note.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header"><button class="accordion-button collapsed" type="button"
+                        data-bs-toggle="collapse" data-bs-target="#pp-collapse" aria-expanded="true"
+                        aria-controls="pp-collapse">Powerplays</button></h2>
+                <div id="pp-collapse" class="accordion-collapse collapse" aria-labelledby="headingOne"
+                    data-bs-parent="#accordionExample">
+                    <div class="accordion-body">
+                        <p>A Powerplay allows the home team to use two captains in a match. No vice-captain can be
+                            named
+                            during
+                            a
+                            powerplay so if a named captain does not play, you will lose that captaincy. Each team
+                            gets
+                            3
+                            powerplays
+                            to
+                            use through the regular season. They can only be used at home games, and can be declared
+                            at
+                            any
+                            point up
+                            until team lockouts. You can rescind a decision to powerplay before the lockout with no
+                            penalty. You
+                            can
+                            see
+                            how many powerplays you have left by looking next to your team name in the squads note.
+                            Powerplays
+                            are
+                            not
+                            mandatory. If you do not declare all of your powerplays by your last home game, you may
+                            still trade
+                            them
+                            to
+                            other teams.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header"><button class="accordion-button collapsed" type="button"
+                        data-bs-toggle="collapse" data-bs-target="#vkick-collapse" aria-expanded="true"
+                        aria-controls="vkick-collapse">Vice
+                        Goalkickers</button></h2>
+                <div id="vkick-collapse" class="accordion-collapse collapse" aria-labelledby="headingOne"
+                    data-bs-parent="#accordionExample">
+                    <div class="accordion-body">
+                        <p>The purpose of a vice goalkicker is to provide a safety net if your starting goalkicker
+                            does
+                            not make
+                            the
+                            final 17 of their team. In this case your vice goalkicker will earn points for any goals
+                            they score.
+                            If
+                            your
+                            first choice goal kicker gets injured in the match, or just does not kick any goals,
+                            your
+                            vice
+                            goalkicker
+                            will not sub in.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header"><button class="accordion-button collapsed" type="button"
+                        data-bs-toggle="collapse" data-bs-target="#dual-collapse" aria-expanded="true"
+                        aria-controls="dual-collapse">Dual
+                        Positions</button></h2>
+                <div id="dual-collapse" class="accordion-collapse collapse" aria-labelledby="headingOne"
+                    data-bs-parent="#accordionExample">
+                    <div class="accordion-body">
+                        <p>
+                            Players can earn dual position status and play in either of their nominated positions.
+                            If a
+                            player
+                            is
+                            named in one position and subsequently starts 3 NRL matches in a different position
+                            (according to
+                            XRL
+                            definitions of positions, ie. forward, back, playmaker), the player will be awarded a
+                            dual
+                            player
+                            status. This will
+                            be processed upon the completion of each round, at the same time as the Waiver Wire.
+                            Managers can
+                            apply
+                            for
+                            dual status if they feel a player has been overlooked for dual status in writing on the
+                            forum. The
+                            XRL
+                            Commissioner will then decide on the merit of applications. Players who spend a large
+                            amount
+                            of time
+                            in
+                            another position without necessarily starting, or players coming off the bench, can also
+                            have games
+                            count towards their tally.
+                        </p>
+                        <p>
+                            NB: Dual Positions does not mean a player is limited to two positions.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header"><button class="accordion-button collapsed" type="button"
+                        data-bs-toggle="collapse" data-bs-target="#waivers-collapse" aria-expanded="true"
+                        aria-controls="waivers-collapse">Waivers/Scooping</button></h2>
+                <div id="waivers-collapse" class="accordion-collapse collapse" aria-labelledby="headingOne"
+                    data-bs-parent="#accordionExample">
+                    <div class="accordion-body">
+                        <ol>
+                            <li class="list-group-item">There will be two waivers, at midday Tuesday and then at
+                                midday
+                                Wednesday.
+                            </li>
+                            <li class="list-group-item">At 9am Thursday mornings free scooping opens and will cease
+                                15
+                                mins
+                                before
+                                the scheduled kick off of
+                                the first game of the round.</li>
+                            <li class="list-group-item">Teams may only waiver one player per week, but may scoop as
+                                many
+                                players
+                                as
+                                they like.</li>
+                            <li class="list-group-item">Waiver lists should be sent by email to the Oxford United
+                                Boxes
+                                (toby.parker@bigpond.com). The squad
+                                list will be updated as regularly as possible.</li>
+                            <li class="list-group-item">Scoops should be made in the appropriate thread in the forum
+                                (Waivers
+                                thread).</li>
+                            <li class="list-group-item">Waiver order is drawn along with the draft. Teams that
+                                waiver at
+                                a given
+                                waiver time will drop to
+                                the bottom of the list, in the reverse order that they were in that week. Teams who
+                                scoop after
+                                the
+                                Tuesday and Wednesday waivers will fall to the bottom of the list in the
+                                chronological
+                                order
+                                that
+                                they make
+                                their signings. At the end of the scooping period, any teams that picked up multiple
+                                players in
+                                the
+                                week
+                                will move below any teams that picked up less players than them.</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header"><button class="accordion-button collapsed" type="button"
+                        data-bs-toggle="collapse" data-bs-target="#dropped-collapse" aria-expanded="true"
+                        aria-controls="dropped-collapse">Dropped
+                        Players</button></h2>
+                <div id="dropped-collapse" class="accordion-collapse collapse" aria-labelledby="headingOne"
+                    data-bs-parent="#accordionExample">
+                    <div class="accordion-body">
+                        <p>Any player cut from a teams lineup will be ineligible for scooping until after clearing
+                            Waivers.</p>
+                    </div>
+                </div>
+            </div>
         </section>
     </main>
 

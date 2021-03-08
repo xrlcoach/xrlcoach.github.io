@@ -114,7 +114,6 @@ function PopulateFixtureTable(round) {
             let homeLogo =  document.createElement('img');
             homeLogo.src = '/static/' + match.home + '.png';
             homeLogo.height = '50';
-            homeLogo.className = 'me-1';
             homeLogoCell.appendChild(homeLogo);
             tr.appendChild(homeLogoCell);
             let homeNameCell = document.createElement('td');
@@ -139,7 +138,6 @@ function PopulateFixtureTable(round) {
             let awayLogo =  document.createElement('img');
             awayLogo.src = '/static/' + match.away + '.png';
             awayLogo.height = '50';
-            awayLogo.className = 'ms-1';
             awayLogoCell.appendChild(awayLogo);
             tr.appendChild(awayLogoCell);
             //If the round is ongoing or finished, get the team scores and display them alongside the team name
@@ -208,34 +206,36 @@ function PopulateTeamFixtureTable(team) {
             let homeUser = users.find(u => u.team_short == match.home);
             let awayUser = users.find(u => u.team_short == match.away);
             //Create table cells for each team and fill with team names
-            let home = document.createElement('td');
-            home.style.whiteSpace = 'nowrap';
+            let homeLogoCell = document.createElement('td');
             let homeLogo =  document.createElement('img');
-            homeLogo.src = '/static/' + homeUser.team_short + '.png';
+            homeLogo.src = '/static/' + match.home + '.png';
             homeLogo.height = '50';
-            homeLogo.className = 'me-1';
-            home.appendChild(homeLogo);
+            homeLogoCell.appendChild(homeLogo);
+            tr.appendChild(homeLogoCell);
+            let homeNameCell = document.createElement('td');
+            homeNameCell.style.whiteSpace = 'nowrap';
             let homeName = document.createElement('a');
-            homeName.href = 'squads.html?xrlTeam=' + homeUser.team_short;
-            homeName.innerText = homeUser.team_name;
-            home.appendChild(homeName);
-            tr.appendChild(home);
+            homeName.href = 'squads.html?xrlTeam=' + match.home;
+            homeName.innerText = homeUser ? homeUser.team_name : match.home;
+            homeNameCell.appendChild(homeName);
+            tr.appendChild(homeNameCell);
             let homeScore = document.createElement('td');
             tr.appendChild(homeScore);
             let awayScore = document.createElement('td');
             tr.appendChild(awayScore);
-            let away = document.createElement('td');
-            away.style.whiteSpace = 'nowrap';
+            let awayNameCell = document.createElement('td');
+            awayNameCell.style.whiteSpace = 'nowrap';
             let awayName = document.createElement('a');
-            awayName.href = 'squads.html?xrlTeam=' + awayUser.team_short;
-            awayName.innerText = awayUser.team_name;
-            away.appendChild(awayName);
+            awayName.href = 'squads.html?xrlTeam=' + match.away;
+            awayName.innerText = awayUser ? awayUser.team_name : match.away;
+            awayNameCell.appendChild(awayName);
+            tr.appendChild(awayNameCell);
+            let awayLogoCell = document.createElement('td');
             let awayLogo =  document.createElement('img');
-            awayLogo.src = '/static/' + awayUser.team_short + '.png';
+            awayLogo.src = '/static/' + match.away + '.png';
             awayLogo.height = '50';
-            awayLogo.className = 'ms-1';
-            away.appendChild(awayLogo);
-            tr.appendChild(away);
+            awayLogoCell.appendChild(awayLogo);
+            tr.appendChild(awayLogoCell);
             //If the round is ongoing or finished, get the team scores and display them alongside the team name
             if (round.completed || round.in_progress) {
                 //let homeScore = await GetLineupScoreByTeamAndRound(round.round_number, homeUser.team_short);

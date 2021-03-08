@@ -353,13 +353,17 @@ function displayChoices() {
  * Calls API to drop and pick selected players
  */
 async function submitChoices() {
-    if (droppedPlayers.length > 0) {
-        await DropPlayers(user.team_short, droppedPlayers);
+    try {
+        if (droppedPlayers.length > 0) {
+            await DropPlayers(user.team_short, droppedPlayers);
+        }
+        if (pickedPlayers.length > 0) {
+            await ScoopPlayers(user.team_short, pickedPlayers);
+        }
+        location.reload();
+    } catch (err) {
+        DisplayFeedback('Error', err + (err.stack ? '<p>' + err.stack + '</p>': ''));
     }
-    if (pickedPlayers.length > 0) {
-        await ScoopPlayers(user.team_short, pickedPlayers);
-    }
-    location.reload();
 }
 window.submitChoices = submitChoices;
 

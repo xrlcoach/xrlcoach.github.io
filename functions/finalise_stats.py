@@ -98,7 +98,7 @@ for match in fixtures:
                         }
                     )
                     kicking_stats = resp["Item"]["scoring_stats"]["kicker"]
-                    kicking_score = kicking_stats["goals"] * 2 + kicking_stats["field_goals"]
+                    kicking_score = kicking_stats["goals"] * 2 + kicking_stats["field_goals"] + kicking_stats["2point_field_goals"] * 2
                     if player['captain'] or player['captain2']:
                         kicking_score *= 2
                     table.update_item(
@@ -113,13 +113,14 @@ for match in fixtures:
                     )
                 if player['vice'] and vice_plays:
                     print(f"{player['player_name']} takes over captaincy duties. Adjusting lineup score and user's captain counts.")
-                    resp = table.get_item(
+                    entry = table.get_item(
                         Key={
                             'pk': player['pk'],
                             'sk': player['sk']
                         }
-                    )
-                    current_score = resp['Item']['score']
+                    )['Item']
+                    playing_score = entry['playing_score']
+                    kicking_score = entry['kicking_score']
                     table.update_item(
                         Key={
                             'pk': player['pk'],
@@ -127,7 +128,7 @@ for match in fixtures:
                         },
                         UpdateExpression="set score=:v",
                         ExpressionAttributeValues={
-                            ':v': current_score * 2
+                            ':v': playing_score * 2 + kicking_score
                         }                        
                     )
                     # vice_entry = table.get_item(
@@ -425,7 +426,7 @@ for player in squads:
                     player_stats['scoring_stats'][position][stat] += app['scoring_stats'][position][stat]
     for position in player_stats['scoring_stats'].keys():
         if position == 'kicker':
-            player_stats['scoring_stats'][position]['points'] = player_stats['scoring_stats'][position]['goals'] * 2 + player_stats['scoring_stats'][position]['field_goals']
+            player_stats['scoring_stats'][position]['points'] = player_stats['scoring_stats'][position]['goals'] * 2 + player_stats['scoring_stats'][position]['field_goals'] + player_stats['scoring_stats'][position]['2point_field_goals'] * 2
         else:
             player_stats['scoring_stats'][position]['points'] = player_stats['scoring_stats'][position]['tries'] * 4
             player_stats['scoring_stats'][position]['points'] += player_stats['scoring_stats'][position]['involvement_try'] * 4

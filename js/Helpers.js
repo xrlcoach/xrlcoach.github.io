@@ -54,7 +54,7 @@ export const PositionMap = {
  */
 export const XrlRelevantStats = ["All Runs", "Line Breaks", "Line Break Assists", "Try Assists", "Tackle Breaks",
 "Offloads", "Tackles Made", "Kicks", "40/20", "20/40", "All Runs", "All Run Metres", "Kicking Metres", "One on One Steal",
-"Conversions", "Penalty Goals"]
+"Conversions", "Penalty Goals", "Errors", "Missed Tackles"]
 /**
  * Displays a feedback modal with an optional footer with cancel/confirm buttons and an onconfirm function.
  * @param {String} title A title for the feedback display
@@ -112,6 +112,7 @@ export function DisplayPlayerInfo(player, round) {
     document.getElementById('playerPTs').innerText = player.scoring_stats[player.position].positional_try || 0;
     document.getElementById('playerGoals').innerText = player.scoring_stats.kicker.goals || 0;
     document.getElementById('playerFGs').innerText = player.scoring_stats.kicker.field_goals || 0;
+    document.getElementById('playerFG2s').innerText = player.scoring_stats.kicker['2point_field_goals'] || 0;
     document.getElementById('playerMIAs').innerText = player.scoring_stats[player.position].mia || 0;
     document.getElementById('playerConcedes').innerText = player.scoring_stats[player.position].concede || 0;
     document.getElementById('playerSinBins').innerText = player.stats['Sin Bins'] || 0;
@@ -306,6 +307,9 @@ export async function DisplayAppearanceInfoFromLineup(appearance) {
         document.getElementById('appearanceInfoFGs').innerText = statsRecord.scoring_stats.kicker.field_goals;
         if (statsRecord.scoring_stats.kicker.field_goals > 0) document.getElementById('appearanceInfoFGs').style.color = 'green';
         else document.getElementById('appearanceInfoFGs').style.color = '';
+        document.getElementById('appearanceInfoFG2s').innerText = statsRecord.scoring_stats.kicker['2point_field_goals'];
+        if (statsRecord.scoring_stats.kicker['2point_field_goals'] > 0) document.getElementById('appearanceInfoFG2s').style.color = 'green';
+        else document.getElementById('appearanceInfoFG2s').style.color = '';
         if (statsRecord.scoring_stats[appearance.position_general].mia) {
             document.getElementById('appearanceInfoMIAs').innerText = 'Yes';
             document.getElementById('appearanceInfoMIAs').style.color = '#c94d38';

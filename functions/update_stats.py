@@ -77,7 +77,7 @@ def driver_setup():
 
 def involvement_try(player, position):
     #=IF(AND(D2="Back",AB2>34),1,IF(AND(D2="Playmaker",AB2>44),1,IF(AND(D2="Forward",AB2>49),1,0)))
-    relevant_stats = ["Tries", "Field Goals", "All Runs", "Line Breaks", "Line Break Assists", "Try Assists", "Tackle Breaks",
+    relevant_stats = ["Tries", "1 Point Field Goals", "2 Point Field Goals", "All Runs", "Line Breaks", "Line Break Assists", "Try Assists", "Tackle Breaks",
         "Offloads", "Tackles Made", "Kicks", "40/20", "20/40"]
     stats = sum([player[stat] for stat in player.keys() if stat in relevant_stats])
     if position == 'Back' and stats > 34:
@@ -113,7 +113,7 @@ def positional_try(player, position):
 
 def missing(player, position):
     #=IF(AND(F2>49,G2<2),IF(AND(D2="Back",AB2<15),1,IF(AND(D2="Playmaker",AB2<20),1,IF(AND(D2="Forward",AB2<25),1,0))),0)
-    relevant_stats = ["Tries", "Field Goals", "All Runs", "Line Breaks", "Line Break Assists", "Try Assists", "Tackle Breaks",
+    relevant_stats = ["Tries", "1 Point Field Goals", "2 Point Field Goals", "All Runs", "Line Breaks", "Line Break Assists", "Try Assists", "Tackle Breaks",
         "Offloads", "Tackles Made", "Kicks", "40/20", "20/40"]
     stats = sum([player[stat] for stat in player.keys() if stat in relevant_stats])
     if player["Mins Played"] > 49 and player["Tries"] < 2:
@@ -129,14 +129,15 @@ def get_stats():
 
     with driver_setup() as driver:
         
-        url = 'https://www.nrl.com/draw/nrl-premiership/2020/'
-        url1 = 'https://www.nrl.com/draw/?competition=111&season=2020&round=' + sys.argv[1]
+        draw_url = 'https://www.nrl.com/draw/'
+        match_url_base = 'https://www.nrl.com/draw/nrl-premiership/2021/'
+        # url1 = 'https://www.nrl.com/draw/?competition=111&season=2020&round=' + sys.argv[1]
 
         # Set timeout time
         wait = WebDriverWait(driver, 10)
         # retrive URL in headless browser
         print("Connecting to http://www.nrl.com/draw")
-        driver.get(url1)
+        driver.get(draw_url)
 
         # round_number = driver.find_element_by_class_name(
         # "filter-round__button filter-round__button--dropdown"
@@ -164,7 +165,7 @@ def get_stats():
                     team_name = "-".join(words)
                     fixture_formatted.append(team_name)
                 fixture_formatted = "-v-".join(fixture_formatted)
-                fixture_url = url + f'{round_number}/{fixture_formatted}'
+                fixture_url = match_url_base + f'{round_number}/{fixture_formatted}'
                 matches.append(fixture_url)
         
         match_count = 0
@@ -377,7 +378,10 @@ def get_stats():
                         'position': new_player_position,
                         'position2': None,
                         'stats': {},
-                        'scoring_stats': {},
+                        'scoring_stats': {
+                            new_player_position: {},
+                            'kicker': {}
+                        },
                         'times_as_captain': 0
                     }                    
                 )
@@ -435,16 +439,14 @@ def get_stats():
             }
         player_scores['kicker'] = {
             'goals': player[1]['Conversions'] + player[1]['Penalty Goals'],
-            'field_goals': player[1]['Field Goals']
+            'field_goals': player[1]['1 Point Field Goals'],
+            '2point_field_goals': player[1]['2 Point Field Goals']
         }
         player.append(player_scores)
 
 
     print("Loading to dynamodb, table: stats2020")
-    print("round_number: " + number)
-    print("First Player: " + str(player_stats_final[0][0]))
-    print("First stat map: " + str(player_stats_final[0][1]))
-    print("First score map: " + str(player_stats_final[0][2]))
+    
     
     for player in player_stats_final:
         # table.delete_item(Key={
@@ -485,6 +487,8 @@ def get_stats():
             lineup_score = 0
             for player in lineup:
                 player_lineup_score = 0
+                playing_score = 0
+                kicking_score = 0
                 played_nrl = False
                 played_xrl = False
                 for player_stats in player_stats_final:
@@ -505,12 +509,15 @@ def get_stats():
                         if player_scoring_stats['positional_try'] > 0: player_lineup_score += 4
                         if player_scoring_stats['mia']: player_lineup_score -= 4
                         if player_scoring_stats['concede']: player_lineup_score -= 4
-                        if player['kicker']:
-                            player_kicking_stats = player_stats[2]['kicker']
-                            player_lineup_score += player_kicking_stats['goals'] * 2
-                            player_lineup_score += player_kicking_stats['field_goals']
+                        playing_score = player_lineup_score
                         if player['captain'] or player['captain2']:
                             player_lineup_score *= 2
+                        player_kicking_stats = player_stats[2]['kicker']
+                        kicking_score = player_kicking_stats['goals'] * 2
+                        kicking_score += player_kicking_stats['field_goals']
+                        kicking_score += player_kicking_stats['2point_field_goals'] * 2
+                        if player['kicker']:
+                            player_lineup_score += kicking_score
                 # if not played_nrl:
                 #     print(f"{player['player_name']} didn't play NRL this week")
                 table.update_item(
@@ -518,11 +525,13 @@ def get_stats():
                         'pk': player['pk'],
                         'sk': player['sk']
                     },
-                    UpdateExpression="set played_nrl=:p, played_xrl=:x, score=:s",
+                    UpdateExpression="set played_nrl=:p, played_xrl=:x, score=:s, playing_score=:ps, kicking_score=:ks",
                     ExpressionAttributeValues={
                         ':p': played_nrl,
                         ':x': played_xrl,
-                        ':s': player_lineup_score
+                        ':s': player_lineup_score,
+                        ':ps': playing_score,
+                        ':ks': kicking_score
                     }
                 )
                 if played_xrl:

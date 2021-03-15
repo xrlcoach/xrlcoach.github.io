@@ -425,7 +425,9 @@ def get_stats():
             'involvement_try': involvement_try(player[1], squad_entry['position']),
             'positional_try': positional_try(player[1], squad_entry['position']) > 0,
             'mia': missing(player[1], squad_entry['position']),
-            'concede': False if positional_try(player[1], squad_entry['position']) > 1 else player[1]['Missed Tackles'] > 4 or player[1]['Errors'] > 2
+            'concede': False if positional_try(player[1], squad_entry['position']) > 1 else player[1]['Missed Tackles'] > 4 or player[1]['Errors'] > 2,
+            'field_goals': player[1]['1 Point Field Goals'],
+            '2point_field_goals': player[1]['2 Point Field Goals']
         }
         if 'position2' in squad_entry.keys() and squad_entry['position2'] != '' and squad_entry['position2'] != None:
             player_scores[squad_entry['position2']] = {
@@ -435,12 +437,12 @@ def get_stats():
             'involvement_try': involvement_try(player[1], squad_entry['position2']),
             'positional_try': positional_try(player[1], squad_entry['position2']) > 0,
             'mia': missing(player[1], squad_entry['position2']),
-            'concede': False if positional_try(player[1], squad_entry['position2']) > 1 else player[1]['Missed Tackles'] > 4 or player[1]['Errors'] > 2
-            }
-        player_scores['kicker'] = {
-            'goals': player[1]['Conversions'] + player[1]['Penalty Goals'],
+            'concede': False if positional_try(player[1], squad_entry['position2']) > 1 else player[1]['Missed Tackles'] > 4 or player[1]['Errors'] > 2,
             'field_goals': player[1]['1 Point Field Goals'],
             '2point_field_goals': player[1]['2 Point Field Goals']
+            }
+        player_scores['kicker'] = {
+            'goals': player[1]['Conversions'] + player[1]['Penalty Goals']
         }
         player.append(player_scores)
 
@@ -509,13 +511,13 @@ def get_stats():
                         if player_scoring_stats['positional_try'] > 0: player_lineup_score += 4
                         if player_scoring_stats['mia']: player_lineup_score -= 4
                         if player_scoring_stats['concede']: player_lineup_score -= 4
+                        player_lineup_score += player_scoring_stats['field_goals']
+                        player_lineup_score += player_scoring_stats['2point_field_goals'] * 2
                         playing_score = player_lineup_score
                         if player['captain'] or player['captain2']:
                             player_lineup_score *= 2
                         player_kicking_stats = player_stats[2]['kicker']
                         kicking_score = player_kicking_stats['goals'] * 2
-                        kicking_score += player_kicking_stats['field_goals']
-                        kicking_score += player_kicking_stats['2point_field_goals'] * 2
                         if player['kicker']:
                             player_lineup_score += kicking_score
                 # if not played_nrl:

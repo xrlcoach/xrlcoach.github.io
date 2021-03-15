@@ -111,8 +111,8 @@ export function DisplayPlayerInfo(player, round) {
     document.getElementById('playerITs').innerText = player.scoring_stats[player.position].involvement_try || 0;
     document.getElementById('playerPTs').innerText = player.scoring_stats[player.position].positional_try || 0;
     document.getElementById('playerGoals').innerText = player.scoring_stats.kicker.goals || 0;
-    document.getElementById('playerFGs').innerText = player.scoring_stats.kicker.field_goals || 0;
-    document.getElementById('playerFG2s').innerText = player.scoring_stats.kicker['2point_field_goals'] || 0;
+    document.getElementById('playerFGs').innerText = player.scoring_stats[player.position].field_goals || 0;
+    document.getElementById('playerFG2s').innerText = player.scoring_stats[player.position]['2point_field_goals'] || 0;
     document.getElementById('playerMIAs').innerText = player.scoring_stats[player.position].mia || 0;
     document.getElementById('playerConcedes').innerText = player.scoring_stats[player.position].concede || 0;
     document.getElementById('playerSinBins').innerText = player.stats['Sin Bins'] || 0;
@@ -304,11 +304,11 @@ export async function DisplayAppearanceInfoFromLineup(appearance) {
         document.getElementById('appearanceInfoGoals').innerText = statsRecord.scoring_stats.kicker.goals;
         if (statsRecord.scoring_stats.kicker.goals > 0) document.getElementById('appearanceInfoGoals').style.color = 'green';
         else document.getElementById('appearanceInfoGoals').style.color = '';
-        document.getElementById('appearanceInfoFGs').innerText = statsRecord.scoring_stats.kicker.field_goals;
-        if (statsRecord.scoring_stats.kicker.field_goals > 0) document.getElementById('appearanceInfoFGs').style.color = 'green';
+        document.getElementById('appearanceInfoFGs').innerText = statsRecord.scoring_stats[appearance.position_general].field_goals;
+        if (statsRecord.scoring_stats[appearance.position_general].field_goals > 0) document.getElementById('appearanceInfoFGs').style.color = 'green';
         else document.getElementById('appearanceInfoFGs').style.color = '';
-        document.getElementById('appearanceInfoFG2s').innerText = statsRecord.scoring_stats.kicker['2point_field_goals'];
-        if (statsRecord.scoring_stats.kicker['2point_field_goals'] > 0) document.getElementById('appearanceInfoFG2s').style.color = 'green';
+        document.getElementById('appearanceInfoFG2s').innerText = statsRecord.scoring_stats[appearance.position_general]['2point_field_goals'];
+        if (statsRecord.scoring_stats[appearance.position_general]['2point_field_goals'] > 0) document.getElementById('appearanceInfoFG2s').style.color = 'green';
         else document.getElementById('appearanceInfoFG2s').style.color = '';
         if (statsRecord.scoring_stats[appearance.position_general].mia) {
             document.getElementById('appearanceInfoMIAs').innerText = 'Yes';
@@ -385,8 +385,8 @@ export function DisplayAppearanceInfoFromStats(appearance) {
     document.getElementById('appearanceInfoGoals').innerText = appearance.scoring_stats.kicker.goals;
     if (appearance.scoring_stats.kicker.goals > 0) document.getElementById('appearanceInfoGoals').style.color = 'green';
     else document.getElementById('appearanceInfoGoals').style.color = '';
-    document.getElementById('appearanceInfoFGs').innerText = appearance.scoring_stats.kicker.field_goals;
-    if (appearance.scoring_stats.kicker.field_goals > 0) document.getElementById('appearanceInfoFGs').style.color = 'green';
+    document.getElementById('appearanceInfoFGs').innerText = appearance.stats['1 Point Field Goals'];
+    if (appearance.stats['1 Point Field Goals'] > 0) document.getElementById('appearanceInfoFGs').style.color = 'green';
     else document.getElementById('appearanceInfoFGs').style.color = '';
     document.getElementById('appearanceInfoSinBins').innerText = appearance.stats['Sin Bins'];
     if (appearance.stats['Sin Bins'] > 0) document.getElementById('appearanceInfoSinBins').style.color = '#c94d38';
@@ -519,12 +519,14 @@ export function GetPlayerXrlScores(scoringPosition, appearance, scoreAsKicker=tr
         if (position == 'kicker' && scoreAsKicker) {
             //2 points for each goal (conversion or penalty goal)
             score += stats[position].goals * 2;
-            //1 point for each field goal
-            score += stats[position].field_goals;
         //Score stats for the provided position
         } else if (position == scoringPosition) {
             //4 points for each try
             score += stats[position].tries * 4;
+            //1 point for each field goal
+            score += stats[position].field_goals;
+            //2 points for each 2pt field goal
+            score += stats[position]['2point_field_goals'];
             //-2 points for a sin bin
             score -= stats[position].sin_bins * 2;
             //-4 points for a red card and -1 for every 10 mins off field

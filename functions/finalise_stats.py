@@ -89,38 +89,12 @@ for match in fixtures:
                     backup_kicks = True
         for player in starters:
             if player['played_nrl']:          
-                if player['backup_kicker'] and backup_kicks:
-                    print(f"{player['player_name']} takes over kicking duties. Adjusting score.")
-                    resp = table.get_item(
-                        Key={
-                            'pk': 'PLAYER#' + player['player_id'],
-                            'sk': 'STATS#' + str(round_number)
-                        }
-                    )
-                    kicking_stats = resp["Item"]["scoring_stats"]["kicker"]
-                    kicking_score = kicking_stats["goals"] * 2 + kicking_stats["field_goals"] + kicking_stats["2point_field_goals"] * 2
-                    if player['captain'] or player['captain2']:
-                        kicking_score *= 2
-                    table.update_item(
-                        Key={
-                            'pk': player['pk'],
-                            'sk': player['sk']
-                        },
-                        UpdateExpression="set score=score+:s",
-                        ExpressionAttributeValues={
-                            ':s': kicking_score
-                        }
-                    )
                 if player['vice'] and vice_plays:
                     print(f"{player['player_name']} takes over captaincy duties. Adjusting lineup score and user's captain counts.")
-                    entry = table.get_item(
-                        Key={
-                            'pk': player['pk'],
-                            'sk': player['sk']
-                        }
-                    )['Item']
-                    playing_score = entry['playing_score']
-                    kicking_score = entry['kicking_score']
+                    if player['kicker']:
+                        final_score = player['playing_score'] * 2 + player['kicking_score']
+                    else:
+                        final_score = player['playing_score'] * 2
                     table.update_item(
                         Key={
                             'pk': player['pk'],
@@ -128,19 +102,9 @@ for match in fixtures:
                         },
                         UpdateExpression="set score=:v",
                         ExpressionAttributeValues={
-                            ':v': playing_score * 2 + kicking_score
+                            ':v': final_score
                         }                        
-                    )
-                    # vice_entry = table.get_item(
-                    #     Key={
-                    #         'pk': player['pk'],
-                    #         'sk': 'PROFILE'
-                    #     }
-                    # )['Item']
-                    # if 'times_as_captain' not in vice_entry.keys():
-                    #     tac = 1
-                    # else:
-                    #     tac = vice_entry['times_as_captain'] + 1
+                    )                    
                     table.update_item(
                         Key={
                             'pk': player['pk'],
@@ -149,6 +113,18 @@ for match in fixtures:
                         UpdateExpression="set times_as_captain = times_as_captain + :i",
                         ExpressionAttributeValues={
                             ':i': 1
+                        }
+                    )
+                if player['backup_kicker'] and backup_kicks:
+                    print(f"{player['player_name']} takes over kicking duties. Adjusting score.")
+                    table.update_item(
+                        Key={
+                            'pk': player['pk'],
+                            'sk': player['sk']
+                        },
+                        UpdateExpression="set score=score+:s",
+                        ExpressionAttributeValues={
+                            ':s': player['kicking_score']
                         }
                     )
         freeSpots = {
@@ -426,9 +402,10 @@ for player in squads:
                     player_stats['scoring_stats'][position][stat] += app['scoring_stats'][position][stat]
     for position in player_stats['scoring_stats'].keys():
         if position == 'kicker':
-            player_stats['scoring_stats'][position]['points'] = player_stats['scoring_stats'][position]['goals'] * 2 + player_stats['scoring_stats'][position]['field_goals'] + player_stats['scoring_stats'][position]['2point_field_goals'] * 2
+            player_stats['scoring_stats'][position]['points'] = player_stats['scoring_stats'][position]['goals'] * 2
         else:
             player_stats['scoring_stats'][position]['points'] = player_stats['scoring_stats'][position]['tries'] * 4
+            player_stats['scoring_stats'][position]['points'] += + player_stats['scoring_stats'][position]['field_goals'] + player_stats['scoring_stats'][position]['2point_field_goals'] * 2
             player_stats['scoring_stats'][position]['points'] += player_stats['scoring_stats'][position]['involvement_try'] * 4
             player_stats['scoring_stats'][position]['points'] += player_stats['scoring_stats'][position]['positional_try'] * 4
             player_stats['scoring_stats'][position]['points'] -= player_stats['scoring_stats'][position]['mia'] * 4

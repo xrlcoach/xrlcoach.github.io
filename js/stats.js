@@ -111,7 +111,7 @@ function populateStatsTable(stats, sortFunction, scoringAsKicker=true) {
             goals.innerText = player.scoring_stats.kicker.goals;
             tr.appendChild(goals);
             let fieldGoals = document.createElement('td');
-            fieldGoals.innerText = player.scoring_stats[player.position].field_goals;
+            fieldGoals.innerText = player.scoring_stats[player.position].field_goals | 0;
             tr.appendChild(fieldGoals);
             let ITs = document.createElement('td');
             ITs.innerText = player.scoring_stats[player.position].involvement_try | 0;

@@ -130,7 +130,17 @@ function PopulatePlayerTable(playerData, tableId) {
             pos1.textContent = p.position;
             tr.appendChild(pos1);
             let pos2 = document.createElement('td');
-            pos2.textContent = p.position2;
+            if(p.position2) {
+                pos2.textContent = p.position2;
+            } else if (p.new_position_appearances !== {}) {
+                backCredits = 'B' * p.new_position_appearances.Back || '';
+                pmCredits = 'P' * p.new_position_appearances.Playmaker || '';
+                forwardCredits = 'F' * p.new_position_appearances.Forward || '';
+                posCredits = 'Credits: ' + backCredits + '-' + pmCredits + '-' + forwardCredits;
+                pos2.textContent = posCredits;
+            } else {
+                pos2.textContent = '';
+            }
             tr.appendChild(pos2);
             let tac = document.createElement('td');
             tac.textContent = p.times_as_captain;

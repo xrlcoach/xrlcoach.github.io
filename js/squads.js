@@ -132,7 +132,7 @@ function PopulatePlayerTable(playerData, tableId) {
             let pos2 = document.createElement('td');
             if(p.position2) {
                 pos2.textContent = p.position2;
-            } else if (p.new_position_appearances !== {}) {
+            } else if (p.new_position_appearances && p.new_position_appearances !== {}) {
                 let backCredits = 'B' * p.new_position_appearances.Back || '';
                 let pmCredits = 'P' * p.new_position_appearances.Playmaker || '';
                 let forwardCredits = 'F' * p.new_position_appearances.Forward || '';

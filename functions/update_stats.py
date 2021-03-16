@@ -20,6 +20,7 @@ from selenium.common.exceptions import NoSuchElementException
 import sys
 
 log = open('logs/update_stats.log', 'a')
+player_changes_log = open('logs/player_changes.log')
 sys.stdout = log
 start = datetime.now()
 print(f"Script executing at {start}")
@@ -355,6 +356,7 @@ def get_stats():
         if len(squad_entry) == 0:
             squad_entry = [p for p in squads if p['player_name'].lower() == player[0]['player_name'].lower()]
             if len(squad_entry) != 1:
+                sys.stdout = player_changes_log
                 if len(squad_entry) == 0:
                     print(f"Couldn't find {player[0]['player_name']} in database. Adding now. Remember to check position later.")
                 elif len(squad_entry) > 1:
@@ -382,7 +384,8 @@ def get_stats():
                             new_player_position: {},
                             'kicker': {}
                         },
-                        'times_as_captain': 0
+                        'times_as_captain': 0,
+                        'new_position_appearances': {}
                     }                    
                 )
                 squad_entry = {}
@@ -391,6 +394,7 @@ def get_stats():
             else:
                 squad_entry = squad_entry[0]
                 player_id = squad_entry['player_id']
+                sys.stdout = player_changes_log
                 print(f"{player[0]['player_name']} has moved to the {player[0]['nrl_club']}. Updating his team in the database.")
                 table.update_item(
                     Key={
@@ -446,7 +450,7 @@ def get_stats():
         }
         player.append(player_scores)
 
-
+    sys.stdout = log
     print("Loading to dynamodb, table: stats2020")
     
     

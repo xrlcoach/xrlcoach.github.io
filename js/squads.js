@@ -133,10 +133,10 @@ function PopulatePlayerTable(playerData, tableId) {
             if(p.position2) {
                 pos2.textContent = p.position2;
             } else if (p.new_position_appearances !== {}) {
-                backCredits = 'B' * p.new_position_appearances.Back || '';
-                pmCredits = 'P' * p.new_position_appearances.Playmaker || '';
-                forwardCredits = 'F' * p.new_position_appearances.Forward || '';
-                posCredits = 'Credits: ' + backCredits + '-' + pmCredits + '-' + forwardCredits;
+                let backCredits = 'B' * p.new_position_appearances.Back || '';
+                let pmCredits = 'P' * p.new_position_appearances.Playmaker || '';
+                let forwardCredits = 'F' * p.new_position_appearances.Forward || '';
+                let posCredits = 'Credits: ' + backCredits + '-' + pmCredits + '-' + forwardCredits;
                 pos2.textContent = posCredits;
             } else {
                 pos2.textContent = '';

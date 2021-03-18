@@ -105,7 +105,7 @@ function populateStatsTable(stats, sortFunction, scoringAsKicker=true) {
             position.innerText = player.position;
             tr.appendChild(position);
             let appearances = document.createElement('td');
-            appearances.innerText = player.stats.appearances | '-';
+            appearances.innerText = player.stats.appearances ? player.stats.appearances : '-';
             tr.appendChild(appearances);
             let tries = document.createElement('td');
             tries.innerText = player.stats.Tries | 0;

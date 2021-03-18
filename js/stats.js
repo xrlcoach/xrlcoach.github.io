@@ -423,13 +423,13 @@ function sortPlayers(attribute) {
         else sortFunction = SortByPlayerNameDesc;
     } else if (attribute == 'appearances') {
         if (sortOrder == 'Descending') sortFunction = (p1, p2) => {
-            p1apps = p1.stats[attribute] | 0;
-            p2apps = p2.stats[attribute] | 0;
+            let p1apps = p1.stats[attribute] | 0;
+            let p2apps = p2.stats[attribute] | 0;
             return p2apps - p1apps;
         };
         else sortFunction = (p1, p2) => {
-            p1apps = p1.stats[attribute] | 0;
-            p2apps = p2.stats[attribute] | 0;
+            let p1apps = p1.stats[attribute] | 0;
+            let p2apps = p2.stats[attribute] | 0;
             return p1apps - p2apps;
         }
     } else if (attribute == 'score') {

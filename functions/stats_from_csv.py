@@ -12,7 +12,7 @@ import csv
 
 import sys
 
-log = open('logs/update_stats.log', 'a')
+log = open('/home/james/Projects/XRL/functions/logs/update_stats.log', 'a')
 sys.stdout = log
 start = datetime.now()
 print(f"Script executing at {start}")

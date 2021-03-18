@@ -104,11 +104,14 @@ function populateStatsTable(stats, sortFunction, scoringAsKicker=true) {
             let position = document.createElement('td');
             position.innerText = player.position;
             tr.appendChild(position);
+            let appearances = document.createElement('td');
+            appearances.innerText = player.stats.appearances | '-';
+            tr.appendChild(appearances);
             let tries = document.createElement('td');
-            tries.innerText = player.stats.Tries;
+            tries.innerText = player.stats.Tries | 0;
             tr.appendChild(tries);
             let goals = document.createElement('td');
-            goals.innerText = player.scoring_stats.kicker.goals;
+            goals.innerText = player.scoring_stats.kicker.goals | 0;
             tr.appendChild(goals);
             let fieldGoals = document.createElement('td');
             fieldGoals.innerText = player.scoring_stats[player.position].field_goals | 0;
@@ -131,13 +134,13 @@ function populateStatsTable(stats, sortFunction, scoringAsKicker=true) {
                 if (singleRound) {
                     total.innerText = player.score;
                 } else {
-                    total.innerText = player.scoring_stats[player.position].points + player.scoring_stats.kicker.points;
+                    total.innerText = player.scoring_stats[player.position].points + player.scoring_stats.kicker.points | 0;
                 }
             } else {
                 if (singleRound) {
                     total.innerText = player.score_not_kicking;
                 } else {
-                    total.innerText = player.scoring_stats[player.position].points;
+                    total.innerText = player.scoring_stats[player.position].points | 0;
                 }
             }
             tr.appendChild(total);
@@ -409,15 +412,18 @@ function sortPlayers(attribute) {
     //Assign attribute to be the currently sorted attribute
     sortAttribute = attribute;
     //Use attribute to decide which sort function to use
-    if (['involvement_try', 'positional_try', 'concede', 'mia', 'tries'].includes(attribute)) {
+    if (['involvement_try', 'positional_try', 'concede', 'mia', 'tries', 'field_goals'].includes(attribute)) {
         if (sortOrder == 'Descending') sortFunction = (p1, p2) => p2.scoring_stats[p2.position][attribute] - p1.scoring_stats[p1.position][attribute];
         else sortFunction = (p1, p2) => p1.scoring_stats[p1.position][attribute] - p2.scoring_stats[p2.position][attribute];
-    } else if (['goals', 'field_goals'].includes(attribute)) {
+    } else if (['goals'].includes(attribute)) {
         if (sortOrder == 'Descending') sortFunction = (p1, p2) => p2.scoring_stats.kicker[attribute] - p1.scoring_stats.kicker[attribute];
         else sortFunction = (p1, p2) => p1.scoring_stats.kicker[attribute] - p2.scoring_stats.kicker[attribute];
     } else if (attribute == 'player_name') {
         if (sortOrder == 'Descending') sortFunction = SortByPlayerName;
         else sortFunction = SortByPlayerNameDesc;
+    } else if (attribute == 'appearances') {
+        if (sortOrder == 'Descending') sortFunction = (p1, p2) => p2.stats[attribute] - p1.stats[attribute];
+        else sortFunction = (p1, p2) => p1.stats[attribute] - p2.stats[attribute];
     } else if (attribute == 'score') {
         if (sortOrder == 'Descending') sortFunction = singleRound ? scoreAsKicker ? sortByXrlScore : sortByXrlScoreNoKicking : scoreAsKicker ? sortByTotalXrlScore : sortByTotalXrlScoreNoKicking;
         else sortFunction = singleRound ? scoreAsKicker ? sortByXrlScoreAsc : sortByXrlScoreNoKickingAsc : scoreAsKicker ? sortByTotalXrlScoreAsc : sortByTotalXrlScoreNoKickingAsc;

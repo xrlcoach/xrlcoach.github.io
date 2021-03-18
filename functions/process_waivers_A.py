@@ -5,7 +5,7 @@ import json
 import decimal
 import sys
 
-log = open('logs/process_waivers.log', 'a')
+log = open('/home/james/Projects/XRL/functions/logs/process_waivers.log', 'a')
 sys.stdout = log
 print(f"Script executing at {datetime.now().strftime('%c')}")
 report = f"Script executing at {datetime.now().strftime('%c')}"
@@ -40,6 +40,16 @@ report += "\nCurrent waiver order:"
 for rank, user in enumerate(waiver_order, 1):
     print(f"{rank}. {user['team_name']}")
     report += f"\n{rank}. {user['team_name']}"
+    table.put_item(
+        Item={
+            'pk': f'PREFS#{round_number}#Tuesday',
+            'sk': user['pk'],
+            'data': 'WAIVERS',
+            'round_number': str(round_number),
+            'day': 'Tuesday',
+            'preferences': user['waiver_preferences']
+        }
+    )
 
 players_transferred = []
 users_who_picked = []

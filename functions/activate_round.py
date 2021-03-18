@@ -3,7 +3,7 @@ from boto3.dynamodb.conditions import Key, Attr
 from datetime import datetime
 import sys
 
-log = open('logs/activate_round.log', 'a')
+log = open('/home/james/Projects/XRL/functions/logs/activate_round.log', 'a')
 sys.stdout = log
 print(f"Script executing at {datetime.now()}")
 

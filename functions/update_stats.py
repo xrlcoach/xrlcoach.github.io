@@ -19,8 +19,8 @@ from selenium.common.exceptions import TimeoutException
 from selenium.common.exceptions import NoSuchElementException
 import sys
 
-log = open('logs/update_stats.log', 'a')
-player_changes_log = open('logs/player_changes.log')
+log = open('/home/james/Projects/XRL/functions/logs/update_stats.log', 'a')
+player_changes_log = open('/home/james/Projects/XRL/functions/logs/player_changes.log')
 sys.stdout = log
 start = datetime.now()
 print(f"Script executing at {start}")
@@ -62,10 +62,10 @@ def driver_setup():
     options.add_argument('--single-process')
     options.add_argument('--disable-dev-shm-usage')
     options.add_argument('--log-level=3')
-    options.binary_location = "C:/Program Files (x86)/Google/Chrome/Application/chrome.exe"
+    options.binary_location = "/usr/bin/chromium-browser"
 
     return webdriver.Chrome(
-        executable_path='../../chromedriver.exe', options=options
+        executable_path='/usr/bin/chromedriver', options=options
     )
     
 #options = Options()

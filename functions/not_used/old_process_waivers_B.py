@@ -5,7 +5,7 @@ import json
 import decimal
 import sys
 
-log = open('logs/process_waivers.log', 'a')
+log = open('/home/james/Projects/XRL/functions/logs/process_waivers.log', 'a')
 sys.stdout = log
 print(f"Script executing at {datetime.now().strftime('%c')}")
 report = f"Script executing at {datetime.now().strftime('%c')}"

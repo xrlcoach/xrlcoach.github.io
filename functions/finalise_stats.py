@@ -4,7 +4,7 @@ from boto3.dynamodb.conditions import Key, Attr
 import sys
 import math
 
-log = open('logs/finalise_stats.log', 'a')
+log = open('/home/james/Projects/XRL/functions/logs/finalise_stats.log', 'a')
 sys.stdout = log
 print(f"Script executing at {datetime.now()}")
 

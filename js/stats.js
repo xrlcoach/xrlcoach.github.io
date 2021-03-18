@@ -422,8 +422,16 @@ function sortPlayers(attribute) {
         if (sortOrder == 'Descending') sortFunction = SortByPlayerName;
         else sortFunction = SortByPlayerNameDesc;
     } else if (attribute == 'appearances') {
-        if (sortOrder == 'Descending') sortFunction = (p1, p2) => p2.stats[attribute] - p1.stats[attribute];
-        else sortFunction = (p1, p2) => p1.stats[attribute] - p2.stats[attribute];
+        if (sortOrder == 'Descending') sortFunction = (p1, p2) => {
+            p1apps = p1.stats[attribute] | 0;
+            p2apps = p2.stats[attribute] | 0;
+            return p2apps - p1apps;
+        };
+        else sortFunction = (p1, p2) => {
+            p1apps = p1.stats[attribute] | 0;
+            p2apps = p2.stats[attribute] | 0;
+            return p1apps - p2apps;
+        }
     } else if (attribute == 'score') {
         if (sortOrder == 'Descending') sortFunction = singleRound ? scoreAsKicker ? sortByXrlScore : sortByXrlScoreNoKicking : scoreAsKicker ? sortByTotalXrlScore : sortByTotalXrlScoreNoKicking;
         else sortFunction = singleRound ? scoreAsKicker ? sortByXrlScoreAsc : sortByXrlScoreNoKickingAsc : scoreAsKicker ? sortByTotalXrlScoreAsc : sortByTotalXrlScoreNoKickingAsc;

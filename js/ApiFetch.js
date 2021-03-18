@@ -45,7 +45,8 @@ export async function GetAllUsers() {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
-        }
+        },
+        credentials: "include"
     });
     const data = await response.json();
     if (data.error) {

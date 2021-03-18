@@ -60,7 +60,6 @@ def lambda_handler(event, context):
         client = boto3.client('cognito-idp')
 
     data = json.loads(event['body'])
-    print(data)
 
     username = data['username']    
     
@@ -75,10 +74,10 @@ def lambda_handler(event, context):
     response = {
             'statusCode': 200,
             'headers': {
-            'Access-Control-Allow-Headers': 'Content-Type',
-            'Access-Control-Allow-Origin': 'https://xrlcoach.github.io',
-            'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
-            'Access-Control-Allow-Credentials': 'true',
+                'Access-Control-Allow-Headers': 'Content-Type',
+                'Access-Control-Allow-Origin': 'https://xrlcoach.github.io',
+                'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
+                'Access-Control-Allow-Credentials': 'true',
             },
             'body': json.dumps(data)
         }    

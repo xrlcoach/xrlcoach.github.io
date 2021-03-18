@@ -23,7 +23,7 @@ window.logout = logout;
 async function refresh() {
     sessionStorage.clear();
     var expiry = new Date();
-    expiry.setHours(expiry.getHours() + 6);
+    expiry.setHours(expiry.getHours() + 1);
     let roundInfo = await GetCurrentRoundStatus();
     sessionStorage.setItem('roundStatus', JSON.stringify(roundInfo));
     document.cookie = `round=${roundInfo.round_number}; expires=${expiry.toUTCString()}; Secure`;

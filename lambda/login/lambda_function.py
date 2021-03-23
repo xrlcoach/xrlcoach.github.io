@@ -56,6 +56,7 @@ def refresh_auth(username, refresh_token):
     
 def lambda_handler(event, context):
     global client
+    
     if client == None:
         client = boto3.client('cognito-idp')
 
@@ -77,7 +78,7 @@ def lambda_handler(event, context):
                 'Access-Control-Allow-Headers': 'Content-Type',
                 'Access-Control-Allow-Origin': 'https://xrlcoach.github.io',
                 'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
-                'Access-Control-Allow-Credentials': 'true',
+                'Access-Control-Allow-Credentials': 'true'
             },
             'body': json.dumps(data)
         }    

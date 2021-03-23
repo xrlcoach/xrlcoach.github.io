@@ -37,11 +37,11 @@ def lambda_handler(event, context):
             print("Operation is " + operation)
             if operation == 'get_user':
                 id_token = event['headers']['Authorization']
-                print(id_token)        
+                # print(id_token)        
                 payload = id_token.split('.')[1]
-                print(payload)
+                # print(payload)
                 decoded = base64.b64decode(payload + '=======')
-                print(decoded)
+                # print(decoded)
                 user = json.loads(decoded)['cognito:username']
                 print(user)            
                 # response = table.get_item(Key={'username': user})

@@ -257,6 +257,18 @@ def lambda_handler(event, context):
                         'pk': 'PLAYER#' + player['player_id'],
                         'sk': 'LINEUP#' + str(next_round_number)
                     })
+                    #Check if they are user's provisional drop, and remove if they are
+                    if player['player_id'] == active_user['provisional_drop']:
+                        table.update_item(
+                            Key={
+                                'pk': active_user['pk'],
+                                'sk': active_user['sk']
+                            },
+                            UpdateExpression="set provisional_drop=:pd",
+                            ExpressionAttributeValues={
+                                ':pd': None
+                            }
+                        )                
                     #Update their XRL team property to 'On Waivers'. This prevents them from being scooped until
                     #they clear the next round of waivers
                     new_team = 'None' if round_number == 1 else 'On Waivers'

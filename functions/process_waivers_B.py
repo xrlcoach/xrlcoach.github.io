@@ -93,16 +93,12 @@ for rank, user in enumerate(waiver_order, 1):
             #Check if user already has 18 players in squad
             if len(users_squad) == 18:
                 #If they do, and haven't indicated a player to drop, continue to next user
-                if user['provisional_drop'] == None:
+                if user['provisional_drop'] == None or user['provisional_drop'] == '':
                     print(f"{user['team_name']}'s squad already has 18 players and they haven't indicated a player to drop. Moving to next user.")
                     report += f"\n{user['team_name']}'s squad already has 18 players and they haven't indicated a player to drop. Moving to next user."
                     break
                 #If they do, and they HAVE indicated a player to drop...
                 else:
-                    print(f"{user['team_name']}'s squad has 18 players. Dropping their indicated player to make room.")
-                    report += f"\n{user['team_name']}'s squad has 18 players. Dropping their indicated player to make room."
-                    #Add their provisional drop player to the array of players transferred
-                    players_transferred.append(user['provisional_drop'])
                     #Get player entry from db
                     player_to_drop = table.get_item(
                         Key={
@@ -110,6 +106,15 @@ for rank, user in enumerate(waiver_order, 1):
                             'sk': 'PROFILE'
                         }
                     )['Item']
+                    #If player is no longer at club for some reason, continue to next user
+                    if player_to_drop['xrl_team'] != user['team_short']:
+                        print(f"{user['team_name']} has indicated they want to drop {player_to_drop['player_name']}, however this player is no longer at the club. Waiver claim unsuccessful")
+                        report += f"\n{user['team_name']} has indicated they want to drop {player_to_drop['player_name']}, however this player is no longer at the club. Waiver claim unsuccessful"
+                        break
+                    print(f"{user['team_name']}'s squad has 18 players. Dropping {player_to_drop['player_name']} to make room.")
+                    report += f"\n{user['team_name']}'s squad has 18 players. Dropping {player_to_drop['player_name']} to make room."
+                    #Add their provisional drop player to the array of players transferred
+                    players_transferred.append(user['provisional_drop'])
                     #Remove player from user's next lineup
                     table.delete_item(
                         Key={
@@ -282,6 +287,7 @@ table.put_item(
     Item={
         'pk': 'WAIVER',
         'sk': 'REPORT#' + str(round_number) + '_Wednesday',
+        'data': 'WAIVER_REPORT',
         'waiver_round': str(round_number) + '_Wednesday',
         'report': report
     }

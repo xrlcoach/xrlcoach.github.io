@@ -381,8 +381,21 @@ def get_stats():
                         'position2': None,
                         'stats': {},
                         'scoring_stats': {
-                            new_player_position: {},
-                            'kicker': {}
+                            new_player_position: {
+                                'tries': 0,
+                                'involvement_try': 0,
+                                'positional_try': 0,
+                                'mia': 0,
+                                'concede': 0,
+                                'sin_bins': 0,
+                                'send_offs': 0,
+                                'field_goals': 0,
+                                'points': 0
+                            },
+                            'kicker': {
+                                'goals': 0,
+                                'points': 0
+                            }
                         },
                         'times_as_captain': 0,
                         'new_position_appearances': {}

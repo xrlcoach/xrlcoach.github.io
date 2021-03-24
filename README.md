@@ -27,7 +27,7 @@ Over the course of the NRL season, the fantasy XRL teams go head-to-head in a ro
 #### Matchday
 Every week, each user must set their lineup before the first NRL match of the round. A full lineup consists of 13 starters and 4 interchange players. Players can only be selected in their general position (Back, Playmaker or Forward). User's also nominate a team captain and kicker.
 
-A web scraping function runs throughout the weekend, retrieving each player's real-world stats and giving them an XRL score based on their performance (as per [XRL scoring rules](xrlcoach.github.io/rules)). After the last match of the round, substitutions are factored in for any players who didn't play that week, and then XRL team scores are re-calculated and results finalised.
+A web scraping function runs throughout the weekend, retrieving each player's real-world stats and giving them an XRL score based on their performance (as per XRL scoring rules). After the last match of the round, substitutions are factored in for any players who didn't play that week, and then XRL team scores are re-calculated and results finalised.
 #### Transfers
 ##### Waivers
 From the start of the round (usually Thursday evening) up until Tuesday 12pm, users can add any unclaimed NRL players (free agents) to their preference list for the next round of player waivers. A function runs each Tuesday which allocates free agents to XRL teams in order of 'waiver rank'. This rank is then re-calculated based on which teams picked up players. Users can then make new preferences for a second round on Wednesdays.

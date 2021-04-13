@@ -51,9 +51,9 @@ def get_stats():
 
     with driver_setup() as driver:
         
-        draw_url = 'https://www.nrl.com/draw/'
+        #draw_url = 'https://www.nrl.com/draw/'
         match_url_base = 'https://www.nrl.com/draw/nrl-premiership/2021/'
-        # draw_url = 'https://www.nrl.com/draw/?competition=111&season=2021&round=' + sys.argv[1]
+        draw_url = 'https://www.nrl.com/draw/?competition=111&season=2021&round=' + sys.argv[1]
 
         # Set timeout time
         wait = WebDriverWait(driver, 10)

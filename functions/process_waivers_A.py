@@ -122,8 +122,8 @@ for rank, user in enumerate(waiver_order, 1):
                             'sk': 'LINEUP#' + str(round_number)
                         }
                     )
-                    #Update player's XRL team from the user to Pre-Waivers (This means they will remain
-                    #on waiver for one whole round)
+                    #Update player's XRL team from the user to On Waivers (Players dopped on Tuesday can be scooped
+                    # on Thursday)
                     table.update_item(
                         Key={
                             'pk': 'PLAYER#' + user['provisional_drop'],
@@ -134,8 +134,8 @@ for rank, user in enumerate(waiver_order, 1):
                             '#D': 'data'
                         },
                         ExpressionAttributeValues={
-                            ':d': 'TEAM#Pre-Waivers',
-                            ':t': 'Pre-Waivers'
+                            ':d': 'TEAM#On Waivers',
+                            ':t': 'On Waivers'
                         }
                     )
                     #Add record of drop to transfers table

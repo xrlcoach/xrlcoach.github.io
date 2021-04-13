@@ -20,8 +20,9 @@ from selenium.common.exceptions import NoSuchElementException
 import sys
 
 log = open('/home/james/Projects/XRL/functions/logs/update_stats.log', 'a')
-player_changes_log = open('/home/james/Projects/XRL/functions/logs/player_changes.log')
+player_changes_log = open('/home/james/Projects/XRL/functions/logs/player_changes.log', 'a')
 sys.stdout = log
+sys.stderr = log
 start = datetime.now()
 print(f"Script executing at {start}")
 
@@ -34,7 +35,7 @@ dynamodbResource = boto3.resource('dynamodb', 'ap-southeast-2')
 # rounds_table = dynamodbResource.Table('rounds2020')
 table = dynamodbResource.Table('XRL2021')
 
-forwards = ['Prop', '2nd Row', 'Lock', 'Interchange']
+forwards = ['Prop', '2nd Row', '2nd', 'Lock', 'Interchange', 'Reserve']
 playmakers = ['Five-Eighth', 'Halfback', 'Hooker']
 backs = ['Winger', 'Centre', 'Fullback']
 
@@ -364,8 +365,11 @@ def get_stats():
                     {player[0]['player_name']} in the database. Creating a new player entry for now. Remember to update the player's
                     team manually and update stats again.""")
                 if player[1]['Position'] in forwards: new_player_position = 'Forward'
-                if player[1]['Position'] in playmakers: new_player_position = 'Playmaker'
-                if player[1]['Position'] in backs: new_player_position = 'Back'
+                elif player[1]['Position'] in playmakers: new_player_position = 'Playmaker'
+                elif player[1]['Position'] in backs: new_player_position = 'Back'
+                else:
+                    new_player_position = 'Unknown'
+                    print(f"Couldn't determine {player[0]['player_name']}'s posiion.")
                 player_id = str(max([int(p['player_id']) for p in squads]) + 1)
                 table.put_item(
                     Item={

@@ -319,7 +319,7 @@ appearances = table.query(
 )['Items']
 all_stats += appearances
 for player in appearances:
-    if player['stats']['Position'] == 'Interchange':
+    if player['stats']['Position'] in ['Interchange', 'Reserve']:
         continue
     player_info = [p for p in squads if p['player_id'] == player['player_id']][0]
     played_position = positions_general[player['stats']['Position']]
@@ -343,7 +343,7 @@ for player in appearances:
         )
         if player_info['new_position_appearances'][played_position] == 3:
             print(f"{player['player_name']} has played as a {played_position} three times. Adding {played_position} to his positions.")
-            if player_info['position2'] == '':
+            if player_info['position2'] == None or player_info['position2'] == '':
                 table.update_item(
                     Key={
                         'pk': player_info['pk'],

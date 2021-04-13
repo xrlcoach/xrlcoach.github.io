@@ -45,4 +45,4 @@ From the start of the round (usually Thursday evening) up until Tuesday 12pm, us
 ##### Scooping
 On a Thursday morning, any free agents who are not signed during waivers are made available to be scooped by anyone. Users can scoop as many players as they like, but users who scoop more players will move below others in the waiver order. The scooping period ends when the round starts.
 ##### Trades
-Users can offer player trades to other users at any time.
+Users can offer player trades to other XRL users at any time.

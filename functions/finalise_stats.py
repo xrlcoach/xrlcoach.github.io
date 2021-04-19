@@ -149,20 +149,21 @@ for match in fixtures:
                             ':p': True
                         }
                     )
-            # if not subbed_in and sub['second_position'] != '':
-            #     if freeSpots[sub['second_position']] > 0:
-            #         print(f"Subbing in {sub['player_name']} as a {sub['second_position']}")
-            #         freeSpots[sub['second_position']] -= 1
-            #         subbed_in = True
-            #         lineups_table.update_item(
-            #                     Key={
-            #                         'name+nrl+xrl+round': sub['name+nrl+xrl+round']
-            #                     },
-            #                     UpdateExpression="set played_xrl=:p",
-            #                     ExpressionAttributeValues={
-            #                         ':p': True
-            #                     }
-            #                 )
+            if not subbed_in and sub['second_position'] != '':
+                if freeSpots[sub['second_position']] > 0:
+                    print(f"Subbing in {sub['player_name']} as a {sub['second_position']}")
+                    freeSpots[sub['second_position']] -= 1
+                    subbed_in = True
+                    table.update_item(
+                        Key={
+                            'pk': sub['pk'],
+                            'sk': sub['sk']
+                        },
+                        UpdateExpression="set played_xrl=:p",
+                        ExpressionAttributeValues={
+                            ':p': True
+                        }
+                    )
                 
 
             #     valid_sub = False

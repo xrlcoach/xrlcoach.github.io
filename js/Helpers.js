@@ -331,7 +331,7 @@ export async function DisplayAppearanceInfoFromLineup(appearance) {
             document.getElementById('appearanceInfoSendOffs').innerText = 'No';
             document.getElementById('appearanceInfoSendOffs').style.color = '';
         } else {
-            document.getElementById('appearanceInfoSendOffs').innerText = 'Yes (' + appearance.stats['Send Offs'] + "')";
+            document.getElementById('appearanceInfoSendOffs').innerText = 'Yes (' + statsRecord.stats['Send Offs'] + "')";
             document.getElementById('appearanceInfoSendOffs').style.color = '#c94d38';
         }
         //Clear previous contents of detailed stats section

@@ -64,7 +64,7 @@ for user in users:
         #Go through each player and create a new entry for this round's lineup
         for player in old_lineup:
             #Check that player is still in the side
-            profile = table.get_item(Item={
+            profile = table.get_item(Key={
                 'pk': player['pk'],
                 'sk': 'PROFILE'
             })['Item']

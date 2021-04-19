@@ -183,7 +183,7 @@ def lambda_handler(event, context):
                     #     }
                     # ) 
                     if round_number > 1:
-                        transfer_date = datetime.now() + timedelta(hours=11)
+                        transfer_date = datetime.now() + timedelta(hours=10)
                         table.put_item(
                             Item={
                                 'pk': 'TRANSFER#' + active_user['username'] + str(transfer_date),
@@ -287,7 +287,7 @@ def lambda_handler(event, context):
                         }
                     )
                     #Add record to transfers table
-                    transfer_date = datetime.now() + timedelta(hours=11)
+                    transfer_date = datetime.now() + timedelta(hours=10)
                     table.put_item(
                         Item={
                             'pk': 'TRANSFER#' + active_user['username'] + str(transfer_date),

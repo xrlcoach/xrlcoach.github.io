@@ -196,14 +196,15 @@ def get_stats():
                 except NoSuchElementException:
                     continue
                 if "sendOff" in h4.text:
-                    ul = div.find_element_by_tag_name('ul')
-                    lis = ul.find_elements_by_tag_name('li')
-                    for li in lis:
-                        print("Red card: " + li.text)
-                        split = li.text.split()
-                        name = ' '.join(split[:-1])
-                        minute = split[-1][:-1]
-                        send_offs[name] = minute
+                    uls = div.find_elements_by_tag_name('ul')
+                    for ul in uls:
+                        lis = ul.find_elements_by_tag_name('li')
+                        for li in lis:
+                            print("Red card: " + li.text)
+                            split = li.text.split()
+                            name = ' '.join(split[:-1])
+                            minute = split[-1][:-1]                        
+                            send_offs[name] = int(minute)
 
             # find player stats
             try:

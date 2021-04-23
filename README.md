@@ -1,19 +1,16 @@
 # ![XRL Logo](https://res.cloudinary.com/dkj7bctqg/image/upload/c_scale,w_55/v1618314592/Projects/XRL/xrl-logo_tzx4xk.png) XRL - Fantasy Rugby League
-### A web app in which users pick players, set weekly lineups, and get scored based on the performance of their players in that week's NRL fixtures.  
+ 
+ **A web app in which users pick players, set weekly lineups, and get scored based on the performance of their players in that week's NRL fixtures.**  
 
-### Note: The competition run at this domain is private, but the code is there for anyone interested in setting up their own game!
+*Note: The competition run at this domain is private, but the code is there for anyone interested in setting up their own game.*
 
 ## Overview
-
-### Back End  
+### Back End
 #### AWS
 * Single-table DynamoDb database
 * Cognito User Pool
 * Lambda functions (Python)
 * API Gateway
-
-#### Other
-* Python scripts controlling stat scraping and game state currently being run as cron jobs from a Raspberry Pi 4
 
 ### Front End
 HTML and Vanilla JavaScript hosted in this repo, published via GitHub Pages

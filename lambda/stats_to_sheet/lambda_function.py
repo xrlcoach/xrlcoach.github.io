@@ -3,6 +3,8 @@ from datetime import datetime
 import os
 import stat
 from decimal import Decimal
+import boto3
+from boto3.dynamodb.conditions import Key, Attr
 from botocore.errorfactory import ClientError
 from selenium import webdriver
 import math
@@ -24,6 +26,20 @@ def lambda_handler(event, context):
     start = datetime.now()
     print(f"Script executing at {start}")
 
+    # Initiate database connection
+    dynamodbResource = boto3.resource('dynamodb', 'ap-southeast-2')   
+    table = dynamodbResource.Table('XRL2021')
+
+    # Get current round
+    in_progress_round = table.query(
+        IndexName='sk-data-index',
+        KeyConditionExpression=Key('sk').eq('STATUS') & Key('data').eq('ACTIVE#true'),
+        FilterExpression=Attr('in_progress').eq(True) & Attr('completed').eq(False)
+    )['Items'][0]
+
+    in_progress_round_no = in_progress_round['round_number']
+    print(f"Scraping stats for Round {in_progress_round_no}")
+
     chrome_options = webdriver.ChromeOptions()
     chrome_options.add_argument('--no-sandbox')
     chrome_options.add_argument('--headless')
@@ -35,7 +51,8 @@ def lambda_handler(event, context):
         chrome_options=chrome_options
     )   
         
-    draw_url = 'https://www.nrl.com/draw/'
+    #draw_url = 'https://www.nrl.com/draw/'
+    draw_url = f'https://www.nrl.com/draw/?competition=111&season=2021&round={in_progress_round_no}'
     match_url_base = 'https://www.nrl.com/draw/nrl-premiership/2021/'
 
     # Set timeout time

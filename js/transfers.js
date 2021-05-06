@@ -324,7 +324,7 @@ function DisplayPlayerNews() {
 async function populateNewsTable(round) {
     try {
         //Fetch news items for specified round and sort newest to oldest
-        let newsItems = GetPlayerNews(round);
+        let newsItems = await GetPlayerNews(round);
         newsItems = newsItems.sort((i1, i2) => {
             return new Date(i2.datetime) - new Date(i1.datetime);
         });

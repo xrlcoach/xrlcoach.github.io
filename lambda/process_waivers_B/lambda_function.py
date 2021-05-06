@@ -1,13 +1,13 @@
 import boto3
 from boto3.dynamodb.conditions import Key, Attr
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 import json
 import decimal
 import sys
 
 def lambda_handler(event, context):
-    print(f"Script executing at {datetime.now().strftime('%c')}")
-    report = f"Script executing at {datetime.now().strftime('%c')}"
+    print(f"Script executing at {(datetime.now() + timedelta(hours=11)).strftime('%c')}")
+    report = f"Script executing at {(datetime.now() + timedelta(hours=11)).strftime('%c')}"
 
     dynamodbResource = boto3.resource('dynamodb', 'ap-southeast-2')
     table = dynamodbResource.Table('XRL2021')
@@ -132,7 +132,7 @@ def lambda_handler(event, context):
                             }
                         )
                         #Add record of drop to transfers table
-                        transfer_date = datetime.now()
+                        transfer_date = datetime.now() + timedelta(hours=11)
                         table.put_item(
                             Item={
                                 'pk': 'TRANSFER#' + user['username'] + str(transfer_date),
@@ -195,7 +195,7 @@ def lambda_handler(event, context):
                     }
                 )
                 #Add a record of the transfer to the db
-                transfer_date = datetime.now()
+                transfer_date = datetime.now() + timedelta(hours=11)
                 table.put_item(
                     Item={
                         'pk': 'TRANSFER#' + user['username'] + str(transfer_date),
@@ -221,7 +221,7 @@ def lambda_handler(event, context):
                 #Add a message to the user's inbox
                 message = {
                     "sender": "XRL Admin",
-                    "datetime": datetime.now().strftime("%c"),
+                    "datetime": (datetime.now() + timedelta(hours=11)).strftime("%c"),
                     "subject": "New Player",
                     "message": f"Congratulations! You picked up {player_info['player_name']} in this week's waivers."
                 }

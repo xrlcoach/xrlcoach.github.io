@@ -1,4 +1,4 @@
-import { GetAllUsers, getCookie, GetPlayerById, GetPlayersFromXrlTeam, GetTransferHistoryByRound, GetUserTradeOffers, GetWaiverReports, ProcessTradeOffer, SendTradeOffer, UpdateUserWaiverPreferences, WithdrawTradeOffer, GetActiveUserInfo, GetIdToken } from "./ApiFetch.js";
+import { GetAllUsers, getCookie, GetPlayerById, GetPlayersFromXrlTeam, GetTransferHistoryByRound, GetUserTradeOffers, GetWaiverReports, ProcessTradeOffer, SendTradeOffer, UpdateUserWaiverPreferences, WithdrawTradeOffer, GetActiveUserInfo, GetIdToken, GetPlayerNews } from "./ApiFetch.js";
 import { DisplayFeedback } from "./Helpers.js";
 
 let roundNumber, allUsers, user, squad, waiverPreferences = [], provisionalDrop, tradeOffers, tradeOffersToDisplay, waiverReports;
@@ -33,6 +33,7 @@ window.onload = async () => {
         DisplayUserWaiverInfo();        
         FillWaiverSelect();
         DisplayTradeOffers();        
+        DisplayPlayerNews();
         DisplayTransferHistory();
         //Finish loading
         document.getElementById('loading').hidden = true;
@@ -289,7 +290,75 @@ function PopulateProvisionalDropOptions() {
 }
 
 /**
- * Display's any transfers from the current round
+ * Displays any NRL player news (debuts, transfers) from the current round
+ */
+function DisplayPlayerNews() {
+    try {
+        //Populate round dropdown select options
+        for (let i = Number(roundNumber); i > 0; i--) {
+            //Create an option for each round number with an onclick which populates table
+            let option = document.createElement('li');
+            let link = document.createElement('a');
+            link.innerText = i;
+            link.value = i;
+            link.className = "dropdown-item";
+            link.href = '#\\';
+            link.onclick = function(e) {
+                e.preventDefault();
+                populateNewsTable(this.value);
+            };
+            option.appendChild(link);
+            document.getElementById('newsRoundSelect').appendChild(option);
+        }        
+        //Populate table with current round's transfers
+        populateNewsTable(roundNumber);
+    } catch (err) {
+        DisplayFeedback('Error', err + (err.stack ? '<p>' + err.stack + '</p>': ''));
+    }
+}
+
+/**
+ * 
+ * @param {string} round 
+ */
+async function populateNewsTable(round) {
+    try {
+        //Fetch news items for specified round and sort newest to oldest
+        let newsItems = GetPlayerNews(round);
+        newsItems = newsItems.sort((i1, i2) => {
+            return new Date(i2.datetime) - new Date(i1.datetime);
+        });
+        //Find table and clear contents
+        let table = document.getElementById('playerNewsTable');
+        table.innerHTML = '';
+        //Add row to table for each news item
+        newsItems.forEach(i => {
+            let row = document.createElement('tr');
+            //Add date
+            let datetime = document.createElement('td');
+            datetime.innerText = i.datetime;
+            row.appendChild(datetime);
+            //Add name and logo of player's club
+            let club = document.createElement('td');
+            let clubLogo =  document.createElement('img');
+            clubLogo.src = '/static/' + i.nrl_club + '.png';
+            clubLogo.height = '50';
+            clubLogo.className = 'me-1';
+            club.appendChild(clubLogo);
+            let log = document.createElement('td');
+            let p = document.createElement('p');
+            p.innerText = i.log;
+            log.appendChild(p);
+            row.appendChild(log);
+            table.appendChild(row);
+        });
+    } catch (err) {
+        DisplayFeedback('Error', err + (err.stack ? '<p>' + err.stack + '</p>': ''));
+    }
+}
+
+/**
+ * Displays any XRL transfers from the current round
  */
 async function DisplayTransferHistory() {
     try {

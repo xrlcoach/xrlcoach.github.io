@@ -88,6 +88,15 @@ def lambda_handler(event, context):
     dynamodbResource = boto3.resource('dynamodb', 'ap-southeast-2')   
     table = dynamodbResource.Table('XRL2021')
 
+    # Get current round
+    in_progress_round = table.query(
+        IndexName='sk-data-index',
+        KeyConditionExpression=Key('sk').eq('STATUS') & Key('data').eq('ACTIVE#true'),
+        FilterExpression=Attr('in_progress').eq(True) & Attr('completed').eq(False)
+    )['Items'][0]
+
+    in_progress_round_no = in_progress_round['round_number']
+
     # Get all player profiles
     squads = table.query(
         IndexName='sk-data-index',
@@ -107,7 +116,8 @@ def lambda_handler(event, context):
         executable_path = f"/opt/chromedriver",
         chrome_options=chrome_options
     )
-    draw_url = 'https://www.nrl.com/draw/'
+    #draw_url = 'https://www.nrl.com/draw/'
+    draw_url = f'https://www.nrl.com/draw/?competition=111&season=2021&round={in_progress_round_no}'
     match_url_base = 'https://www.nrl.com/draw/nrl-premiership/2021/'
 
     # Set timeout time
@@ -330,21 +340,19 @@ def lambda_handler(event, context):
             if len(squad_entry) != 1:
                 if len(squad_entry) == 0:
                     print(f"Couldn't find {player[0]['player_name']} in database. Adding now. Remember to check position later.")
-                    message += f"Couldn't find {player[0]['player_name']} in database. Adding now. Remember to check position later."
+                    message += f"{player[0]['player_name']} made his debut for the {player[0]['nrl_club']}."
                 elif len(squad_entry) > 1:
                     print(f"""A player named {player[0]['player_name']} has moved to the {player[0]['nrl_club']}. There is more than one
                     {player[0]['player_name']} in the database. Creating a new player entry for now. Remember to update the player's
                     team manually and update stats again.""")
-                    message += f"""A player named {player[0]['player_name']} has moved to the {player[0]['nrl_club']}. There is more than one
-                    {player[0]['player_name']} in the database. Creating a new player entry for now. Remember to update the player's
-                    team manually and update stats again."""
+                    message += f"""{player[0]['player_name']} has moved to the {player[0]['nrl_club']}. Question is, which {player[0]['player_name']} is this?."""
                 if player[1]['Position'] in forwards: new_player_position = 'Forward'
                 elif player[1]['Position'] in playmakers: new_player_position = 'Playmaker'
                 elif player[1]['Position'] in backs: new_player_position = 'Back'
                 else:
                     new_player_position = 'Unknown'
                     print(f"Couldn't determine {player[0]['player_name']}'s posiion.")
-                    message += f"\nCouldn't determine {player[0]['player_name']}'s posiion."
+                    message += f"""\n{player[0]['player_name']} started on the interchange bench. Asked what his best position is, {player[0]['nrl_club']}'s coach said 'We're still not sure yet.'"""
                 player_id = str(max([int(p['player_id']) for p in squads]) + 1)
                 table.put_item(
                     Item={
@@ -387,7 +395,7 @@ def lambda_handler(event, context):
                 squad_entry = squad_entry[0]
                 player_id = squad_entry['player_id']
                 print(f"{player[0]['player_name']} has moved to the {player[0]['nrl_club']}. Updating his team in the database.")
-                message += f"{player[0]['player_name']} has moved to the {player[0]['nrl_club']}. Updating his team in the database."
+                message += f"{player[0]['player_name']} has moved to the {player[0]['nrl_club']}."
                 table.update_item(
                     Key={
                         'pk': squad_entry['pk'],
@@ -411,11 +419,15 @@ def lambda_handler(event, context):
             # Write update to logs
             table.put_item(
                 Item={
-                    'pk': f'LOGS#{date.today()}',
-                    'sk': f'TIME#{time()}',
-                    'data': f'PLAYER#{player_id}',
-                    'datetime': datetime.now(),
-                    'log': message
+                    'pk': f'NEWS',
+                    'sk': f'PLAYER#{player_id}',
+                    'data': f'ROUND#{number}',
+                    'datetime': str(datetime.now()),
+                    'log': message,
+                    'player_id': str(player_id),
+                    'round_number': number,
+                    'player_name': player[0]['player_name'],
+                    'nrl_club': player[0]['nrl_club']
                 }
             )
 

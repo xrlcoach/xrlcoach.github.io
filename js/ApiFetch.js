@@ -754,6 +754,25 @@ export async function GetWaiverReports() {
 }
 
 /**
+ * Retrieves all player news log entries from the specified round.
+ * @param {number} roundNumber 
+ * @returns A collection of news items with 'log' as main message property
+ */
+export async function GetPlayerNews(roundNumber) {    
+    const response = await fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/players?news=' + roundNumber, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'        
+        }
+    });
+    const data = await response.json();
+    if (data.error) {
+        throw data.error;
+    }
+    return data;
+}
+
+/**
  * Isolates the desired cookie from the browser cookie string
  * @param {String} cname 
  */

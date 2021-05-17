@@ -83,7 +83,8 @@ def lambda_handler(event, context):
                     round_no = params['news']
                     print(f'Request for player news from round {round_no}, querying table')
                     resp = table.query(
-                        KeyConditionExpression=Key('pk').eq('NEWS') & Key('sk').begins_with('PLAYER') & Attr('data').eq(f'ROUND#{round_no}')
+                        KeyConditionExpression=Key('pk').eq('NEWS') & Key('sk').begins_with('PLAYER'),
+                        FilterExpression=Attr('data').eq(f'ROUND#{round_no}')
                     )['Items']
                 #If query parameters present but are not any of the above, send back error message
                 else:

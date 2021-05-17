@@ -11,6 +11,7 @@ import math
 import gspread
 from google.oauth2.service_account import Credentials
 import csv
+import json
 
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
@@ -263,14 +264,16 @@ def lambda_handler(event, context):
 
         player_stats_final += home_final + away_final
 
-        stat_columns_final += player_stats_final
+        final_stats = [stat_columns_final] + player_stats_final
     
     # Define variables for connecting to google drive
     print('\u001b[32mOpening google sheet\u001b[0m')
     scope = ["https://spreadsheets.google.com/feeds", 'https://www.googleapis.com/auth/spreadsheets',
             "https://www.googleapis.com/auth/drive.file", "https://www.googleapis.com/auth/drive"]
 
-    credentials = Credentials.from_service_account_info(os.environ['XRL_SHEET_CREDENTIALS'], scopes=scope)
+    info = json.loads(os.environ['XRL_SHEET_CREDENTIALS'])
+
+    credentials = Credentials.from_service_account_info(info, scopes=scope)
     client = gspread.authorize(credentials)
 
     # Open sheet for round
@@ -280,7 +283,7 @@ def lambda_handler(event, context):
     spreadsheet.values_update(
         round_number,
         params={'valueInputOption': 'USER_ENTERED'},
-        body={'values': list(stat_columns_final)}
+        body={'values': list(final_stats)}
     )
 
     finish = datetime.now()

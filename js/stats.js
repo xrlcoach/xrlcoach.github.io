@@ -379,6 +379,22 @@ window.searchPlayer = searchPlayer;
 
 //#region Sorting functions
 function sortByTotalXrlScore(p1, p2) {
+    let p1points = p1.scoring_stats[p1.position].points;
+    if (!p1points) {
+        console.log(p1.player_name);
+    }
+    let p1kicking = p1.scoring_stats.kicker.points;
+    if (!p1kicking) {
+        console.log(p1.player_name);
+    }
+    let p2points = p2.scoring_stats[p2.position].points;
+    if (!p2points) {
+        console.log(p2.player_name);
+    }
+    let p2kicking = p2.scoring_stats.kicker.points;
+    if (!p2kicking) {
+        console.log(p1.player_name);
+    }
     return (p2.scoring_stats[p2.position].points + p2.scoring_stats.kicker.points) - (p1.scoring_stats[p1.position].points + p1.scoring_stats.kicker.points);
 }
 function sortByTotalXrlScoreAsc(p1, p2) {

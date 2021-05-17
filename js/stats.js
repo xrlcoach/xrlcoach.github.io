@@ -134,13 +134,13 @@ function populateStatsTable(stats, sortFunction, scoringAsKicker=true) {
                 if (singleRound) {
                     total.innerText = player.score;
                 } else {
-                    total.innerText = player.scoring_stats[player.position].points + player.scoring_stats.kicker.points | 0;
+                    total.innerText = (player.scoring_stats[player.position].points ?? 0) + (player.scoring_stats.kicker.points ?? 0);
                 }
             } else {
                 if (singleRound) {
                     total.innerText = player.score_not_kicking;
                 } else {
-                    total.innerText = player.scoring_stats[player.position].points | 0;
+                    total.innerText = player.scoring_stats[player.position].points ?? 0;
                 }
             }
             tr.appendChild(total);
@@ -378,33 +378,17 @@ async function searchPlayer(event) {
 window.searchPlayer = searchPlayer;
 
 //#region Sorting functions
-function sortByTotalXrlScore(p1, p2) {
-    let p1points = p1.scoring_stats[p1.position].points;
-    if (p1points === undefined) {
-        console.log(p1.player_name);
-    }
-    let p1kicking = p1.scoring_stats.kicker.points;
-    if (p1kicking === undefined) {
-        console.log(p1.player_name);
-    }
-    let p2points = p2.scoring_stats[p2.position].points;
-    if (p2points === undefined) {
-        console.log(p2.player_name);
-    }
-    let p2kicking = p2.scoring_stats.kicker.points;
-    if (p2kicking === undefined) {
-        console.log(p1.player_name);
-    }
-    return (p2.scoring_stats[p2.position].points + p2.scoring_stats.kicker.points) - (p1.scoring_stats[p1.position].points + p1.scoring_stats.kicker.points);
+function sortByTotalXrlScore(p1, p2) {    
+    return ((p2.scoring_stats[p2.position].points ?? 0) + (p2.scoring_stats.kicker.points ?? 0)) - ((p1.scoring_stats[p1.position].points ?? 0) + (p1.scoring_stats.kicker.points ?? 0));
 }
 function sortByTotalXrlScoreAsc(p1, p2) {
-    return (p1.scoring_stats[p1.position].points + p1.scoring_stats.kicker.points) - (p2.scoring_stats[p2.position].points + p2.scoring_stats.kicker.points);
+    return ((p1.scoring_stats[p1.position].points ?? 0) + (p1.scoring_stats.kicker.points ?? 0)) - ((p2.scoring_stats[p2.position].points ?? 0) + (p2.scoring_stats.kicker.points ?? 0));
 }
 function sortByTotalXrlScoreNoKicking(p1, p2) {
-    return p2.scoring_stats[p2.position].points - p1.scoring_stats[p1.position].points;
+    return (p2.scoring_stats[p2.position].points ?? 0) - (p1.scoring_stats[p1.position].points ?? 0);
 }
 function sortByTotalXrlScoreNoKickingAsc(p1, p2) {
-    return p1.scoring_stats[p1.position].points - p2.scoring_stats[p2.position].points;
+    return (p1.scoring_stats[p1.position].points ?? 0) - (p2.scoring_stats[p2.position].points ?? 0);
 }
 function sortByXrlScore(p1, p2) {
     return p2.score - p1.score;

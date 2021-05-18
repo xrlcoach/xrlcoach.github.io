@@ -88,7 +88,14 @@ def lambda_handler(event, context):
     dynamodbResource = boto3.resource('dynamodb', 'ap-southeast-2')   
     table = dynamodbResource.Table('XRL2021')
 
-    # Get current round
+    # Get current active round
+    active_round = table.query(
+        IndexName='sk-data-index',
+        KeyConditionExpression=Key('sk').eq('STATUS') & Key('data').eq('ACTIVE#true'),
+        FilterExpression=Attr('completed').eq(False)
+    )['Items'][0]
+    active_round_no = active_round['round_number']
+    # Get current in progress round
     in_progress_round = table.query(
         IndexName='sk-data-index',
         KeyConditionExpression=Key('sk').eq('STATUS') & Key('data').eq('ACTIVE#true'),
@@ -96,6 +103,9 @@ def lambda_handler(event, context):
     )['Items'][0]
 
     in_progress_round_no = in_progress_round['round_number']
+
+    if active_round_no != in_progress_round_no:
+        return
 
     # Get all player profiles
     squads = table.query(

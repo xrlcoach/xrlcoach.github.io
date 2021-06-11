@@ -42,14 +42,57 @@ def lambda_handler(event, context):
             user = [u for u in users if u['team_short'] == match[team]][0]
             lineup = [player for player in lineups if player['xrl_team'] == match[team]]
             
-            starters = [player for player in lineup if player['position_number'] < 14]
-            #print(f"Starters: {starters}")
+            starters = [player for player in lineup if player['position_number'] < 14]            
             bench = [player for player in lineup if player['position_number'] >= 14]
-            #print(f"Bench: {bench}")
+            print("Making substitutions")
+            #Calculate free spots (i.e. number of starters who didn't play NRL) for subs
+            freeSpots = {
+                'Back': len([p for p in starters if p['position_general'] == 'Back' and not p['played_nrl']]),
+                'Playmaker': len([p for p in starters if p['position_general'] == 'Playmaker' and not p['played_nrl']]),
+                'Forward': len([p for p in starters if p['position_general'] == 'Forward' and not p['played_nrl']])
+            }
+            #Sub in any bench players who are the right position for free spots
+            for sub in sorted(bench, key=lambda p: p['position_number']):
+                subbed_in = False
+                if freeSpots[sub['position_general']] > 0:
+                    if sub['played_nrl']:
+                        print(f"Subbing in {sub['player_name']} as a {sub['position_general']}")
+                        freeSpots[sub['position_general']] -= 1
+                        subbed_in = True
+                        table.update_item(
+                            Key={
+                                'pk': sub['pk'],
+                                'sk': sub['sk']
+                            },
+                            UpdateExpression="set played_xrl=:p",
+                            ExpressionAttributeValues={
+                                ':p': True
+                            }
+                        )
+                if not subbed_in and sub['second_position'] != '':
+                    if freeSpots[sub['second_position']] > 0:
+                        print(f"Subbing in {sub['player_name']} as a {sub['second_position']}")
+                        freeSpots[sub['second_position']] -= 1
+                        subbed_in = True
+                        table.update_item(
+                            Key={
+                                'pk': sub['pk'],
+                                'sk': sub['sk']
+                            },
+                            UpdateExpression="set played_xrl=:p",
+                            ExpressionAttributeValues={
+                                ':p': True
+                            }
+                        )
+
+            #Get final lineup
+            final_lineup = [player for player in lineup if player['played_xrl']]
+            print("Substitutions complete.")
+
             vice_plays = False
             backup_kicks = False
             print("Checking if captain(s) and kicker played")
-            for player in starters:
+            for player in lineup:
                 if not player['played_nrl']:
                     if player['captain'] or player['captain2']:
                         print(f"Captain {player['player_name']} did not play.")
@@ -67,7 +110,7 @@ def lambda_handler(event, context):
                     if player['kicker']:
                         print(f"Kicker {player['player_name']} did not play.")
                         backup_kicks = True
-            for player in starters:
+            for player in final_lineup:
                 if player['played_nrl']:          
                     if player['vice'] and vice_plays:
                         print(f"{player['player_name']} takes over captaincy duties. Adjusting lineup score and user's captain counts.")
@@ -107,46 +150,9 @@ def lambda_handler(event, context):
                                 ':s': player['kicking_score']
                             }
                         )
-            freeSpots = {
-                'Back': len([p for p in starters if p['position_general'] == 'Back' and not p['played_nrl']]),
-                'Playmaker': len([p for p in starters if p['position_general'] == 'Playmaker' and not p['played_nrl']]),
-                'Forward': len([p for p in starters if p['position_general'] == 'Forward' and not p['played_nrl']])
-            }
-            for sub in sorted(bench, key=lambda p: p['position_number']):
-                subbed_in = False
-                if freeSpots[sub['position_general']] > 0:
-                    if sub['played_nrl']:
-                        print(f"Subbing in {sub['player_name']} as a {sub['position_general']}")
-                        freeSpots[sub['position_general']] -= 1
-                        subbed_in = True
-                        table.update_item(
-                            Key={
-                                'pk': sub['pk'],
-                                'sk': sub['sk']
-                            },
-                            UpdateExpression="set played_xrl=:p",
-                            ExpressionAttributeValues={
-                                ':p': True
-                            }
-                        )
-                if not subbed_in and sub['second_position'] != '':
-                    if freeSpots[sub['second_position']] > 0:
-                        print(f"Subbing in {sub['player_name']} as a {sub['second_position']}")
-                        freeSpots[sub['second_position']] -= 1
-                        subbed_in = True
-                        table.update_item(
-                            Key={
-                                'pk': sub['pk'],
-                                'sk': sub['sk']
-                            },
-                            UpdateExpression="set played_xrl=:p",
-                            ExpressionAttributeValues={
-                                ':p': True
-                            }
-                        )
                     
 
-    print("Substitutions complete. Finalising match results...")
+    print("Captain and kicker assignments done. Finalising match results...")
     lineups = table.query(
         IndexName='sk-data-index',
         KeyConditionExpression=Key('sk').eq('LINEUP#' + str(round_number)) & Key('data').begins_with('TEAM#')
@@ -262,7 +268,10 @@ def lambda_handler(event, context):
     for player in appearances:
         if player['stats']['Position'] in ['Interchange', 'Reserve']:
             continue
-        player_info = [p for p in squads if p['player_id'] == player['player_id']][0]
+        player_info = [p for p in squads if p['player_id'] == player['player_id']]
+        if len(player_info) == 0:
+            continue
+        player_info = player_info[0]
         played_position = positions_general[player['stats']['Position']]
         if played_position not in [player_info['position'], player_info['position2']]:
             print(f"{player['player_name']} played as a {played_position} but is not recognised as such. Making a note on his player record.")

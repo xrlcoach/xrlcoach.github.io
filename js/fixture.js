@@ -145,7 +145,9 @@ async function populateLineupTable(tableId, lineup, score) {
             goals.style.color = Number(goals.innerText) > 0 ? "green" : "";
             tr.appendChild(goals);
             let fieldGoals = document.createElement('td');
-            fieldGoals.innerText = statsRecord ? statsRecord.scoring_stats[player.position_general].field_goals : 0;
+            fieldGoals.innerText = statsRecord 
+                ? statsRecord.scoring_stats[player.position_general].field_goals + (statsRecord.scoring_stats[player.position_general]['2point_field_goals'] * 2)
+                : 0;
             fieldGoals.style.color = Number(fieldGoals.innerText) > 0 ? "green" : "";
             tr.appendChild(fieldGoals);
             let IT = document.createElement('td');
@@ -250,6 +252,11 @@ async function populateLineupTable(tableId, lineup, score) {
             concede.style.color = Number(concede.innerText) > 0 ? "#c94d38" : "";
             tr.appendChild(concede);
             let roles = document.createElement('td');
+            if (player['captain']) roles.innerText = 'C ';
+            if (player['captain2']) roles.innerText = 'C ';
+            if (player['vice']) roles.innerText = 'VC ';
+            if (player['kicker']) roles.innerText += 'K';
+            if (player['backup_kicker']) roles.innerText += 'BK';
             tr.appendChild(roles);
             let score = document.createElement('td');
             score.innerText = player['score'];

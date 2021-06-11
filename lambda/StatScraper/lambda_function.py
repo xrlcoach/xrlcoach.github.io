@@ -20,7 +20,7 @@ from selenium.common.exceptions import NoSuchElementException
 import sys
 
 #region Global variables
-forwards = ['Prop', '2nd Row', '2nd', 'Lock', 'Interchange', 'Reserve']
+forwards = ['Prop', '2nd Row', '2nd', 'Lock']
 playmakers = ['Five-Eighth', 'Halfback', 'Hooker']
 backs = ['Winger', 'Centre', 'Fullback']
 #endregion
@@ -360,7 +360,7 @@ def lambda_handler(event, context):
                 elif player[1]['Position'] in playmakers: new_player_position = 'Playmaker'
                 elif player[1]['Position'] in backs: new_player_position = 'Back'
                 else:
-                    new_player_position = 'Unknown'
+                    new_player_position = 'Forward'
                     print(f"Couldn't determine {player[0]['player_name']}'s posiion.")
                     message += f"""\n{player[0]['player_name']} started on the interchange bench. Asked what his best position is, {player[0]['nrl_club']}'s coach said 'We're still not sure yet.'"""
                 player_id = str(max([int(p['player_id']) for p in squads]) + 1)

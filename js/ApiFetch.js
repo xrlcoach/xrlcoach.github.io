@@ -536,7 +536,7 @@ export async function GetStatsByClubAndRound(roundNumber, nrlClub) {
  * @returns 
  */
 export async function GetStatsByTeamAndRound(roundNumber, playerIds) {
-    const response = await fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/stats?round=' + roundNumber + '&nrlClub=' + nrlClub, {
+    const response = await fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/stats', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

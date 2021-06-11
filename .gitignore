@@ -9,4 +9,4 @@ functions
 old_html
 stats
 *.zip
-**/package
+package/

@@ -542,10 +542,10 @@ export async function GetStatsByTeamAndRound(roundNumber, playerIds) {
             'Content-Type': 'application/json',
             'Authorization': GetIdToken(),        
         },
-        body: {
+        body: JSON.stringify({
             round: roundNumber,
             players: playerIds
-        }
+        })
     });
     const data = await response.json();
     if (data.error) {

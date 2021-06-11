@@ -17,7 +17,7 @@ async function login(event) {
         let idToken = await Login(username, password);      
         //Create an 6 hour expiry time for cookies 
         var expiry = new Date();
-        expiry.setHours(expiry.getHours() + 1);
+        expiry.setHours(expiry.getHours() + 24);
         //Set id cookie
         document.cookie = `id=${idToken}; expiry=${expiry.toUTCString()}; Secure`;
         //Get current active round and set as round cookie

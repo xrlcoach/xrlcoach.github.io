@@ -530,6 +530,30 @@ export async function GetStatsByClubAndRound(roundNumber, nrlClub) {
     return data;
 }
 /**
+ * 
+ * @param {Number | String} roundNumber 
+ * @param {String[]} playerIds The PK attributes of the players to fetch stats for
+ * @returns 
+ */
+export async function GetStatsByTeamAndRound(roundNumber, playerIds) {
+    const response = await fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/stats?round=' + roundNumber + '&nrlClub=' + nrlClub, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': GetIdToken(),        
+        },
+        body: {
+            round: roundNumber,
+            players: playerIds
+        }
+    });
+    const data = await response.json();
+    if (data.error) {
+        throw data.error;
+    }
+    return data;
+}
+/**
  * Retrieves a single stat entry from the database
  * @param {String} playerId 
  * @param {String} roundNumber 

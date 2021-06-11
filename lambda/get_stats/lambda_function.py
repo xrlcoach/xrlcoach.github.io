@@ -114,6 +114,29 @@ def lambda_handler(event, context):
                     },
                     'body': json.dumps(replace_decimals(data))
                 }
+        if method == 'POST':
+            body = json.loads(event['body'])
+            round_number = body['round']
+            player_ids = body['players']
+            print(f'Loading stats for {len(player_ids)} players in round {round_number}')
+            stats = []
+            for player_id in player_ids:
+                resp = table.get_item(Key={
+                    'pk': player_id,
+                    'sk': 'STATS#' + str(round_number)
+                })
+                if 'Item' in resp.keys():
+                    stats.append(resp['Item'])
+            return {
+                    'statusCode': 200,
+                    'headers': {
+                    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+                    'Access-Control-Allow-Origin': '*',
+                    'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
+                    },
+                    'body': json.dumps(replace_decimals(stats))
+                }
+
     except Exception as e:
         return {
             'statusCode': 200,

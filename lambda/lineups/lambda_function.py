@@ -16,64 +16,15 @@ table = dynamodbResource.Table('XRL2021')
 def lambda_handler(event, context):
     try:
         method = event["httpMethod"]
-        print(f"Method is {method}")
-        id_token = ''
-        if 'Authorization' in event['headers'].keys():
-            id_token = event['headers']['Authorization']
-            payload = id_token.split('.')[1]
-            decoded = base64.b64decode(payload + '=======')
-            username = json.loads(decoded)['cognito:username']
-            print(f"User: {username}")
-            # resp = user_table.get_item(Key={'username': username})
-            resp = table.get_item(Key={
-                'pk': 'USER#' + username,
-                'sk': 'DETAILS'
-            })
-            user = resp['Item']
-            team_short = user['team_short']
-            print(f"XRL Team: {team_short}")
-            # resp = round_table.scan(
-            #     FilterExpression=Attr('in_progress').eq(False)
-            # )
-            resp = table.query(
-                IndexName='sk-data-index',
-                KeyConditionExpression=Key('sk').eq('STATUS') & Key('data').begins_with('ACTIVE'),
-                FilterExpression=Attr('in_progress').eq(False)
-            )
-            round_number = min([r['round_number'] for r in resp['Items']])
-            print(f"Round Number: {round_number}")
-            # existing_lineup = lineup_table.scan(
-            #         FilterExpression=Attr('xrl_team').eq(team_short) & Attr('round_number').eq(str(round_number))
-            #         )
+        print(f"Method is {method}")        
             
         if method == 'GET':
-            if id_token != '':
-                existing_lineup = table.query(
-                    IndexName='sk-data-index',
-                    KeyConditionExpression=Key('sk').eq('LINEUP#' + str(round_number)) & Key('data').eq('TEAM#' + team_short)
-                )
-                if len(existing_lineup['Items']) > 0:
-                    print("Existing lineup found. Returning player list.")
-                else:
-                    print("No lineup found")
-                return {
-                            'statusCode': 200,
-                            'headers': {
-                            'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-                            'Access-Control-Allow-Origin': '*',
-                            'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
-                            },
-                            'body': json.dumps(replace_decimals(existing_lineup['Items']))
-                }
-            else:
-                params = event["queryStringParameters"]
+            params = event["queryStringParameters"]
+            if 'team' in params.keys():
                 print(params)
                 team = params['team']
                 round_number = params['round']
-                print(f'Specific lineup requested is {team}, Round {round_number}. Querying table..')
-                # resp = lineup_table.scan(
-                #     FilterExpression=Attr('xrl_team').eq(team) & Attr('round_number').eq(round_number)
-                # )
+                print(f'Specific lineup requested is {team}, Round {round_number}. Querying table..')                
                 resp = table.query(
                     IndexName='sk-data-index',
                     KeyConditionExpression=Key('sk').eq('LINEUP#' + str(round_number)) & Key('data').eq('TEAM#' + team)
@@ -87,7 +38,64 @@ def lambda_handler(event, context):
                         },
                         'body': json.dumps(replace_decimals(resp['Items']))
                 }
+            else:
+                id_token = event['headers']['Authorization']
+                payload = id_token.split('.')[1]
+                decoded = base64.b64decode(payload + '=======')
+                username = json.loads(decoded)['cognito:username']
+                print(f"User: {username}")
+                resp = table.get_item(Key={
+                    'pk': 'USER#' + username,
+                    'sk': 'DETAILS'
+                })
+                user = resp['Item']
+                team_short = user['team_short']
+                print(f"XRL Team: {team_short}")                
+                resp = table.query(
+                    IndexName='sk-data-index',
+                    KeyConditionExpression=Key('sk').eq('STATUS') & Key('data').begins_with('ACTIVE'),
+                    FilterExpression=Attr('in_progress').eq(False)
+                )
+                round_number = min([r['round_number'] for r in resp['Items']])
+                print(f"Round Number: {round_number}")
+                existing_lineup = table.query(
+                    IndexName='sk-data-index',
+                    KeyConditionExpression=Key('sk').eq('LINEUP#' + str(round_number)) & Key('data').eq('TEAM#' + team_short)
+                )
+                if len(existing_lineup['Items']) > 0:
+                    print("Existing lineup found. Returning player list.")
+                else:
+                    print("No lineup found")
+                return {
+                    'statusCode': 200,
+                    'headers': {
+                    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+                    'Access-Control-Allow-Origin': '*',
+                    'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
+                    },
+                    'body': json.dumps(replace_decimals(existing_lineup['Items']))
+                }                
+                
         if method == 'POST':
+            id_token = event['headers']['Authorization']
+            payload = id_token.split('.')[1]
+            decoded = base64.b64decode(payload + '=======')
+            username = json.loads(decoded)['cognito:username']
+            print(f"User: {username}")
+            resp = table.get_item(Key={
+                'pk': 'USER#' + username,
+                'sk': 'DETAILS'
+            })
+            user = resp['Item']
+            team_short = user['team_short']
+            print(f"XRL Team: {team_short}")                
+            resp = table.query(
+                IndexName='sk-data-index',
+                KeyConditionExpression=Key('sk').eq('STATUS') & Key('data').begins_with('ACTIVE'),
+                FilterExpression=Attr('in_progress').eq(False)
+            )
+            round_number = min([r['round_number'] for r in resp['Items']])
+            print(f"Round Number: {round_number}")
             body = json.loads(event['body'])
             operation = body['operation']
             print("Operation is " + operation)           

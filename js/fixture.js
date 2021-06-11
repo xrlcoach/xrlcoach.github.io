@@ -1,6 +1,6 @@
 /* Script controlling fixture.html, which displays XRL match stats */
 
-import { GetLineupByTeamAndRound, GetActiveUserTeamShort, GetPlayerAppearanceStats, GetRoundStatus, GetTeamFixtureByRound, GetCurrentRoundStatus } from "./ApiFetch.js";
+import { GetLineupByTeamAndRound, GetActiveUserTeamShort, GetPlayerAppearanceStats, GetRoundStatus, GetTeamFixtureByRound, GetCurrentRoundStatus, GetStatsByTeamAndRound } from "./ApiFetch.js";
 import { DisplayAppearanceInfoFromLineup, GetLineupScore, DisplayFeedback } from "./Helpers.js";
 
 let roundNumber, roundInfo, completed, match, homeTeam, awayTeam, homeLineup, awayLineup;
@@ -76,9 +76,12 @@ window.onload = async function() {
         //Retrieve team lineups
         homeLineup = await GetLineupByTeamAndRound(roundNumber, homeTeam);
         awayLineup = await GetLineupByTeamAndRound(roundNumber, awayTeam);
+        //Retrieve player stats
+        homeStats = await GetStatsByTeamAndRound(roundNumber, homeLineup.map(p => p.pk));
+        awayStats = await GetStatsByTeamAndRound(roundNumber, awayLineup.map(p => p.pk));
         //Construct the lineup tables
-        populateLineupTable('homeTableBody', homeLineup.sort((a, b) => a.position_number - b.position_number), match.home_score);
-        populateLineupTable('awayTableBody', awayLineup.sort((a, b) => a.position_number - b.position_number), match.away_score);
+        populateLineupTable('homeTableBody', homeLineup.sort((a, b) => a.position_number - b.position_number), homeStats, match.home_score);
+        populateLineupTable('awayTableBody', awayLineup.sort((a, b) => a.position_number - b.position_number), awayStats, match.away_score);
         //Display content
         document.getElementById('loading').hidden = true;
         document.getElementById('mainContent').hidden = false;
@@ -93,7 +96,7 @@ window.onload = async function() {
  * @param {String} tableId The id of the table body element to construct
  * @param {Array} lineup An array of player lineup entries
  */
-async function populateLineupTable(tableId, lineup, score) {
+async function populateLineupTable(tableId, lineup, stats, score) {
     try {
         //Locate table body element
         let table = document.getElementById(tableId);
@@ -102,7 +105,7 @@ async function populateLineupTable(tableId, lineup, score) {
         let bench = lineup.filter(p => p.position_number >= 14);
         //Iterate through starting lineup
         for (let player of starters) {
-            let statsRecord = await GetPlayerAppearanceStats(player.player_id, player.round_number);
+            let statsRecord = stats.find(record => record.player_id === player.player_id);
             //Create table row
             let tr = document.createElement('tr');
             /*For each property to display, create a table cell, assign the data to the innerText property,
@@ -189,7 +192,7 @@ async function populateLineupTable(tableId, lineup, score) {
         table.appendChild(tr);
         //Iterate through the interchange players
         for (let player of bench) {
-            let statsRecord = await GetPlayerAppearanceStats(player.player_id, player.round_number);
+            let statsRecord = stats.find(record => record.player_id === player.player_id);
             //Create a new table row
             let tr = document.createElement('tr');
             /*Create the same table cells as for the starters, but no need to conditionally fill

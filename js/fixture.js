@@ -3,7 +3,7 @@
 import { GetLineupByTeamAndRound, GetActiveUserTeamShort, GetPlayerAppearanceStats, GetRoundStatus, GetTeamFixtureByRound, GetCurrentRoundStatus, GetStatsByTeamAndRound } from "./ApiFetch.js";
 import { DisplayAppearanceInfoFromLineup, GetLineupScore, DisplayFeedback } from "./Helpers.js";
 
-let roundNumber, roundInfo, completed, match, homeTeam, awayTeam, homeLineup, awayLineup;
+let roundNumber, roundInfo, completed, match, homeTeam, awayTeam, homeLineup, awayLineup, homeStats, awayStats;
 
 window.onload = async function() {
     try {

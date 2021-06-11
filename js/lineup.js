@@ -310,7 +310,7 @@ function fillInterchangeOptions(onload = false) {
                 if (player && player.player_id == p.player_id) createOption(p, pos, true);
                 else createOption(p, pos);
                 //Call function to populate positional preference options
-                fillPositionOptions(select);
+                fillPositionOptions(select, onload);
             });
         });        
     } catch (err) {
@@ -323,26 +323,35 @@ window.fillInterchangeOptions = fillInterchangeOptions;
  * Populates the select options for an interchange player's positional preference
  * @param {*} select The interchange select element
  */
-async function fillPositionOptions(select) {
+async function fillPositionOptions(select, onload = false) {
     try {
         //Find and clear the select element. If interchange player select element has ID 'int2',
         //then positional preference select has ID 'int2Position'
         document.getElementById(select.id + 'Position').innerHTML = '';
         //If selected player is 'None', do nothing
         if (select.value == 'None') return;
-        //Look for player in squad
-        let player = squad.find(p => p.player_id == select.value);
+        let position1, position2;
+        if (onload) {
+            let lineupEntry = lineup.find(p => p.player_id == select.value);
+            position1 = lineupEntry.position_general;
+            position2 = lineupEntry.second_position;
+        } else {
+            //Look for player in squad
+            let player = squad.find(p => p.player_id == select.value);
+            position1 = player.position;
+            position2 = player.position2;
+        }
         //Create and fill option for first position
         let option = document.createElement('option');
-        option.innerText = player['position'];
-        option.value = player['position'];
+        option.innerText = position1;
+        option.value = position2;
         //Add it to select element
         document.getElementById(select.id + 'Position').appendChild(option);
         //Do the same for player's second position, if they have one
-        if (player['position2']) {
+        if (position2) {
             let option = document.createElement('option');
-            option.innerText = player['position2'];
-            option.value = player['position2'];
+            option.innerText = position2;
+            option.value = position2;
             document.getElementById(select.id + 'Position').appendChild(option);
         }
     } catch (err) {
@@ -405,41 +414,6 @@ async function submitLineup(event) {
         DisplayFeedback('Error', err + (err.stack ? '<p>' + err.stack + '</p>': ''));
         return;
     }
-    // for (let i = 0; i < players.length; i++) {
-    //     if (players[i].value === '' || players[i].value == 'None') continue;
-    //     let playerInfo = squad.find(p => p.player_id == players[i].value);
-    //     if (!playerInfo) {
-    //         DisplayFeedback('Error', 'One of the players selected is no longer in your squad.');
-    //         return;
-    //     }
-    //     let positionGeneral;
-    //     let secondPosition = '';
-    //     if (positions_backs.includes(players[i].id)) positionGeneral = 'Back'; 
-    //     if (positions_forwards.includes(players[i].id)) positionGeneral = 'Forward'; 
-    //     if (positions_playmakers.includes(players[i].id)) positionGeneral = 'Playmaker'; 
-    //     if (interchange.includes(players[i].id)) {
-    //         positionGeneral = document.getElementById(players[i].id + 'Position').value;
-    //         if (playerInfo.position2 && playerInfo.position2 != '') {
-    //             secondPosition = positionGeneral == playerInfo.position ? playerInfo.position2 : playerInfo.position;
-    //         }
-    //     }
-    //     let entry = {
-    //         "player_id": playerInfo.player_id,
-    //         "player_name": playerInfo.player_name,
-    //         "nrl_club": playerInfo.nrl_club,
-    //         "position": players[i].id,
-    //         "position_general": positionGeneral,
-    //         "second_position": secondPosition
-    //     };
-    //     for (let j = 0; j < playerRoles.length; j++) {
-    //         if (playerRoles[j].value == players[i].value) {
-    //             entry[playerRoles[j].id] = true;
-    //         } else {
-    //             entry[playerRoles[j].id] = false;
-    //         }            
-    //     }
-    //     newLineup.push(entry);
-    // }
 
     //Function that will submit lineup to db, display success message and redirect to home page
     let completeSubmission = async function() {
@@ -511,48 +485,5 @@ async function submitLineup(event) {
         document.getElementById('submitLoading').hidden = true;
         DisplayFeedback('Error', err + (err.stack ? '<p>' + err.stack + '</p>': ''));
     }
-
-    // for (let player of newLineup) {
-    //     if (newLineup.filter(p => p.player_id == player.player_id).length != 1) {
-    //         problem = true;
-    //         if (!message.includes(`<li>${player.player_name} has been picked more than once.</li>`)) {
-    //             message += `<li>${player.player_name} has been picked more than once.</li>`;
-    //         }
-    //     }
-    //     if ((player.captain || player.captain2 || player.vice) && user.captain_counts && user.captain_counts[player.player_id] > 5) {
-    //         DisplayFeedback('Invalid Lineup', player.player_name + ' has already been captained 6 times.');
-    //         return;
-    //     }
-    //     if ((player.captain && player.captain2) || (player.captain && player.vice)) {
-    //         problem = true;
-    //         message += `<li>${player.player_name} has two captain roles.</li>`;
-    //     }
-    //     if (player.kicker && player.backup_kicker) {
-    //         problem = true;
-    //         message += `<li>Same player chosen as kicker and backup kicker</li>`;
-    //     }
-    //     if ((player.captain || player.captain2) && player.position.startsWith('int')) {
-    //         DisplayFeedback('Invalid Lineup', 'Your chosen captain is starting on the bench');
-    //         return;
-    //     }
-    //     if (player.vice && player.position.startsWith('int')) {
-    //         problem = true;
-    //         message += `<li>Your chosen vice-captain is starting on the bench.</li>`;
-    //     }
-    //     if (player.kicker && player.position.startsWith('int')) {
-    //         DisplayFeedback('Invalid Lineup', 'Your chosen kicker is starting on the bench');
-    //         return;
-    //     }
-    //     if (player.backup_kicker && player.position.startsWith('int')) {
-    //         problem = true;
-    //         message += `<li>Your chosen backup kicker is starting on the bench.</li>`;
-    //     }
-    // }
-    // if (problem) {
-    //     DisplayFeedback('Warning!', "<ul>" + message + "</ul><p>Would you like to proceed with lineup submission?</p>", true, completeSubmission);
-    //     return;
-    // }
-    
-    // completeSubmission();
 }
 window.submitLineup = submitLineup;

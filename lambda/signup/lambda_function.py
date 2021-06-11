@@ -47,7 +47,7 @@ def lambda_handler(event, context):
         print("Error: One or more names already taken")
         return {'statusCode': 200,
             'headers': {
-            'Access-Control-Allow-Headers': 'Content-Type',
+            'Access-Control-Allow-Headers': 'Content-Type, Authorization',
             'Access-Control-Allow-Origin': '*',
             'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
             },
@@ -70,7 +70,7 @@ def lambda_handler(event, context):
     except client.exceptions.UsernameExistsException as e:
         return {'statusCode': 200,
             'headers': {
-            'Access-Control-Allow-Headers': 'Content-Type',
+            'Access-Control-Allow-Headers': 'Content-Type, Authorization',
             'Access-Control-Allow-Origin': '*',
             'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
             },
@@ -79,7 +79,7 @@ def lambda_handler(event, context):
     except client.exceptions.InvalidPasswordException as e: 
         return {'statusCode': 200,
             'headers': {
-            'Access-Control-Allow-Headers': 'Content-Type',
+            'Access-Control-Allow-Headers': 'Content-Type, Authorization',
             'Access-Control-Allow-Origin': '*',
             'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
             },
@@ -89,7 +89,7 @@ def lambda_handler(event, context):
     except client.exceptions.UserLambdaValidationException as e:
         return {'statusCode': 200,
             'headers': {
-            'Access-Control-Allow-Headers': 'Content-Type',
+            'Access-Control-Allow-Headers': 'Content-Type, Authorization',
             'Access-Control-Allow-Origin': '*',
             'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
             },
@@ -98,7 +98,7 @@ def lambda_handler(event, context):
     except Exception as e:
         return {'statusCode': 200,
             'headers': {
-            'Access-Control-Allow-Headers': 'Content-Type',
+            'Access-Control-Allow-Headers': 'Content-Type, Authorization',
             'Access-Control-Allow-Origin': '*',
             'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
             },
@@ -131,7 +131,7 @@ def lambda_handler(event, context):
     except Exception as e:
         return {'statusCode': 200,
             'headers': {
-            'Access-Control-Allow-Headers': 'Content-Type',
+            'Access-Control-Allow-Headers': 'Content-Type, Authorization',
             'Access-Control-Allow-Origin': '*',
             'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
             },
@@ -139,7 +139,7 @@ def lambda_handler(event, context):
         }       
     return {'statusCode': 200,
             'headers': {
-            'Access-Control-Allow-Headers': 'Content-Type',
+            'Access-Control-Allow-Headers': 'Content-Type, Authorization',
             'Access-Control-Allow-Origin': '*',
             'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
             },

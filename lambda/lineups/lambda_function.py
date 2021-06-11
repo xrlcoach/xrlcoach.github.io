@@ -59,7 +59,7 @@ def lambda_handler(event, context):
                 return {
                             'statusCode': 200,
                             'headers': {
-                            'Access-Control-Allow-Headers': 'Content-Type',
+                            'Access-Control-Allow-Headers': 'Content-Type, Authorization',
                             'Access-Control-Allow-Origin': '*',
                             'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
                             },
@@ -81,7 +81,7 @@ def lambda_handler(event, context):
                 return {
                         'statusCode': 200,
                         'headers': {
-                        'Access-Control-Allow-Headers': 'Content-Type',
+                        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
                         'Access-Control-Allow-Origin': '*',
                         'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
                         },
@@ -90,47 +90,7 @@ def lambda_handler(event, context):
         if method == 'POST':
             body = json.loads(event['body'])
             operation = body['operation']
-            print("Operation is " + operation)
-            # if operation == 'remove_multiple':
-            #     with table.batch_writer() as batch:
-            #         for player in body['players']:
-            #             print("Removing " + player['player_name'] + ' from set lineup')                        
-            #             batch.delete_item(
-            #                 Key={
-            #                     'name+nrl+xrl+round': player['player_name'] + ';' + player['nrl_club'] + ';' + team_short + ';' + str(round_number)
-            #                 }
-            #             )
-            #             print(player['player_name'] + ' removed.')
-            #     return {
-            #         'statusCode': 200,
-            #         'headers': {
-            #         'Access-Control-Allow-Headers': 'Content-Type',
-            #         'Access-Control-Allow-Origin': '*',
-            #         'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
-            #         },
-            #         'body': json.dumps({"message": "Players removed from lineups"})
-            #     }
-            # if operation == 'remove':
-            #     player = json.loads(body['player'])
-            #     lineup_table.delete_item(
-            #         Key={
-            #             'name+nrl+xrl+round': player['player_name'] + ';' + player['nrl_club'] + ';' + team_short + ';' + str(round_number)
-            #         }
-            #     )
-            #     lineup_table.delete_item(
-            #         Key={
-            #             'name+nrl+xrl+round': player['player_name'] + ';' + player['nrl_club'] + ';' + team_short + ';' + str(round_number + 1)
-            #         }
-            #     )
-            #     return {
-            #             'statusCode': 200,
-            #             'headers': {
-            #             'Access-Control-Allow-Headers': 'Content-Type',
-            #             'Access-Control-Allow-Origin': '*',
-            #             'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
-            #             },
-            #             'body': json.dumps({"message": "Players removed from lineup"})
-            #         }
+            print("Operation is " + operation)           
             if operation == 'set':
                 existing_lineup = table.query(
                     IndexName='sk-data-index',
@@ -159,12 +119,8 @@ def lambda_handler(event, context):
                     }
                 print("Removing old lineup")     
                 with table.batch_writer() as batch:   
-                    for player in existing_lineup['Items']:                        
-                        # batch.delete_item(
-                        #     Key={
-                        #         'name+nrl+xrl+round': player['player_name'] + ';' + player['nrl_club'] + ';' + team_short + ';' + str(round_number)
-                        #     }
-                        # )
+                    for player in existing_lineup['Items']:                       
+                        
                         batch.delete_item(
                             Key={
                                 'pk': player['pk'],
@@ -197,36 +153,12 @@ def lambda_handler(event, context):
                                 'played_xrl': False,
                                 'score': 0
                             }
-                        )
-                        # Set same lineup for next round, removing powerplay if necessary
-                        # for i in range(int(round_number) + 1, 22):
-                        #     batch.put_item(
-                        #         Item={
-                        #             'name+nrl+xrl+round': player['player_name'] + ';' + player['nrl_club'] + ';' + team_short + ';' + str(i),
-                        #             'player_id': player['player_id'],
-                        #             'player_name': player['player_name'],
-                        #             'nrl_club': player['nrl_club'],
-                        #             'xrl_team': team_short,
-                        #             'round_number': str(i),
-                        #             'position_specific': player['position'],
-                        #             'position_general': player['position_general'],
-                        #             'second_position': player['second_position'],
-                        #             'position_number': position_numbers[player['position']],
-                        #             'captain': player['captain'],
-                        #             'captain2': False,
-                        #             'vice': player['vice'] or player['captain2'],
-                        #             'kicker': player['kicker'],
-                        #             'backup_kicker': player['backup_kicker'],
-                        #             'played_nrl': False,
-                        #             'played_xrl': False,
-                        #             'score': 0
-                        #         }
-                        #     )
+                        )                        
                 print("DB write complete")
                 return {
                         'statusCode': 200,
                         'headers': {
-                        'Access-Control-Allow-Headers': 'Content-Type',
+                        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
                         'Access-Control-Allow-Origin': '*',
                         'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
                         },
@@ -236,7 +168,7 @@ def lambda_handler(event, context):
         return {
             'statusCode': 200,
             'headers': {
-            'Access-Control-Allow-Headers': 'Content-Type',
+            'Access-Control-Allow-Headers': 'Content-Type, Authorization',
             'Access-Control-Allow-Origin': '*',
             'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
             },

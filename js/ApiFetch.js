@@ -13,7 +13,6 @@ export async function Login(username, password) {
             'Content-Type': 'application/json',
             'Accept': '*/*'                
         },
-        credentials: 'include',
         body: JSON.stringify({
             "username": username,
             "password": password,        
@@ -45,6 +44,7 @@ export async function GetAllUsers() {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
+            'Authorization': GetIdToken(),
         }
     });
     const data = await response.json();
@@ -81,7 +81,8 @@ export async function GetAllPlayers() {
     const response = await fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/players', {
         method: 'GET',
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Authorization': GetIdToken(),
         }
     });
     const data = await response.json();
@@ -98,7 +99,8 @@ export async function GetPlayersFromNrlClub(club) {
     const response = await fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/players?nrlClub=' + club, {
         method: 'GET',
         headers: {
-            'Content-Type': 'application/json'        
+            'Content-Type': 'application/json',
+            'Authorization': GetIdToken(),        
         }
     });
     const data = await response.json();
@@ -115,7 +117,8 @@ export async function GetPlayersFromXrlTeam(team) {
     const response = await fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/players?xrlTeam=' + team, {
         method: 'GET',
         headers: {
-            'Content-Type': 'application/json'        
+            'Content-Type': 'application/json',
+            'Authorization': GetIdToken(),        
         }
     });
     const data = await response.json();
@@ -132,7 +135,8 @@ export async function GetPlayerById(playerId) {
     const response = await fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/players?playerId=' + playerId, {
         method: 'GET',
         headers: {
-            'Content-Type': 'application/json'        
+            'Content-Type': 'application/json',
+            'Authorization': GetIdToken(),        
         }
     });
     const data = await response.json();
@@ -154,7 +158,8 @@ export async function UpdatePlayerXrlTeam(xrlTeam, player) {
         method: 'POST',
         headers: {
             'Accept': 'application/json',
-            'Content-Type': 'application/json'        
+            'Content-Type': 'application/json',
+            'Authorization': GetIdToken(),        
         },
         body: JSON.stringify({
             "operation": "pick_drop",
@@ -192,7 +197,8 @@ export async function ScoopPlayers(xrlTeam, players) {
         method: 'POST',
         headers: {
             'Accept': 'application/json',
-            'Content-Type': 'application/json'        
+            'Content-Type': 'application/json',
+            'Authorization': GetIdToken(),        
         },
         body: JSON.stringify({
             "operation": "scoop",
@@ -217,7 +223,8 @@ export async function DropPlayers(xrlTeam, players) {
         method: 'POST',
         headers: {
             'Accept': 'application/json',
-            'Content-Type': 'application/json'        
+            'Content-Type': 'application/json',
+            'Authorization': GetIdToken(),        
         },
         body: JSON.stringify({
             "operation": "drop",
@@ -275,6 +282,7 @@ export async function GetLineupByTeamAndRound(roundNumber, xrlTeam) {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
+            'Authorization': GetIdToken(),
         }
     });
     const data = await response.json();
@@ -313,7 +321,8 @@ export async function GetAllFixtures() {
     const response = await fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/fixtures', {
         method: 'GET',
         headers: {
-            'Content-Type': 'application/json'        
+            'Content-Type': 'application/json',
+            'Authorization': GetIdToken(),        
         }
     });
     const data = await response.json();
@@ -330,7 +339,8 @@ export async function GetRoundInfo(roundNumber) {
     const response = await fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/fixtures?round=' + roundNumber, {
         method: 'GET',
         headers: {
-            'Content-Type': 'application/json'        
+            'Content-Type': 'application/json',
+            'Authorization': GetIdToken(),        
         }
     });
     const data = await response.json();
@@ -358,7 +368,8 @@ export async function GetCurrentRoundStatus() {
     const response = await fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/fixtures', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json'        
+            'Content-Type': 'application/json',
+            'Authorization': GetIdToken(),        
         },
         body: JSON.stringify({
             'operation': 'get_current_round'
@@ -378,7 +389,8 @@ export async function GetNextRoundStatus() {
     const response = await fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/fixtures', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json'        
+            'Content-Type': 'application/json',
+            'Authorization': GetIdToken(),        
         },
         body: JSON.stringify({
             'operation': 'get_next_round'
@@ -398,7 +410,8 @@ export async function GetRoundStatus(roundNumber) {
     const response = await fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/fixtures', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json'        
+            'Content-Type': 'application/json',
+            'Authorization': GetIdToken(),        
         },
         body: JSON.stringify({
             'operation': 'get_round_status',
@@ -436,7 +449,8 @@ export async function GetTeamFixtureByRound(xrlTeam, roundNumber) {
     const response = await fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/fixtures', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json'        
+            'Content-Type': 'application/json',
+            'Authorization': GetIdToken(),        
         },
         body: JSON.stringify({
             'operation': 'get_user_fixture',
@@ -469,7 +483,8 @@ export async function GetAllStats() {
     const response = await fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/stats', {
         method: 'GET',
         headers: {
-            'Content-Type': 'application/json'        
+            'Content-Type': 'application/json',
+            'Authorization': GetIdToken(),        
         }
     });
     const data = await response.json();
@@ -486,7 +501,8 @@ export async function GetStatsByRound(roundNumber) {
     const response = await fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/stats?round=' + roundNumber, {
         method: 'GET',
         headers: {
-            'Content-Type': 'application/json'        
+            'Content-Type': 'application/json',
+            'Authorization': GetIdToken(),        
         }
     });
     const data = await response.json();
@@ -503,7 +519,8 @@ export async function GetStatsByClubAndRound(roundNumber, nrlClub) {
     const response = await fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/stats?round=' + roundNumber + '&nrlClub=' + nrlClub, {
         method: 'GET',
         headers: {
-            'Content-Type': 'application/json'        
+            'Content-Type': 'application/json',
+            'Authorization': GetIdToken(),        
         }
     });
     const data = await response.json();
@@ -522,7 +539,8 @@ export async function GetPlayerAppearanceStats(playerId, roundNumber) {
         const response = await fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/stats?playerId=' + playerId + '&round=' + roundNumber, {
             method: 'GET',
             headers: {
-                'Content-Type': 'application/json'        
+                'Content-Type': 'application/json',
+                'Authorization': GetIdToken(),        
             }
         });
         const data = await response.json();
@@ -547,7 +565,8 @@ export async function UpdateUserWaiverPreferences(username, preferences, provisi
     const response = await fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/transfers', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json'        
+            'Content-Type': 'application/json',
+            'Authorization': GetIdToken(),        
         },
         body: JSON.stringify({
             'operation': 'update_preferences',
@@ -571,7 +590,8 @@ export async function GetTransferHistory() {
     const response = await fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/transfers', {
         method: 'GET',
         headers: {
-            'Content-Type': 'application/json'        
+            'Content-Type': 'application/json',
+            'Authorization': GetIdToken(),
         }
     });
     const data = await response.json();
@@ -589,7 +609,8 @@ export async function GetTransferHistoryByRound(roundNumber) {
     const response = await fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/transfers', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json'        
+            'Content-Type': 'application/json',
+            'Authorization': GetIdToken(),        
         },
         body: JSON.stringify({
             'operation': 'get_round_transfers',
@@ -616,7 +637,8 @@ export async function SendTradeOffer(sendingUsername, targetUsername, playersOff
     const response = await fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/transfers', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json'        
+            'Content-Type': 'application/json',
+            'Authorization': GetIdToken(),        
         },
         body: JSON.stringify({
             'operation': 'trade_offer',
@@ -643,7 +665,8 @@ export async function GetUserTradeOffers(username) {
     const response = await fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/transfers', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json'        
+            'Content-Type': 'application/json',
+            'Authorization': GetIdToken(),        
         },
         body: JSON.stringify({
             'operation': 'get_user_offers',
@@ -667,7 +690,8 @@ export async function ProcessTradeOffer(offerPk, accepted = false) {
     const response = await fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/transfers', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json'        
+            'Content-Type': 'application/json',
+            'Authorization': GetIdToken(),        
         },
         body: JSON.stringify({
             'operation': 'process_trade',
@@ -694,7 +718,8 @@ export async function WithdrawTradeOffer(offerPk) {
     const response = await fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/transfers', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json'        
+            'Content-Type': 'application/json',
+            'Authorization': GetIdToken(),        
         },
         body: JSON.stringify({
             'operation': 'withdraw_trade',
@@ -717,7 +742,8 @@ export async function UpdateUserInbox(username, inbox) {
     const response = await fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/xrl-users', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json'        
+            'Content-Type': 'application/json',
+            'Authorization': GetIdToken(),        
         },
         body: JSON.stringify({
             'operation': 'update_inbox',
@@ -740,7 +766,8 @@ export async function GetWaiverReports() {
     const response = await fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/transfers', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json'        
+            'Content-Type': 'application/json',
+            'Authorization': GetIdToken(),        
         },
         body: JSON.stringify({
             'operation': 'get_waiver_reports'
@@ -762,7 +789,8 @@ export async function GetPlayerNews(roundNumber) {
     const response = await fetch('https://cyy6ekckwa.execute-api.ap-southeast-2.amazonaws.com/Test1/players?news=' + roundNumber, {
         method: 'GET',
         headers: {
-            'Content-Type': 'application/json'        
+            'Content-Type': 'application/json',
+            'Authorization': GetIdToken(),        
         }
     });
     const data = await response.json();

@@ -148,7 +148,7 @@ async function populateLineupTable(tableId, lineup, stats, score) {
             goals.style.color = Number(goals.innerText) > 0 ? "green" : "";
             tr.appendChild(goals);
             let fieldGoals = document.createElement('td');
-            fieldGoals.innerText = statsRecord ? (statsRecord.scoring_stats?[player.position_general]?.field_goals | 0) + ((statsRecord.scoring_stats?[player.position_general]?['2point_field_goals'] | 0) * 2) : 0;
+            fieldGoals.innerText = statsRecord ? ((statsRecord.scoring_stats?[player.position_general]?.field_goals | 0) + ((statsRecord.scoring_stats?[player.position_general]?['2point_field_goals'] | 0) * 2)) : 0;
             fieldGoals.style.color = Number(fieldGoals.innerText) > 0 ? "green" : "";
             tr.appendChild(fieldGoals);
             let IT = document.createElement('td');
@@ -233,7 +233,7 @@ async function populateLineupTable(tableId, lineup, stats, score) {
             goals.style.color = Number(goals.innerText) > 0 ? "green" : "";
             tr.appendChild(goals);
             let fieldGoals = document.createElement('td');
-            fieldGoals.innerText = statsRecord ? (statsRecord.scoring_stats?[player.position_general]?.field_goals | 0) + ((statsRecord.scoring_stats?[player.position_general]?['2point_field_goals'] | 0) * 2) : 0;
+            fieldGoals.innerText = statsRecord ? ((statsRecord.scoring_stats?[player.position_general]?.field_goals | 0) + ((statsRecord.scoring_stats?[player.position_general]?['2point_field_goals'] | 0) * 2)) : 0;
             fieldGoals.style.color = Number(fieldGoals.innerText) > 0 ? "green" : "";
             tr.appendChild(fieldGoals);
             let IT = document.createElement('td');

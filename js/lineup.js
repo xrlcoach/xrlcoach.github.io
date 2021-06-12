@@ -331,7 +331,7 @@ async function fillPositionOptions(select, onload = false) {
         //If selected player is 'None', do nothing
         if (select.value == 'None') return;
         let position1, position2;
-        if (onload) {
+        if (onload && lineup.find(p => p.player_id == select.value)) {
             let lineupEntry = lineup.find(p => p.player_id == select.value);
             position1 = lineupEntry.position_general;
             position2 = lineupEntry.second_position;

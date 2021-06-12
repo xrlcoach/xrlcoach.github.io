@@ -20,7 +20,7 @@ def lambda_handler(event, context):
             
         if method == 'GET':
             params = event["queryStringParameters"]
-            if 'team' in params.keys():
+            if params and 'team' in params.keys():
                 print(params)
                 team = params['team']
                 round_number = params['round']

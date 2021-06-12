@@ -149,8 +149,8 @@ async function populateLineupTable(tableId, lineup, stats, score) {
             tr.appendChild(goals);
             let fieldGoals = document.createElement('td');
             let fieldGoalText;
-            if (statsRecord?.scoring_stats?.[player.position_general]?) {
-                let positionScoringStats = statsRecord.scoring_stats?.[player.position_general]?;
+            if (statsRecord?.scoring_stats?.[player.position_general]) {
+                let positionScoringStats = statsRecord.scoring_stats?.[player.position_general];
                 fieldGoalText = (positionScoringStats.field_goals ?? 0) + ((positionScoringStats['2point_field_goals'] ?? 0) * 2);
             } else {
                 fieldGoalText = 0;
@@ -241,8 +241,8 @@ async function populateLineupTable(tableId, lineup, stats, score) {
             tr.appendChild(goals);
             let fieldGoals = document.createElement('td');
             let fieldGoalText;
-            if (statsRecord?.scoring_stats?.[player.position_general]?) {
-                let positionScoringStats = statsRecord.scoring_stats?.[player.position_general]?;
+            if (statsRecord?.scoring_stats?.[player.position_general]) {
+                let positionScoringStats = statsRecord.scoring_stats?.[player.position_general];
                 fieldGoalText = (positionScoringStats.field_goals ?? 0) + ((positionScoringStats['2point_field_goals'] ?? 0) * 2);
             } else {
                 fieldGoalText = 0;

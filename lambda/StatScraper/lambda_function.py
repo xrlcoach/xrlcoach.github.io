@@ -30,7 +30,7 @@ backs = ['Winger', 'Centre', 'Fullback']
 def involvement_try(player, position):
     #=IF(AND(D2="Back",AB2>34),1,IF(AND(D2="Playmaker",AB2>44),1,IF(AND(D2="Forward",AB2>49),1,0)))
     relevant_stats = ["Tries", "1 Point Field Goals", "2 Point Field Goals", "All Runs", "Line Breaks", "Line Break Assists", "Try Assists", "Tackle Breaks",
-        "Offloads", "Tackles Made", "Kicks", "40/20", "20/40"]
+        "Offloads", "Tackles Made", "Kicks", "40/20", "20/40", "One on One Steal"]
     stats = sum([player[stat] for stat in player.keys() if stat in relevant_stats])
     if position == 'Back' and stats > 34:
         return True

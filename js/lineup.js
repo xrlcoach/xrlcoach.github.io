@@ -309,9 +309,9 @@ function fillInterchangeOptions(onload = false) {
             nonStarters.forEach(p => {
                 if (player && player.player_id == p.player_id) createOption(p, pos, true);
                 else createOption(p, pos);
-                //Call function to populate positional preference options
-                fillPositionOptions(select, onload);
             });
+            //Call function to populate positional preference options
+            fillPositionOptions(select, onload);
         });        
     } catch (err) {
         DisplayFeedback('Error', err + (err.stack ? '<p>' + err.stack + '</p>': ''));

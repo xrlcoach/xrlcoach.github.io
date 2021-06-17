@@ -335,7 +335,8 @@ async function fillPositionOptions(select, onload = false) {
             let lineupEntry = lineup.find(p => p.player_id == select.value);
             position1 = lineupEntry.position_general;
             position2 = lineupEntry.second_position;
-        } else {
+        }
+        if (!position1 || !position2) {
             //Look for player in squad
             let player = squad.find(p => p.player_id == select.value);
             position1 = player.position;

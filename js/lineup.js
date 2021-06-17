@@ -345,7 +345,7 @@ async function fillPositionOptions(select, onload = false) {
         //Create and fill option for first position
         let option = document.createElement('option');
         option.innerText = position1;
-        option.value = position2;
+        option.value = position1;
         //Add it to select element
         document.getElementById(select.id + 'Position').appendChild(option);
         //Do the same for player's second position, if they have one

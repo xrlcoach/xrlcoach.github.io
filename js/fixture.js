@@ -151,7 +151,7 @@ async function populateLineupTable(tableId, lineup, stats, score) {
             let fieldGoalText;
             if (statsRecord?.scoring_stats?.[player.position_general]) {
                 let positionScoringStats = statsRecord.scoring_stats?.[player.position_general];
-                fieldGoalText = (positionScoringStats.field_goals ?? 0) + ((positionScoringStats['2point_field_goals'] ?? 0) * 2);
+                fieldGoalText = (positionScoringStats.field_goals || 0) + ((positionScoringStats['2point_field_goals'] || 0) * 2);
             } else {
                 fieldGoalText = 0;
             }
@@ -243,7 +243,7 @@ async function populateLineupTable(tableId, lineup, stats, score) {
             let fieldGoalText;
             if (statsRecord?.scoring_stats?.[player.position_general]) {
                 let positionScoringStats = statsRecord.scoring_stats?.[player.position_general];
-                fieldGoalText = (positionScoringStats.field_goals ?? 0) + ((positionScoringStats['2point_field_goals'] ?? 0) * 2);
+                fieldGoalText = (positionScoringStats.field_goals || 0) + ((positionScoringStats['2point_field_goals'] || 0) * 2);
             } else {
                 fieldGoalText = 0;
             }

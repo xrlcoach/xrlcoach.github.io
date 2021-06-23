@@ -120,6 +120,25 @@ def lambda_handler(event, context):
             print("Operation is " + body['operation'])
             # users = users_table.scan()['Items']
             # active_user = [u for u in users if u['team_short'] == body['xrl_team']][0]
+            if body['operation'] == 'get_players':
+                player_ids = body['players']
+                players = []
+                for player_id in player_ids:
+                    resp = table.get_item(Key={
+                        'pk': 'PLAYER#' + player_id,
+                        'sk': 'PROFILE'
+                    })
+                    if 'Item' in resp.keys():
+                        players.append(resp['Item'])
+                return {
+                    'statusCode': 200,
+                    'headers': {
+                    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+                    'Access-Control-Allow-Origin': '*',
+                    'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
+                    },
+                    'body': json.dumps(replace_decimals(players))
+                }
             active_user = table.query(
                 IndexName='sk-data-index',
                 KeyConditionExpression=Key('sk').eq('DETAILS') & Key('data').eq('NAME#' + body['xrl_team'])

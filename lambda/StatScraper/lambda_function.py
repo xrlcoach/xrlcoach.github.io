@@ -355,7 +355,7 @@ def lambda_handler(event, context):
                     print(f"""A player named {player[0]['player_name']} has moved to the {player[0]['nrl_club']}. There is more than one
                     {player[0]['player_name']} in the database. Creating a new player entry for now. Remember to update the player's
                     team manually and update stats again.""")
-                    message += f"""{player[0]['player_name']} has moved to the {player[0]['nrl_club']}. Question is, which {player[0]['player_name']} is this?."""
+                    message += f"""{player[0]['player_name']} has moved to the {player[0]['nrl_club']}. Question is, which {player[0]['player_name']} is this?"""
                 if player[1]['Position'] in forwards: new_player_position = 'Forward'
                 elif player[1]['Position'] in playmakers: new_player_position = 'Playmaker'
                 elif player[1]['Position'] in backs: new_player_position = 'Back'

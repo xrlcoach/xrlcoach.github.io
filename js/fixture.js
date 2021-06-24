@@ -149,8 +149,8 @@ async function populateLineupTable(tableId, lineup, stats, score) {
             tr.appendChild(goals);
             let fieldGoals = document.createElement('td');
             let fieldGoalText;
-            if (statsRecord?.scoring_stats?.[player.position_general]) {
-                let positionScoringStats = statsRecord.scoring_stats?.[player.position_general];
+            if (statsRecord && statsRecord.scoring_stats[player.position_general]) {
+                let positionScoringStats = statsRecord.scoring_stats[player.position_general];
                 fieldGoalText = (positionScoringStats.field_goals || 0) + ((positionScoringStats['2point_field_goals'] || 0) * 2);
             } else {
                 fieldGoalText = 0;
@@ -159,19 +159,19 @@ async function populateLineupTable(tableId, lineup, stats, score) {
             fieldGoals.style.color = Number(fieldGoals.innerText) > 0 ? "green" : "";
             tr.appendChild(fieldGoals);
             let IT = document.createElement('td');
-            IT.innerText = statsRecord ? statsRecord.scoring_stats?.[player.position_general]?.involvement_try ? 1 : 0 : 0;
+            IT.innerText = statsRecord ? statsRecord.scoring_stats[player.position_general].involvement_try ? 1 : 0 : 0;
             IT.style.color = Number(IT.innerText) > 0 ? "green" : "";
             tr.appendChild(IT);
             let PT = document.createElement('td');
-            PT.innerText = statsRecord ? statsRecord.scoring_stats?.[player.position_general]?.positional_try ? 1 : 0 : 0;
+            PT.innerText = statsRecord ? statsRecord.scoring_stats[player.position_general].positional_try ? 1 : 0 : 0;
             PT.style.color = Number(PT.innerText) > 0 ? "green" : "";
             tr.appendChild(PT);
             let MIA = document.createElement('td');
-            MIA.innerText = statsRecord ? statsRecord.scoring_stats?.[player.position_general]?.mia ? 1 : 0 : 0;
+            MIA.innerText = statsRecord ? statsRecord.scoring_stats[player.position_general].mia ? 1 : 0 : 0;
             MIA.style.color = Number(MIA.innerText) > 0 ? "#c94d38" : "";
             tr.appendChild(MIA);
             let concede = document.createElement('td');
-            concede.innerText = statsRecord ? statsRecord.scoring_stats?.[player.position_general]?.concede ? 1 : 0 : 0;
+            concede.innerText = statsRecord ? statsRecord.scoring_stats[player.position_general].concede ? 1 : 0 : 0;
             concede.style.color = Number(concede.innerText) > 0 ? "#c94d38" : "";
             tr.appendChild(concede);
             let roles = document.createElement('td');
@@ -241,8 +241,8 @@ async function populateLineupTable(tableId, lineup, stats, score) {
             tr.appendChild(goals);
             let fieldGoals = document.createElement('td');
             let fieldGoalText;
-            if (statsRecord?.scoring_stats?.[player.position_general]) {
-                let positionScoringStats = statsRecord.scoring_stats?.[player.position_general];
+            if (statsRecord && statsRecord.scoring_stats[player.position_general]) {
+                let positionScoringStats = statsRecord.scoring_stats[player.position_general];
                 fieldGoalText = (positionScoringStats.field_goals || 0) + ((positionScoringStats['2point_field_goals'] || 0) * 2);
             } else {
                 fieldGoalText = 0;
@@ -250,19 +250,19 @@ async function populateLineupTable(tableId, lineup, stats, score) {
             fieldGoals.innerText = fieldGoalText;            fieldGoals.style.color = Number(fieldGoals.innerText) > 0 ? "green" : "";
             tr.appendChild(fieldGoals);
             let IT = document.createElement('td');
-            IT.innerText = statsRecord ? statsRecord.scoring_stats?.[player.position_general]?.involvement_try ? 1 : 0 : 0;
+            IT.innerText = statsRecord ? statsRecord.scoring_stats[player.position_general].involvement_try ? 1 : 0 : 0;
             IT.style.color = Number(IT.innerText) > 0 ? "green" : "";
             tr.appendChild(IT);
             let PT = document.createElement('td');
-            PT.innerText = statsRecord ? statsRecord.scoring_stats?.[player.position_general]?.positional_try ? 1 : 0 : 0;
+            PT.innerText = statsRecord ? statsRecord.scoring_stats[player.position_general].positional_try ? 1 : 0 : 0;
             PT.style.color = Number(PT.innerText) > 0 ? "green" : "";
             tr.appendChild(PT);
             let MIA = document.createElement('td');
-            MIA.innerText = statsRecord ? statsRecord.scoring_stats?.[player.position_general]?.mia ? 1 : 0 : 0;
+            MIA.innerText = statsRecord ? statsRecord.scoring_stats[player.position_general].mia ? 1 : 0 : 0;
             MIA.style.color = Number(MIA.innerText) > 0 ? "#c94d38" : "";
             tr.appendChild(MIA);
             let concede = document.createElement('td');
-            concede.innerText = statsRecord ? statsRecord.scoring_stats?.[player.position_general]?.concede ? 1 : 0 : 0;
+            concede.innerText = statsRecord ? statsRecord.scoring_stats[player.position_general].concede ? 1 : 0 : 0;
             concede.style.color = Number(concede.innerText) > 0 ? "#c94d38" : "";
             tr.appendChild(concede);
             let roles = document.createElement('td');

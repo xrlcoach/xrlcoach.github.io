@@ -608,7 +608,7 @@ function DisplayTradeForm() {
     try {
         let roundInfo = JSON.parse(sessionStorage.getItem('roundStatus'));
         if (roundInfo.round_number > 21 || (roundInfo.round_number === 21 && roundInfo.in_progress)) {
-            DisplayFeedback('There is an embargo on player trading during the finals.');
+            DisplayFeedback("Oh no you don't...", 'There is an embargo on player trading during the finals.');
             return;
         }
         //Find and activate modal

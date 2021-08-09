@@ -385,7 +385,7 @@ def lambda_handler(event, context):
                                 )
                         table.put_item(
                             Item={
-                                'pk': 'TRANSFER#' + user_offered_by['username'] + str(transfer_date),
+                                'pk': 'TRANSFER#' + player_id + str(transfer_date),
                                 'sk': 'TRANSFER',
                                 'data': 'ROUND#' + str(round_number),
                                 'user': user_offered_to['username'],                        

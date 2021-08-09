@@ -606,6 +606,10 @@ async function DisplayOfferDetails(offerPk) {
  */
 function DisplayTradeForm() {
     try {
+        if (roundNumber > 21) {
+            DisplayFeedback('There is an embargo on player trading during the finals.');
+            return;
+        }
         //Find and activate modal
         let tradeForm = new bootstrap.Modal(document.getElementById('tradeForm'));
         //Clear any previous data

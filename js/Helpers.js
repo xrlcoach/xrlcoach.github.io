@@ -526,7 +526,7 @@ export function GetPlayerXrlScores(scoringPosition, appearance, scoreAsKicker=tr
             //1 point for each field goal
             score += stats[position].field_goals;
             //2 points for each 2pt field goal
-            score += stats[position]['2point_field_goals'];
+            score += stats[position]['2point_field_goals'] * 2;
             //-2 points for a sin bin
             score -= stats[position].sin_bins * 2;
             //-4 points for a red card and -1 for every 10 mins off field

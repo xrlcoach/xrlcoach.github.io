@@ -15,7 +15,7 @@ def lambda_handler(event, context):
             if not event["queryStringParameters"]:
                 # resp = table.scan()
                 data = []
-                for i in range(1, 22):
+                for i in range(1, 26):
                     round_object = table.get_item(
                         Key={'pk': 'ROUND#' + str(i), 'sk': 'STATUS'}
                     )['Item']

@@ -606,7 +606,8 @@ async function DisplayOfferDetails(offerPk) {
  */
 function DisplayTradeForm() {
     try {
-        if (roundNumber > 21) {
+        let roundInfo = JSON.parse(sessionStorage.getItem('roundStatus'));
+        if (roundInfo.round_number > 21 || (roundInfo.round_number === 21 && roundInfo.in_progress) {
             DisplayFeedback('There is an embargo on player trading during the finals.');
             return;
         }

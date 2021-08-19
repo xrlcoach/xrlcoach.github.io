@@ -115,7 +115,11 @@ def lambda_handler(event, context):
                 data = table.query(
                     KeyConditionExpression=Key('pk').eq('ROUND#' + str(round_number)) & Key('sk').begins_with('FIXTURE#'),
                     FilterExpression=Attr('home').eq(team_short) | Attr('away').eq(team_short)
-                )['Items'][0]
+                )['Items']
+                if len(data) > 0:
+                    data = data[0]
+                else:
+                    data = None
                 return {
                     'statusCode': 200,
                     'headers': {

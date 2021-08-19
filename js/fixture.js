@@ -53,13 +53,17 @@ window.onload = async function() {
         if (match.home == GetActiveUserTeamShort() || match.away == GetActiveUserTeamShort()) {
             if (roundNumber > 1) {
                 let lastMatch = await GetTeamFixtureByRound(GetActiveUserTeamShort(), Number(roundNumber) - 1);
-                document.getElementById('previousMatchLink').href = `fixture.html?round=${Number(roundNumber) - 1}&fixture=${lastMatch.home}-v-${lastMatch.away}`;
-                document.getElementById('previousMatchLink').hidden = false;
+                if (lastMatch) {
+                    document.getElementById('previousMatchLink').href = `fixture.html?round=${Number(roundNumber) - 1}&fixture=${lastMatch.home}-v-${lastMatch.away}`;
+                    document.getElementById('previousMatchLink').hidden = false;
+                }
             }
             if (roundNumber < 21) {
                 let nextMatch = await GetTeamFixtureByRound(GetActiveUserTeamShort(), Number(roundNumber) + 1);
-                document.getElementById('nextMatchLink').href = `fixture.html?round=${Number(roundNumber) + 1}&fixture=${nextMatch.home}-v-${nextMatch.away}`;
-                document.getElementById('nextMatchLink').hidden = false;
+                if (nextMatch) {
+                    document.getElementById('nextMatchLink').href = `fixture.html?round=${Number(roundNumber) + 1}&fixture=${nextMatch.home}-v-${nextMatch.away}`;
+                    document.getElementById('nextMatchLink').hidden = false;
+                }
             }
         }
         homeTeam = match.home;

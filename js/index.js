@@ -60,6 +60,7 @@ async function LoadFixtureData() {
     //Isolate last round
     try {
         lastMatch = await GetTeamFixtureByRound(user.team_short, Number(GetCurrentRoundNumber()) - 1);
+        if (!lastMatch.home) throw 'No last match to display';
     } catch (err) {
         lastMatch = undefined;
     }

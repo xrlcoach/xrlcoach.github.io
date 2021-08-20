@@ -119,7 +119,7 @@ def lambda_handler(event, context):
                 if len(data) > 0:
                     data = data[0]
                 else:
-                    data = None
+                    data = {}
                 return {
                     'statusCode': 200,
                     'headers': {

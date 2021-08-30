@@ -26,6 +26,10 @@ nav .nav-item
     font-size: large;
 }
 
+body {
+    background-image: url('./finals_bg.png');
+    background-color: transparent;
+}
 
 
 
